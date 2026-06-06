@@ -1,0 +1,8 @@
+# Claude Code local session settings (machine-specific, not for version control)
+.claude/settings.local.json
+
+# OS
+.DS_Store
+
+# Node
+node_modules/
