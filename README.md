@@ -88,6 +88,70 @@ cp -r ux-ui-agent-skills/ your-project/
 
 ---
 
+## 🎮 How to Use
+
+There are **three ways** to drive the kit. Use whichever fits the moment.
+
+### 1. Just ask (zero commands)
+
+`CLAUDE.md` loads automatically, so plain requests already route to the right knowledge. Describe what you want and the agent self-routes via the built-in **Request Router**:
+
+```text
+"Generate a Svelte button with all states and dark mode"
+"Make this landing page feel like Linear"
+"Migrate our Material 3 colors into this token system"
+```
+
+### 2. Run a skill explicitly (`/skill`)
+
+Type a slash command to invoke a capability directly. Each skill loads only the files it needs and can run its own scripts.
+
+| Command | What it does |
+|---------|--------------|
+| `/design-tokens` | Generate / extend / validate DTCG tokens, palettes, multi-brand theming |
+| `/design-component` | Spec a component (anatomy, variants, 8 states, a11y) |
+| `/design-code` | Generate code for **any** framework via the Adapter Protocol |
+| `/design-review` | Score a design (6 dimensions + Nielsen) with a findings table |
+| `/a11y-audit` | WCAG 2.2 audit + contrast checks |
+| `/apply-aesthetic` | Apply an archetype or one of 138 design systems |
+| `/redesign` | Audit-first upgrade of an existing UI without breaking it |
+| `/migrate-design-system` | Map to/from Material 3, Apple HIG, shadcn, Radix, etc. |
+| `/prototype` | Move up the fidelity ladder + plan usability testing |
+| `/ux-writing` | Write/review buttons, errors, empty states, microcopy |
+
+```text
+/design-code  a pricing card in Vue, dark-mode aware
+/apply-aesthetic  stripe   →  make the dashboard feel like Stripe
+/a11y-audit  this checkout form
+/migrate-design-system  from Material 3 to our tokens
+```
+
+### 3. Run the scripts (real, no dependencies)
+
+Plain `python3` — useful in the terminal or CI:
+
+```bash
+python3 scripts/validate_tokens.py                 # validate token JSON + alias refs
+python3 scripts/contrast.py "#1d1d1f" "#ffffff"    # WCAG contrast ratio + pass/fail
+python3 scripts/design_systems.py list             # browse the 138-system library
+python3 scripts/design_systems.py show apple        # inspect one system
+python3 scripts/scaffold_component.py "Date Picker" # emit a component spec stub
+```
+
+### Typical flow
+
+```text
+1. /apply-aesthetic linear      → set the visual direction (tokens re-pointed)
+2. /design-component Combobox    → spec it with states + a11y
+3. /design-code  Combobox in React + Tailwind   → production code
+4. /a11y-audit                   → verify contrast, keyboard, focus
+5. /design-review                → score + findings before ship
+```
+
+> **Tip:** skills compose. `apply-aesthetic` always re-verifies contrast through `a11y-audit`; `redesign` calls `design-review` + `a11y-audit` automatically.
+
+---
+
 ## 📂 Project Structure
 
 ```
