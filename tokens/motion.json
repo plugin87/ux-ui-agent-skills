@@ -1,0 +1,136 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Motion system — durations, easings, and composite transition presets. UI motion is 100–300ms, never exceeds 500ms. Every animation guides attention, shows connection, or provides feedback. Always paired with a prefers-reduced-motion fallback.",
+
+  "duration": {
+    "instant": {
+      "$type": "duration",
+      "$value": "0ms",
+      "$description": "No animation — reduced-motion fallback, or instant state swaps"
+    },
+    "fast": {
+      "$type": "duration",
+      "$value": "100ms",
+      "$description": "Micro-interactions — hover, focus, small color/opacity changes"
+    },
+    "base": {
+      "$type": "duration",
+      "$value": "200ms",
+      "$description": "Default UI transition — most state changes, toggles, dropdowns"
+    },
+    "moderate": {
+      "$type": "duration",
+      "$value": "300ms",
+      "$description": "Larger transitions — modals, drawers, accordions, page sections"
+    },
+    "slow": {
+      "$type": "duration",
+      "$value": "500ms",
+      "$description": "Maximum allowed — full-screen transitions, large reveals. Never exceed this."
+    }
+  },
+
+  "easing": {
+    "linear": {
+      "$type": "cubicBezier",
+      "$value": [0, 0, 1, 1],
+      "$description": "Constant speed — only for continuous loops (spinners, progress)"
+    },
+    "ease-out": {
+      "$type": "cubicBezier",
+      "$value": [0, 0, 0.2, 1],
+      "$description": "Decelerate — for ENTRANCES. Elements arrive fast and settle. The default for most UI."
+    },
+    "ease-in": {
+      "$type": "cubicBezier",
+      "$value": [0.4, 0, 1, 1],
+      "$description": "Accelerate — for EXITS. Elements leave by speeding away."
+    },
+    "ease-in-out": {
+      "$type": "cubicBezier",
+      "$value": [0.4, 0, 0.2, 1],
+      "$description": "Accelerate then decelerate — for STATE CHANGES that move in place (toggles, reorders)"
+    },
+    "spring": {
+      "$type": "cubicBezier",
+      "$value": [0.34, 1.56, 0.64, 1],
+      "$description": "Overshoot — playful emphasis (success checkmarks, badges). Use sparingly."
+    }
+  },
+
+  "transition": {
+    "$description": "Composite presets — duration + easing pairs ready to apply. Reference these in components.",
+    "micro": {
+      "$type": "transition",
+      "$value": { "duration": "{duration.fast}", "timingFunction": "{easing.ease-out}", "delay": "0ms" },
+      "$description": "Hover/focus on atoms — buttons, links, inputs"
+    },
+    "default": {
+      "$type": "transition",
+      "$value": { "duration": "{duration.base}", "timingFunction": "{easing.ease-out}", "delay": "0ms" },
+      "$description": "General-purpose state change — the safe default"
+    },
+    "enter": {
+      "$type": "transition",
+      "$value": { "duration": "{duration.moderate}", "timingFunction": "{easing.ease-out}", "delay": "0ms" },
+      "$description": "Element entering the screen — modal open, toast appear, menu reveal"
+    },
+    "exit": {
+      "$type": "transition",
+      "$value": { "duration": "{duration.base}", "timingFunction": "{easing.ease-in}", "delay": "0ms" },
+      "$description": "Element leaving the screen — exits are faster than entrances"
+    },
+    "emphasis": {
+      "$type": "transition",
+      "$value": { "duration": "{duration.moderate}", "timingFunction": "{easing.spring}", "delay": "0ms" },
+      "$description": "Celebratory feedback — success states, confirmations"
+    }
+  },
+
+  "keyframes": {
+    "$description": "Named keyframe recipes. Property/from/to are documented for implementers; encode as CSS @keyframes or framework equivalents.",
+    "fade-in": {
+      "$type": "other",
+      "$value": { "property": "opacity", "from": "0", "to": "1" },
+      "$description": "Reduced-motion-safe substitute for any directional entrance"
+    },
+    "fade-out": {
+      "$type": "other",
+      "$value": { "property": "opacity", "from": "1", "to": "0" }
+    },
+    "slide-up": {
+      "$type": "other",
+      "$value": { "property": "transform, opacity", "from": "translateY(8px), 0", "to": "translateY(0), 1" },
+      "$description": "Subtle rise on entrance — popovers, toasts. Pair with fade."
+    },
+    "scale-in": {
+      "$type": "other",
+      "$value": { "property": "transform, opacity", "from": "scale(0.96), 0", "to": "scale(1), 1" },
+      "$description": "Modal/dialog entrance — grows from 96% to 100%"
+    },
+    "spin": {
+      "$type": "other",
+      "$value": { "property": "transform", "from": "rotate(0deg)", "to": "rotate(360deg)" },
+      "$description": "Loading spinner — use with duration 600–1000ms and linear easing"
+    },
+    "pulse": {
+      "$type": "other",
+      "$value": { "property": "opacity", "from": "1", "to": "0.5" },
+      "$description": "Skeleton loading shimmer — alternate, infinite"
+    }
+  },
+
+  "reducedMotion": {
+    "$description": "When prefers-reduced-motion is set: replace movement with opacity-only fades or instant swaps. Never remove feedback entirely — keep the state change, drop the travel.",
+    "duration": {
+      "$type": "duration",
+      "$value": "0ms",
+      "$description": "Collapse all motion durations to instant, OR cap at duration.fast for opacity-only fades"
+    },
+    "strategy": {
+      "$type": "other",
+      "$value": "Disable transform/position animation; retain opacity fade ≤100ms; keep all non-motion feedback (color, text, ARIA live regions)",
+      "$description": "Honors WCAG 2.3.3 Animation from Interactions"
+    }
+  }
+}

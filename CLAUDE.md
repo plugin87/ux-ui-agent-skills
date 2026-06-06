@@ -80,6 +80,7 @@ All tokens use **DTCG format** (Design Tokens Community Group) with `$type`/`$va
 - `tokens/shadows.json` — 5-level elevation + inner + colored + focus ring
 - `tokens/borders.json` — Radius scale + semantic radii + width scale
 - `tokens/breakpoints.json` — Mobile-first breakpoints + container widths + grid + z-index
+- `tokens/motion.json` — Duration scale + easing curves + transition presets + keyframes + reduced-motion strategy
 
 ### Naming Convention
 ```
@@ -330,6 +331,7 @@ Full workflow: `workflows/design-to-code.md`
 - **Easing**: `ease-out` for entrances, `ease-in` for exits, `ease-in-out` for state changes
 - **Purpose**: Every animation guides attention, shows connection, or provides feedback
 - **Reduced motion**: Always respect `prefers-reduced-motion`. Replace with fade or instant.
+- All motion values are tokenized — use `tokens/motion.json` (duration scale, easing curves, transition presets, keyframes). Never hardcode timing or easing.
 
 ### Voice & Tone
 - **UI copy**: Clear, concise, actionable. Frontload the verb.
@@ -341,6 +343,7 @@ Full workflow: `workflows/design-to-code.md`
 - **Empty states**: Explain the value → guide to first action.
   - ✅ "No projects yet. Create your first project to get started."
   - ❌ "No data"
+- Full UX writing system — voice principles, tone spectrum, error/empty-state formulas, microcopy patterns, inclusive language, and a pre-ship checklist — in `content/voice-tone.md`.
 
 ---
 
@@ -369,7 +372,11 @@ tokens/
 ├── spacing.json          ← 4px base unit scale + semantic spacing
 ├── shadows.json          ← 5-level elevation + inner + colored + focus ring
 ├── borders.json          ← Radius + width scale + semantic radii
-└── breakpoints.json      ← Breakpoints + containers + grid + z-index
+├── breakpoints.json      ← Breakpoints + containers + grid + z-index
+└── motion.json           ← Durations + easings + transition presets + keyframes + reduced-motion
+
+content/
+└── voice-tone.md         ← Voice & tone, UX writing, error/empty-state copy, microcopy patterns
 
 components/
 ├── atoms.md              ← Button, Input, Label, Icon, Badge, Avatar, Checkbox, Radio, Toggle, Tooltip
@@ -390,4 +397,14 @@ frameworks/
 ├── react-tailwind.md     ← React 19 + Tailwind v4 + TypeScript + cva patterns
 ├── nextjs.md             ← Next.js 15 App Router patterns
 └── swiftui.md            ← SwiftUI 6 + Dynamic Type + platform adaptation
+
+.agents/skills/           ← Bundled design-taste skills (via `npx skills add Leonxlnx/taste-skill`)
+├── gpt-taste             ← Awwwards-level layout variance + GSAP motion engineering
+├── high-end-visual-design, minimalist-ui, industrial-brutalist-ui  ← Visual style systems
+├── design-taste-frontend, stitch-design-taste, brandkit           ← Taste & brand direction
+├── image-to-code, imagegen-frontend-web, imagegen-frontend-mobile ← Visual-input → UI
+└── redesign-existing-projects, full-output-enforcement            ← Workflow helpers
 ```
+
+### Design-Taste Skills (auto-discovered)
+The `.agents/skills/` directory bundles 13 community design-taste skills that complement this kit: this kit supplies the **system** (tokens, components, a11y, handoff); the taste skills supply **visual judgment** (layout variance, editorial typography, motion richness, style direction). When a request calls for high-end visual polish, motion, or a specific aesthetic, defer to the relevant taste skill while keeping all token, accessibility, and state requirements from this CLAUDE.md non-negotiable.

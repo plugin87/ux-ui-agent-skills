@@ -17,6 +17,8 @@ A comprehensive starter kit of structured instructions and design tokens that tr
 | **Design Review** | Scores designs across 6 dimensions with Nielsen's 10 Heuristics and a structured findings table |
 | **Design-to-Code Handoff** | Provides token mapping, 8-state documentation, edge case checklists, and animation specs |
 | **Prototyping & Research** | Guides through a 5-level fidelity ladder, user journey mapping, and usability testing scripts |
+| **Motion Design** | Tokenized durations, easing curves, transition presets, and reduced-motion strategy for accessible animation |
+| **UX Writing** | Voice & tone system with error/empty-state formulas, microcopy patterns, and inclusive language guidelines |
 
 ---
 
@@ -64,7 +66,11 @@ Open the project in **Claude Code** or any Claude-powered IDE. The `CLAUDE.md` f
 │   ├── spacing.json           # 4px base unit, 21 scale values + semantic aliases
 │   ├── shadows.json           # 5-level elevation + inner + colored + focus ring
 │   ├── borders.json           # Radius & width scales + semantic component radii
-│   └── breakpoints.json       # Mobile-first breakpoints + containers + grid + z-index
+│   ├── breakpoints.json       # Mobile-first breakpoints + containers + grid + z-index
+│   └── motion.json            # Durations + easings + transition presets + keyframes + reduced-motion
+│
+├── content/                   # UX writing & content design
+│   └── voice-tone.md          # Voice & tone, error/empty-state copy, microcopy patterns, inclusive language
 │
 ├── components/                # Component specifications (Atomic Design)
 │   ├── atoms.md               # Button, Input, Label, Icon, Badge, Avatar, Checkbox, Radio, Toggle, Tooltip
@@ -81,11 +87,19 @@ Open the project in **Claude Code** or any Claude-powered IDE. The `CLAUDE.md` f
 │   ├── design-to-code.md      # Handoff workflow, state docs, edge cases, definition of done
 │   └── prototyping.md         # Fidelity ladder, journey mapping, usability testing scripts
 │
-└── frameworks/                # Framework-specific implementation patterns
-    ├── react-tailwind.md      # React 19 + Tailwind v4 + TypeScript + cva
-    ├── nextjs.md              # Next.js 15 App Router patterns
-    └── swiftui.md             # SwiftUI 6 + Dynamic Type + platform adaptation
+├── frameworks/                # Framework-specific implementation patterns
+│   ├── react-tailwind.md      # React 19 + Tailwind v4 + TypeScript + cva
+│   ├── nextjs.md              # Next.js 15 App Router patterns
+│   └── swiftui.md             # SwiftUI 6 + Dynamic Type + platform adaptation
+│
+└── .agents/skills/            # Bundled design-taste skills (13) — visual judgment layer
+    ├── gpt-taste, high-end-visual-design, minimalist-ui, industrial-brutalist-ui
+    ├── design-taste-frontend, stitch-design-taste, brandkit
+    ├── image-to-code, imagegen-frontend-web, imagegen-frontend-mobile
+    └── redesign-existing-projects, full-output-enforcement
 ```
+
+> **Design-taste skills** are bundled via [`npx skills add Leonxlnx/taste-skill`](https://github.com/Leonxlnx/taste-skill). This kit provides the **system** (tokens, components, accessibility, handoff); the taste skills add **visual judgment** (layout variance, editorial typography, motion). They run with full agent permissions — review before use.
 
 ---
 

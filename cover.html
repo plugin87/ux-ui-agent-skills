@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX/UI Agent Skills Cover</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'JetBrains Mono', monospace;
+    overflow: hidden;
+  }
+
+  .canvas {
+    width: 1200px;
+    height: 630px;
+    background: linear-gradient(145deg, #0d0d15 0%, #0a0a12 50%, #0f0a18 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Ambient glow blobs */
+  .glow-1 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+    top: -150px;
+    right: -100px;
+    border-radius: 50%;
+  }
+  .glow-2 {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+    bottom: -100px;
+    left: -50px;
+    border-radius: 50%;
+  }
+  .glow-3 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+  }
+
+  /* Grid lines subtle */
+  .grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Editor window */
+  .editor {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+    width: 720px;
+    height: 550px;
+    background: rgba(17, 17, 27, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .editor-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 10px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 7px;
+  }
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+  }
+  .dot-red { background: #ff5f57; }
+  .dot-yellow { background: #febc2e; }
+  .dot-green { background: #28c840; }
+
+  .editor-title {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: 400;
+  }
+
+  .editor-body {
+    padding: 22px 24px;
+    overflow: hidden;
+  }
+
+  .line {
+    display: flex;
+    line-height: 1.85;
+    font-size: 13.5px;
+  }
+
+  .line-num {
+    color: rgba(255, 255, 255, 0.12);
+    width: 32px;
+    text-align: right;
+    margin-right: 20px;
+    font-size: 12px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .line-content {
+    white-space: pre;
+  }
+
+  /* Syntax colors */
+  .keyword { color: #c792ea; }
+  .function { color: #82aaff; }
+  .string { color: #c3e88d; }
+  .comment { color: rgba(255, 255, 255, 0.2); font-style: italic; }
+  .type { color: #ffcb6b; }
+  .operator { color: #89ddff; }
+  .variable { color: #f78c6c; }
+  .bracket { color: rgba(255, 255, 255, 0.4); }
+  .property { color: #f07178; }
+  .param { color: #e0e0e0; }
+  .decorator { color: #ff9cac; }
+  .constant { color: #f78c6c; }
+
+  /* Right side panel — feature badges */
+  .features {
+    position: absolute;
+    top: 50px;
+    right: 50px;
+    width: 340px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .brand {
+    margin-bottom: 12px;
+  }
+  .brand-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+  .brand-sub {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-top: 6px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .brand-line {
+    width: 48px;
+    height: 2px;
+    background: linear-gradient(90deg, #6366f1, #a855f7);
+    border-radius: 2px;
+    margin-top: 14px;
+  }
+
+  .feature-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s;
+  }
+
+  .feature-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .fi-tokens { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+  .fi-components { background: rgba(99, 102, 241, 0.12); color: #818cf8; }
+  .fi-a11y { background: rgba(34, 197, 94, 0.12); color: #4ade80; }
+  .fi-code { background: rgba(59, 130, 246, 0.12); color: #60a5fa; }
+  .fi-review { background: rgba(244, 114, 182, 0.12); color: #f472b6; }
+  .fi-workflow { background: rgba(168, 85, 247, 0.12); color: #c084fc; }
+
+  .feature-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .feature-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .feature-desc {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.3);
+    font-weight: 400;
+    margin-top: 1px;
+  }
+
+  /* Bottom bar */
+  .bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    background: rgba(17, 17, 27, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+  }
+  .bottom-text {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.2);
+    font-weight: 400;
+  }
+  .bottom-tag {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Cursor blink */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+    border-radius: 1px;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="canvas">
+  <!-- Ambient effects -->
+  <div class="glow-1"></div>
+  <div class="glow-2"></div>
+  <div class="glow-3"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Code editor -->
+  <div class="editor">
+    <div class="editor-header">
+      <div class="dots">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <span class="editor-title">CLAUDE.md — UX/UI Agent Skills</span>
+    </div>
+    <div class="editor-body">
+      <div class="line"><span class="line-num">1</span><span class="line-content"><span class="comment">// Transform Claude → Senior Design Architect</span></span></div>
+      <div class="line"><span class="line-num">2</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-num">3</span><span class="line-content"><span class="keyword">const</span> <span class="variable">agent</span> <span class="operator">=</span> <span class="function">createDesignExpert</span><span class="bracket">(</span><span class="bracket">{</span></span></div>
+      <div class="line"><span class="line-num">4</span><span class="line-content">  <span class="property">persona</span><span class="operator">:</span>    <span class="string">"Senior Design Architect 15+ yrs"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">5</span><span class="line-content">  <span class="property">standards</span><span class="operator">:</span> <span class="string">"Apple · Google · Airbnb level"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">6</span><span class="line-content"><span class="bracket">}</span><span class="bracket">)</span><span class="operator">;</span></span></div>
+      <div class="line"><span class="line-num">7</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-num">8</span><span class="line-content"><span class="comment">// 3-Tier Token Architecture (DTCG Standard)</span></span></div>
+      <div class="line"><span class="line-num">9</span><span class="line-content"><span class="keyword">const</span> <span class="variable">tokens</span> <span class="operator">=</span> <span class="bracket">{</span></span></div>
+      <div class="line"><span class="line-num">10</span><span class="line-content">  <span class="property">colors</span><span class="operator">:</span>      <span class="string">"6 hues × 11 shades + dark mode"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">11</span><span class="line-content">  <span class="property">typography</span><span class="operator">:</span>  <span class="string">"Major Third scale + 14 styles"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">12</span><span class="line-content">  <span class="property">spacing</span><span class="operator">:</span>     <span class="string">"4px base + semantic aliases"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">13</span><span class="line-content">  <span class="property">shadows</span><span class="operator">:</span>     <span class="string">"5-level elevation system"</span><span class="operator">,</span></span></div>
+      <div class="line"><span class="line-num">14</span><span class="line-content"><span class="bracket">}</span><span class="operator">;</span></span></div>
+      <div class="line"><span class="line-num">15</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-num">16</span><span class="line-content"><span class="comment">// Atomic Design Components</span></span></div>
+      <div class="line"><span class="line-num">17</span><span class="line-content"><span class="keyword">const</span> <span class="variable">components</span> <span class="operator">=</span> <span class="bracket">[</span></span></div>
+      <div class="line"><span class="line-num">18</span><span class="line-content">  <span class="type">Atoms</span><span class="operator">,</span> <span class="type">Molecules</span><span class="operator">,</span> <span class="type">Organisms</span><span class="operator">,</span> <span class="type">Templates</span></span></div>
+      <div class="line"><span class="line-num">19</span><span class="line-content"><span class="bracket">]</span><span class="operator">;</span> <span class="comment">// 26 components with full specs</span></span></div>
+      <div class="line"><span class="line-num">20</span><span class="line-content"></span></div>
+      <div class="line"><span class="line-num">21</span><span class="line-content"><span class="keyword">await</span> <span class="variable">agent</span><span class="operator">.</span><span class="function">generate</span><span class="bracket">(</span><span class="string">"component"</span><span class="bracket">)</span><span class="operator">;</span><span class="cursor"></span></span></div>
+    </div>
+  </div>
+
+  <!-- Right features panel -->
+  <div class="features">
+    <div class="brand">
+      <div class="brand-title">UX/UI<br>Agent Skills</div>
+      <div class="brand-sub">Claude Skill Set for Design Systems</div>
+      <div class="brand-line"></div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-tokens">◆</div>
+      <div class="feature-text">
+        <span class="feature-label">Design Tokens</span>
+        <span class="feature-desc">Colors · Typography · Spacing · Shadows</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-components">□</div>
+      <div class="feature-text">
+        <span class="feature-label">Component Specs</span>
+        <span class="feature-desc">26 components · Atomic Design · All states</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-a11y">✓</div>
+      <div class="feature-text">
+        <span class="feature-label">WCAG 2.2 + ARIA</span>
+        <span class="feature-desc">Full checklist · 15+ ARIA patterns</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-code">⟨⟩</div>
+      <div class="feature-text">
+        <span class="feature-label">Code Generation</span>
+        <span class="feature-desc">React · Next.js 15 · SwiftUI 6</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-review">★</div>
+      <div class="feature-text">
+        <span class="feature-label">Design Review</span>
+        <span class="feature-desc">6-dimension scoring · Nielsen heuristics</span>
+      </div>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon fi-workflow">↻</div>
+      <div class="feature-text">
+        <span class="feature-label">Workflows</span>
+        <span class="feature-desc">Handoff · Prototyping · Usability testing</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <span class="bottom-text">github.com/plugin87/ux-ui-agent-skills</span>
+    <span class="bottom-tag">FREE & OPEN SOURCE</span>
+  </div>
+</div>
+</body>
+</html>
