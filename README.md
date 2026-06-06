@@ -14,6 +14,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
+![npx](https://img.shields.io/badge/npx-ux--ui--agent--skills-cb3837?style=flat-square&logo=npm&logoColor=white)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-10-14b8a6?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
@@ -55,19 +56,26 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 🚀 Quick Start
 
-**1. Clone the repo**
+### Option A — Install with `npx` (recommended)
+
+Drop the kit into any project, no clone needed:
+
+```bash
+npx ux-ui-agent-skills init          # full kit into the current folder
+npx ux-ui-agent-skills add tokens taste design-systems   # just some areas
+npx ux-ui-agent-skills list          # see all areas
+```
+
+Flags: `--force` (overwrite existing files) · `--dry` (preview, change nothing).
+
+### Option B — Clone
 
 ```bash
 git clone https://github.com/plugin87/ux-ui-agent-skills.git
-```
-
-**2. Copy into your project** (or use it standalone as a Claude skill directory)
-
-```bash
 cp -r ux-ui-agent-skills/ your-project/
 ```
 
-**3. Start using** — open the project in **Claude Code** or any Claude-powered IDE. The `CLAUDE.md` file is automatically loaded, activating the agent persona with full access to all design system files.
+**Then start using** — open the project in **Claude Code** or any Claude-powered IDE. `CLAUDE.md` loads automatically, activating the agent persona with full access to every tokens / components / taste / design-system file and the runnable `/skills`.
 
 <details>
 <summary><b>💡 Example prompts</b></summary>
@@ -301,6 +309,7 @@ This is a **starter kit** — make it yours:
 ## 📝 Changelog
 
 ### `v1.1.0`
+- 📦 **npm package** — install into any project with `npx ux-ui-agent-skills init` (zero-dependency CLI: `init` / `add` / `list`, `--force`/`--dry`)
 - ⚡ **Runnable skills** — 10 invocable `/skills` under `.claude/skills/` + real helper scripts (`validate_tokens.py`, `contrast.py`, `design_systems.py`, `scaffold_component.py`)
 - 🧠 **Intelligence layer** — Request Router in `CLAUDE.md`; **Framework Adapter Protocol** (target any framework) with 10 concise adapters; **Design-System Interop Protocol** + crosswalk (map to/from any design system)
 - 🎭 **Native design-taste** — `taste/` (anti-slop doctrine, aesthetic archetypes, motion choreography) + a **library of 138 brand-grade design systems**

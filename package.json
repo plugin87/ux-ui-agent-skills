@@ -1,0 +1,58 @@
+{
+  "name": "ux-ui-agent-skills",
+  "version": "1.1.0",
+  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 42 components, WCAG 2.2 accessibility, any-framework code, 138 design systems, and runnable skills. Install into any project with npx.",
+  "type": "commonjs",
+  "bin": {
+    "ux-ui-skills": "bin/cli.js",
+    "ux-ui-agent-skills": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py"
+  },
+  "files": [
+    "bin/",
+    "CLAUDE.md",
+    "tokens/",
+    "components/",
+    "taste/",
+    "design-systems/",
+    "frameworks/",
+    "accessibility/",
+    "workflows/",
+    "content/",
+    "scripts/",
+    ".claude/skills/"
+  ],
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "dtcg",
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "agent-skills",
+    "ux",
+    "ui",
+    "accessibility",
+    "wcag",
+    "react",
+    "tailwindcss",
+    "design-to-code",
+    "component-library",
+    "figma"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plugin87/ux-ui-agent-skills.git"
+  },
+  "homepage": "https://github.com/plugin87/ux-ui-agent-skills#readme",
+  "bugs": {
+    "url": "https://github.com/plugin87/ux-ui-agent-skills/issues"
+  },
+  "author": "plugin87",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  }
+}
