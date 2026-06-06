@@ -1,0 +1,38 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Control sizing, icon sizing, and aspect ratios. Control heights drive Button/Input/Select consistency; all meet the 24px min target (44px recommended for primary touch).",
+
+  "control": {
+    "$description": "Interactive control height (Button, Input, Select, etc.)",
+    "xs": { "$type": "dimension", "$value": "24px", "$description": "Min target size (WCAG 2.5.8) — dense tables, chips" },
+    "sm": { "$type": "dimension", "$value": "32px", "$description": "Compact controls" },
+    "md": { "$type": "dimension", "$value": "40px", "$description": "Default control height" },
+    "lg": { "$type": "dimension", "$value": "48px", "$description": "Prominent / comfortable touch (recommended primary)" },
+    "xl": { "$type": "dimension", "$value": "56px", "$description": "Hero CTAs" }
+  },
+
+  "icon": {
+    "$description": "Icon box sizes — keep stroke weight consistent across sizes",
+    "xs": { "$type": "dimension", "$value": "12px" },
+    "sm": { "$type": "dimension", "$value": "16px", "$description": "Default inline icon" },
+    "md": { "$type": "dimension", "$value": "20px" },
+    "lg": { "$type": "dimension", "$value": "24px" },
+    "xl": { "$type": "dimension", "$value": "32px" }
+  },
+
+  "avatar": {
+    "sm": { "$type": "dimension", "$value": "24px" },
+    "md": { "$type": "dimension", "$value": "32px" },
+    "lg": { "$type": "dimension", "$value": "40px" },
+    "xl": { "$type": "dimension", "$value": "64px" }
+  },
+
+  "aspectRatio": {
+    "$description": "Use the unitless ratio in CSS aspect-ratio / native equivalents",
+    "square": { "$type": "number", "$value": 1, "$description": "1 / 1 — avatars, thumbnails" },
+    "video": { "$type": "string", "$value": "16 / 9", "$description": "Media embeds, hero video" },
+    "portrait": { "$type": "string", "$value": "3 / 4", "$description": "Cards, posters" },
+    "wide": { "$type": "string", "$value": "21 / 9", "$description": "Cinematic banners" },
+    "golden": { "$type": "string", "$value": "1.618 / 1", "$description": "Editorial feature blocks" }
+  }
+}

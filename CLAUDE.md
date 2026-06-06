@@ -16,6 +16,27 @@ When making any design decision, prioritize in this order:
 
 Never sacrifice a higher-priority concern for a lower one. Beautiful but inaccessible = broken. Consistent but confusing = wrong pattern.
 
+> **Taste serves tier 4 (Aesthetics).** The `taste/` layer and the design-system `library/` may set the visual direction, but may never override User Needs, Accessibility, or Consistency. A brand color that fails contrast gets adjusted — taste never wins over POUR.
+
+---
+
+## Request Router
+
+Match the request to the files to load (and the runnable skill, invocable via `/name`). Compose layers — almost every build pulls tokens + components + accessibility + (often) taste.
+
+| Request | Skill | Load |
+|---------|-------|------|
+| Generate/extend/validate tokens, palettes, theming | `design-tokens` | `tokens/*.json`, "Token System"; `scripts/validate_tokens.py` |
+| Design a component spec | `design-component` | `components/*`, `accessibility/aria-patterns.md`, `tokens/*`; `scripts/scaffold_component.py` |
+| Generate code in any framework | `design-code` | `frameworks/adapter-protocol.md` → `frameworks/` + `frameworks/adapters/*`, `components/*` |
+| Review / audit / score a design | `design-review` | `workflows/design-review.md`, `taste/design-taste.md` |
+| Accessibility / WCAG / contrast check | `a11y-audit` | `accessibility/*`; `scripts/contrast.py` |
+| Apply a look / vibe / brand feel | `apply-aesthetic` | `taste/aesthetic-systems.md`, `design-systems/library/*`; `scripts/design_systems.py` |
+| Improve/modernize an existing UI | `redesign` | `workflows/redesign-audit.md`, `taste/*` |
+| Map to/from another design system | `migrate-design-system` | `design-systems/interop-protocol.md` + `crosswalk.md` |
+| Prototype / wireframe / user flow / usability test | `prototype` | `workflows/prototyping.md` |
+| Write/review UI copy | `ux-writing` | `content/voice-tone.md` |
+
 ---
 
 ## Design Principles
@@ -81,6 +102,12 @@ All tokens use **DTCG format** (Design Tokens Community Group) with `$type`/`$va
 - `tokens/borders.json` — Radius scale + semantic radii + width scale
 - `tokens/breakpoints.json` — Mobile-first breakpoints + container widths + grid + z-index
 - `tokens/motion.json` — Duration scale + easing curves + transition presets + keyframes + reduced-motion strategy
+- `tokens/gradients.json` — Semantic gradient presets (brand, surface, feedback, accent)
+- `tokens/opacity.json` — Alpha scale (disabled, hover/pressed/selected overlays, scrim)
+- `tokens/blur.json` — Backdrop / frosted-glass blur scale
+- `tokens/sizing.json` — Control size scale + icon sizes + aspect ratios
+- `tokens/states.json` — Semantic interaction-state tokens for the 8 component states
+- `tokens/theming.json` — Multi-brand theme override map + density modes (compact/default/spacious)
 
 ### Naming Convention
 ```
@@ -247,6 +274,8 @@ When generating code for any framework:
 4. **Support dark mode** — Use semantic color tokens that auto-switch.
 5. **Responsive** — Mobile-first, breakpoint-aware.
 6. **Copy-paste ready** — Code should work with minimal adaptation.
+7. **Any framework** — Use `frameworks/adapter-protocol.md` for targets without a dedicated file; generate an adapter on demand.
+8. **Output completeness** — A partial output is a broken output. Deliver full files, never placeholders (`// ... rest unchanged`). If asked for N components/screens, deliver all N. Split at clean boundaries only when length forces it, and continue to completion. (See `workflows/redesign-audit.md`.)
 
 ---
 
@@ -326,6 +355,12 @@ Full workflow: `workflows/design-to-code.md`
 
 ## Brand Consistency
 
+### Design Taste & Aesthetic Direction
+- **Anti-slop doctrine** — every output must beat the statistical defaults that make UI look machine-generated. See `taste/design-taste.md` (banned defaults, the Variance Mandate, typographic/spatial/color taste, pre-flight aesthetic check).
+- **Aesthetic systems** — pick an archetype or a named system (138 specs) from `taste/aesthetic-systems.md`; resolve it into tokens via the Library Contract; verify contrast after.
+- **Motion choreography** — compose motion with `taste/motion-choreography.md` (entrances, stagger, hover, overlays) on top of `tokens/motion.json`.
+- Taste sharpens tier 4 only. Re-run accessibility checks after applying any direction.
+
 ### Motion Design
 - **Duration**: 100–300ms for UI transitions. Never > 500ms.
 - **Easing**: `ease-out` for entrances, `ease-in` for exits, `ease-in-out` for state changes
@@ -366,14 +401,30 @@ When responding to user requests, match the output format to the request type:
 ## File Reference Map
 
 ```
-tokens/
+tokens/                   ← Design tokens (DTCG $type/$value)
 ├── colors.json          ← Color system: primitive → semantic → component + dark mode
 ├── typography.json       ← Type scale, fonts, composite text styles
 ├── spacing.json          ← 4px base unit scale + semantic spacing
 ├── shadows.json          ← 5-level elevation + inner + colored + focus ring
 ├── borders.json          ← Radius + width scale + semantic radii
 ├── breakpoints.json      ← Breakpoints + containers + grid + z-index
-└── motion.json           ← Durations + easings + transition presets + keyframes + reduced-motion
+├── motion.json           ← Durations + easings + transition presets + keyframes + reduced-motion
+├── gradients.json        ← Semantic gradient presets
+├── opacity.json          ← Alpha scale (disabled, overlays, scrim)
+├── blur.json             ← Backdrop / frosted-glass blur scale
+├── sizing.json           ← Control sizes + icon sizes + aspect ratios
+├── states.json           ← Semantic interaction-state tokens (the 8 states)
+└── theming.json          ← Multi-brand theme overrides + density modes
+
+taste/                    ← Aesthetic judgment layer (serves the Aesthetics tier)
+├── design-taste.md       ← Anti-slop doctrine, banned defaults, pre-flight aesthetic check
+├── aesthetic-systems.md  ← Archetypes + catalog of 138 named design systems
+└── motion-choreography.md← Scroll/hover/overlay motion grammar + reduced-motion parity
+
+design-systems/           ← Interop + brand library
+├── interop-protocol.md   ← Map to/from ANY design system (crosswalk method)
+├── crosswalk.md          ← Curated tables: Material 3, Apple HIG, Fluent, Carbon, shadcn, Radix
+└── library/<name>/DESIGN.md ← 138 brand-grade design-system specs
 
 content/
 └── voice-tone.md         ← Voice & tone, UX writing, error/empty-state copy, microcopy patterns
@@ -382,7 +433,11 @@ components/
 ├── atoms.md              ← Button, Input, Label, Icon, Badge, Avatar, Checkbox, Radio, Toggle, Tooltip
 ├── molecules.md          ← Form Field, Search Bar, Card, Navigation Item, Alert, Dropdown
 ├── organisms.md          ← Header, Sidebar, Form, Data Table, Modal, Drawer
-└── templates.md          ← Dashboard, Auth, Settings, List/Detail layouts
+├── templates.md          ← Dashboard, Auth, Settings, List/Detail layouts
+├── navigation.md         ← Tabs, Breadcrumb, Pagination, Stepper, Menu
+├── feedback.md           ← Toast, Banner, Skeleton, Progress, Empty State
+├── forms-advanced.md     ← Combobox, Select, Slider, Date Picker, File Upload
+└── overlays.md           ← Popover, Command Palette, Divider
 
 accessibility/
 ├── wcag-checklist.md     ← WCAG 2.2 AA/AAA checklist by POUR principle
@@ -391,20 +446,19 @@ accessibility/
 workflows/
 ├── design-review.md      ← Review rubric, Nielsen heuristics, audit process
 ├── design-to-code.md     ← Handoff workflow, state docs, edge cases, definition of done
-└── prototyping.md        ← 5-level fidelity ladder, user journey mapping, usability testing
+├── prototyping.md        ← 5-level fidelity ladder, user journey mapping, usability testing
+└── redesign-audit.md     ← Audit-first redesign + output completeness
 
 frameworks/
+├── adapter-protocol.md   ← Universal contract to target ANY framework
 ├── react-tailwind.md     ← React 19 + Tailwind v4 + TypeScript + cva patterns
 ├── nextjs.md             ← Next.js 15 App Router patterns
-└── swiftui.md            ← SwiftUI 6 + Dynamic Type + platform adaptation
+├── swiftui.md            ← SwiftUI 6 + Dynamic Type + platform adaptation
+└── adapters/             ← vue, svelte, angular, solid, web-components-lit,
+                            react-native, flutter, jetpack-compose, vanilla-css, css-in-js
 
-.agents/skills/           ← Bundled design-taste skills (via `npx skills add Leonxlnx/taste-skill`)
-├── gpt-taste             ← Awwwards-level layout variance + GSAP motion engineering
-├── high-end-visual-design, minimalist-ui, industrial-brutalist-ui  ← Visual style systems
-├── design-taste-frontend, stitch-design-taste, brandkit           ← Taste & brand direction
-├── image-to-code, imagegen-frontend-web, imagegen-frontend-mobile ← Visual-input → UI
-└── redesign-existing-projects, full-output-enforcement            ← Workflow helpers
+.claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
+                            design-code, design-review, a11y-audit, apply-aesthetic, redesign,
+                            migrate-design-system, prototype, ux-writing
+scripts/                  ← validate_tokens.py · contrast.py · design_systems.py · scaffold_component.py
 ```
-
-### Design-Taste Skills (auto-discovered)
-The `.agents/skills/` directory bundles 13 community design-taste skills that complement this kit: this kit supplies the **system** (tokens, components, a11y, handoff); the taste skills supply **visual judgment** (layout variance, editorial typography, motion richness, style direction). When a request calls for high-end visual polish, motion, or a specific aesthetic, defer to the relevant taste skill while keeping all token, accessibility, and state requirements from this CLAUDE.md non-negotiable.

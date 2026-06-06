@@ -1,0 +1,37 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Multi-brand theming + density modes. Themes override SEMANTIC tokens only (primitives stay constant, like dark mode). Density scales spacing/control sizing without touching color/type. Apply via [data-theme] / [data-density] (web) or theme objects (native).",
+
+  "theme": {
+    "$description": "Brand override maps. Each theme re-points semantic.action.* (and optionally accent). Add a theme by cloning this shape. Light/dark still handled in colors.json.",
+    "default": {
+      "action-primary": { "$type": "color", "$value": "{primitive.blue.600}" },
+      "action-primary-hover": { "$type": "color", "$value": "{primitive.blue.700}" }
+    },
+    "violet": {
+      "action-primary": { "$type": "color", "$value": "#7c3aed" },
+      "action-primary-hover": { "$type": "color", "$value": "#6d28d9" }
+    },
+    "emerald": {
+      "action-primary": { "$type": "color", "$value": "#059669" },
+      "action-primary-hover": { "$type": "color", "$value": "#047857" }
+    },
+    "rose": {
+      "action-primary": { "$type": "color", "$value": "#e11d48" },
+      "action-primary-hover": { "$type": "color", "$value": "#be123c" }
+    }
+  },
+
+  "density": {
+    "$description": "Multiplier applied to spacing + control sizing. 1 = default. Compact for data-dense enterprise UI, spacious for marketing/touch.",
+    "compact": {
+      "scale": { "$type": "number", "$value": 0.875, "$description": "−12.5% spacing & control height" }
+    },
+    "default": {
+      "scale": { "$type": "number", "$value": 1 }
+    },
+    "spacious": {
+      "scale": { "$type": "number", "$value": 1.15, "$description": "+15% spacing & control height" }
+    }
+  }
+}

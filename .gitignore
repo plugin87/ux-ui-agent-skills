@@ -1,0 +1,9 @@
+# Locally-installed agent skill bundles — never commit to this repo
+.agents/
+skills-lock.json
+
+# OS / editor noise
+.DS_Store
+*.swp
+.idea/
+.vscode/

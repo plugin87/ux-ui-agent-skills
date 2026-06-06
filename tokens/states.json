@@ -1,0 +1,40 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Semantic interaction-state tokens. Centralizes the visual treatment of the 8 component states (CLAUDE.md) so they are consistent across every component and framework.",
+
+  "disabled": {
+    "opacity": { "$type": "number", "$value": "{opacity.disabled}", "$description": "→ tokens/opacity.json" },
+    "cursor": { "$type": "string", "$value": "not-allowed" }
+  },
+
+  "hover": {
+    "overlay": { "$type": "number", "$value": "{opacity.subtle}", "$description": "State-layer alpha on hover" }
+  },
+
+  "active": {
+    "overlay": { "$type": "number", "$value": "{opacity.pressed}", "$description": "State-layer alpha on press" }
+  },
+
+  "selected": {
+    "bg": { "$type": "color", "$value": "{semantic.interactive.selected-bg}", "$description": "→ tokens/colors.json (fallback to action.primary tint)" },
+    "overlay": { "$type": "number", "$value": "{opacity.selected}" }
+  },
+
+  "focus": {
+    "ring": { "$type": "shadow", "$value": "{focus-ring}", "$description": "→ tokens/shadows.json focus-ring" }
+  },
+
+  "loading": {
+    "opacity": { "$type": "number", "$value": 0.7, "$description": "Content dim while async; pair with aria-busy + spinner" },
+    "cursor": { "$type": "string", "$value": "progress" }
+  },
+
+  "error": {
+    "border": { "$type": "color", "$value": "{semantic.feedback.error}", "$description": "→ tokens/colors.json" },
+    "ring": { "$type": "color", "$value": "{semantic.feedback.error}" }
+  },
+
+  "readonly": {
+    "opacity": { "$type": "number", "$value": 0.9, "$description": "Editable-looking but locked; keep legible (not disabled)" }
+  }
+}

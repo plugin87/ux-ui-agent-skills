@@ -1,0 +1,45 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Semantic alpha scale. Use these instead of hardcoding rgba() alpha in components.",
+
+  "disabled": {
+    "$type": "number",
+    "$value": 0.5,
+    "$description": "Disabled control opacity (paired with pointer-events: none)"
+  },
+  "muted": {
+    "$type": "number",
+    "$value": 0.6,
+    "$description": "De-emphasized but still legible content"
+  },
+  "subtle": {
+    "$type": "number",
+    "$value": 0.08,
+    "$description": "Hover state-layer overlay (e.g. Material-style)"
+  },
+  "pressed": {
+    "$type": "number",
+    "$value": 0.12,
+    "$description": "Pressed/active state-layer overlay"
+  },
+  "selected": {
+    "$type": "number",
+    "$value": 0.16,
+    "$description": "Selected state-layer overlay"
+  },
+  "focus": {
+    "$type": "number",
+    "$value": 0.24,
+    "$description": "Focus state-layer overlay (in addition to focus ring)"
+  },
+  "scrim": {
+    "$type": "number",
+    "$value": 0.6,
+    "$description": "Modal/dialog backdrop dim"
+  },
+  "ghost": {
+    "$type": "number",
+    "$value": 0.04,
+    "$description": "Barely-there surface tint (ghost buttons, zebra rows)"
+  }
+}

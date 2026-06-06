@@ -1,0 +1,71 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Semantic gradient presets. Use sparingly — one signature gradient per view (see taste/design-taste.md). Stops reference primitive colors; positions are 0–1.",
+
+  "brand": {
+    "primary": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#4f46e5", "position": 0 },
+        { "color": "#7c3aed", "position": 1 }
+      ],
+      "$description": "Indigo → violet. Hero CTAs, brand surfaces."
+    },
+    "primary-soft": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#6366f1", "position": 0 },
+        { "color": "#8b5cf6", "position": 1 }
+      ],
+      "$description": "Lighter brand wash for large backgrounds"
+    }
+  },
+
+  "surface": {
+    "subtle": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#0d0d15", "position": 0 },
+        { "color": "#0a0a12", "position": 1 }
+      ],
+      "$description": "Near-flat dark surface depth — barely perceptible"
+    },
+    "scrim": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "rgba(0,0,0,0)", "position": 0 },
+        { "color": "rgba(0,0,0,0.6)", "position": 1 }
+      ],
+      "$description": "Image overlay for text legibility (bottom-up)"
+    }
+  },
+
+  "feedback": {
+    "success": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#16a34a", "position": 0 },
+        { "color": "#22c55e", "position": 1 }
+      ]
+    },
+    "error": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#dc2626", "position": 0 },
+        { "color": "#ef4444", "position": 1 }
+      ]
+    }
+  },
+
+  "accent": {
+    "aurora": {
+      "$type": "gradient",
+      "$value": [
+        { "color": "#3b82f6", "position": 0 },
+        { "color": "#8b5cf6", "position": 0.5 },
+        { "color": "#ec4899", "position": 1 }
+      ],
+      "$description": "Multi-stop accent — decorative only, never behind body text"
+    }
+  }
+}

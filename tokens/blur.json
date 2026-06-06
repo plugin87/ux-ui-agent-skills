@@ -1,0 +1,29 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Blur radius scale for backdrop/frosted-glass effects and overlays. Use restraint — glass is a once-per-view effect (see taste/design-taste.md).",
+
+  "none": {
+    "$type": "dimension",
+    "$value": "0px"
+  },
+  "sm": {
+    "$type": "dimension",
+    "$value": "4px",
+    "$description": "Subtle frost — small popovers, tags over imagery"
+  },
+  "md": {
+    "$type": "dimension",
+    "$value": "8px",
+    "$description": "Default glass — cards, sticky headers over content"
+  },
+  "lg": {
+    "$type": "dimension",
+    "$value": "16px",
+    "$description": "Strong frost — modal backdrops, navigation overlays"
+  },
+  "xl": {
+    "$type": "dimension",
+    "$value": "24px",
+    "$description": "Heavy frost — full-screen scrims, immersive overlays"
+  }
+}
