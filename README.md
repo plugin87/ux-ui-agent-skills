@@ -14,7 +14,8 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-![npx](https://img.shields.io/badge/npx-ux--ui--agent--skills-cb3837?style=flat-square&logo=npm&logoColor=white)
+[![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
+[![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-10-14b8a6?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
