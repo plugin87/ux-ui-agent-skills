@@ -102,7 +102,16 @@ def main(argv):
             text = f.read_text()
         except (UnicodeDecodeError, OSError):
             continue
+        in_allow = False
         for n, line in enumerate(text.splitlines(), 1):
+            if "ds-allow-hardcode:start" in line:
+                in_allow = True
+                continue
+            if "ds-allow-hardcode:end" in line:
+                in_allow = False
+                continue
+            if in_allow:
+                continue
             for kind, val in lint_line(line, tailwind):
                 print(f"{f}:{n}: hardcoded {kind} '{val}' — use a token")
                 violations += 1

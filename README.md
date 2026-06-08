@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.0.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.1.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.0.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.1.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,11 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.1.0`
+- ✅ **Accuracy report** — `npm run verify` (`scripts/accuracy_report.mjs`) runs every objective correctness gate as one all-or-nothing, reproducible check: token validity + alias resolution, WCAG contrast (token pairs), component-spec completeness, no hardcoded values (golden + sample), theme-ref resolution, no-emoji, and **real headless-Chrome WCAG measurement** (sample-app, light + dark). Prints `N/N = 100%` or the exact failures.
+- 🧱 **Block-level lint exemption** — `scripts/lint_hardcodes.py` supports `ds-allow-hardcode:start` / `:end` for justified illustration blocks (e.g. CSS product art), keeping the rest of the file strictly token-only.
+
 
 ### `v2.0.0` — Enforcement layer (breaking)
 
