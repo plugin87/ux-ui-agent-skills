@@ -10,6 +10,7 @@
   --color-surface-page:#ffffff;--color-surface-card:#ffffff;--color-surface-raised:#f9fafb;
   --color-text-primary:#111827;--color-text-secondary:#4b5563;--color-text-on-action:#ffffff;
   --color-action-primary:#2563eb;--color-action-primary-hover:#1d4ed8;
+  --color-action-danger:#dc2626;--color-action-danger-hover:#b91c1c;
   --color-border-default:#e5e7eb;--color-border-strong:#6b7280;--color-text-link:#2563eb;
   --color-feedback-error:#dc2626;--color-success:#15803d;
   --color-scrim:rgba(2,6,23,.6);--shadow-overlay:0 20px 25px -5px rgba(0,0,0,.15),0 8px 10px -6px rgba(0,0,0,.10);--z-modal:50;
@@ -26,6 +27,7 @@
   --color-surface-page:#030712;--color-surface-card:#111827;--color-surface-raised:#1f2937;
   --color-text-primary:#f9fafb;--color-text-secondary:#9ca3af;--color-text-on-action:#ffffff;
   --color-action-primary:#2563eb;--color-action-primary-hover:#1d4ed8;
+  --color-action-danger:#dc2626;--color-action-danger-hover:#b91c1c;
   --color-border-default:#1f2937;--color-border-strong:#6b7280;--color-text-link:#60a5fa;
   --color-feedback-error:#f87171;--color-success:#4ade80;
   --color-scrim:rgba(0,0,0,.7);--shadow-overlay:0 20px 25px -5px rgba(0,0,0,.5),0 8px 10px -6px rgba(0,0,0,.4);
@@ -47,7 +49,14 @@ body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);
 .btn{display:inline-flex;align-items:center;gap:var(--space-2);block-size:var(--size-control-md);padding-inline:var(--space-4);border-radius:var(--radius-button);border:0;cursor:pointer;font:500 var(--text-sm)/1 var(--font-sans);background:var(--color-action-primary);color:var(--color-text-on-action);transition:background var(--transition-micro)}
 .btn:hover{background:var(--color-action-primary-hover)}
 .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.btn:disabled{opacity:var(--opacity-disabled);pointer-events:none}
+/* secondary — transparent fill, dark text; NEVER a colored fill (no dark-on-blue) */
 .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+.btn--secondary:hover{background:var(--color-surface-raised)}
+.btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+/* danger — destructive token (red), white text 4.8:1; for Delete/Remove only */
+.btn--danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+.btn--danger:hover{background:var(--color-action-danger-hover)}
 .section{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);padding:var(--space-6);margin-block-end:var(--space-6)}
 .field{display:grid;gap:var(--space-2);margin-block-end:var(--space-5)}
 .field__label{font-size:var(--text-sm);font-weight:500}
@@ -57,10 +66,20 @@ body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);
 .backdrop{position:fixed;inset:0;display:grid;place-items:center;background:var(--color-scrim);z-index:var(--z-modal)}
 .modal{background:var(--color-surface-card);color:var(--color-text-primary);border-radius:var(--radius-lg);padding:var(--space-6);max-inline-size:var(--bp-sm);width:min(92vw,420px);box-shadow:var(--shadow-overlay)}
 .hidden{display:none}
+.icon{inline-size:1.05em;block-size:1.05em;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.15em}
+.sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
+<!-- lucide icons (MIT) as an inline sprite — no emoji -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M10 11v6M14 11v6"/></symbol>
+</svg>
 <div class="container">
   <div class="topbar">
     <div>
@@ -68,16 +87,16 @@ body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);
       <p class="subtle">Last 30 days · one shared theme · light + dark</p>
     </div>
     <div style="display:flex;gap:var(--space-2)">
-      <button class="btn btn--secondary" id="themeBtn" aria-pressed="false">🌙 Dark</button>
+      <button class="btn btn--secondary" id="themeBtn" aria-pressed="false"><svg class="icon" id="themeIcon"><use href="#i-moon"/></svg> <span id="themeLabel">Dark</span></button>
       <button class="btn">Export</button>
     </div>
   </div>
 
   <section class="grid" aria-label="Key metrics">
-    <div class="card"><div class="card__label">Revenue</div><div class="card__value">$48.2k</div><div class="up"><span aria-hidden="true">▲</span> 12% <span class="sr-only">increase</span></div></div>
-    <div class="card"><div class="card__label">Active users</div><div class="card__value">3,910</div><div class="up"><span aria-hidden="true">▲</span> 4%</div></div>
-    <div class="card"><div class="card__label">Churn</div><div class="card__value">1.8%</div><div class="down"><span aria-hidden="true">▼</span> 2%</div></div>
-    <div class="card"><div class="card__label">NPS</div><div class="card__value">62</div><div class="up"><span aria-hidden="true">▲</span> 7%</div></div>
+    <div class="card"><div class="card__label">Revenue</div><div class="card__value">$48.2k</div><div class="up"><svg class="icon" aria-hidden="true"><use href="#i-up"/></svg> 12% <span class="sr-only">increase</span></div></div>
+    <div class="card"><div class="card__label">Active users</div><div class="card__value">3,910</div><div class="up"><svg class="icon" aria-hidden="true"><use href="#i-up"/></svg> 4% <span class="sr-only">increase</span></div></div>
+    <div class="card"><div class="card__label">Churn</div><div class="card__value">1.8%</div><div class="down"><svg class="icon" aria-hidden="true"><use href="#i-down"/></svg> 2% <span class="sr-only">decrease</span></div></div>
+    <div class="card"><div class="card__label">NPS</div><div class="card__value">62</div><div class="up"><svg class="icon" aria-hidden="true"><use href="#i-up"/></svg> 7% <span class="sr-only">increase</span></div></div>
   </section>
 
   <section class="section">
@@ -91,37 +110,49 @@ body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);
       <label class="field__label" for="notify">Email notifications</label>
       <button class="btn btn--secondary" id="notify" role="switch" aria-checked="true">On</button>
     </div>
-    <button class="btn" id="delBtn">Delete account</button>
+    <button class="btn btn--danger" id="delBtn"><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg> Delete account</button>
   </section>
 </div>
 
 <div class="backdrop hidden" id="backdrop">
-  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ctitle">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ctitle" aria-describedby="cdesc">
     <h2 id="ctitle" class="page-title" style="font-size:var(--text-xl)">Delete account?</h2>
-    <p class="subtle">This is permanent and cannot be undone.</p>
+    <p id="cdesc" class="subtle">This permanently deletes your account and all data. This cannot be undone.</p>
+    <div class="field" style="margin-top:var(--space-4)">
+      <label class="field__label" for="confirmInput">Type <strong>DELETE</strong> to confirm</label>
+      <input class="field__input" id="confirmInput" autocomplete="off" autocapitalize="characters" placeholder="DELETE" />
+    </div>
     <div style="display:flex;gap:var(--space-2);margin-top:var(--space-4)">
       <button class="btn btn--secondary" id="cancelBtn">Cancel</button>
-      <button class="btn" id="confirmBtn">Delete</button>
+      <button class="btn btn--danger" id="confirmBtn" disabled><svg class="icon" aria-hidden="true"><use href="#i-trash"/></svg> Delete account</button>
     </div>
   </div>
 </div>
 
 <script>
 const root=document.documentElement,tb=document.getElementById('themeBtn');
-tb.onclick=()=>{const d=root.getAttribute('data-theme')==='dark';root.setAttribute('data-theme',d?'light':'dark');tb.textContent=d?'🌙 Dark':'☀️ Light';tb.setAttribute('aria-pressed',String(!d))};
+const themeUse=document.querySelector('#themeIcon use'),themeLabel=document.getElementById('themeLabel');
+tb.onclick=()=>{const d=root.getAttribute('data-theme')==='dark';root.setAttribute('data-theme',d?'light':'dark');
+  themeUse.setAttribute('href',d?'#i-moon':'#i-sun');themeLabel.textContent=d?'Dark':'Light';tb.setAttribute('aria-pressed',String(!d))};
 const nb=document.getElementById('notify');
 nb.onclick=()=>{const on=nb.getAttribute('aria-checked')==='true';nb.setAttribute('aria-checked',String(!on));nb.textContent=on?'Off':'On'};
 const bd=document.getElementById('backdrop'),del=document.getElementById('delBtn');
+const confirmInput=document.getElementById('confirmInput'),confirmBtn=document.getElementById('confirmBtn'),cancelBtn=document.getElementById('cancelBtn');
 let lastFocus=null;
-function open(){lastFocus=document.activeElement;bd.classList.remove('hidden');document.getElementById('cancelBtn').focus()}
-function close(){bd.classList.add('hidden');lastFocus&&lastFocus.focus()}
-del.onclick=open;document.getElementById('cancelBtn').onclick=close;document.getElementById('confirmBtn').onclick=close;
+const FOCUSABLE='button:not([disabled]),input,a[href],select,textarea,[tabindex]:not([tabindex="-1"])';
+function syncConfirm(){confirmBtn.disabled = confirmInput.value.trim().toUpperCase()!=='DELETE';}
+function open(){lastFocus=document.activeElement;confirmInput.value='';confirmBtn.disabled=true;bd.classList.remove('hidden');confirmInput.focus();}
+function close(){bd.classList.add('hidden');lastFocus&&lastFocus.focus();}
+del.onclick=open;cancelBtn.onclick=close;confirmInput.addEventListener('input',syncConfirm);
+confirmBtn.onclick=()=>{ if(!confirmBtn.disabled) close(); };  // would delete here
 bd.onclick=e=>{if(e.target===bd)close()};
 document.addEventListener('keydown',e=>{if(bd.classList.contains('hidden'))return;
   if(e.key==='Escape')return close();
-  if(e.key!=='Tab')return;const f=bd.querySelectorAll('button');const first=f[0],last=f[f.length-1];
-  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
-  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}});
+  if(e.key!=='Tab')return;
+  const f=[...bd.querySelectorAll(FOCUSABLE)].filter(el=>!el.disabled);
+  const first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}});
 </script>
 </body>
 </html>

@@ -150,6 +150,11 @@ Examples: `semantic.text.primary`, `component.button.primary-bg-hover`, `semanti
 3. **Interactive colors** — all clickable elements use `action.primary` or `text.link`
 4. **Limit palette** — 1 primary, 1 destructive, neutrals. Use accent colors sparingly.
 5. **Colored shadows** — only on hover states for emphasis (see `tokens/shadows.json` → `colored`)
+6. **Token BY INTENT (non-negotiable)** — pick the token whose *meaning* matches the action, not just any token that resolves:
+   - **Destructive** actions (Delete, Remove, Revoke) → `action.destructive` / `component.button.destructive-bg` — **NEVER** `action.primary`. The same destructive action uses the **same** danger variant **everywhere** (trigger button AND its confirm-modal button — never red in one place and blue in another).
+   - **Primary** = the one main affirmative action; **secondary** = neutral (transparent/outline, dark text — **never a colored fill**, so no dark-text-on-blue); **danger** = destructive.
+   - Consistency rule: one action role → one variant across all pages. A blue "Delete" is a bug.
+7. **No emoji as UI icons** — emoji are inconsistent across platforms and read as machine-generated slop. Use a real icon set (default: **lucide**) as inline SVG with `currentColor` via the Icon component (`components/icon-system.md`). This includes JS that swaps button labels — swap the `<svg>`/icon, never inject an emoji string.
 
 ### Color Generation (when creating new palettes)
 Use **OKLCH color space** for perceptually uniform shade scales:

@@ -12,6 +12,7 @@ Produce or critique interface copy in the project's voice.
 2. Match tone to the user's emotional state (onboarding/success/routine/error/destructive). Higher stress → plainer language.
 3. Apply the formulas:
    - Buttons: frontload the verb, name the outcome.
+   - **Confirmation dialogs:** the confirm button **restates the action and object** — "Delete account", not "Delete"/"OK"/"Yes"/"Confirm". The title asks ("Delete account?"), the button answers in matching words. Cancel stays "Cancel". For irreversible/high-stakes actions, require a **type-to-confirm** step (WCAG 3.3.4/3.3.6).
    - Errors: what happened → why → how to fix (no dead ends, no codes/stack traces).
    - Empty states: value → first action.
 4. Enforce mechanics: sentence case, no ALL CAPS, numerals, no blame on the user, labels (not placeholders), no directional/color-only instructions.

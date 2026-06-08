@@ -273,6 +273,12 @@ A focused overlay that interrupts workflow for critical information or action.
 - Set `inert` attribute on content behind modal (or `aria-hidden="true"`)
 - See `aria-patterns.md` → Dialog
 
+**Confirmation variant (destructive):**
+- The confirm button uses the **danger/destructive** token (never primary) and the SAME variant as the trigger that opened it.
+- The confirm label **restates the action** ("Delete account"), matching the title — not "Delete"/"OK"/"Yes" (`content/voice-tone.md`).
+- **Irreversible** actions (cannot be undone) require friction (WCAG 3.3.4/3.3.6): a **type-to-confirm** field (e.g. type "DELETE") that enables the confirm button; focus the field on open. Reference: `examples/sample-app/preview.html`.
+- Order: Cancel (secondary) then the destructive action; default focus goes to the safe path / the confirm field, never auto-focuses the destructive button.
+
 ---
 
 ## 6. Drawer

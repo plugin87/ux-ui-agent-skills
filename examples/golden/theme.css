@@ -15,6 +15,8 @@
   /* action */
   --color-action-primary: #2563eb;        /* white on this = 5.2:1 */
   --color-action-primary-hover: #1d4ed8;
+  --color-action-danger: #dc2626;         /* destructive — white on this = 4.8:1 */
+  --color-action-danger-hover: #b91c1c;
   /* borders + focus */
   --color-border-default: #e5e7eb;  /* decorative dividers/edges */
   --color-border-strong: #6b7280;   /* essential control borders — 4.8:1 */
@@ -64,6 +66,8 @@
   --color-text-on-action: #ffffff;
   --color-action-primary: #2563eb; /* white on this = 5.2:1 (dark-safe) */
   --color-action-primary-hover: #1d4ed8;
+  --color-action-danger: #dc2626;        /* white = 4.8:1, dark-safe */
+  --color-action-danger-hover: #b91c1c;
   --color-border-default: #1f2937;
   --color-border-strong: #6b7280;  /* essential borders ≥3:1 in dark too */
   --color-text-link: #60a5fa;      /* lightened for ≥4.5:1 on dark */
