@@ -1,6 +1,6 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 15 runnable skills. Install into any project with npx.",
   "type": "commonjs",
   "bin": {
@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py",
     "test:render": "node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html && node scripts/measure_render.mjs --dark examples/sample-app/preview.html",
-    "verify": "node scripts/accuracy_report.mjs"
+    "verify": "node scripts/accuracy_report.mjs",
+    "taste": "node scripts/taste_audit.mjs"
   },
   "devDependencies": {
     "playwright": "^1.40.0"

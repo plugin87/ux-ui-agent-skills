@@ -32,6 +32,8 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | Review / audit / score a design | `design-review` | `workflows/design-review.md`, `taste/design-taste.md` |
 | Accessibility / WCAG / contrast check | `a11y-audit` | `accessibility/*`; `scripts/contrast.py` |
 | Apply a look / vibe / brand feel | `apply-aesthetic` | `taste/aesthetic-systems.md`, `design-systems/library/*`; `scripts/design_systems.py` |
+| Reference image / screenshot / mockup → matching code | `image-to-code` | `taste/*`, `design-tokens` + `design-code`; `scripts/measure_render.mjs`, `scripts/taste_audit.mjs` |
+| Build a brand design system / foundation from scratch | `brandkit` | "Token System" + "Color Generation", `taste/aesthetic-systems.md`; `scripts/validate_contrast.py` |
 | Improve/modernize an existing UI | `redesign` | `workflows/redesign-audit.md`, `taste/*` |
 | Map to/from another design system | `migrate-design-system` | `design-systems/interop-protocol.md` + `crosswalk.md` |
 | Prototype / wireframe / user flow / usability test | `prototype` | `workflows/prototyping.md` |
@@ -516,11 +518,13 @@ frameworks/
 
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
-                            migrate-design-system, prototype, ux-writing
+                            migrate-design-system, prototype, ux-writing, governance, token-build,
+                            figma-integration, design-qa, performance, image-to-code, brandkit
 scripts/                  ← validate_tokens.py · contrast.py · validate_contrast.py (batch WCAG, light+dark)
                             · validate_component_spec.py · lint_hardcodes.py (hex/px/ms + Tailwind palette + font)
                             · validate_theme_refs.py (every var(--…) resolves to the theme) · lint_taste.py
                             · measure_render.mjs (REAL headless-render WCAG gate — true computed contrast, light+dark)
+                            · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)

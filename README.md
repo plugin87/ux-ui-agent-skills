@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.1.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -17,7 +17,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
-![Skills](https://img.shields.io/badge/runnable_skills-15-14b8a6?style=flat-square)
+![Skills](https://img.shields.io/badge/runnable_skills-17-14b8a6?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
 ![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.1.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,12 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.0`
+- ⚡ **2 new runnable skills (15 → 17)** — `image-to-code` (reference image/screenshot → infer the design system → token-driven, verified code) and `brandkit` (brief → complete primitive→semantic→component DTCG token foundation + theme.css, light + dark, WCAG-verified). Both native, fit the kit's gates.
+- 🎨 **Render-based taste audit** — `scripts/taste_audit.mjs` (`npm run taste`) measures structural slop tells from real computed styles: timid type-scale contrast, uniform repetition, over-wide measure, palette sprawl. Wired into the `design-code` taste pre-flight. Heuristic by design — a strong signal, not proof (taste is subjective).
+- 🧹 De-emoji'd the taste doctrine itself; router rows + skills list updated.
+
 
 ### `v2.1.0`
 - ✅ **Accuracy report** — `npm run verify` (`scripts/accuracy_report.mjs`) runs every objective correctness gate as one all-or-nothing, reproducible check: token validity + alias resolution, WCAG contrast (token pairs), component-spec completeness, no hardcoded values (golden + sample), theme-ref resolution, no-emoji, and **real headless-Chrome WCAG measurement** (sample-app, light + dark). Prints `N/N = 100%` or the exact failures.
