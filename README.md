@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-1.2.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-1.3.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -17,7 +17,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
-![Skills](https://img.shields.io/badge/runnable_skills-10-14b8a6?style=flat-square)
+![Skills](https://img.shields.io/badge/runnable_skills-15-14b8a6?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
 ![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v1.2.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v1.3.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -144,11 +144,16 @@ Plain `python3` — useful in the terminal or CI:
 
 ```bash
 python3 scripts/validate_tokens.py                 # validate token JSON + alias refs
-python3 scripts/contrast.py "#1d1d1f" "#ffffff"    # WCAG contrast ratio + pass/fail
+python3 scripts/validate_contrast.py               # batch WCAG gate: token pairs, light + dark
+python3 scripts/contrast.py "#1d1d1f" "#ffffff"    # WCAG contrast ratio for one pair
+python3 scripts/validate_component_spec.py         # every component spec is complete
+python3 scripts/lint_hardcodes.py src/             # no off-theme hex/px/timing (consistency)
+python3 scripts/lint_taste.py page.html            # heuristic anti-slop taste check
 python3 scripts/design_systems.py list             # browse the 138-system library
-python3 scripts/design_systems.py show apple        # inspect one system
 python3 scripts/scaffold_component.py "Date Picker" # emit a component spec stub
 ```
+
+These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity, **WCAG contrast in light + dark**, spec completeness, and zero hardcoded values — so theme/color stays consistent across every page and accessibility is enforced, not assumed.
 
 ### Typical flow
 
@@ -316,6 +321,14 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v1.3.0`
+- 🎨 **Single-theme consistency (enforced)** — every page now renders from one shared token theme; new CLAUDE.md rule + `examples/golden/` (theme.css + Button.tsx) demonstrating the contract; `design-code`/`redesign` skills require consuming the one theme (no per-page palettes)
+- ✅ **Real WCAG gate** — `scripts/validate_contrast.py` batch-checks the token pairs in **light + dark** (required text/action pairs fail the build); fixed genuine dark-mode contrast bugs (link, primary action) in `tokens/colors.json`
+- 🧹 **Quality enforcement scripts** — `lint_hardcodes.py` (no off-theme hex/px/timing), `validate_component_spec.py` (specs document anatomy/variants/states/tokens/a11y), `lint_taste.py` (heuristic anti-slop)
+- 🤖 **CI quality gates** — `.github/workflows/ci.yml` runs token + contrast + spec + golden-drift + `npm test` on every push/PR (one CI enforces consistency)
+- ⚡ **5 new runnable skills** (10 → **15**) — `governance`, `token-build`, `figma-integration`, `design-qa`, `performance` (previously orphaned workflows, now routable); added **verification steps** to `design-code`/`prototype`/`ux-writing`
+- 🧭 **Router coverage** — added rows for data-viz, icon-system, calendar/carousel/tree, cognitive/i18n/vision/AAA so all knowledge is reachable; fixed `validate_tokens.py` cross-file alias resolution; atoms Button/Input now document all 8 states
 
 ### `v1.2.1`
 - 📖 **Docs** — added [`docs/WORKFLOW.md`](docs/WORKFLOW.md): end-to-end how-it-works guide (Request Router, on-demand layer loading, real usage scenarios, automated release pipeline) + linked from the README

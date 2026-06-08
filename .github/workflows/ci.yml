@@ -1,0 +1,41 @@
+name: CI — quality gates
+
+# Runs the design-system integrity + accessibility gates on every push and PR.
+# These enforce the rules workflows/design-qa.md prescribes (token validity,
+# alias resolution, contrast, component-spec completeness) so regressions can't merge.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Token validity + alias resolution
+        run: python3 scripts/validate_tokens.py
+
+      - name: WCAG contrast gate (light + dark, required pairs)
+        run: python3 scripts/validate_contrast.py
+
+      - name: Component-spec completeness
+        run: python3 scripts/validate_component_spec.py
+
+      - name: Golden examples stay token-only (no drift)
+        run: python3 scripts/lint_hardcodes.py examples/golden
+
+      - name: CLI smoke + npm test
+        run: npm test

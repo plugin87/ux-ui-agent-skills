@@ -19,3 +19,12 @@ Render components into a target framework via the adapter system.
 
 ## Output rules (mandatory)
 Use tokens (never hardcode) · include a11y on every interactive element · handle all applicable of the 8 states · support dark mode at the semantic layer · mobile-first · honor reduced motion · **deliver complete files, no placeholders** (`workflows/redesign-audit.md` → Output Completeness).
+
+## Verification (mandatory before declaring done)
+Code is the highest-stakes output — self-check every time:
+1. **No hardcoded values** — every color/size/radius/shadow/duration traces to a token (CSS var / theme key / asset). Mentally run `scripts/lint_hardcodes.py` over the output; zero raw hex/px/ms outside the token layer (third-party theme-config adapters like MUI/Mantine that map our tokens INTO their API are the one allowed exception).
+2. **All applicable states present** — Default, Hover, Focus(-visible ring), Active, Disabled, Loading(+`aria-busy`), Error, Selected — or justified N/A.
+3. **Accessibility wired** — correct role/ARIA per `accessibility/aria-patterns.md`, keyboard model, focus management, ≥24px target; verify contrast (`scripts/contrast.py`) for any new color pair.
+4. **Dark mode + reduced motion + responsive** — semantic tokens swap; motion has a `prefers-reduced-motion` fallback; layout is mobile-first.
+5. **Completeness** — full files, no `// ...`; if asked for N, deliver N. If any check fails, fix before returning (run `a11y-audit` if unsure).
+6. **Single-theme consistency** — consume the project's ONE shared token theme (the root CSS-var layer); never define a per-page palette or new colors. Across multiple pages/screens, the same semantic tokens must drive every surface so the whole product stays visually identical and themeable from one place (CLAUDE.md → Single-Theme Consistency).

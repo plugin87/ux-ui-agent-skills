@@ -36,6 +36,15 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | Map to/from another design system | `migrate-design-system` | `design-systems/interop-protocol.md` + `crosswalk.md` |
 | Prototype / wireframe / user flow / usability test | `prototype` | `workflows/prototyping.md` |
 | Write/review UI copy | `ux-writing` | `content/voice-tone.md` |
+| Versioning / contribution / deprecation / add-or-promote a component | `governance` | `workflows/governance.md`; `scripts/validate_tokens.py` |
+| Token build pipeline → CSS/Tailwind/iOS/Android (Style Dictionary, DTCG) | `token-build` | `workflows/token-build.md`; `scripts/validate_tokens.py` |
+| Figma ↔ code sync, Variables, Code Connect, Figma MCP | `figma-integration` | `workflows/figma-integration.md` |
+| QA gates / CI / visual regression / prevent regressions | `design-qa` | `workflows/design-qa.md`; `scripts/validate_contrast.py`, `scripts/lint_hardcodes.py` |
+| Performance / Core Web Vitals / jank / layout shift | `performance` | `workflows/performance.md` |
+| Charts / data-viz / chart colors | `design-component` | `components/data-viz.md`, `tokens/data-viz.json` |
+| Calendar / Carousel / Tree | `design-component` | `components/data-display.md` |
+| Icon system / icon sizing / icon a11y | `design-component` | `components/icon-system.md` |
+| Cognitive a11y / i18n-RTL / low-vision / WCAG AAA | `a11y-audit` | `accessibility/cognitive.md`, `accessibility/i18n-rtl.md`, `accessibility/vision.md`, `accessibility/wcag-aaa.md` |
 
 ---
 
@@ -148,6 +157,16 @@ Use **OKLCH color space** for perceptually uniform shade scales:
 2. Generate 11 shades from L=97% (50) to L=15% (950) with consistent chroma
 3. Verify 500 shade meets 4.5:1 contrast on white for text use
 4. Verify 600 shade meets 3:1 contrast on white for UI use
+
+### Single-Theme Consistency (cross-page — non-negotiable)
+Every page, screen, and component in a project MUST render from **one shared token theme** — never a per-page palette or ad-hoc colors. This is what keeps a 50-screen product visually identical and themeable from one place.
+
+1. **One source of truth** — the project's `tokens/*.json` → a single CSS-variable layer (`:root` + `[data-theme="dark"]`) imported **once** at the app root. Every page references the same semantic tokens; none redefines colors.
+2. **No off-theme values** — zero hardcoded hex/px/timing in component/page code. Enforced by `scripts/lint_hardcodes.py` (the one allowed exception: adapter theme-config that maps our tokens *into* a 3rd-party API, e.g. MUI/Mantine).
+3. **Real WCAG, on the source** — the token theme itself passes WCAG 2.2 in **both** light and dark before any page ships. Enforced by `scripts/validate_contrast.py` (required text/action pairs fail the build; tertiary/decorative are advisory).
+4. **One CI enforces all of it** — `.github/workflows/ci.yml` runs `validate_tokens` + `validate_contrast` + `validate_component_spec` + `npm test` on every push/PR. A page that introduces drift, a contrast regression, or an off-theme color cannot merge.
+
+> Switching brand/theme = editing the token source once → every page updates. If a page "looks different," it's a bug: it bypassed the theme.
 
 ---
 
@@ -493,5 +512,9 @@ frameworks/
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
                             migrate-design-system, prototype, ux-writing
-scripts/                  ← validate_tokens.py · contrast.py · design_systems.py · scaffold_component.py
+scripts/                  ← validate_tokens.py · contrast.py · validate_contrast.py (batch WCAG, light+dark)
+                            · validate_component_spec.py · lint_hardcodes.py · lint_taste.py
+                            · design_systems.py · scaffold_component.py
+.github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
+                            · release.yml (auto GitHub Release + npm publish on tag)
 ```

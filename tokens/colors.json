@@ -222,7 +222,9 @@
       "secondary": { "$type": "color", "$value": "{primitive.gray.400}" },
       "tertiary":  { "$type": "color", "$value": "{primitive.gray.500}" },
       "disabled":  { "$type": "color", "$value": "{primitive.gray.600}" },
-      "on-action": { "$type": "color", "$value": "{primitive.white}" }
+      "on-action": { "$type": "color", "$value": "{primitive.white}" },
+      "link":      { "$type": "color", "$value": "{primitive.blue.400}", "$description": "Lighter in dark for ≥4.5:1 on dark surfaces (blue.600 fails)" },
+      "link-hover":{ "$type": "color", "$value": "{primitive.blue.300}" }
     },
     "surface": {
       "page":   { "$type": "color", "$value": "{primitive.gray.950}" },
@@ -235,8 +237,8 @@
       "strong":  { "$type": "color", "$value": "{primitive.gray.700}" }
     },
     "action": {
-      "primary":       { "$type": "color", "$value": "{primitive.blue.500}" },
-      "primary-hover": { "$type": "color", "$value": "{primitive.blue.400}" },
+      "primary":       { "$type": "color", "$value": "{primitive.blue.600}", "$description": "blue.600 keeps white on-action ≥4.5:1 on dark (blue.500 = 3.68 fails)" },
+      "primary-hover": { "$type": "color", "$value": "{primitive.blue.700}", "$description": "Darkens on hover so white text stays ≥4.5:1" },
       "secondary":     { "$type": "color", "$value": "{primitive.gray.800}" },
       "secondary-hover":{ "$type": "color", "$value": "{primitive.gray.700}" }
     }

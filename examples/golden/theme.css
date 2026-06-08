@@ -1,0 +1,52 @@
+/* theme.css — the ONE shared token theme. Import this once at the app root.
+ * Every page/component references these variables; none defines its own colors.
+ * Generated from tokens/*.json (see workflows/token-build.md). Values verified by
+ * scripts/validate_contrast.py in both light and dark. */
+
+:root {
+  /* surfaces */
+  --color-surface-page: #ffffff;
+  --color-surface-card: #ffffff;
+  --color-surface-raised: #f9fafb;
+  /* text */
+  --color-text-primary: #111827;   /* 17.7:1 on page */
+  --color-text-secondary: #4b5563; /* 7.6:1 on page */
+  --color-text-on-action: #ffffff;
+  /* action */
+  --color-action-primary: #2563eb;        /* white on this = 5.2:1 */
+  --color-action-primary-hover: #1d4ed8;
+  /* borders + focus */
+  --color-border-default: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-text-link: #2563eb;
+  --shadow-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb;
+  /* feedback */
+  --color-feedback-error: #dc2626;
+  /* scale */
+  --radius-button: 0.5rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --size-control-md: 2.5rem;
+  --opacity-disabled: 0.5;
+  --transition-micro: 150ms ease-out;
+}
+
+:root[data-theme="dark"] {
+  --color-surface-page: #030712;
+  --color-surface-card: #111827;
+  --color-surface-raised: #1f2937;
+  --color-text-primary: #f9fafb;   /* 19.3:1 on dark page */
+  --color-text-secondary: #9ca3af; /* 7.9:1 on dark page */
+  --color-text-on-action: #ffffff;
+  --color-action-primary: #2563eb; /* white on this = 5.2:1 (dark-safe) */
+  --color-action-primary-hover: #1d4ed8;
+  --color-border-default: #1f2937;
+  --color-border-strong: #374151;
+  --color-text-link: #60a5fa;      /* lightened for ≥4.5:1 on dark */
+  --color-feedback-error: #f87171;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --transition-micro: 0ms; }
+}

@@ -80,13 +80,17 @@ def main():
         for path, val in flatten(data).items():
             for ref in collect_aliases(val):
                 ref = ref.strip()
-                if ref in all_tokens:
+                # normalize cross-file refs like {../colors.semantic.border.default}
+                norm = ref
+                while norm.startswith("../") or norm.startswith("./"):
+                    norm = norm[3:] if norm.startswith("../") else norm[2:]
+                if ref in all_tokens or norm in all_tokens:
                     continue
                 # tolerate cross-file refs that omit the file prefix
-                tail = ref.split(".", 1)[-1]
-                if ref in all_tokens or tail in all_tokens:
+                tail = norm.split(".", 1)[-1]
+                if tail in all_tokens:
                     continue
-                if any(k.endswith(ref) for k in all_tokens):
+                if any(k.endswith(norm) for k in all_tokens):
                     continue
                 unresolved.append(f"{f.name}: {path} → {{{ref}}} (unresolved)")
 

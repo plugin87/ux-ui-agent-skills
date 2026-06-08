@@ -1,18 +1,21 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "1.2.1",
-  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, any-framework code, 138 design systems, governance & token-build pipeline, and runnable skills. Install into any project with npx.",
+  "version": "1.3.0",
+  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast + hardcode CI gates), any-framework code, 138 design systems, 15 runnable skills. Install into any project with npx.",
   "type": "commonjs",
   "bin": {
     "ux-ui-skills": "bin/cli.js",
     "ux-ui-agent-skills": "bin/cli.js"
   },
   "scripts": {
-    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py"
+    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden"
   },
   "files": [
     "bin/",
     "CLAUDE.md",
+    "README.md",
+    "docs/",
+    "examples/",
     "tokens/",
     "components/",
     "taste/",

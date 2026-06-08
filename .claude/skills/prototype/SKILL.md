@@ -17,3 +17,9 @@ Guide work through the right fidelity level with validation.
 
 ## Output
 The artifact at the chosen fidelity + an explicit "what we validate next" plan.
+
+## Verification (before declaring done)
+- The fidelity matches the question being answered — no level skipped.
+- Flows include decision points, **error paths, and edge cases** (empty/loading/overflow), not just the happy path.
+- A concrete validation step is named (tasks + success criteria), not "test later".
+- High-fi/code artifacts pass the same token + a11y bar as `design-code` (no hardcoded values, contrast, states).

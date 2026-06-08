@@ -4,6 +4,8 @@ Charts and graphs. Color comes from `tokens/data-viz.json` (color-blind-aware ca
 
 ---
 
+**Anatomy (shared):** `[plot area] + [axes + tick labels] + [gridlines] + [series (bars/lines/points)] + [legend] + [tooltip on hover] + [optional title/caption]`. Every chart composes from these regions; color/axis/grid styling comes from `tokens/data-viz.json`.
+
 ## Universal chart rules
 
 1. **Token-driven series color** — map series to `dataviz.categorical.*`; sequences to `dataviz.sequential.*`; +/− to `dataviz.diverging.*` / `dataviz.semantic.*`. Limit to ≤ 8 categorical series; beyond that, group "Other" or switch encoding.

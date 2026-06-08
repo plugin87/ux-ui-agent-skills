@@ -26,13 +26,15 @@ The primary interactive control for triggering actions.
 | md | 40px | 16px × 10px | body-base (16px) | 20px |
 | lg | 48px | 24px × 12px | body-lg (18px) | 24px |
 
-**States (6):**
+**States (8):**
 1. **Default** — resting state
 2. **Hover** — cursor over; background shifts one shade
-3. **Active/Pressed** — mouse down; background shifts two shades
-4. **Focus** — keyboard focus; apply `focus-ring` shadow token
+3. **Focus** — keyboard focus; apply `focus-ring` shadow token
+4. **Active/Pressed** — mouse down; background shifts two shades
 5. **Disabled** — `opacity: 0.5`, `cursor: not-allowed`, `pointer-events: none`
 6. **Loading** — replace icon with spinner, add `aria-busy="true"`, disable interaction
+7. **Error** — N/A for a standalone button; a submit button reflects form error via the form, not its own style
+8. **Selected** — for toggle/segmented buttons only: `interactive.selected-bg` + `aria-pressed`/`aria-selected`
 
 **Accessibility:**
 - Native `<button>` element always; never `<div>`
@@ -58,13 +60,15 @@ Single-line text entry field.
 | md | 40px | 12px × 10px | body-base |
 | lg | 48px | 16px × 12px | body-lg |
 
-**States (6):**
+**States (8):**
 1. **Default** — `input.border` (gray-200)
 2. **Hover** — `input.border-hover` (gray-300)
 3. **Focus** — `input.border-focus` (blue-500) + focus ring
-4. **Error** — `input.border-error` (red-500) + error icon + message
+4. **Active** — N/A for text entry (no pressed state); typing reflects via the caret/value
 5. **Disabled** — `input.bg-disabled` + reduced opacity
-6. **Read-only** — same as default but non-editable, no hover state
+6. **Loading** — async validation/lookup: trailing spinner + `aria-busy="true"`
+7. **Error** — `input.border-error` (red-500) + error icon + message + `aria-invalid`
+8. **Selected** — filled/has-value styling; read-only is a variant of default (non-editable, no hover)
 
 **Accessibility:**
 - Always associate with `<label>` via `for`/`id`
