@@ -23,6 +23,8 @@ const checks = [
   ['No emoji in UI output or taste files', 'python3 scripts/check_no_emoji.py'],
   ['REAL-render WCAG — sample-app (light)', 'node scripts/measure_render.mjs examples/sample-app/preview.html'],
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],
+  ['State-aware WCAG — every element, default/hover/focus (light)', 'node scripts/verify_states.mjs examples/sample-app/preview.html'],
+  ['State-aware WCAG — every element, default/hover/focus (dark)', 'node scripts/verify_states.mjs --dark examples/sample-app/preview.html'],
 ];
 
 console.log('='.repeat(64));

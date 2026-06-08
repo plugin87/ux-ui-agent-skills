@@ -1,0 +1,33 @@
+/* brandkit-demo theme.css — generated foundation (OKLCH brand hue 195, fintech "precise/calm") */
+:root{
+  --color-surface-page:#f3f5f7;--color-surface-card:#ffffff;--color-surface-raised:#e5e8eb;
+  --color-text-primary:#242729;--color-text-secondary:#53595d;--color-text-on-action:#ffffff;
+  --color-action-primary:#006a6b;--color-action-primary-hover:#006a6b;
+  --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
+  --color-border-default:#d0d5d9;--color-border-strong:#868d93;
+  --color-text-link:#006a6b;--color-feedback-success:#1c6935;
+  --color-surface-brand:#e7f1f1;        /* faint brand wash (dark text passes) */
+  --color-surface-inverse:#161a1c;--color-text-inverse:#f3f5f7;  /* dark band */
+  --font-sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* type scale (Major Third) */
+  --text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.25rem;
+  --text-2xl:1.5rem;--text-3xl:1.875rem;--text-4xl:2.25rem;--text-5xl:3rem;--text-6xl:3.75rem;
+  --leading-tight:1.08;--leading-snug:1.2;--leading-normal:1.5;
+  /* spacing (4px base) */
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;
+  --space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;--space-12:3rem;--space-16:4rem;--space-20:5rem;--space-24:6rem;
+  /* radius + sizing */
+  --radius-sm:.375rem;--radius-button:.5rem;--radius-card:.75rem;--radius-lg:1.25rem;--radius-pill:980px;--radius-full:9999px;
+  --size-control-md:2.75rem;--size-control-lg:3.25rem;
+  /* depth */
+  --shadow-sm:0 1px 2px rgba(20,30,40,.06);--shadow-md:0 10px 30px rgba(20,30,40,.08);--shadow-lg:0 24px 60px rgba(20,30,40,.12);
+  --shadow-focus-ring:0 0 0 2px var(--color-surface-page),0 0 0 4px var(--color-action-primary);
+}
+:root[data-theme="dark"]{
+  --color-surface-page:#101214;--color-surface-card:#242729;--color-surface-raised:#3c4044;
+  --color-text-primary:#f3f5f7;--color-text-secondary:#9fa6ac;--color-text-on-action:#ffffff;
+  --color-action-primary:#006a6b;--color-action-primary-hover:#004e4f;
+  --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
+  --color-border-default:#3c4044;--color-border-strong:#868d93;
+  --color-text-link:#00bdbe;--color-feedback-success:#62bb78;
+}

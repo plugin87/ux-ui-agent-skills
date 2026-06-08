@@ -524,7 +524,9 @@ scripts/                  ← validate_tokens.py · contrast.py · validate_cont
                             · validate_component_spec.py · lint_hardcodes.py (hex/px/ms + Tailwind palette + font)
                             · validate_theme_refs.py (every var(--…) resolves to the theme) · lint_taste.py
                             · measure_render.mjs (REAL headless-render WCAG gate — true computed contrast, light+dark)
+                            · verify_states.mjs (state-aware WCAG — every element in default/hover/focus)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
+                            · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)

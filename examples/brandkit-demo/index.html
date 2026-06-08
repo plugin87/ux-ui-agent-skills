@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>brandkit-demo — generated foundation, verified</title>
+<link rel="stylesheet" href="theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  .wrap{max-inline-size:720px;margin-inline:auto;display:grid;gap:var(--space-6)}
+  .h{font-size:var(--text-4xl);font-weight:700;line-height:1.1}
+  .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-6);display:grid;gap:var(--space-4)}
+  .label{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .link{color:var(--color-text-link);font-size:var(--text-base)}
+  .row{display:flex;gap:var(--space-3);flex-wrap:wrap}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;
+    background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  .btn--danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+  .btn--danger:hover{background:var(--color-action-danger-hover)}
+  .ok{color:var(--color-feedback-success);font-size:var(--text-sm)}
+  .field input{height:var(--size-control-md);padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-base);inline-size:100%}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 class="h">Aqua — fintech foundation</h1>
+  <div class="card">
+    <div>
+      <div class="label">Primary text on card</div>
+      <p>Precise, calm, trustworthy. Generated from one OKLCH brand hue.</p>
+      <div class="label">Secondary metadata · <a class="link" href="#">an inline link</a> · <span class="ok">verified</span></div>
+    </div>
+    <div class="row">
+      <button class="btn">Primary action</button>
+      <button class="btn btn--secondary">Secondary</button>
+      <button class="btn btn--danger">Delete</button>
+    </div>
+    <div class="field">
+      <div class="label">Account name</div>
+      <input value="Plug" />
+    </div>
+  </div>
+  <button class="btn btn--secondary" id="t" style="justify-self:start">Toggle theme</button>
+</div>
+<script>
+  const r=document.documentElement;
+  document.getElementById('t').onclick=()=>r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+</script>
+</body>
+</html>
