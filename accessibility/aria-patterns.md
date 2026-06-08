@@ -485,6 +485,50 @@ A text input with a popup listbox for suggestions.
 
 ---
 
+## 16. Carousel
+
+Browsable slide set (`components/data-display.md`).
+
+**Roles:** container `role="group"` (or `region`) + `aria-roledescription="carousel"` + `aria-label`. Each slide `role="group"` + `aria-roledescription="slide"` + `aria-label="N of M"`.
+
+**Keyboard:** Prev/Next/dots are real `<button>`s, reachable by Tab and activated by Enter/Space. Off-screen slides `inert`/`aria-hidden`.
+
+**Auto-rotation (WCAG 2.2.2):** visible Pause/Play control; pause on hover and on keyboard focus within. Rotating region `aria-live="off"` while auto-advancing, switch to `"polite"` after the user takes manual control. Disable autoplay under `prefers-reduced-motion`.
+
+---
+
+## 17. Grid (Calendar / Data Grid)
+
+Two-dimensional navigable cells — date pickers (`components/data-display.md`) and interactive tables.
+
+**Roles:** `role="grid"` → `role="row"` → `role="gridcell"` (or `columnheader`/`rowheader`). For a date grid, column headers carry weekday names (`abbr`).
+
+**Keyboard (roving tabindex — one cell tabbable):** Arrow keys move between cells; Home/End to row edges; Ctrl+Home/End to grid corners; PageUp/Down for month (calendar); Enter/Space selects/activates. Selected cell `aria-selected="true"`; today `aria-current="date"`.
+
+**Announce:** month/year changes via a polite live region; for data grids, expose sort state with `aria-sort` on the header.
+
+---
+
+## 18. Toolbar
+
+Grouped set of controls (formatting bars, chart actions).
+
+**Roles:** `role="toolbar"` + `aria-label` (or `aria-orientation` if vertical).
+
+**Keyboard (roving tabindex):** Toolbar is a single tab stop; Left/Right (or Up/Down when vertical) move between controls; Home/End jump to first/last. Tab moves *out* of the toolbar. Nested controls keep their own activation keys.
+
+---
+
+## 19. Feed
+
+Scrollable stream of comparable articles (timelines, infinite lists).
+
+**Roles:** container `role="feed"` (+ `aria-busy` while loading more); each item `role="article"` with `aria-labelledby`, `aria-posinset`, and `aria-setsize` (use a large/estimated value for infinite feeds).
+
+**Keyboard:** PageDown/PageUp move between articles; Home/End to first/last loaded; focus moves *into* article content with Tab. Load more before the user reaches the end to avoid focus loss.
+
+---
+
 ## General Patterns
 
 ### Focus Indicator Spec

@@ -108,6 +108,7 @@ All tokens use **DTCG format** (Design Tokens Community Group) with `$type`/`$va
 - `tokens/sizing.json` — Control size scale + icon sizes + aspect ratios
 - `tokens/states.json` — Semantic interaction-state tokens for the 8 component states
 - `tokens/theming.json` — Multi-brand theme override map + density modes (compact/default/spacious)
+- `tokens/data-viz.json` — Color-blind-aware chart palette (categorical/sequential/diverging) + axis/grid/tooltip tokens
 
 ### Naming Convention
 ```
@@ -240,7 +241,11 @@ All interactive components must define these states:
 
 ### Implementation Reference
 - Full checklist: `accessibility/wcag-checklist.md`
-- ARIA patterns for 15+ components: `accessibility/aria-patterns.md`
+- ARIA patterns for 19 components: `accessibility/aria-patterns.md`
+- Cognitive accessibility (load, plain language, memory, dyslexia, reduced-data): `accessibility/cognitive.md`
+- Internationalization & RTL (logical properties, mirroring, text expansion): `accessibility/i18n-rtl.md`
+- Vision (color blindness, low vision, high-contrast / forced-colors): `accessibility/vision.md`
+- AAA upgrade delta (when targeting the highest support level): `accessibility/wcag-aaa.md`
 
 ---
 
@@ -382,6 +387,19 @@ Full workflow: `workflows/design-to-code.md`
 
 ---
 
+## Operations & Pipeline
+
+Keeping the system healthy at scale — governance, build, sync, QA, and performance:
+
+- **Governance** — versioning (SemVer for tokens/components), contribution path, deprecation policy, change communication: `workflows/governance.md`.
+- **Token build pipeline** — transform `tokens/*.json` (source of truth) → CSS vars / Tailwind `@theme` / iOS Asset Catalog / Android / Compose via Style Dictionary or Tokens Studio (DTCG): `workflows/token-build.md`.
+- **Figma integration** — token ↔ Figma Variable sync (3-tier collections + modes), Figma MCP usage, component parity: `workflows/figma-integration.md`.
+- **Design QA** — automated gates (token validation, axe a11y, visual regression across variants/states/themes/RTL) + manual a11y per release: `workflows/design-qa.md`.
+- **Performance** — Core Web Vitals (LCP/INP/CLS) budgets, loading/code-split strategy, layout-shift and animation-perf rules: `workflows/performance.md`.
+- **Icon system** — grid/stroke/sizing tokens, delivery, and a11y for icons as a governed subsystem: `components/icon-system.md`.
+
+---
+
 ## Output Format Instructions
 
 When responding to user requests, match the output format to the request type:
@@ -414,7 +432,8 @@ tokens/                   ← Design tokens (DTCG $type/$value)
 ├── blur.json             ← Backdrop / frosted-glass blur scale
 ├── sizing.json           ← Control sizes + icon sizes + aspect ratios
 ├── states.json           ← Semantic interaction-state tokens (the 8 states)
-└── theming.json          ← Multi-brand theme overrides + density modes
+├── theming.json          ← Multi-brand theme overrides + density modes
+└── data-viz.json         ← Chart palette (categorical/sequential/diverging) + axis/grid
 
 taste/                    ← Aesthetic judgment layer (serves the Aesthetics tier)
 ├── design-taste.md       ← Anti-slop doctrine, banned defaults, pre-flight aesthetic check
@@ -423,7 +442,8 @@ taste/                    ← Aesthetic judgment layer (serves the Aesthetics ti
 
 design-systems/           ← Interop + brand library
 ├── interop-protocol.md   ← Map to/from ANY design system (crosswalk method)
-├── crosswalk.md          ← Curated tables: Material 3, Apple HIG, Fluent, Carbon, shadcn, Radix
+├── crosswalk.md          ← Curated tables: Material 3, Apple HIG, Fluent, Carbon, shadcn, Radix,
+│                            Ant, Polaris, Primer, Atlassian, Bootstrap
 └── library/<name>/DESIGN.md ← 138 brand-grade design-system specs
 
 content/
@@ -437,24 +457,37 @@ components/
 ├── navigation.md         ← Tabs, Breadcrumb, Pagination, Stepper, Menu
 ├── feedback.md           ← Toast, Banner, Skeleton, Progress, Empty State
 ├── forms-advanced.md     ← Combobox, Select, Slider, Date Picker, File Upload
-└── overlays.md           ← Popover, Command Palette, Divider
+├── overlays.md           ← Popover, Command Palette, Divider
+├── data-display.md       ← Calendar, Carousel, Tree
+├── data-viz.md           ← Charts: Bar, Line/Area, Pie/Donut, Sparkline, Scatter
+└── icon-system.md        ← Icon grid/stroke/sizing tokens + delivery + a11y
 
 accessibility/
 ├── wcag-checklist.md     ← WCAG 2.2 AA/AAA checklist by POUR principle
-└── aria-patterns.md      ← WAI-ARIA patterns for 15+ components
+├── aria-patterns.md      ← WAI-ARIA patterns for 19 components
+├── cognitive.md          ← Cognitive load, plain language, memory/attention, dyslexia, reduced-data
+├── i18n-rtl.md           ← Logical properties, RTL mirroring, text expansion, locale formatting
+├── vision.md             ← Color blindness, low vision, high-contrast / forced-colors
+└── wcag-aaa.md           ← AAA upgrade delta (7:1 contrast, 44px targets, no-timing…)
 
 workflows/
 ├── design-review.md      ← Review rubric, Nielsen heuristics, audit process
 ├── design-to-code.md     ← Handoff workflow, state docs, edge cases, definition of done
 ├── prototyping.md        ← 5-level fidelity ladder, user journey mapping, usability testing
-└── redesign-audit.md     ← Audit-first redesign + output completeness
+├── redesign-audit.md     ← Audit-first redesign + output completeness
+├── governance.md         ← Versioning (SemVer), contribution, deprecation, change comms
+├── token-build.md        ← Token pipeline → CSS/Tailwind/iOS/Android (Style Dictionary, DTCG)
+├── figma-integration.md  ← Token↔Variable sync, Figma MCP, component parity
+├── design-qa.md          ← Visual regression + a11y CI gates (axe, snapshots)
+└── performance.md        ← Core Web Vitals, loading, CLS, animation perf
 
 frameworks/
 ├── adapter-protocol.md   ← Universal contract to target ANY framework
 ├── react-tailwind.md     ← React 19 + Tailwind v4 + TypeScript + cva patterns
 ├── nextjs.md             ← Next.js 15 App Router patterns
 ├── swiftui.md            ← SwiftUI 6 + Dynamic Type + platform adaptation
-└── adapters/             ← vue, svelte, angular, solid, web-components-lit,
+└── adapters/             ← vue, svelte, angular, solid, web-components-lit, qwik, astro,
+                            mui, mantine, chakra, bootstrap,
                             react-native, flutter, jetpack-compose, vanilla-css, css-in-js
 
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,

@@ -1,7 +1,7 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "1.1.0",
-  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 42 components, WCAG 2.2 accessibility, any-framework code, 138 design systems, and runnable skills. Install into any project with npx.",
+  "version": "1.2.0",
+  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, any-framework code, 138 design systems, governance & token-build pipeline, and runnable skills. Install into any project with npx.",
   "type": "commonjs",
   "bin": {
     "ux-ui-skills": "bin/cli.js",

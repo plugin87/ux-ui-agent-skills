@@ -8,9 +8,9 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-1.1.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-1.2.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
-[![WCAG 2.2 AA](https://img.shields.io/badge/WCAG-2.2_AA-a855f7?style=for-the-badge)](#-accessibility-standards)
+[![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
 <br>
 
@@ -20,6 +20,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 ![Skills](https://img.shields.io/badge/runnable_skills-10-14b8a6?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
+![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
 ![React 19](https://img.shields.io/badge/React-19-60a5fa?style=flat-square&logo=react)
 ![Next.js 15](https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=nextdotjs)
 ![SwiftUI 6](https://img.shields.io/badge/SwiftUI-6-f472b6?style=flat-square&logo=swift)
@@ -31,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v1.1.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v1.2.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -189,27 +190,32 @@ python3 scripts/scaffold_component.py "Date Picker" # emit a component spec stub
 ├── design-systems/            # 🔌 Interop + brand library
 │   ├── interop-protocol.md    # Map to/from ANY design system
 │   ├── crosswalk.md           # Material 3 · Apple HIG · Fluent · Carbon · shadcn · Radix
+│   │                          # · Ant · Polaris · Primer · Atlassian · Bootstrap
 │   └── library/<name>/        # 138 brand-grade DESIGN.md specs
 │
 ├── content/                   # UX writing & content design
 │   └── voice-tone.md          # Voice & tone, error/empty-state copy, microcopy, inclusive language
 │
-├── components/                # Component specs (Atomic Design) — 42 components
+├── components/                # Component specs (Atomic Design) — 50 components
 │   ├── atoms · molecules · organisms · templates
-│   └── navigation · feedback · forms-advanced · overlays
+│   ├── navigation · feedback · forms-advanced · overlays
+│   └── data-display · data-viz · icon-system
 │
-├── accessibility/             # WCAG & ARIA references
+├── accessibility/             # WCAG & ARIA references + inclusive design
 │   ├── wcag-checklist.md      # WCAG 2.2 checklist (POUR, P0/P1/P2)
-│   └── aria-patterns.md       # WAI-ARIA patterns for 15+ components
+│   ├── aria-patterns.md       # WAI-ARIA patterns for 19 components
+│   ├── cognitive.md · vision.md · i18n-rtl.md   # cognitive · low-vision/CVD/forced-colors · RTL
+│   └── wcag-aaa.md            # AAA upgrade delta
 │
-├── workflows/                 # Design process guides
-│   ├── design-review.md · design-to-code.md · prototyping.md
-│   └── redesign-audit.md      # Audit-first redesign + output completeness
+├── workflows/                 # Design process + ops/pipeline guides
+│   ├── design-review.md · design-to-code.md · prototyping.md · redesign-audit.md
+│   └── governance.md · token-build.md · figma-integration.md · design-qa.md · performance.md
 │
 └── frameworks/                # Implementation patterns — ANY framework
     ├── adapter-protocol.md    # Universal translation contract
     ├── react-tailwind.md · nextjs.md · swiftui.md   # full references
-    └── adapters/              # vue · svelte · angular · solid · web-components-lit
+    └── adapters/              # vue · svelte · angular · solid · web-components-lit · qwik · astro
+                               # mui · mantine · chakra · bootstrap
                                # react-native · flutter · jetpack-compose · vanilla-css · css-in-js
 ```
 
@@ -308,6 +314,14 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v1.2.0`
+- 🧩 **8 new component specs** — `data-display.md` (Calendar, Carousel, Tree) + `data-viz.md` (Bar, Line/Area, Pie/Donut, Sparkline, Scatter) → **50 components**; plus `components/icon-system.md`
+- 📊 **Data-viz tokens** — `tokens/data-viz.json`: color-blind-aware (Okabe–Ito) categorical/sequential/diverging palettes + axis/grid/tooltip → **14 token files**
+- ⟨⟩ **6 new framework adapters** — Qwik, Astro, **MUI**, Mantine, Chakra, Bootstrap → **16 adapters**
+- 🔌 **Extended interop crosswalks** — Ant Design 5, Shopify Polaris, GitHub Primer, Atlassian, Bootstrap (color-role tables + per-system notes)
+- ♿ **Accessibility depth** — `cognitive.md` (load, plain language, dyslexia, reduced-data), `i18n-rtl.md` (logical properties, RTL mirroring, text expansion), `vision.md` (color blindness, low vision, forced-colors), `wcag-aaa.md` (AAA upgrade delta); +4 ARIA patterns (Carousel, Grid, Toolbar, Feed)
+- ⚙️ **Ops & pipeline workflows** — `governance.md` (SemVer, contribution, deprecation), `token-build.md` (Style Dictionary / DTCG → multi-platform), `figma-integration.md` (token↔Variable sync, Figma MCP), `design-qa.md` (visual regression + a11y CI), `performance.md` (Core Web Vitals)
 
 ### `v1.1.0`
 - 📦 **npm package** — install into any project with `npx ux-ui-agent-skills init` (zero-dependency CLI: `init` / `add` / `list`, `--force`/`--dry`)

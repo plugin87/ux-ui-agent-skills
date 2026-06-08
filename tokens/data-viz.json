@@ -1,0 +1,60 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Data-visualization color + axis tokens. Categorical palette is ordered for maximum perceptual separation and color-vision-deficiency safety (Okabe–Ito-inspired). Use these for charts — never the brand action/feedback colors directly. Charts are graphical objects: meaningful strokes meet 3:1, and series must also be distinguished by shape/label/pattern, not hue alone.",
+
+  "categorical": {
+    "$description": "Qualitative series colors. Assign in order; cap at 8 — beyond that, group or re-encode.",
+    "1": { "$type": "color", "$value": "#2563EB", "$description": "Blue" },
+    "2": { "$type": "color", "$value": "#E8710A", "$description": "Orange" },
+    "3": { "$type": "color", "$value": "#0E9F6E", "$description": "Green" },
+    "4": { "$type": "color", "$value": "#D81B7A", "$description": "Magenta" },
+    "5": { "$type": "color", "$value": "#7C3AED", "$description": "Purple" },
+    "6": { "$type": "color", "$value": "#0891B2", "$description": "Cyan" },
+    "7": { "$type": "color", "$value": "#B45309", "$description": "Brown/amber" },
+    "8": { "$type": "color", "$value": "#64748B", "$description": "Slate (neutral series)" }
+  },
+
+  "sequential": {
+    "$description": "Single-hue ramp for ordered/continuous data (low → high). 5 stops; interpolate for more.",
+    "100": { "$type": "color", "$value": "#EFF6FF" },
+    "300": { "$type": "color", "$value": "#93C5FD" },
+    "500": { "$type": "color", "$value": "#3B82F6" },
+    "700": { "$type": "color", "$value": "#1D4ED8" },
+    "900": { "$type": "color", "$value": "#172554" }
+  },
+
+  "diverging": {
+    "$description": "Two-hue ramp around a neutral midpoint (e.g. below/above target, negative/positive change).",
+    "negative-strong": { "$type": "color", "$value": "#B91C1C" },
+    "negative": { "$type": "color", "$value": "#F87171" },
+    "neutral": { "$type": "color", "$value": "#E5E7EB" },
+    "positive": { "$type": "color", "$value": "#4ADE80" },
+    "positive-strong": { "$type": "color", "$value": "#15803D" }
+  },
+
+  "semantic": {
+    "$description": "Outcome-coded series (gains vs. losses). Distinct from feedback tokens so charts theme independently.",
+    "positive": { "$type": "color", "$value": "{dataviz.diverging.positive-strong}" },
+    "negative": { "$type": "color", "$value": "{dataviz.diverging.negative-strong}" },
+    "neutral": { "$type": "color", "$value": "#64748B" }
+  },
+
+  "axis": {
+    "$description": "Axis lines, ticks, and labels.",
+    "line": { "$type": "color", "$value": "{semantic.border.strong}", "$description": "Baseline/zero axis" },
+    "tick": { "$type": "color", "$value": "{semantic.border.default}" },
+    "label": { "$type": "color", "$value": "{semantic.text.secondary}", "$description": "Meets 4.5:1 — axis labels are essential text" }
+  },
+
+  "grid": {
+    "$description": "Non-essential gridlines — low contrast is acceptable (decorative reference).",
+    "line": { "$type": "color", "$value": "{semantic.border.default}" },
+    "line-subtle": { "$type": "color", "$value": "{primitive.gray.100}" }
+  },
+
+  "surface": {
+    "tooltip-bg": { "$type": "color", "$value": "{primitive.gray.900}", "$description": "Dark tooltip surface (inverse of page)" },
+    "tooltip-text": { "$type": "color", "$value": "{semantic.text.on-dark}" },
+    "plot-bg": { "$type": "color", "$value": "{semantic.surface.page}" }
+  }
+}
