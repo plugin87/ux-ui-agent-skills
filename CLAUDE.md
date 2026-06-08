@@ -20,6 +20,20 @@ Never sacrifice a higher-priority concern for a lower one. Beautiful but inacces
 
 ---
 
+## Verification Protocol — run gates, never claim (read this first)
+
+This governs every build/review from the **start**, not the end. Trust comes from reproducible gate output, not from assertions.
+
+1. **Never state a number you did not measure.** Any contrast ratio, "WCAG pass", "100%", or "all states OK" must come from actually running a gate and reporting its real output — never from reasoning or memory. If you haven't run it, say "not verified yet."
+2. **Verify ALL states, not just resting.** A button that looks fine at rest can fail on hover/focus/active (CSS specificity traps). For any rendered HTML, run `node scripts/verify_states.mjs <file> [--dark]` (real computed contrast in default/hover/focus) — not only `measure_render.mjs`.
+3. **Run the one-command gate before reporting done:** `node scripts/accuracy_report.mjs` (= tokens + contrast + spec + no-hardcode + theme-refs + no-emoji + real-render WCAG + state-aware, light & dark). Report the actual `N/N` line. It is all-or-nothing.
+4. **Build with the gates, not after.** Generate against the rules, then gate; if a gate fails, fix and re-run until green. Do not announce success between failures.
+5. **Honest scope.** These gates prove *objective correctness* (token-consistency, accessibility, no drift). They do **not** prove subjective taste/beauty — say so; pair taste with `scripts/taste_audit.mjs` + human review, and never claim auto-100% on aesthetics.
+
+> If you're about to type a quality number, stop: did a gate just produce it? If not, run the gate.
+
+---
+
 ## Request Router
 
 Match the request to the files to load (and the runnable skill, invocable via `/name`). Compose layers — almost every build pulls tokens + components + accessibility + (often) taste.
