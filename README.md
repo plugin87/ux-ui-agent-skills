@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,12 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.1`
+- 🧪 **State-aware WCAG gate** — `scripts/verify_states.mjs` (`npm run test:states`) measures real computed contrast of every interactive element in **default / hover / focus** (light + dark), catching state bugs the resting-state gate missed (e.g. a secondary button picking up the primary fill on hover). Wired into `accuracy_report` (now 11 checks, 100%).
+- 📐 **Verification Protocol** — new top-of-CLAUDE.md rule: never report a quality number you didn't measure; verify all states; run the gate before declaring done; build *with* the gates. `design-code` step 13 and `a11y-audit` now run the render gates instead of eyeballing.
+- 🩹 Fixed real hover-state AA failures in `examples/apple-demo`; added `examples/brandkit-demo` (generated OKLCH foundation, light+dark, every state AA).
+
 
 ### `v2.2.0`
 - ⚡ **2 new runnable skills (15 → 17)** — `image-to-code` (reference image/screenshot → infer the design system → token-driven, verified code) and `brandkit` (brief → complete primitive→semantic→component DTCG token foundation + theme.css, light + dark, WCAG-verified). Both native, fit the kit's gates.
