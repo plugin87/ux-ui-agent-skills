@@ -100,6 +100,8 @@ cp -r ux-ui-agent-skills/ your-project/
 
 ## 🎮 How to Use
 
+> 📖 **New here?** Read [**docs/WORKFLOW.md**](docs/WORKFLOW.md) for the full end-to-end picture — how the Request Router loads layers on demand, real usage scenarios, and the automated release pipeline.
+
 There are **three ways** to drive the kit. Use whichever fits the moment.
 
 ### 1. Just ask (zero commands)
