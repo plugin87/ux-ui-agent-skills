@@ -141,7 +141,7 @@ Examples: `semantic.text.primary`, `component.button.primary-bg-hover`, `semanti
 |---------|--------------|---------|
 | Normal text (< 24px) | 4.5:1 | `text.primary` on `surface.page` = 15.4:1 ✓ |
 | Large text (≥ 24px or ≥ 18.66px bold) | 3:1 | `text.secondary` on `surface.page` = 5.7:1 ✓ |
-| UI components & graphical objects | 3:1 | `border.default` on `surface.page` = 1.4:1 ✗ — use `border.strong` for essential borders |
+| UI components & graphical objects | 3:1 | `border.strong` on `surface.page` = 4.8:1 ✓ (use for essential control borders). `border.default` = 1.2:1 is decorative-only (dividers/card edges) |
 | Focus indicators | 3:1 | Focus ring uses `shadow.focus-ring` double ring |
 
 ### Color Usage Rules
@@ -513,7 +513,8 @@ frameworks/
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
                             migrate-design-system, prototype, ux-writing
 scripts/                  ← validate_tokens.py · contrast.py · validate_contrast.py (batch WCAG, light+dark)
-                            · validate_component_spec.py · lint_hardcodes.py · lint_taste.py
+                            · validate_component_spec.py · lint_hardcodes.py (hex/px/ms + Tailwind palette + font)
+                            · validate_theme_refs.py (every var(--…) resolves to the theme) · lint_taste.py
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)

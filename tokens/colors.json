@@ -141,8 +141,8 @@
     },
 
     "border": {
-      "default":     { "$type": "color", "$value": "{primitive.gray.200}" },
-      "strong":      { "$type": "color", "$value": "{primitive.gray.300}" },
+      "default":     { "$type": "color", "$value": "{primitive.gray.200}", "$description": "Decorative dividers/card edges (sub-3:1 by design)" },
+      "strong":      { "$type": "color", "$value": "{primitive.gray.500}", "$description": "Essential control boundary — 4.8:1 on page, meets WCAG 1.4.11 (3:1)" },
       "focus":       { "$type": "color", "$value": "{primitive.blue.500}" },
       "error":       { "$type": "color", "$value": "{primitive.red.500}" },
       "disabled":    { "$type": "color", "$value": "{primitive.gray.200}" }
@@ -233,8 +233,8 @@
       "sunken": { "$type": "color", "$value": "{primitive.black}" }
     },
     "border": {
-      "default": { "$type": "color", "$value": "{primitive.gray.800}" },
-      "strong":  { "$type": "color", "$value": "{primitive.gray.700}" }
+      "default": { "$type": "color", "$value": "{primitive.gray.800}", "$description": "Decorative (sub-3:1 by design)" },
+      "strong":  { "$type": "color", "$value": "{primitive.gray.500}", "$description": "Essential control boundary — 4.2:1 on dark page (meets 3:1)" }
     },
     "action": {
       "primary":       { "$type": "color", "$value": "{primitive.blue.600}", "$description": "blue.600 keeps white on-action ≥4.5:1 on dark (blue.500 = 3.68 fails)" },

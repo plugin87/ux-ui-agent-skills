@@ -24,14 +24,15 @@ PAIRS = [
     ("semantic.text.secondary", "semantic.surface.page", 4.5, "secondary text on page"),
     ("semantic.text.link",      "semantic.surface.page", 4.5, "link on page"),
     ("semantic.text.on-action", "semantic.action.primary", 4.5, "text on primary action"),
+    ("semantic.border.strong",  "semantic.surface.page", 3.0, "essential control border (WCAG 1.4.11)"),
 ]
 
-# ADVISORY pairs — intentionally de-emphasized (tertiary text) or decorative (strong border).
-# Reported for awareness but DO NOT fail the build: essential control boundaries are carried
-# by the focus ring (3:1) + fill, and tertiary is for incidental, non-essential text only.
+# ADVISORY pairs — intentionally de-emphasized text/decoration. Reported, not failed:
+# tertiary is for incidental non-essential text; border.default is decorative (use border.strong
+# for any boundary that identifies a control).
 ADVISORY = [
     ("semantic.text.tertiary",  "semantic.surface.page", 4.5, "tertiary/incidental text on page"),
-    ("semantic.border.strong",  "semantic.surface.page", 3.0, "strong border on page (decorative)"),
+    ("semantic.border.default", "semantic.surface.page", 3.0, "default border on page (decorative)"),
 ]
 
 

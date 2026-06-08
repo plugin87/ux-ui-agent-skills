@@ -25,6 +25,13 @@ CODE_EXT = {".css", ".scss", ".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte",
 HEX = re.compile(r"(?<![\w&])#[0-9a-fA-F]{3,8}\b")
 PX = re.compile(r"(?<![\w.])\d+(?:\.\d+)?px\b")
 MS = re.compile(r"(?<![\w.])\d+(?:\.\d+)?m?s\b")
+# raw Tailwind palette utilities (bg-gray-500, text-blue-600, border-red-400 …) that
+# bypass semantic tokens — the #1 real-world drift (527 of these in one audited project).
+_TW_PREFIX = r"(?:bg|text|border|ring|ring-offset|fill|stroke|from|via|to|divide|outline|decoration|accent|caret|placeholder|shadow)"
+_TW_COLOR = r"(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)"
+TW = re.compile(rf"(?<![\w-]){_TW_PREFIX}-{_TW_COLOR}-(?:50|100|200|300|400|500|600|700|800|900|950)\b")
+# hardcoded font-family not coming from a token/var
+FONT = re.compile(r"font-family\s*:\s*(?!.*var\()")
 # contexts that mean "this is a token, not a hardcode"
 TOKEN_CTX = re.compile(r"var\(--|theme\(|tokens?[./]|\{[\w.\-]+\}|--[\w\-]+\s*:")
 ALLOW = "ds-allow-hardcode"
@@ -43,7 +50,7 @@ def iter_files(paths, exts):
             yield pp
 
 
-def lint_line(line):
+def lint_line(line, tailwind=True):
     if ALLOW in line or TOKEN_CTX.search(line):
         return []
     stripped = line.strip()
@@ -57,17 +64,26 @@ def lint_line(line):
             hits.append(("px", m.group(0)))
     for m in MS.finditer(line):
         hits.append(("time", m.group(0)))
+    if tailwind:
+        for m in TW.finditer(line):
+            hits.append(("tailwind-palette", m.group(0)))
+    if FONT.search(line):
+        hits.append(("font-family", "literal font-family"))
     return hits
 
 
 def main(argv):
     exts = CODE_EXT
+    tailwind = True
     args = []
     i = 0
     while i < len(argv):
         if argv[i] == "--ext" and i + 1 < len(argv):
             exts = {e if e.startswith(".") else "." + e for e in argv[i + 1].split(",")}
             i += 2
+        elif argv[i] in ("--no-tw", "--no-tailwind"):
+            tailwind = False
+            i += 1
         else:
             args.append(argv[i])
             i += 1
@@ -83,7 +99,7 @@ def main(argv):
         except (UnicodeDecodeError, OSError):
             continue
         for n, line in enumerate(text.splitlines(), 1):
-            for kind, val in lint_line(line):
+            for kind, val in lint_line(line, tailwind):
                 print(f"{f}:{n}: hardcoded {kind} '{val}' — use a token")
                 violations += 1
 

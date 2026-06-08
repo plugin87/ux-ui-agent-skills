@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-1.3.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.0.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v1.3.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.0.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -322,13 +322,19 @@ This is a **starter kit** — make it yours:
 
 ## 📝 Changelog
 
-### `v1.3.0`
-- 🎨 **Single-theme consistency (enforced)** — every page now renders from one shared token theme; new CLAUDE.md rule + `examples/golden/` (theme.css + Button.tsx) demonstrating the contract; `design-code`/`redesign` skills require consuming the one theme (no per-page palettes)
-- ✅ **Real WCAG gate** — `scripts/validate_contrast.py` batch-checks the token pairs in **light + dark** (required text/action pairs fail the build); fixed genuine dark-mode contrast bugs (link, primary action) in `tokens/colors.json`
-- 🧹 **Quality enforcement scripts** — `lint_hardcodes.py` (no off-theme hex/px/timing), `validate_component_spec.py` (specs document anatomy/variants/states/tokens/a11y), `lint_taste.py` (heuristic anti-slop)
-- 🤖 **CI quality gates** — `.github/workflows/ci.yml` runs token + contrast + spec + golden-drift + `npm test` on every push/PR (one CI enforces consistency)
-- ⚡ **5 new runnable skills** (10 → **15**) — `governance`, `token-build`, `figma-integration`, `design-qa`, `performance` (previously orphaned workflows, now routable); added **verification steps** to `design-code`/`prototype`/`ux-writing`
-- 🧭 **Router coverage** — added rows for data-viz, icon-system, calendar/carousel/tree, cognitive/i18n/vision/AAA so all knowledge is reachable; fixed `validate_tokens.py` cross-file alias resolution; atoms Button/Input now document all 8 states
+### `v2.0.0` — Enforcement layer (breaking)
+
+> **Breaking:** dark-mode token values changed (link, primary action) and `border.strong` now meets 3:1 — re-verify any snapshots/visual tests. The kit moves from *advisory* guidance to *enforced* gates.
+
+**Theme consistency + real WCAG, enforced (driven by real-world audit feedback):**
+- 🎨 **Single-theme consistency** — every page renders from ONE shared token theme; CLAUDE.md rule + `examples/golden/` (theme.css with full color/type/spacing/breakpoint tokens, Button.tsx, Modal.tsx). `design-code`/`redesign` require consuming the one theme — no per-page palettes.
+- 🚫 **Hardcode linter catches real drift** — `scripts/lint_hardcodes.py` now flags raw hex/px/ms, **raw Tailwind palette utilities** (`bg-gray-500`, `text-blue-600`), and literal `font-family` (the 527-hardcode problem).
+- 🔗 **No floating tokens** — `scripts/validate_theme_refs.py` proves every `var(--…)` a component uses is defined in the theme (precision/consistency gate).
+- ✅ **Real WCAG gate** — `scripts/validate_contrast.py` checks required text/action/**border** pairs in **light + dark**; fixed genuine dark-mode contrast bugs (link, primary action) and made `border.strong` meet 3:1 for essential control borders.
+- 🪟 **One Modal primitive** — golden `Modal.tsx` + hardened spec: focus trap, `role="dialog"`, `aria-modal`, return-focus on close (fixes the 0/14-focus-trap class of bug, WCAG 2.4.3 + 2.1.2).
+- 🤖 **One CI enforces all of it** — `.github/workflows/ci.yml` runs tokens + contrast + spec + hardcode + theme-ref + `npm test` on every push/PR. Drift, contrast regressions, off-theme colors, and floating tokens cannot merge.
+- ⚡ **5 new runnable skills** (10 → **15**) — `governance`, `token-build`, `figma-integration`, `design-qa`, `performance`; verification steps added to `design-code`/`prototype`/`ux-writing`; router rows for all newer knowledge.
+- 🧹 `validate_component_spec.py` + `lint_taste.py`; fixed `validate_tokens.py` cross-file aliases; atoms Button/Input document all 8 states.
 
 ### `v1.2.1`
 - 📖 **Docs** — added [`docs/WORKFLOW.md`](docs/WORKFLOW.md): end-to-end how-it-works guide (Request Router, on-demand layer loading, real usage scenarios, automated release pipeline) + linked from the README

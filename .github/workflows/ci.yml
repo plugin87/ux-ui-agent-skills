@@ -37,5 +37,8 @@ jobs:
       - name: Golden examples stay token-only (no drift)
         run: python3 scripts/lint_hardcodes.py examples/golden
 
+      - name: Every token reference resolves to the theme (no floating vars)
+        run: python3 scripts/validate_theme_refs.py
+
       - name: CLI smoke + npm test
         run: npm test

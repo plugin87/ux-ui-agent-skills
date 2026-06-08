@@ -221,6 +221,8 @@ A structured data display with sorting, filtering, pagination, and row actions.
 
 A focused overlay that interrupts workflow for critical information or action.
 
+> **Non-negotiable — build ONE reusable Modal primitive and reuse it for every dialog.** Never hand-roll a div-as-modal per screen. Every instance MUST have: focus trap, `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape-to-close, **focus returned to the trigger on close**, and a backdrop. Missing the focus trap violates WCAG 2.4.3 + 2.1.2. Reference implementation: `examples/golden/Modal.tsx`.
+
 **Grid Structure:**
 ```
 ┌──────────── Overlay ─────────────────┐

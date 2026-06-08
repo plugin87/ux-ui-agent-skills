@@ -16,7 +16,7 @@ Performance is an accessibility and UX concern — a slow, janky, or layout-shif
 
 - **Render above-fold first.** Server Components / SSR for the initial view; push `"use client"` to leaf interactive components (CLAUDE.md Next.js rules).
 - **Code-split** by route and by heavy widget (chart, date picker, command palette). Lazy-load below-fold and behind-interaction components — Astro islands (`frameworks/adapters/astro.md`) and Qwik resumability (`frameworks/adapters/qwik.md`) make this the default.
-- **Fonts:** `font-display: swap`, preload the one critical weight, subset to used glyphs, prefer variable fonts over many static weights. Respect `prefers-reduced-data` (`accessibility/cognitive.md`) — skip heavy webfonts.
+- **Fonts:** **NEVER `@import` web fonts in CSS** — it's render-blocking (a chained request the browser finds late). Use `<link rel="preconnect">` + `<link rel="preload">` in `<head>`, or a framework loader (`next/font`); self-host when possible. Always `font-display: swap`, preload the one critical weight, subset to used glyphs, prefer variable fonts. Respect `prefers-reduced-data` (`accessibility/cognitive.md`) — skip heavy webfonts.
 - **Images:** modern formats (AVIF/WebP), responsive sizes, lazy-load below-fold, explicit dimensions to prevent CLS.
 
 ## Avoiding layout shift

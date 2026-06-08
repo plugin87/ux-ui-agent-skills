@@ -16,20 +16,43 @@
   --color-action-primary: #2563eb;        /* white on this = 5.2:1 */
   --color-action-primary-hover: #1d4ed8;
   /* borders + focus */
-  --color-border-default: #e5e7eb;
-  --color-border-strong: #d1d5db;
+  --color-border-default: #e5e7eb;  /* decorative dividers/edges */
+  --color-border-strong: #6b7280;   /* essential control borders — 4.8:1 */
   --color-text-link: #2563eb;
   --shadow-focus-ring: 0 0 0 2px #ffffff, 0 0 0 4px #2563eb;
   /* feedback */
   --color-feedback-error: #dc2626;
-  /* scale */
-  --radius-button: 0.5rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --size-control-md: 2.5rem;
+  /* overlay system (every token a component references is defined here — no floating vars) */
+  --color-scrim: rgba(2, 6, 23, 0.6);
+  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.10);
+  --z-modal: 50;
+  /* type — font family + Major Third (1.25) scale (every size is a token, never hardcoded) */
+  --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --text-xs: 0.75rem;   /* 12 */
+  --text-sm: 0.875rem;  /* 14 */
+  --text-base: 1rem;    /* 16 */
+  --text-lg: 1.125rem;  /* 18 */
+  --text-xl: 1.25rem;   /* 20 */
+  --text-2xl: 1.5rem;   /* 24 */
+  --text-3xl: 1.875rem; /* 30 */
+  --text-4xl: 2.25rem;  /* 36 */
+  --text-5xl: 3rem;     /* 48 */
+  --text-6xl: 3.75rem;  /* 60 */
+  --text-7xl: 4.5rem;   /* 72 */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  /* spacing — 4px base scale */
+  --space-1: 0.25rem;  --space-2: 0.5rem;  --space-3: 0.75rem; --space-4: 1rem;
+  --space-5: 1.25rem;  --space-6: 1.5rem;  --space-8: 2rem;    --space-10: 2.5rem;
+  --space-12: 3rem;    --space-16: 4rem;   --space-20: 5rem;   --space-24: 6rem;
+  /* radius / sizing / motion */
+  --radius-sm: 0.25rem; --radius-button: 0.5rem; --radius-lg: 0.75rem; --radius-full: 9999px;
+  --size-control-sm: 2rem; --size-control-md: 2.5rem; --size-control-lg: 3rem;
   --opacity-disabled: 0.5;
   --transition-micro: 150ms ease-out;
+  /* responsive breakpoints (use ALL of these, not one 768px) */
+  --bp-sm: 640px; --bp-md: 768px; --bp-lg: 1024px; --bp-xl: 1280px; --bp-2xl: 1536px;
 }
 
 :root[data-theme="dark"] {
@@ -42,9 +65,11 @@
   --color-action-primary: #2563eb; /* white on this = 5.2:1 (dark-safe) */
   --color-action-primary-hover: #1d4ed8;
   --color-border-default: #1f2937;
-  --color-border-strong: #374151;
+  --color-border-strong: #6b7280;  /* essential borders ≥3:1 in dark too */
   --color-text-link: #60a5fa;      /* lightened for ≥4.5:1 on dark */
   --color-feedback-error: #f87171;
+  --color-scrim: rgba(0, 0, 0, 0.7);
+  --shadow-overlay: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.4);
 }
 
 @media (prefers-reduced-motion: reduce) {
