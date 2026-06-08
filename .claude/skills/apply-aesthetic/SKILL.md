@@ -8,7 +8,7 @@ description: Apply a visual direction — an archetype (high-end agency, editori
 Choose and apply a design direction without breaking accessibility.
 
 ## Steps
-1. Read the brief; infer audience, domain, tone (`taste/design-taste.md` → anti-slop doctrine + Variance Mandate).
+1. **Brief Inference first (mandatory)** — before any tokens, name it: industry/domain, audience & tone, the one mood adjective the result must earn, motion depth, and the layout-family sequence (`taste/design-taste.md` → Brief Inference + Variance Mandate). Generating before deciding = slop.
 2. Pick a direction in `taste/aesthetic-systems.md`:
    - An **archetype** (recipe mapped to our tokens), or
    - A **named library system** — browse with `python3 scripts/design_systems.py list` (or `search <term>` / `show <name>`); specs live in `design-systems/library/<name>/DESIGN.md`.

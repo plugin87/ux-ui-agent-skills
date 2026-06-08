@@ -8,7 +8,7 @@
     "ux-ui-agent-skills": "bin/cli.js"
   },
   "scripts": {
-    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py",
+    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py",
     "test:render": "node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html && node scripts/measure_render.mjs --dark examples/sample-app/preview.html"
   },
   "devDependencies": {

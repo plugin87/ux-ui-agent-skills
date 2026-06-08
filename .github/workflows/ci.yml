@@ -40,6 +40,9 @@ jobs:
       - name: Every token reference resolves to the theme (no floating vars)
         run: python3 scripts/validate_theme_refs.py
 
+      - name: No emoji in UI output or taste files
+        run: python3 scripts/check_no_emoji.py
+
       - name: CLI smoke + npm test
         run: npm test
 

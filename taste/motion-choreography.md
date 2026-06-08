@@ -55,12 +55,12 @@ Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, pres
 
 ## Anti-Patterns (the cheap tells)
 
-- ✗ Everything animates on load → nothing feels important.
-- ✗ Long durations (> 500ms) on routine UI → feels sluggish.
-- ✗ Bounce/spring on every element → toy-like.
-- ✗ Animating `box-shadow`/`filter`/`width` → jank.
-- ✗ Motion with no reduced-motion fallback → accessibility failure.
-- ✗ Scroll-jacking that fights the user's scroll → abandon.
+- **Avoid:** everything animates on load — nothing feels important.
+- **Avoid:** long durations (> 500ms) on routine UI — feels sluggish.
+- **Avoid:** bounce/spring on every element — toy-like.
+- **Avoid:** animating `box-shadow`/`filter`/`width` — jank.
+- **Avoid:** motion with no reduced-motion fallback — accessibility failure.
+- **Avoid:** scroll-jacking that fights the user's scroll — abandon.
 
 ---
 
