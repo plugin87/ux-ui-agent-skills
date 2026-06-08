@@ -42,3 +42,19 @@ jobs:
 
       - name: CLI smoke + npm test
         run: npm test
+
+  render:
+    # Real-render WCAG gate — opens the example HTML in headless Chromium and
+    # measures the actual computed-style contrast of every text element (light + dark).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright + Chromium
+        run: npm i -D playwright && npx playwright install --with-deps chromium
+      - name: Real-render contrast (Apple demo + sample, light)
+        run: node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html
+      - name: Real-render contrast (sample, dark)
+        run: node scripts/measure_render.mjs --dark examples/sample-app/preview.html

@@ -520,6 +520,7 @@ frameworks/
 scripts/                  ← validate_tokens.py · contrast.py · validate_contrast.py (batch WCAG, light+dark)
                             · validate_component_spec.py · lint_hardcodes.py (hex/px/ms + Tailwind palette + font)
                             · validate_theme_refs.py (every var(--…) resolves to the theme) · lint_taste.py
+                            · measure_render.mjs (REAL headless-render WCAG gate — true computed contrast, light+dark)
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)

@@ -19,6 +19,7 @@ Automated gates that keep quality from regressing as the system changes. Manual 
 - `scripts/validate_tokens.py` — JSON valid + all aliases resolve.
 - **No hard-coded values** — lint/grep for raw hex, px, and timing in component code; every value must trace to a token (CLAUDE.md Output Rules). Fail the build on a raw `#`, `px` in styles outside the token layer, or magic durations.
 - `scripts/contrast.py` — gate color/token changes against WCAG (4.5:1 text, 3:1 UI; 7:1 if targeting AAA).
+- **`scripts/measure_render.mjs` (real-render gate)** — the static checks above verify the token palette; this verifies the **actual rendered result**. It opens the HTML in headless Chromium, disables transitions/animations, walks the DOM, and measures every visible text element's computed-style contrast against its true alpha-composited background, in light and `--dark`. Use this to catch defects static checks can't (wrong variant rendering dark-on-color, a transparent button over the wrong surface, a transition mid-state). Requires Playwright (`npm i -D playwright`); skips cleanly if absent.
 
 ## 2. Automated accessibility (every PR)
 
