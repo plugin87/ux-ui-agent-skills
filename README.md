@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-1.2.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v1.2.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v1.2.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -316,6 +316,10 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v1.2.1`
+- 📖 **Docs** — added [`docs/WORKFLOW.md`](docs/WORKFLOW.md): end-to-end how-it-works guide (Request Router, on-demand layer loading, real usage scenarios, automated release pipeline) + linked from the README
+- 🤖 **CI** — first release shipped fully automatically by the `release.yml` workflow (GitHub Release notes from this changelog + `npm publish --provenance` on tag push)
 
 ### `v1.2.0`
 - 🧩 **8 new component specs** — `data-display.md` (Calendar, Carousel, Tree) + `data-viz.md` (Bar, Line/Area, Pie/Donut, Sparkline, Scatter) → **50 components**; plus `components/icon-system.md`
