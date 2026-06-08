@@ -54,3 +54,34 @@ jobs:
           else
             gh release create "$TAG" --title "$TAG" --verify-tag "${NOTES[@]}"
           fi
+
+  publish-npm:
+    # Only on a real tag push (not manual backfill of an old tag).
+    # Requires repo secret NPM_TOKEN = an npm Automation token (bypasses 2FA).
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # enables npm provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Guard — tag must match package.json version
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "package.json=$PKG  tag=$TAG"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Tag v$TAG does not match package.json version $PKG — bump package.json before tagging."
+            exit 1
+          fi
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
