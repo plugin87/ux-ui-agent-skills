@@ -1,0 +1,56 @@
+name: Release on tag
+
+# Auto-create a GitHub Release whenever a vX.Y.Z tag is pushed.
+# Uses the built-in GITHUB_TOKEN — no manual `gh auth login` / npm login needed.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:           # manual run to backfill an existing tag
+    inputs:
+      tag:
+        description: 'Existing tag to create a Release for (e.g. v1.2.0)'
+        required: true
+
+permissions:
+  contents: write              # required for gh release create/edit
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag name
+        id: tag
+        run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract changelog section from README
+        run: |
+          TAG='${{ steps.tag.outputs.name }}'
+          VER="${TAG#v}"
+          awk -v ver="$VER" '
+            $0 ~ ("^### `v" ver "`") { flag=1; next }
+            flag && /^### `v/ { flag=0 }
+            flag { print }
+          ' README.md > RELEASE_NOTES.md
+          echo "----- release notes -----"
+          cat RELEASE_NOTES.md
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG='${{ steps.tag.outputs.name }}'
+          if [ -s RELEASE_NOTES.md ]; then
+            NOTES=(--notes-file RELEASE_NOTES.md)
+          else
+            NOTES=(--generate-notes)
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" "${NOTES[@]}"
+          else
+            gh release create "$TAG" --title "$TAG" --verify-tag "${NOTES[@]}"
+          fi
