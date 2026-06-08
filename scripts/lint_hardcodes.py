@@ -57,13 +57,17 @@ def lint_line(line, tailwind=True):
     if stripped.startswith(("//", "*", "/*", "#", "<!--")):
         return []
     hits = []
+    # @media / @container conditions can't use var() (a CSS limitation) — breakpoint px there
+    # is not drift; skip px/ms on those lines (still check hex/tailwind/font).
+    media_cond = "@media" in line or "@container" in line
     for m in HEX.finditer(line):
         hits.append(("hex", m.group(0)))
-    for m in PX.finditer(line):
-        if m.group(0) not in PX_OK:
-            hits.append(("px", m.group(0)))
-    for m in MS.finditer(line):
-        hits.append(("time", m.group(0)))
+    if not media_cond:
+        for m in PX.finditer(line):
+            if m.group(0) not in PX_OK:
+                hits.append(("px", m.group(0)))
+        for m in MS.finditer(line):
+            hits.append(("time", m.group(0)))
     if tailwind:
         for m in TW.finditer(line):
             hits.append(("tailwind-palette", m.group(0)))
