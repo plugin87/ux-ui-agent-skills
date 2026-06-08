@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sample App — token-driven, light/dark, WCAG-checked</title>
+<style>
+/* === theme.css (the ONE shared token theme) === */
+:root{
+  --color-surface-page:#ffffff;--color-surface-card:#ffffff;--color-surface-raised:#f9fafb;
+  --color-text-primary:#111827;--color-text-secondary:#4b5563;--color-text-on-action:#ffffff;
+  --color-action-primary:#2563eb;--color-action-primary-hover:#1d4ed8;
+  --color-border-default:#e5e7eb;--color-border-strong:#6b7280;--color-text-link:#2563eb;
+  --color-feedback-error:#dc2626;--color-success:#15803d;
+  --color-scrim:rgba(2,6,23,.6);--shadow-overlay:0 20px 25px -5px rgba(0,0,0,.15),0 8px 10px -6px rgba(0,0,0,.10);--z-modal:50;
+  --shadow-focus-ring:0 0 0 2px var(--color-surface-page),0 0 0 4px var(--color-action-primary);
+  --font-sans:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --text-sm:.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.25rem;--text-3xl:1.875rem;--text-4xl:2.25rem;
+  --leading-tight:1.25;
+  --space-1:.25rem;--space-2:.5rem;--space-3:.75rem;--space-4:1rem;--space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;
+  --radius-button:.5rem;--radius-lg:.75rem;
+  --size-control-md:2.5rem;--opacity-disabled:.5;--transition-micro:150ms ease-out;
+  --bp-sm:640px;--bp-lg:1024px;
+}
+:root[data-theme="dark"]{
+  --color-surface-page:#030712;--color-surface-card:#111827;--color-surface-raised:#1f2937;
+  --color-text-primary:#f9fafb;--color-text-secondary:#9ca3af;--color-text-on-action:#ffffff;
+  --color-action-primary:#2563eb;--color-action-primary-hover:#1d4ed8;
+  --color-border-default:#1f2937;--color-border-strong:#6b7280;--color-text-link:#60a5fa;
+  --color-feedback-error:#f87171;--color-success:#4ade80;
+  --color-scrim:rgba(0,0,0,.7);--shadow-overlay:0 20px 25px -5px rgba(0,0,0,.5),0 8px 10px -6px rgba(0,0,0,.4);
+}
+/* === app styles (tokens only) === */
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);transition:background var(--transition-micro),color var(--transition-micro)}
+.container{max-inline-size:var(--bp-lg);margin-inline:auto;padding:var(--space-6)}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);border-block-end:1px solid var(--color-border-default);padding-block-end:var(--space-4);margin-block-end:var(--space-6)}
+.page-title{font-size:var(--text-3xl);line-height:var(--leading-tight);font-weight:700;margin:0}
+.subtle{color:var(--color-text-secondary);font-size:var(--text-sm);margin:var(--space-1) 0 0}
+.grid{display:grid;gap:var(--space-4);grid-template-columns:1fr;margin-block:var(--space-6)}
+@media(min-width:640px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr)}}
+.card{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);padding:var(--space-5)}
+.card__label{color:var(--color-text-secondary);font-size:var(--text-sm)}
+.card__value{font-size:var(--text-4xl);line-height:var(--leading-tight);font-weight:700;margin-block:var(--space-1)}
+.up{color:var(--color-success);font-size:var(--text-sm)}.down{color:var(--color-feedback-error);font-size:var(--text-sm)}
+.btn{display:inline-flex;align-items:center;gap:var(--space-2);block-size:var(--size-control-md);padding-inline:var(--space-4);border-radius:var(--radius-button);border:0;cursor:pointer;font:500 var(--text-sm)/1 var(--font-sans);background:var(--color-action-primary);color:var(--color-text-on-action);transition:background var(--transition-micro)}
+.btn:hover{background:var(--color-action-primary-hover)}
+.btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+.section{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-lg);padding:var(--space-6);margin-block-end:var(--space-6)}
+.field{display:grid;gap:var(--space-2);margin-block-end:var(--space-5)}
+.field__label{font-size:var(--text-sm);font-weight:500}
+.field__input{block-size:var(--size-control-md);padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-base)}
+.field__input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4)}
+.backdrop{position:fixed;inset:0;display:grid;place-items:center;background:var(--color-scrim);z-index:var(--z-modal)}
+.modal{background:var(--color-surface-card);color:var(--color-text-primary);border-radius:var(--radius-lg);padding:var(--space-6);max-inline-size:var(--bp-sm);width:min(92vw,420px);box-shadow:var(--shadow-overlay)}
+.hidden{display:none}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="topbar">
+    <div>
+      <h1 class="page-title">Analytics</h1>
+      <p class="subtle">Last 30 days · one shared theme · light + dark</p>
+    </div>
+    <div style="display:flex;gap:var(--space-2)">
+      <button class="btn btn--secondary" id="themeBtn" aria-pressed="false">🌙 Dark</button>
+      <button class="btn">Export</button>
+    </div>
+  </div>
+
+  <section class="grid" aria-label="Key metrics">
+    <div class="card"><div class="card__label">Revenue</div><div class="card__value">$48.2k</div><div class="up"><span aria-hidden="true">▲</span> 12% <span class="sr-only">increase</span></div></div>
+    <div class="card"><div class="card__label">Active users</div><div class="card__value">3,910</div><div class="up"><span aria-hidden="true">▲</span> 4%</div></div>
+    <div class="card"><div class="card__label">Churn</div><div class="card__value">1.8%</div><div class="down"><span aria-hidden="true">▼</span> 2%</div></div>
+    <div class="card"><div class="card__label">NPS</div><div class="card__value">62</div><div class="up"><span aria-hidden="true">▲</span> 7%</div></div>
+  </section>
+
+  <section class="section">
+    <h2 class="page-title" style="font-size:var(--text-xl)">Settings</h2>
+    <p class="subtle" style="margin-bottom:var(--space-5)">Same theme, same primitives, second page.</p>
+    <div class="field">
+      <label class="field__label" for="name">Display name</label>
+      <input class="field__input" id="name" value="Plug" />
+    </div>
+    <div class="field row">
+      <label class="field__label" for="notify">Email notifications</label>
+      <button class="btn btn--secondary" id="notify" role="switch" aria-checked="true">On</button>
+    </div>
+    <button class="btn" id="delBtn">Delete account</button>
+  </section>
+</div>
+
+<div class="backdrop hidden" id="backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ctitle">
+    <h2 id="ctitle" class="page-title" style="font-size:var(--text-xl)">Delete account?</h2>
+    <p class="subtle">This is permanent and cannot be undone.</p>
+    <div style="display:flex;gap:var(--space-2);margin-top:var(--space-4)">
+      <button class="btn btn--secondary" id="cancelBtn">Cancel</button>
+      <button class="btn" id="confirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const root=document.documentElement,tb=document.getElementById('themeBtn');
+tb.onclick=()=>{const d=root.getAttribute('data-theme')==='dark';root.setAttribute('data-theme',d?'light':'dark');tb.textContent=d?'🌙 Dark':'☀️ Light';tb.setAttribute('aria-pressed',String(!d))};
+const nb=document.getElementById('notify');
+nb.onclick=()=>{const on=nb.getAttribute('aria-checked')==='true';nb.setAttribute('aria-checked',String(!on));nb.textContent=on?'Off':'On'};
+const bd=document.getElementById('backdrop'),del=document.getElementById('delBtn');
+let lastFocus=null;
+function open(){lastFocus=document.activeElement;bd.classList.remove('hidden');document.getElementById('cancelBtn').focus()}
+function close(){bd.classList.add('hidden');lastFocus&&lastFocus.focus()}
+del.onclick=open;document.getElementById('cancelBtn').onclick=close;document.getElementById('confirmBtn').onclick=close;
+bd.onclick=e=>{if(e.target===bd)close()};
+document.addEventListener('keydown',e=>{if(bd.classList.contains('hidden'))return;
+  if(e.key==='Escape')return close();
+  if(e.key!=='Tab')return;const f=bd.querySelectorAll('button');const first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}});
+</script>
+</body>
+</html>
