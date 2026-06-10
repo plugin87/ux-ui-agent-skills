@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkbox / Radio / Switch - verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-4) 0 var(--space-2)}
+  .stack{display:grid;gap:var(--space-3);max-inline-size:360px}
+  label.row{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-base)}
+  input[type=checkbox],input[type=radio]{inline-size:1.15rem;block-size:1.15rem;accent-color:var(--color-action-primary)}
+  input:focus-visible{outline:2px solid var(--color-action-primary);outline-offset:2px}
+  .muted{color:var(--color-text-secondary)}
+  /* switch */
+  .switch{position:relative;inline-size:2.6rem;block-size:1.5rem;flex:none}
+  .switch input{position:absolute;opacity:0;inline-size:100%;block-size:100%;margin:0;cursor:pointer}
+  .track{position:absolute;inset:0;border-radius:var(--radius-full);background:var(--color-border-strong);transition:background var(--transition-micro,150ms)}
+  .thumb{position:absolute;top:.15rem;left:.15rem;inline-size:1.2rem;block-size:1.2rem;border-radius:var(--radius-full);background:#fff;transition:left var(--transition-micro,150ms)}
+  .switch input:checked+.track{background:var(--color-action-primary)}
+  .switch input:checked+.track .thumb{left:1.25rem}
+  .switch input:focus-visible+.track{box-shadow:var(--shadow-focus-ring)}
+  @media(prefers-reduced-motion:reduce){.track,.thumb{transition:none}}
+</style>
+</head>
+<body>
+<h1>Checkbox · Radio · Switch</h1>
+
+<h2>Checkbox</h2>
+<div class="stack">
+  <label class="row"><input type="checkbox" id="cb1" checked /> Email notifications</label>
+  <label class="row"><input type="checkbox" id="cb2" /> SMS notifications</label>
+  <label class="row"><input type="checkbox" id="cb3" /> Partial selection</label>
+  <label class="row muted"><input type="checkbox" id="cb4" disabled /> Disabled option</label>
+</div>
+
+<h2>Radio · notification frequency</h2>
+<div class="stack" role="radiogroup" aria-label="Notification frequency">
+  <label class="row"><input type="radio" name="freq" id="r1" checked /> Real-time</label>
+  <label class="row"><input type="radio" name="freq" id="r2" /> Daily digest</label>
+  <label class="row"><input type="radio" name="freq" id="r3" /> Weekly</label>
+</div>
+
+<h2>Switch</h2>
+<div class="stack">
+  <label class="row"><span class="switch"><input type="checkbox" role="switch" id="sw1" checked /><span class="track"><span class="thumb"></span></span></span> Dark mode (on)</label>
+  <label class="row"><span class="switch"><input type="checkbox" role="switch" id="sw2" /><span class="track"><span class="thumb"></span></span></span> Auto-update (off)</label>
+</div>
+
+<script>
+  document.getElementById('cb3').indeterminate = true; // tri-state visual
+</script>
+</body>
+</html>

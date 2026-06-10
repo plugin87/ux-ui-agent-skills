@@ -33,8 +33,12 @@ const read = el => {
   const transparent = c => { const a = c.match(/[\d.]+/g); return !c || c === 'rgba(0, 0, 0, 0)' || (a && a.length === 4 && parseFloat(a[3]) === 0); };
   const eff = n => { while (n) { const c = getComputedStyle(n).backgroundColor; if (!transparent(c)) return c; n = n.parentElement; } return getComputedStyle(document.body).backgroundColor; };
   const cs = getComputedStyle(el);
+  // skip non-text form controls (checkbox/radio/switch render natively via accent-color,
+  // not CSS text color) and invisible elements — measuring their color/bg is meaningless.
+  const isToggle = el.tagName === 'INPUT' && ['checkbox', 'radio'].includes(el.type);
+  const skip = isToggle || el.getAttribute('role') === 'switch' || +cs.opacity === 0;
   const own = transparent(cs.backgroundColor) ? eff(el.parentElement) : cs.backgroundColor;
-  return { color: cs.color, bg: own, label: (el.textContent || el.value || el.getAttribute('aria-label') || '').trim().slice(0, 18), px: parseFloat(cs.fontSize), bold: (parseInt(cs.fontWeight, 10) || 400) >= 700 };
+  return { skip, color: cs.color, bg: own, label: (el.textContent || el.value || el.getAttribute('aria-label') || '').trim().slice(0, 18), px: parseFloat(cs.fontSize), bold: (parseInt(cs.fontWeight, 10) || 400) >= 700 };
 };
 
 const handles = await page.$$('button, a[href], input, select, textarea, [role="button"], [role="switch"]');
@@ -48,6 +52,7 @@ for (const h of handles) {
       const r = await h.evaluate(read);
       await page.mouse.move(0, 0);
       if (state === 'focus') await h.evaluate(el => el.blur && el.blur());
+      if (r.skip) break;  // non-text control (checkbox/radio/switch) or invisible — not a text-contrast target
       const fg = parse(r.color), bg = parse(r.bg);
       if (!fg || !bg) continue;
       checked++;

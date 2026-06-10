@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Toast - verified (status/alert, dismissible)</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .stack{display:grid;gap:var(--space-3);max-inline-size:440px}
+  .toast{display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-3);align-items:start;
+    padding:var(--space-3) var(--space-4);background:var(--color-surface-card);
+    border:1px solid var(--color-border-default);border-radius:var(--radius-button);box-shadow:var(--shadow-sm)}
+  .toast .title{font-weight:600;font-size:var(--text-base)}
+  .toast .msg{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .toast .ic{inline-size:1.25rem;block-size:1.25rem;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .toast--success{--accent:var(--color-feedback-success)}
+  .toast--error{--accent:var(--color-text-error)}
+  .toast--warning{--accent:var(--color-feedback-warning)}
+  .toast--info{--accent:var(--color-text-link)}
+  .dismiss{appearance:none;background:none;border:0;cursor:pointer;padding:var(--space-1);border-radius:var(--radius-sm);color:var(--color-text-secondary)}
+  .dismiss:hover{color:var(--color-text-primary)}
+  .dismiss:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .dismiss svg{inline-size:1rem;block-size:1rem;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+</style>
+</head>
+<body>
+<h1>Toast</h1>
+<div class="stack">
+
+  <div class="toast toast--success" role="status">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+    <div><div class="title">Changes saved</div><div class="msg">Your profile was updated.</div></div>
+    <button class="dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+
+  <div class="toast toast--error" role="alert">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
+    <div><div class="title">Payment failed</div><div class="msg">Your card was declined. Try another method.</div></div>
+    <button class="dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+
+  <div class="toast toast--warning" role="status">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <div><div class="title">Storage almost full</div><div class="msg">You have used 95% of your plan.</div></div>
+    <button class="dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+
+  <div class="toast toast--info" role="status">
+    <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <div><div class="title">New version available</div><div class="msg">Refresh to get the latest features.</div></div>
+    <button class="dismiss" aria-label="Dismiss"><svg viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+
+</div>
+</body>
+</html>

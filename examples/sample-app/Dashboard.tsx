@@ -1,4 +1,4 @@
-// Dashboard.tsx — page 1. Reuses Button + StatCard; consumes the shared theme only.
+// Dashboard.tsx - page 1. Reuses Button + StatCard; consumes the shared theme only.
 import { Button } from "../golden/Button";
 import { StatCard } from "./StatCard";
 

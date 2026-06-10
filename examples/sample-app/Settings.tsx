@@ -1,4 +1,4 @@
-// Settings.tsx — page 2. Reuses the shared Button + Modal primitives.
+// Settings.tsx - page 2. Reuses the shared Button + Modal primitives.
 import { useState } from "react";
 import { Button } from "../golden/Button";
 import { Modal } from "../golden/Modal";

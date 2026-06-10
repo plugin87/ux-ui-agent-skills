@@ -1,4 +1,4 @@
-// StatCard.tsx — KPI card. Token-driven; delta uses color + arrow (never color alone).
+// StatCard.tsx - KPI card. Token-driven; delta uses color + arrow (never color alone).
 type Props = { label: string; value: string; delta: number };
 
 export function StatCard({ label, value, delta }: Props) {

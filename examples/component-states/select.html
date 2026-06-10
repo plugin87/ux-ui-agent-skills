@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Select & Combobox - verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:var(--space-6);align-items:start}
+  .cell{padding:var(--space-4);border:1px solid var(--color-border-default);border-radius:var(--radius-card);background:var(--color-surface-card)}
+  .field{display:grid;gap:var(--space-2)}
+  .label{font-size:var(--text-sm);font-weight:500}
+  /* wrapper holds the control + a standard chevron that adapts to the theme */
+  .wrap{position:relative;display:flex;align-items:center}
+  .control{height:var(--size-control-md);padding-inline:var(--space-3);padding-inline-end:var(--space-8);inline-size:100%;
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
+    background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-base)}
+  select.control{appearance:none;-webkit-appearance:none}
+  select.control:disabled{opacity:.5}
+  .control:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .chev{position:absolute;inset-inline-end:var(--space-3);inline-size:1rem;block-size:1rem;pointer-events:none;
+    stroke:var(--color-text-secondary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  /* listbox - no bullets, no default list padding */
+  .listbox{list-style:none;margin:var(--space-2) 0 0;padding:0;border:1px solid var(--color-border-default);
+    border-radius:var(--radius-button);background:var(--color-surface-card);box-shadow:var(--shadow-md);overflow:hidden}
+  .opt{padding:var(--space-3);font-size:var(--text-base);cursor:pointer}
+  .opt:hover{background:var(--color-surface-raised)}
+  .opt[aria-selected="true"]{background:var(--color-surface-raised);font-weight:600}
+</style>
+</head>
+<body>
+<h1>Select &amp; Combobox</h1>
+<div class="grid">
+
+  <div class="cell"><div class="field">
+    <label class="label" for="s1">Native select · default</label>
+    <div class="wrap">
+      <select class="control" id="s1"><option>United States</option><option>Thailand</option><option>Japan</option></select>
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </div></div>
+
+  <div class="cell"><div class="field">
+    <label class="label" for="s2">Native select · disabled</label>
+    <div class="wrap">
+      <select class="control" id="s2" disabled><option>United States</option></select>
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" style="opacity:.5"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </div></div>
+
+  <div class="cell"><div class="field">
+    <label class="label" for="c1">Combobox · collapsed</label>
+    <div class="wrap">
+      <input class="control" id="c1" role="combobox" aria-expanded="false" aria-controls="c1list" aria-autocomplete="list" value="Thailand" />
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+  </div></div>
+
+  <div class="cell"><div class="field">
+    <label class="label" for="c2">Combobox · expanded</label>
+    <div class="wrap">
+      <input class="control" id="c2" role="combobox" aria-expanded="true" aria-controls="c2list" aria-activedescendant="c2o2" aria-autocomplete="list" value="Th" />
+      <svg class="chev" viewBox="0 0 24 24" aria-hidden="true" style="transform:rotate(180deg)"><path d="m6 9 6 6 6-6"/></svg>
+    </div>
+    <ul class="listbox" role="listbox" id="c2list" aria-label="Countries">
+      <li class="opt" role="option" id="c2o1">Thailand</li>
+      <li class="opt" role="option" id="c2o2" aria-selected="true">The Netherlands</li>
+      <li class="opt" role="option" id="c2o3">Thuringia</li>
+    </ul>
+  </div></div>
+
+</div>
+</body>
+</html>

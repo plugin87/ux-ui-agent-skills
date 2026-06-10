@@ -42,6 +42,23 @@ A model left to its defaults regresses to the mean — and the mean is mediocre.
 
 ---
 
+## Anti-AI-Pattern Tells (copy + structure)
+
+The fastest way a UI reads as machine-generated is the writing and the rhythm, not just the pixels. Treat each of these as banned:
+
+- **Em-dashes / long dashes in UI copy.** The sprinkled "—" is a top AI tell. Do not use em-dash or en-dash in interface text. Use a period, a comma, or split into two short sentences. (Hyphens in compound words like "two-factor" are fine.)
+- **Marketing filler verbs.** "Elevate, unlock, seamless, effortless, supercharge, empower, take it to the next level, in today's fast-paced world." Say the concrete benefit instead.
+- **Hollow superlatives + triads.** "Powerful, intuitive, and beautiful." Three abstract adjectives in a row is filler; name one specific, verifiable thing.
+- **Fake structure labels.** "SECTION 01", "FEATURE", "Lorem ipsum", "Your headline here." Real, specific copy or nothing.
+- **Symmetric everything.** Three identical equal-weight cards, every section centered, one repeated row. Break it (see the Variance Mandate).
+- **Emoji as icons / decoration.** Use a real icon set (lucide). (Banned-Defaults table above.)
+- **Colored left-border accent strips** on alerts, toasts, callouts, and cards. The 3-4px tinted `border-left` is a generated-UI cliche. Convey status with a real icon plus text (never color alone); use a full hairline border or surface separation, not a colored bar.
+- **Over-hedged microcopy.** "You may want to consider possibly..." Be direct: frontload the verb (`content/voice-tone.md`).
+
+> Read the copy aloud. If it sounds like a press release or a model warming up, rewrite it shorter and more specific.
+
+---
+
 ## The Variance Mandate
 
 **Never generate the same layout twice in a row.** Sameness is the loudest slop signal. Before building a multi-section page, decide a *layout sequence* that varies deliberately.

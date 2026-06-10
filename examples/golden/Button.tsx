@@ -1,5 +1,5 @@
-// Button.tsx — golden reference. Token-driven, all 8 states, accessible, dark-mode safe.
-// Every value comes from theme.css variables — zero hardcoded colors/sizes (passes lint_hardcodes).
+// Button.tsx - golden reference. Token-driven, all 8 states, accessible, dark-mode safe.
+// Every value comes from theme.css variables - zero hardcoded colors/sizes (passes lint_hardcodes).
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {

@@ -41,6 +41,9 @@ def iter_files(paths):
             yield pp
 
 
+UI_EXTS = {".html", ".htm", ".tsx", ".jsx", ".vue", ".svelte"}
+DASH = re.compile("[—–]")  # em-dash / en-dash — an AI-pattern tell in UI copy
+
 def main(argv):
     paths = [Path(a) for a in argv] or DEFAULT
     hits = []
@@ -50,9 +53,13 @@ def main(argv):
             text = f.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             continue
+        ui = f.suffix in UI_EXTS
         for n, line in enumerate(text.splitlines(), 1):
             for m in EMOJI.finditer(line):
-                hits.append(f"{f}:{n}: emoji/pictograph {m.group(0)!r} — use lucide / plain text")
+                hits.append(f"{f}:{n}: emoji/pictograph {m.group(0)!r} - use lucide / plain text")
+            if ui:
+                for m in DASH.finditer(line):
+                    hits.append(f"{f}:{n}: em/en-dash {m.group(0)!r} - AI-pattern tell; use a period, comma, or hyphen")
     print(f"Scanned {len(files)} file(s).")
     if hits:
         print(f"\nFAIL: {len(hits)} emoji/pictograph(s) found:")

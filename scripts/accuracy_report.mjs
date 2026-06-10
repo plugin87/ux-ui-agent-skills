@@ -35,6 +35,9 @@ const checks = [
    'node scripts/verify_states.mjs examples/component-states/input.html && node scripts/verify_states.mjs --dark examples/component-states/input.html && node scripts/axe_audit.mjs examples/component-states/input.html && node scripts/measure_render.mjs --dark examples/component-states/input.html'],
   ['Component states harness — Modal (focus trap + states + axe, light + dark)',
    'node scripts/verify_focustrap.mjs examples/component-states/modal.html --open="#openBtn" && node scripts/verify_focustrap.mjs examples/component-states/modal.html --open="#openBtn" --dark && node scripts/verify_states.mjs examples/component-states/modal.html && node scripts/axe_audit.mjs examples/component-states/modal.html'],
+  ['Component harnesses — Tabs / Select / Checkbox-Radio-Switch / Toast (states + axe + render, light + dark)',
+   ['tabs', 'select', 'form-controls', 'toast'].map(c =>
+     `node scripts/verify_states.mjs examples/component-states/${c}.html && node scripts/verify_states.mjs --dark examples/component-states/${c}.html && node scripts/axe_audit.mjs examples/component-states/${c}.html && node scripts/measure_render.mjs --dark examples/component-states/${c}.html`).join(' && ')],
 ];
 
 console.log('='.repeat(64));

@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.5-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.6-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.5`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.6`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,12 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.6`
+- 🧩 **Tabs / Select & Combobox / Checkbox-Radio-Switch / Toast harnesses** added to `examples/component-states/`, each gated by `verify_states` + `axe` + `measure_render` (light + dark). `accuracy_report` now **19/19 = 100%**.
+- 🚫 **Anti-AI-pattern doctrine** — `taste/design-taste.md` now bans em-dashes in UI copy, marketing filler words, hollow superlative triads, and colored left-border accent strips on alerts/cards. `scripts/check_no_emoji.py` also flags em/en-dashes in rendered HTML.
+- 🔧 Fixes from gating the new widgets: `verify_states` skips non-text controls (checkbox/radio/switch) and invisible elements; Tabs/Select selected states use accessible contrast in both modes; native-select chevron standardized; combobox listbox de-bulleted; toast dropped the colored left border.
+
 
 ### `v2.2.5`
 - 🧩 **Input + Modal states harnesses** — `examples/component-states/input.html` (default/hover/focus/disabled/read-only/error/loading/filled, each with an associated `<label>`) and `modal.html` (focus trap + Escape + return-focus). Both gated by `verify_states` + `axe` + `measure_render` (+ `verify_focustrap` for the modal), light + dark. Added a verified `--color-text-error` token (light + dark). `accuracy_report` now **18/18 = 100%**.

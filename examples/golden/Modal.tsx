@@ -1,4 +1,4 @@
-// Modal.tsx — golden reference for the ONE shared overlay primitive.
+// Modal.tsx - golden reference for the ONE shared overlay primitive.
 // Build this once; reuse for every dialog. Never hand-roll a div-as-modal per screen.
 // Covers WCAG 2.4.3 (focus order) + 2.1.2 (no keyboard trap-out): focus trap, Escape,
 // aria-modal, labelledby, return-focus on close, backdrop. Token-driven (no hardcoded values).

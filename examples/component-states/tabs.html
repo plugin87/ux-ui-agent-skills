@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tabs - verified (ARIA tablist + roving tabindex)</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .tablist{display:flex;gap:var(--space-2);border-block-end:1px solid var(--color-border-default)}
+  .tab{appearance:none;background:none;border:0;cursor:pointer;font:500 var(--text-base)/1 var(--font-sans);
+    color:var(--color-text-secondary);padding:var(--space-3) var(--space-4);border-block-end:2px solid transparent;margin-block-end:-1px}
+  .tab:hover{color:var(--color-text-primary)}
+  .tab:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-radius:var(--radius-sm)}
+  .tab[aria-selected="true"]{color:var(--color-text-link);border-block-end-color:var(--color-text-link)}
+  .tab[disabled]{opacity:.5;cursor:not-allowed}
+  .panel{padding-block:var(--space-4);font-size:var(--text-base)}
+  .panel[hidden]{display:none}
+</style>
+</head>
+<body>
+<h1>Tabs</h1>
+<div class="tablist" role="tablist" aria-label="Account settings">
+  <button class="tab" role="tab" id="t1" aria-selected="true" aria-controls="p1" tabindex="0">Profile</button>
+  <button class="tab" role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Security</button>
+  <button class="tab" role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Billing</button>
+  <button class="tab" role="tab" id="t4" aria-selected="false" aria-controls="p4" tabindex="-1" disabled>Archived</button>
+</div>
+<div class="panel" role="tabpanel" id="p1" aria-labelledby="t1" tabindex="0">Your public profile and display name.</div>
+<div class="panel" role="tabpanel" id="p2" aria-labelledby="t2" tabindex="0" hidden>Password, passkeys, and two-factor authentication.</div>
+<div class="panel" role="tabpanel" id="p3" aria-labelledby="t3" tabindex="0" hidden>Plan, payment method, and invoices.</div>
+<div class="panel" role="tabpanel" id="p4" aria-labelledby="t4" tabindex="0" hidden>Archived items.</div>
+
+<script>
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  function select(tab){
+    tabs.forEach(t=>{const on=t===tab;t.setAttribute('aria-selected',on);t.tabIndex=on?0:-1;
+      document.getElementById(t.getAttribute('aria-controls')).hidden=!on;});
+    tab.focus();
+  }
+  tabs.forEach((tab,i)=>{
+    tab.addEventListener('click',()=>{if(!tab.disabled)select(tab);});
+    tab.addEventListener('keydown',e=>{
+      const enabled=tabs.filter(t=>!t.disabled);const idx=enabled.indexOf(tab);
+      if(e.key==='ArrowRight'){e.preventDefault();select(enabled[(idx+1)%enabled.length]);}
+      else if(e.key==='ArrowLeft'){e.preventDefault();select(enabled[(idx-1+enabled.length)%enabled.length]);}
+      else if(e.key==='Home'){e.preventDefault();select(enabled[0]);}
+      else if(e.key==='End'){e.preventDefault();select(enabled[enabled.length-1]);}
+    });
+  });
+</script>
+</body>
+</html>
