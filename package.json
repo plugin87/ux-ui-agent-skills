@@ -1,6 +1,6 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 15 runnable skills. Install into any project with npx.",
   "type": "commonjs",
   "bin": {

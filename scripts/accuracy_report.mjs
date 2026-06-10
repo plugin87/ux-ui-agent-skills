@@ -31,6 +31,10 @@ const checks = [
   ['Token build resolves all aliases + emits CSS', 'node scripts/build_tokens.mjs --out dist/tokens.css'],
   ['Component states harness — Button, every variant × state (states + axe, light + dark)',
    'node scripts/verify_states.mjs examples/component-states/button.html && node scripts/verify_states.mjs --dark examples/component-states/button.html && node scripts/axe_audit.mjs examples/component-states/button.html'],
+  ['Component states harness — Input, every state incl error/disabled/loading (states + axe + contrast, light + dark)',
+   'node scripts/verify_states.mjs examples/component-states/input.html && node scripts/verify_states.mjs --dark examples/component-states/input.html && node scripts/axe_audit.mjs examples/component-states/input.html && node scripts/measure_render.mjs --dark examples/component-states/input.html'],
+  ['Component states harness — Modal (focus trap + states + axe, light + dark)',
+   'node scripts/verify_focustrap.mjs examples/component-states/modal.html --open="#openBtn" && node scripts/verify_focustrap.mjs examples/component-states/modal.html --open="#openBtn" --dark && node scripts/verify_states.mjs examples/component-states/modal.html && node scripts/axe_audit.mjs examples/component-states/modal.html'],
 ];
 
 console.log('='.repeat(64));

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Input — every state, verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-4)}
+  .cell{padding:var(--space-4);border:1px solid var(--color-border-default);border-radius:var(--radius-card);background:var(--color-surface-card)}
+  .field{display:grid;gap:var(--space-2)}
+  .label{font-size:var(--text-sm);font-weight:500}
+  .hint{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .err{font-size:var(--text-sm);color:var(--color-text-error)}
+  .ctrl{position:relative;display:flex;align-items:center}
+  .input{inline-size:100%;height:var(--size-control-md);padding-inline:var(--space-3);
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
+    background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-base)}
+  .input:hover{border-color:var(--color-text-secondary)}
+  .input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .input:disabled{opacity:.5;cursor:not-allowed}
+  .input[readonly]{background:var(--color-surface-raised)}
+  .input[aria-invalid="true"]{border-color:var(--color-action-danger)}
+  .spin{position:absolute;right:var(--space-3);inline-size:1em;block-size:1em;border:2px solid var(--color-text-secondary);border-block-start-color:transparent;border-radius:var(--radius-full);animation:s .6s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<h1>Input — every state</h1>
+<div class="grid">
+  <div class="cell"><div class="field"><label class="label" for="i1">Email · default</label><input class="input" id="i1" type="email" placeholder="you@example.com" /></div></div>
+  <div class="cell"><div class="field"><label class="label" for="i2">Email · disabled</label><input class="input" id="i2" type="email" value="you@example.com" disabled /></div></div>
+  <div class="cell"><div class="field"><label class="label" for="i3">Account ID · read-only</label><input class="input" id="i3" value="ACC-10482" readonly /></div></div>
+  <div class="cell"><div class="field"><label class="label" for="i4">Email · error</label><div class="ctrl"><input class="input" id="i4" type="email" value="not-an-email" aria-invalid="true" aria-describedby="e4" /></div><span class="err" id="e4">Enter a valid email, e.g. name@company.com.</span></div></div>
+  <div class="cell"><div class="field"><label class="label" for="i5">Username · checking</label><div class="ctrl"><input class="input" id="i5" value="plug" aria-busy="true" aria-describedby="h5" /><span class="spin" aria-hidden="true"></span></div><span class="hint" id="h5">Checking availability…</span></div></div>
+  <div class="cell"><div class="field"><label class="label" for="i6">Display name · filled</label><input class="input" id="i6" value="Plug" /></div></div>
+</div>
+</body>
+</html>

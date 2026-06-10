@@ -5,7 +5,7 @@
   --color-action-primary:#006a6b;--color-action-primary-hover:#006a6b;
   --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
   --color-border-default:#d0d5d9;--color-border-strong:#868d93;
-  --color-text-link:#006a6b;--color-feedback-success:#1c6935;
+  --color-text-link:#006a6b;--color-feedback-success:#1c6935;--color-text-error:#a3201d;
   --color-surface-brand:#e7f1f1;        /* faint brand wash (dark text passes) */
   --color-surface-inverse:#161a1c;--color-text-inverse:#f3f5f7;  /* dark band */
   --font-sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -29,5 +29,5 @@
   --color-action-primary:#006a6b;--color-action-primary-hover:#004e4f;
   --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
   --color-border-default:#3c4044;--color-border-strong:#868d93;
-  --color-text-link:#00bdbe;--color-feedback-success:#62bb78;
+  --color-text-link:#00bdbe;--color-feedback-success:#62bb78;--color-text-error:#f3a39e;
 }

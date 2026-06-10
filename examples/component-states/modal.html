@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modal — verified (focus trap, Escape, return focus)</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .btn{display:inline-flex;align-items:center;gap:var(--space-2);height:var(--size-control-md);padding-inline:var(--space-4);
+    border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;
+    background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  .btn--danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+  .btn--danger:hover{background:var(--color-action-danger-hover)}
+  .backdrop{position:fixed;inset:0;display:grid;place-items:center;background:rgba(0,0,0,.5);z-index:50}
+  .backdrop.hidden{display:none}
+  .modal{background:var(--color-surface-card);color:var(--color-text-primary);border-radius:var(--radius-card);
+    padding:var(--space-6);inline-size:min(92vw,420px);box-shadow:var(--shadow-lg)}
+  .modal h2{font-size:var(--text-xl);margin-bottom:var(--space-2)}
+  .modal p{color:var(--color-text-secondary);font-size:var(--text-base)}
+  .modal .row{display:flex;gap:var(--space-2);margin-block-start:var(--space-4)}
+</style>
+</head>
+<body>
+<h1>Modal</h1>
+<button class="btn btn--danger" id="openBtn">Delete account</button>
+
+<div class="backdrop hidden" id="backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mtitle" aria-describedby="mdesc">
+    <h2 id="mtitle">Delete account?</h2>
+    <p id="mdesc">This permanently deletes your account and all data. This cannot be undone.</p>
+    <div class="row">
+      <button class="btn btn--secondary" id="cancelBtn">Cancel</button>
+      <button class="btn btn--danger" id="confirmBtn">Delete account</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const openBtn=document.getElementById('openBtn'),bd=document.getElementById('backdrop'),cancelBtn=document.getElementById('cancelBtn'),confirmBtn=document.getElementById('confirmBtn');
+  const SEL='a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+  let last=null;
+  function open(){last=document.activeElement;bd.classList.remove('hidden');[...bd.querySelectorAll(SEL)][0].focus();}
+  function close(){bd.classList.add('hidden');last&&last.focus();}
+  openBtn.onclick=open;cancelBtn.onclick=close;confirmBtn.onclick=close;
+  bd.addEventListener('click',e=>{if(e.target===bd)close();});
+  document.addEventListener('keydown',e=>{
+    if(bd.classList.contains('hidden'))return;
+    if(e.key==='Escape')return close();
+    if(e.key!=='Tab')return;
+    const f=[...bd.querySelectorAll(SEL)];const first=f[0],lastEl=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();lastEl.focus();}
+    else if(!e.shiftKey&&document.activeElement===lastEl){e.preventDefault();first.focus();}
+  });
+</script>
+</body>
+</html>
