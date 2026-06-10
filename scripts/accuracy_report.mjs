@@ -29,6 +29,8 @@ const checks = [
   ['Focus-trap (WCAG 2.1.2/2.4.3) — sample-app modal', 'node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"'],
   ['RTL layout (logical properties, no mirror overflow) — sample-app', 'node scripts/verify_rtl.mjs examples/sample-app/preview.html'],
   ['Token build resolves all aliases + emits CSS', 'node scripts/build_tokens.mjs --out dist/tokens.css'],
+  ['Component states harness — Button, every variant × state (states + axe, light + dark)',
+   'node scripts/verify_states.mjs examples/component-states/button.html && node scripts/verify_states.mjs --dark examples/component-states/button.html && node scripts/axe_audit.mjs examples/component-states/button.html'],
 ];
 
 console.log('='.repeat(64));

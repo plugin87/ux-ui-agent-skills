@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Button — every state, verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  /* A component is only "correct" if EVERY state renders right. This harness shows
+     every variant × state so the gates (verify_states, axe, measure_render) can prove it. */
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--space-4)}
+  .cell{display:grid;gap:var(--space-2);justify-items:start;padding:var(--space-4);border:1px solid var(--color-border-default);border-radius:var(--radius-card);background:var(--color-surface-card)}
+  .cell small{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  /* the Button primitive — one definition, all states */
+  .btn{display:inline-flex;align-items:center;gap:var(--space-2);height:var(--size-control-md);padding-inline:var(--space-4);
+    border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;
+    background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  .btn--danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+  .btn--danger:hover{background:var(--color-action-danger-hover)}
+  .btn[aria-pressed="true"]{background:var(--color-action-primary-hover)}
+  .spin{inline-size:1em;block-size:1em;border:2px solid currentColor;border-block-start-color:transparent;border-radius:var(--radius-full);animation:s .6s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  @media(prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<h1>Button — every state</h1>
+<div class="grid">
+  <div class="cell"><small>Primary · default</small><button class="btn">Save changes</button></div>
+  <div class="cell"><small>Primary · disabled</small><button class="btn" disabled>Save changes</button></div>
+  <div class="cell"><small>Primary · loading</small><button class="btn" aria-busy="true" disabled><span class="spin" aria-hidden="true"></span> Saving</button></div>
+  <div class="cell"><small>Secondary · default</small><button class="btn btn--secondary">Cancel</button></div>
+  <div class="cell"><small>Secondary · disabled</small><button class="btn btn--secondary" disabled>Cancel</button></div>
+  <div class="cell"><small>Danger · default</small><button class="btn btn--danger">Delete</button></div>
+  <div class="cell"><small>Toggle · selected</small><button class="btn" role="button" aria-pressed="true">Bold</button></div>
+  <div class="cell"><small>Toggle · unselected</small><button class="btn btn--secondary" aria-pressed="false">Bold</button></div>
+</div>
+</body>
+</html>

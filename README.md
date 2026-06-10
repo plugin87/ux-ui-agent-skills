@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.3-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.4-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.3`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.4`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,10 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.4`
+- 🧩 **Component accuracy — verify every state.** A component is "correct" only when every variant × state renders right, not just the resting default. New `examples/component-states/button.html` renders all variants × states (default/hover/focus/disabled/loading/selected) and is gated by `verify_states` + `axe` + `measure_render` (light + dark). `design-component` skill now mandates a states harness + running the gates. Wired into `accuracy_report` (now **16/16 = 100%**).
+
 
 ### `v2.2.3`
 - ♿ **Focus-trap gate** — `scripts/verify_focustrap.mjs` opens a modal and verifies with a real keyboard that Tab stays trapped, role/`aria-modal`/name are present, and Escape closes + returns focus (WCAG 2.1.2 / 2.4.3). Proven to catch a leaking modal.
