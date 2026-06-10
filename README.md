@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.2-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.2`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -321,6 +321,11 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.2`
+- ♿ **axe-core a11y gate** — `scripts/axe_audit.mjs` (`npm run test:axe`) runs axe-core (WCAG 2.0/2.1/2.2 A + AA) against rendered HTML, catching ARIA/role/label/landmark/name issues the contrast + state gates can't. Already caught a real missing-`<label>` bug in an example. Wired into `accuracy_report` (now 12 checks, 100%) and CI.
+- 🤖 CI render job now also runs the state-aware gate + axe across examples.
+
 
 ### `v2.2.1`
 - 🧪 **State-aware WCAG gate** — `scripts/verify_states.mjs` (`npm run test:states`) measures real computed contrast of every interactive element in **default / hover / focus** (light + dark), catching state bugs the resting-state gate missed (e.g. a secondary button picking up the primary fill on hover). Wired into `accuracy_report` (now 11 checks, 100%).

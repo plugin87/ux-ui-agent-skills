@@ -25,6 +25,7 @@ const checks = [
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],
   ['State-aware WCAG — every element, default/hover/focus (light)', 'node scripts/verify_states.mjs examples/sample-app/preview.html'],
   ['State-aware WCAG — every element, default/hover/focus (dark)', 'node scripts/verify_states.mjs --dark examples/sample-app/preview.html'],
+  ['axe-core a11y (ARIA/labels/landmarks) — sample-app', 'node scripts/axe_audit.mjs examples/sample-app/preview.html'],
 ];
 
 console.log('='.repeat(64));

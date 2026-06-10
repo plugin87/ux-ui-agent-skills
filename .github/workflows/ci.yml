@@ -61,3 +61,12 @@ jobs:
         run: node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html
       - name: Real-render contrast (sample, dark)
         run: node scripts/measure_render.mjs --dark examples/sample-app/preview.html
+      - name: State-aware WCAG (default/hover/focus) — sample + brandkit
+        run: |
+          node scripts/verify_states.mjs examples/sample-app/preview.html
+          node scripts/verify_states.mjs --dark examples/sample-app/preview.html
+          node scripts/verify_states.mjs examples/brandkit-demo/index.html
+      - name: axe-core a11y (ARIA/labels/landmarks)
+        run: |
+          node scripts/axe_audit.mjs examples/sample-app/preview.html
+          node scripts/axe_audit.mjs examples/brandkit-demo/index.html
