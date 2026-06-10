@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Badge / Avatar / Slider</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-6) 0 var(--space-2)}
+  .row{display:flex;align-items:center;gap:var(--space-3);flex-wrap:wrap}
+  /* badge: text carries meaning, colored dot is a paired indicator (never color alone) */
+  .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.15rem var(--space-3);
+    border-radius:var(--radius-full);background:var(--color-surface-raised);color:var(--color-text-primary);font-size:var(--text-sm);font-weight:500}
+  .badge .dot{inline-size:.5rem;block-size:.5rem;border-radius:var(--radius-full);background:var(--dot,var(--color-text-secondary))}
+  .badge--success{--dot:var(--color-feedback-success)}
+  .badge--error{--dot:var(--color-text-error)}
+  .badge--info{--dot:var(--color-text-link)}
+  .badge--solid{background:var(--color-action-primary);color:var(--color-text-on-action)}
+  /* avatar */
+  .avatar{inline-size:2.5rem;block-size:2.5rem;border-radius:var(--radius-full);overflow:hidden;display:grid;place-items:center;
+    background:var(--color-action-primary);color:var(--color-text-on-action);font-weight:600;font-size:var(--text-base)}
+  .avatar img{inline-size:100%;block-size:100%;object-fit:cover}
+  /* slider (native range = built-in role=slider) */
+  .field{display:grid;gap:var(--space-2);max-inline-size:360px}
+  .field label{font-size:var(--text-sm);font-weight:500}
+  input[type=range]{inline-size:100%;accent-color:var(--color-action-primary);height:1.5rem}
+  input[type=range]:focus-visible{outline:2px solid var(--color-action-primary);outline-offset:2px}
+  .val{font-size:var(--text-sm);color:var(--color-text-secondary)}
+</style>
+</head>
+<body>
+<h1>Badge / Avatar / Slider</h1>
+
+<h2>Badge</h2>
+<div class="row">
+  <span class="badge badge--success"><span class="dot" aria-hidden="true"></span>Active</span>
+  <span class="badge badge--error"><span class="dot" aria-hidden="true"></span>Failed</span>
+  <span class="badge badge--info"><span class="dot" aria-hidden="true"></span>In review</span>
+  <span class="badge">Draft</span>
+  <span class="badge badge--solid">Pro</span>
+</div>
+
+<h2>Avatar</h2>
+<div class="row">
+  <span class="avatar" aria-label="Plug Soparat" role="img">PS</span>
+  <span class="avatar" aria-label="Ada Lovelace" role="img">AL</span>
+  <span class="avatar"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23006a6b'/%3E%3C/svg%3E" alt="Team Aqua" /></span>
+</div>
+
+<h2>Slider</h2>
+<div class="field">
+  <label for="vol">Volume</label>
+  <input type="range" id="vol" min="0" max="100" value="65" aria-describedby="volval" />
+  <span class="val" id="volval">65%</span>
+</div>
+</body>
+</html>

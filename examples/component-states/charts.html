@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Charts / Data-viz - verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-5) 0 var(--space-2)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:var(--space-5)}
+  figure{margin:0;background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-5);display:grid;gap:var(--space-3)}
+  figcaption{font-size:var(--text-sm);font-weight:600}
+  svg.chart{inline-size:100%;block-size:auto;display:block;overflow:visible}
+  .axis{stroke:var(--color-chart-grid);stroke-width:1}
+  .axislabel{fill:var(--color-text-secondary);font-size:11px;font-family:var(--font-sans)}
+  .legend{display:flex;flex-wrap:wrap;gap:var(--space-3);font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .legend span{display:inline-flex;align-items:center;gap:var(--space-1)}
+  .swatch{inline-size:.7rem;block-size:.7rem;border-radius:2px;flex:none}
+  .c1{background:var(--color-chart-1)} .c2{background:var(--color-chart-2)} .c3{background:var(--color-chart-3)}
+  .c4{background:var(--color-chart-4)} .c5{background:var(--color-chart-5)}
+  /* entrance animations */
+  @keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+  .bar{transform-box:fill-box;transform-origin:bottom;animation:rise var(--duration-slow) var(--ease-emphasized) both}
+  .bar:nth-of-type(2){animation-delay:80ms}.bar:nth-of-type(3){animation-delay:160ms}.bar:nth-of-type(4){animation-delay:240ms}
+  .draw{stroke-dasharray:1;animation:draw 1100ms var(--ease-out) both}
+  .area{animation:fadein var(--duration-slow) var(--ease-out) 400ms both}
+  .donut{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-slow) var(--ease-emphasized) both}
+  .pt{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-normal) var(--ease-emphasized) both}
+  .pt:nth-of-type(2){animation-delay:50ms}.pt:nth-of-type(3){animation-delay:100ms}.pt:nth-of-type(4){animation-delay:150ms}
+  .pt:nth-of-type(5){animation-delay:200ms}.pt:nth-of-type(6){animation-delay:250ms}.pt:nth-of-type(7){animation-delay:300ms}
+  .pt:nth-of-type(8){animation-delay:350ms}.pt:nth-of-type(9){animation-delay:400ms}
+  @media(prefers-reduced-motion:reduce){.bar,.draw,.area,.donut,.pt{animation:none}}
+</style>
+</head>
+<body>
+<h1>Charts &amp; Data-viz</h1>
+<div class="grid">
+
+  <figure>
+    <figcaption>Revenue by quarter (Bar)</figcaption>
+    <svg class="chart" viewBox="0 0 280 160" role="img" aria-label="Bar chart of revenue by quarter: Q1 32k, Q2 48k, Q3 41k, Q4 60k.">
+      <line class="axis" x1="34" y1="6" x2="34" y2="134"/><line class="axis" x1="34" y1="134" x2="274" y2="134"/>
+      <text class="axislabel" x="28" y="12" text-anchor="end">60k</text>
+      <text class="axislabel" x="28" y="78" text-anchor="end">30k</text>
+      <text class="axislabel" x="28" y="138" text-anchor="end">0</text>
+      <g aria-hidden="true">
+        <rect x="48"  y="66"  width="40" height="68"  rx="3" fill="var(--color-chart-1)"/>
+        <rect x="104" y="32"  width="40" height="102" rx="3" fill="var(--color-chart-1)"/>
+        <rect x="160" y="47"  width="40" height="87"  rx="3" fill="var(--color-chart-1)"/>
+        <rect x="216" y="6"   width="40" height="128" rx="3" fill="var(--color-chart-1)"/>
+      </g>
+      <text class="axislabel" x="68"  y="150" text-anchor="middle">Q1</text>
+      <text class="axislabel" x="124" y="150" text-anchor="middle">Q2</text>
+      <text class="axislabel" x="180" y="150" text-anchor="middle">Q3</text>
+      <text class="axislabel" x="236" y="150" text-anchor="middle">Q4</text>
+    </svg>
+  </figure>
+
+  <figure>
+    <figcaption>Active users (Line + area)</figcaption>
+    <svg class="chart" viewBox="0 0 280 160" role="img" aria-label="Line chart of active users trending upward from 12k in January to 47k in June.">
+      <line class="axis" x1="34" y1="6" x2="34" y2="134"/><line class="axis" x1="34" y1="134" x2="274" y2="134"/>
+      <g aria-hidden="true">
+        <path d="M44 110 L90 96 L136 74 L182 80 L228 40 L266 24 L266 134 L44 134 Z" fill="var(--color-chart-3)" fill-opacity=".14"/>
+        <path d="M44 110 L90 96 L136 74 L182 80 L228 40 L266 24" fill="none" stroke="var(--color-chart-3)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="266" cy="24" r="3.5" fill="var(--color-chart-3)"/>
+      </g>
+      <text class="axislabel" x="44"  y="150">Jan</text>
+      <text class="axislabel" x="252" y="150" text-anchor="end">Jun</text>
+    </svg>
+  </figure>
+
+  <figure>
+    <figcaption>Traffic source (Donut)</figcaption>
+    <svg class="chart" viewBox="0 0 280 160" role="img" aria-label="Donut chart of traffic source: Direct 45 percent, Search 30 percent, Social 15 percent, Referral 10 percent.">
+      <g aria-hidden="true" transform="translate(140,80)" fill="none" stroke-width="26">
+        <circle r="48" stroke="var(--color-chart-1)" stroke-dasharray="135.7 301.6" transform="rotate(-90)"/>
+        <circle r="48" stroke="var(--color-chart-2)" stroke-dasharray="90.5 301.6" stroke-dashoffset="-135.7" transform="rotate(-90)"/>
+        <circle r="48" stroke="var(--color-chart-3)" stroke-dasharray="45.2 301.6" stroke-dashoffset="-226.2" transform="rotate(-90)"/>
+        <circle r="48" stroke="var(--color-chart-4)" stroke-dasharray="30.2 301.6" stroke-dashoffset="-271.4" transform="rotate(-90)"/>
+      </g>
+      <text x="140" y="76" text-anchor="middle" font-size="20" font-weight="700" fill="var(--color-text-primary)">45%</text>
+      <text x="140" y="94" text-anchor="middle" class="axislabel">Direct</text>
+    </svg>
+    <div class="legend">
+      <span><span class="swatch c1"></span>Direct</span><span><span class="swatch c2"></span>Search</span>
+      <span><span class="swatch c3"></span>Social</span><span><span class="swatch c4"></span>Referral</span>
+    </div>
+  </figure>
+
+  <figure>
+    <figcaption>Sessions, last 14 days (Sparkline)</figcaption>
+    <svg class="chart" viewBox="0 0 280 56" role="img" aria-label="Sparkline of sessions over 14 days, ending up 8 percent.">
+      <g aria-hidden="true">
+        <path d="M4 40 L24 36 L44 42 L64 28 L84 32 L104 20 L124 26 L144 16 L164 22 L184 12 L204 18 L224 10 L244 14 L276 6" fill="none" stroke="var(--color-chart-5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="276" cy="6" r="3" fill="var(--color-chart-5)"/>
+      </g>
+    </svg>
+    <div class="legend"><span>14-day trend <strong style="color:var(--color-feedback-success)">+8%</strong></span></div>
+  </figure>
+
+  <figure>
+    <figcaption>Spend vs reach (Scatter)</figcaption>
+    <svg class="chart" viewBox="0 0 280 160" role="img" aria-label="Scatter plot of campaign spend versus reach showing a positive correlation across 9 campaigns.">
+      <line class="axis" x1="34" y1="6" x2="34" y2="134"/><line class="axis" x1="34" y1="134" x2="274" y2="134"/>
+      <g aria-hidden="true" fill="var(--color-chart-6)" fill-opacity=".85">
+        <circle cx="56" cy="118" r="5"/><circle cx="84" cy="104" r="5"/><circle cx="104" cy="110" r="5"/>
+        <circle cx="128" cy="86" r="5"/><circle cx="150" cy="92" r="5"/><circle cx="176" cy="64" r="5"/>
+        <circle cx="200" cy="70" r="5"/><circle cx="228" cy="44" r="5"/><circle cx="254" cy="34" r="5"/>
+      </g>
+      <text class="axislabel" x="34" y="150">Spend</text>
+      <text class="axislabel" x="6" y="14">Reach</text>
+    </svg>
+  </figure>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Card - states</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-4)}
+  .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);
+    padding:var(--space-5);display:grid;gap:var(--space-2)}
+  .card h2{font-size:var(--text-lg)}
+  .card p{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .card .cap{font-size:var(--text-xs);color:var(--color-text-secondary);text-transform:none}
+  .actions{display:flex;gap:var(--space-2);margin-block-start:var(--space-3)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-sm)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  /* interactive card (whole card is a link) */
+  a.card{text-decoration:none;color:inherit;transition:box-shadow var(--transition-micro,150ms),border-color var(--transition-micro,150ms)}
+  a.card:hover{border-color:var(--color-border-strong);box-shadow:var(--shadow-md)}
+  a.card:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  /* selectable card */
+  .card[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--color-action-primary)}
+  button.card{text-align:start;cursor:pointer;font:inherit;color:inherit}
+  .media{aspect-ratio:16/9;border-radius:var(--radius-button);background:var(--color-surface-raised)}
+</style>
+</head>
+<body>
+<h1>Card</h1>
+<div class="grid">
+  <article class="card">
+    <span class="cap">Project</span>
+    <h2>Redesign system</h2>
+    <p>A token-driven kit with enforced accessibility gates.</p>
+    <div class="actions"><button class="btn">Open</button><button class="btn btn--secondary">Share</button></div>
+  </article>
+
+  <a class="card" href="#">
+    <span class="cap">Interactive</span>
+    <h2>Analytics</h2>
+    <p>Whole card is a link. Hover and focus show elevation.</p>
+  </a>
+
+  <button class="card" type="button" aria-pressed="true">
+    <span class="cap">Selectable</span>
+    <h2>Pro plan</h2>
+    <p>Selected state uses a ring plus aria-pressed, not color alone.</p>
+  </button>
+
+  <article class="card">
+    <div class="media" aria-hidden="true"></div>
+    <h2>With media</h2>
+    <p>Media block reserves space to avoid layout shift.</p>
+  </article>
+</div>
+</body>
+</html>

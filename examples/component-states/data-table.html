@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Data Table - sortable, selectable</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .panel{border:1px solid var(--color-border-default);border-radius:var(--radius-card);overflow:hidden;max-inline-size:760px}
+  table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm)}
+  caption{text-align:start;padding:var(--space-3) var(--space-4);font-size:var(--text-base);font-weight:600}
+  th,td{padding:var(--space-3) var(--space-4);text-align:start;border-block-start:1px solid var(--color-border-default)}
+  thead th{background:var(--color-surface-raised);color:var(--color-text-primary);font-weight:600}
+  tbody tr:hover{background:var(--color-surface-raised)}
+  .sortbtn{display:inline-flex;align-items:center;gap:var(--space-1);background:none;border:0;cursor:pointer;
+    font:600 var(--text-sm)/1 var(--font-sans);color:var(--color-text-primary);padding:0}
+  .sortbtn:hover{color:var(--color-text-primary)}
+  .sortbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-radius:var(--radius-sm)}
+  .sortbtn svg{inline-size:.85rem;block-size:.85rem;stroke:currentColor;fill:none;stroke-width:2}
+  /* thin custom checkbox (matches form-controls) */
+  .control{position:relative;display:inline-block;inline-size:.95rem;block-size:.95rem;vertical-align:middle}
+  .control input{position:absolute;inset:0;inline-size:100%;block-size:100%;margin:0;opacity:0;cursor:pointer}
+  .control .box{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;border:1.5px solid var(--color-border-strong);
+    border-radius:.25rem;background:var(--color-surface-page);transition:background var(--transition-micro,150ms),border-color var(--transition-micro,150ms)}
+  .control .box svg{inline-size:.62rem;block-size:.62rem;stroke:var(--color-text-on-action);fill:none;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity var(--transition-micro,150ms)}
+  .control .box .pd{display:none}
+  .control input:hover+.box{border-color:var(--color-action-primary)}
+  .control input:checked+.box,.control input:indeterminate+.box{background:var(--color-action-primary);border-color:var(--color-action-primary)}
+  .control input:checked+.box svg,.control input:indeterminate+.box svg{opacity:1}
+  .control input:indeterminate+.box .pc{display:none}
+  .control input:indeterminate+.box .pd{display:initial}
+  .control input:focus-visible+.box{box-shadow:var(--shadow-focus-ring)}
+  @media(prefers-reduced-motion:reduce){.box,.box svg{transition:none}}
+  .status{display:inline-flex;align-items:center;gap:var(--space-2)}
+  .status .dot{inline-size:.5rem;block-size:.5rem;border-radius:var(--radius-full);background:var(--dot)}
+  .ok{--dot:var(--color-feedback-success)} .bad{--dot:var(--color-text-error)}
+</style>
+</head>
+<body>
+<h1>Data Table</h1>
+<div class="panel">
+  <table>
+    <caption>Team members (3)</caption>
+    <thead>
+      <tr>
+        <th scope="col"><span class="control"><input type="checkbox" id="all" aria-label="Select all rows" /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span></th>
+        <th scope="col" aria-sort="ascending"><button class="sortbtn">Name<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-up"/></svg></button></th>
+        <th scope="col"><button class="sortbtn">Role<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="control"><input type="checkbox" id="r1" aria-label="Select Ada Lovelace" checked /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span></td>
+        <td>Ada Lovelace</td><td>Owner</td>
+        <td><span class="status ok"><span class="dot" aria-hidden="true"></span>Active</span></td>
+      </tr>
+      <tr>
+        <td><span class="control"><input type="checkbox" id="r2" aria-label="Select Alan Turing" /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span></td>
+        <td>Alan Turing</td><td>Editor</td>
+        <td><span class="status ok"><span class="dot" aria-hidden="true"></span>Active</span></td>
+      </tr>
+      <tr>
+        <td><span class="control"><input type="checkbox" id="r3" aria-label="Select Grace Hopper" /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span></td>
+        <td>Grace Hopper</td><td>Viewer</td>
+        <td><span class="status bad"><span class="dot" aria-hidden="true"></span>Invited</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+  const all=document.getElementById('all');
+  const rows=[...document.querySelectorAll('tbody input[type=checkbox]')];
+  function sync(){const n=rows.filter(r=>r.checked).length;all.checked=n===rows.length;all.indeterminate=n>0&&n<rows.length;}
+  all.addEventListener('change',()=>{rows.forEach(r=>r.checked=all.checked);all.indeterminate=false;});
+  rows.forEach(r=>r.addEventListener('change',sync));
+  sync(); // initial: 1 of 3 checked -> indeterminate
+</script>
+<script src="icons.js"></script>
+</body>
+</html>

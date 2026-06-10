@@ -28,9 +28,12 @@ This governs every build/review from the **start**, not the end. Trust comes fro
 2. **Verify ALL states, not just resting.** A button that looks fine at rest can fail on hover/focus/active (CSS specificity traps). For any rendered HTML, run `node scripts/verify_states.mjs <file> [--dark]` (real computed contrast in default/hover/focus) — not only `measure_render.mjs`.
 3. **Run the one-command gate before reporting done:** `node scripts/accuracy_report.mjs` (= tokens + contrast + spec + no-hardcode + theme-refs + no-emoji + real-render WCAG + state-aware, light & dark). Report the actual `N/N` line. It is all-or-nothing.
 4. **Build with the gates, not after.** Generate against the rules, then gate; if a gate fails, fix and re-run until green. Do not announce success between failures.
-5. **Honest scope.** These gates prove *objective correctness* (token-consistency, accessibility, no drift). They do **not** prove subjective taste/beauty — say so; pair taste with `scripts/taste_audit.mjs` + human review, and never claim auto-100% on aesthetics.
+5. **Render and LOOK — gates don't prove pixels.** The contrast/axe gates pass while the UI is still visibly broken: a checkbox that won't toggle, a dash stuck at the bottom of its box, a checkmark and dash of mismatched weight, an answer panel showing a grey "band", unequal widths, no expand animation. For any component, screenshot the harness (transitions off, pointer parked off it) and inspect every state AND after interaction — and click each control to assert the state actually changed. See `design-component` skill → "RENDER AND LOOK".
+6. **Responsive is gated too.** `node scripts/verify_responsive.mjs <file|dir>` — no horizontal overflow at 280/320/414px. Mobile-first; a fixed-px width that can't shrink is a bug.
+7. **Honest scope.** These gates prove *objective correctness* (token-consistency, accessibility, no drift). They do **not** prove subjective taste/beauty — say so; pair taste with `scripts/taste_audit.mjs` + human review, and never claim auto-100% on aesthetics.
 
 > If you're about to type a quality number, stop: did a gate just produce it? If not, run the gate.
+> If you're about to say a component "looks right", stop: did you screenshot it and click it? If not, render it.
 
 ---
 
@@ -542,6 +545,7 @@ scripts/                  ← validate_tokens.py · contrast.py · validate_cont
                             · axe_audit.mjs (axe-core WCAG 2.2 A/AA — ARIA, labels, landmarks, roles)
                             · verify_focustrap.mjs (modal focus trap: Tab stays in, Escape closes, focus returns)
                             · verify_rtl.mjs (RTL mirror — no logical-property breakage) · build_tokens.mjs (DTCG → CSS vars)
+                            · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py

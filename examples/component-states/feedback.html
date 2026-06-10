@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Alert / Progress / Skeleton / Empty State</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-6) 0 var(--space-2)}
+  .stack{display:grid;gap:var(--space-3);max-inline-size:520px}
+  /* alert: icon + text, full hairline border, no colored left bar */
+  .alert{display:grid;grid-template-columns:auto 1fr;gap:var(--space-3);align-items:start;
+    padding:var(--space-3) var(--space-4);background:var(--color-surface-card);
+    border:1px solid var(--color-border-default);border-radius:var(--radius-button)}
+  .alert .ic{inline-size:1.2rem;block-size:1.2rem;color:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .alert .body{font-size:var(--text-sm)}
+  .alert .t{font-weight:600;font-size:var(--text-base)}
+  .alert--success{--accent:var(--color-feedback-success)}
+  .alert--error{--accent:var(--color-text-error)}
+  .alert--info{--accent:var(--color-text-link)}
+  /* progress */
+  .bar{height:.5rem;background:var(--color-surface-raised);border-radius:var(--radius-full);overflow:hidden}
+  .bar > span{display:block;height:100%;background:var(--color-action-primary);border-radius:inherit}
+  .bar--indet > span{inline-size:40%;animation:slide 1.2s ease-in-out infinite}
+  @keyframes slide{0%{margin-inline-start:-40%}100%{margin-inline-start:100%}}
+  @media(prefers-reduced-motion:reduce){.bar--indet > span{animation:none;inline-size:100%}}
+  .meta{font-size:var(--text-sm);color:var(--color-text-secondary);margin-block-start:var(--space-2)}
+  /* skeleton */
+  .sk{background:var(--color-surface-raised);border-radius:var(--radius-button);position:relative;overflow:hidden}
+  .sk::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);animation:sh 1.3s infinite}
+  @keyframes sh{100%{transform:translateX(100%)}}
+  @media(prefers-reduced-motion:reduce){.sk::after{animation:none}}
+  .sk-line{height:.8rem;margin-block-end:var(--space-2)}
+  /* empty state */
+  .empty{text-align:center;padding:var(--space-12) var(--space-6);border:1px dashed var(--color-border-default);border-radius:var(--radius-card)}
+  .empty svg{inline-size:2.5rem;block-size:2.5rem;color:var(--color-text-secondary);fill:none;stroke-width:1.5;margin-block-end:var(--space-3)}
+  .empty h3{font-size:var(--text-lg);margin-block-end:var(--space-1)}
+  .empty p{color:var(--color-text-secondary);font-size:var(--text-sm);margin-block-end:var(--space-4)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+</style>
+</head>
+<body>
+<h1>Feedback</h1>
+
+<h2>Alert / Banner</h2>
+<div class="stack">
+  <div class="alert alert--success" role="status"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-check"/></svg><div class="body"><div class="t">Profile updated</div>Your changes were saved.</div></div>
+  <div class="alert alert--error" role="alert"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert-circle"/></svg><div class="body"><div class="t">Could not save</div>Check your connection and try again.</div></div>
+  <div class="alert alert--info" role="status"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-info"/></svg><div class="body"><div class="t">Scheduled maintenance</div>Service may be briefly unavailable tonight.</div></div>
+</div>
+
+<h2>Progress</h2>
+<div class="stack">
+  <div>
+    <div class="bar"><span style="inline-size:62%"></span></div>
+    <div class="meta" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress">Uploading 62%</div>
+  </div>
+  <div>
+    <div class="bar bar--indet"><span></span></div>
+    <div class="meta" role="progressbar" aria-busy="true" aria-label="Loading">Working...</div>
+  </div>
+</div>
+
+<h2>Skeleton (loading placeholder)</h2>
+<div class="stack" role="status" aria-busy="true" aria-label="Loading content">
+  <div class="sk sk-line" style="inline-size:70%" aria-hidden="true"></div>
+  <div class="sk sk-line" style="inline-size:90%" aria-hidden="true"></div>
+  <div class="sk sk-line" style="inline-size:50%" aria-hidden="true"></div>
+</div>
+
+<h2>Empty state</h2>
+<div class="stack">
+  <div class="empty">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>
+    <h3>No projects yet</h3>
+    <p>Create your first project to start tracking work.</p>
+    <button class="btn">New project</button>
+  </div>
+</div>
+<script src="icons.js"></script>
+</body>
+</html>

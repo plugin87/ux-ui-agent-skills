@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Search Bar / Form Field - verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-5) 0 var(--space-2)}
+  .stack{display:grid;gap:var(--space-2);max-inline-size:420px}
+  /* search bar */
+  .search{position:relative;display:flex;align-items:center}
+  .search .lead{position:absolute;inset-inline-start:var(--space-3);inline-size:1.05rem;block-size:1.05rem;
+    color:var(--color-text-secondary);fill:none;stroke-width:2;pointer-events:none}
+  .search input{inline-size:100%;height:var(--size-control-lg);padding-inline:2.5rem;border-radius:var(--radius-button);
+    border:1px solid var(--color-border-strong);background:var(--color-surface-card);color:var(--color-text-primary);
+    font-size:var(--text-base)}
+  .search input::placeholder{color:var(--color-text-secondary)}
+  .search input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .search .clear{position:absolute;inset-inline-end:var(--space-2);inline-size:1.75rem;block-size:1.75rem;
+    display:grid;place-items:center;border:0;background:none;cursor:pointer;border-radius:var(--radius-sm);color:var(--color-text-secondary)}
+  .search .clear:hover{color:var(--color-text-primary);background:var(--color-surface-raised)}
+  .search .clear:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .search .clear svg{inline-size:1rem;block-size:1rem;color:currentColor;fill:none;stroke-width:2}
+  /* form field */
+  .field{display:grid;gap:var(--space-2);max-inline-size:420px}
+  .field label{font-size:var(--text-sm);font-weight:500}
+  .field .req{color:var(--color-text-error)}
+  .field input{height:var(--size-control-md);padding-inline:var(--space-3);border-radius:var(--radius-button);
+    border:1px solid var(--color-border-strong);background:var(--color-surface-card);color:var(--color-text-primary);font-size:var(--text-base)}
+  .field input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .field .help{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .field.invalid input{border-color:var(--color-text-error)}
+  .field .err{display:flex;align-items:center;gap:var(--space-1);font-size:var(--text-xs);color:var(--color-text-error)}
+  .field .err svg{inline-size:.85rem;block-size:.85rem;color:currentColor;fill:none;stroke-width:2}
+</style>
+</head>
+<body>
+<h1>Search Bar · Form Field</h1>
+
+<h2>Search bar</h2>
+<form class="stack" role="search">
+  <div class="search">
+    <svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+    <input type="search" id="q" aria-label="Search projects" placeholder="Search projects" value="Redesign" />
+    <button type="button" class="clear" aria-label="Clear search"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+</form>
+
+<h2>Form field: default</h2>
+<div class="field">
+  <label for="email">Email address</label>
+  <input type="email" id="email" aria-describedby="email-help" value="ada@example.com" />
+  <span class="help" id="email-help">We use this for sign-in and receipts.</span>
+</div>
+
+<h2>Form field: error</h2>
+<div class="field invalid">
+  <label for="pw">Password <span class="req" aria-hidden="true">*</span></label>
+  <input type="password" id="pw" aria-invalid="true" aria-describedby="pw-err" value="abc" />
+  <span class="err" id="pw-err"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-alert-circle"/></svg>Password must be at least 8 characters.</span>
+</div>
+
+<script>
+  const q=document.getElementById('q'),clear=document.querySelector('.search .clear');
+  clear.addEventListener('click',()=>{q.value='';q.focus();});
+</script>
+<script src="icons.js"></script>
+</body>
+</html>

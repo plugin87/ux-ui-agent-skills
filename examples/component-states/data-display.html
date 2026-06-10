@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tree / Carousel / Divider - verified</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-5) 0 var(--space-2)}
+  /* tree */
+  .tree,.tree ul{list-style:none;margin:0;padding:0}
+  .tree{max-inline-size:340px;border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-2);background:var(--color-surface-card)}
+  .tree ul{padding-inline-start:var(--space-5)}
+  .node{display:flex;align-items:center;gap:var(--space-2);inline-size:100%;background:none;border:0;cursor:pointer;
+    padding:var(--space-2);border-radius:var(--radius-button);font:var(--text-sm)/1.2 var(--font-sans);color:var(--color-text-primary);text-align:start}
+  .node:hover{background:var(--color-surface-raised)}
+  .node:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .treeitem[aria-selected="true"] > .node{background:var(--color-surface-brand);color:var(--color-text-link);font-weight:600}
+  .node .twisty{inline-size:1rem;block-size:1rem;flex:none;color:var(--color-text-secondary);fill:none;stroke-width:2;transition:transform var(--transition-micro)}
+  .treeitem[aria-expanded="true"] > .node > .twisty{transform:rotate(90deg)}
+  .node .leaf{inline-size:1rem;flex:none}
+  .node .ico{inline-size:1rem;block-size:1rem;flex:none;color:var(--color-text-secondary);fill:none;stroke-width:2}
+  .treeitem[aria-expanded="false"] > ul{display:none}
+  /* carousel */
+  .carousel{max-inline-size:520px}
+  .viewport{position:relative;border:1px solid var(--color-border-default);border-radius:var(--radius-card);overflow:hidden;background:var(--color-surface-card)}
+  .slide{display:none;padding:var(--space-8) var(--space-6);min-block-size:160px;align-content:center;gap:var(--space-1)}
+  .slide.current{display:grid}
+  .slide .k{font-size:var(--text-xs);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em}
+  .slide h3{font-size:var(--text-xl)}
+  .slide p{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .cbar{display:flex;align-items:center;justify-content:space-between;margin-block-start:var(--space-3)}
+  .cnav{display:flex;gap:var(--space-2)}
+  .cbtn{inline-size:var(--size-control-md);block-size:var(--size-control-md);display:grid;place-items:center;
+    border:1px solid var(--color-border-strong);background:var(--color-surface-card);border-radius:var(--radius-button);cursor:pointer;color:var(--color-text-primary)}
+  .cbtn:hover{background:var(--color-surface-raised)}
+  .cbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .cbtn svg{inline-size:1.1rem;block-size:1.1rem;color:currentColor;fill:none;stroke-width:2}
+  .dots{display:flex;gap:var(--space-1)}
+  .dot{inline-size:24px;block-size:24px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center;border-radius:var(--radius-full);color:var(--color-border-strong)}
+  .dot::before{content:"";inline-size:.55rem;block-size:.55rem;border-radius:var(--radius-full);background:currentColor;transition:background var(--transition-micro)}
+  .dot[aria-current="true"]{color:var(--color-text-link)}
+  .dot:hover{color:var(--color-text-secondary)}
+  .dot:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  /* image carousel */
+  .gallery{max-inline-size:520px}
+  .frame{position:relative;aspect-ratio:16/9;border:1px solid var(--color-border-default);border-radius:var(--radius-card) var(--radius-card) 0 0;overflow:hidden;background:var(--color-surface-raised)}
+  .photo{position:absolute;inset:0;display:none}
+  .photo.current{display:block}
+  .garrow{position:absolute;inset-block-start:50%;transform:translateY(-50%);inline-size:2.25rem;block-size:2.25rem;
+    display:grid;place-items:center;border:0;border-radius:var(--radius-full);background:var(--color-surface-card);color:var(--color-text-primary);cursor:pointer;box-shadow:var(--shadow-md)}
+  .garrow:hover{background:var(--color-surface-raised)}
+  .garrow:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .garrow.prev{inset-inline-start:var(--space-3)} .garrow.next{inset-inline-end:var(--space-3)}
+  .garrow svg{inline-size:1.2rem;block-size:1.2rem;color:currentColor;fill:none;stroke-width:2}
+  .counter{position:absolute;inset-block-start:var(--space-3);inset-inline-end:var(--space-3);
+    background:var(--color-surface-inverse);color:var(--color-text-inverse);font-size:var(--text-xs);font-weight:600;padding:2px 8px;border-radius:var(--radius-pill)}
+  .capbar{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);
+    border:1px solid var(--color-border-default);border-block-start:0;border-radius:0 0 var(--radius-card) var(--radius-card);
+    padding:var(--space-3) var(--space-4);background:var(--color-surface-card)}
+  .gcap{font-size:var(--text-sm);font-weight:500}
+  .gdots{display:flex;gap:var(--space-1)}
+  /* divider */
+  .stack{display:grid;gap:var(--space-4);max-inline-size:340px}
+  hr.div{border:0;border-block-start:1px solid var(--color-border-default);margin:0}
+  .div-text{display:flex;align-items:center;gap:var(--space-3);color:var(--color-text-secondary);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.06em}
+  .div-text::before,.div-text::after{content:"";flex:1;border-block-start:1px solid var(--color-border-default)}
+</style>
+</head>
+<body>
+<h1>Tree · Carousel · Divider</h1>
+
+<h2>Tree view (ARIA tree, roving tabindex)</h2>
+<ul class="tree" role="tree" aria-label="Project files">
+  <li class="treeitem" role="treeitem" aria-expanded="true" aria-selected="false">
+    <button class="node" tabindex="0"><svg class="twisty" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-right"/></svg><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg>src</button>
+    <ul role="group">
+      <li class="treeitem" role="treeitem" aria-expanded="false" aria-selected="false">
+        <button class="node" tabindex="-1"><svg class="twisty" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-right"/></svg><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-folder"/></svg>components</button>
+        <ul role="group">
+          <li class="treeitem" role="treeitem" aria-selected="false"><button class="node" tabindex="-1"><span class="leaf" aria-hidden="true"></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>Button.tsx</button></li>
+          <li class="treeitem" role="treeitem" aria-selected="false"><button class="node" tabindex="-1"><span class="leaf" aria-hidden="true"></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>Input.tsx</button></li>
+        </ul>
+      </li>
+      <li class="treeitem" role="treeitem" aria-selected="true"><button class="node" tabindex="-1"><span class="leaf" aria-hidden="true"></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>index.ts</button></li>
+    </ul>
+  </li>
+  <li class="treeitem" role="treeitem" aria-selected="false"><button class="node" tabindex="-1"><span class="leaf" aria-hidden="true"></span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>package.json</button></li>
+</ul>
+
+<h2>Carousel</h2>
+<section class="carousel" role="group" aria-roledescription="carousel" aria-label="Product highlights">
+  <div class="viewport">
+    <div class="slide current" role="group" aria-roledescription="slide" aria-label="1 of 3">
+      <span class="k">Design</span><h3>Token-driven theming</h3><p>One source of truth drives every screen, light and dark.</p>
+    </div>
+    <div class="slide" role="group" aria-roledescription="slide" aria-label="2 of 3">
+      <span class="k">Accessibility</span><h3>WCAG 2.2 gated</h3><p>Contrast, focus, and ARIA checked on every push.</p>
+    </div>
+    <div class="slide" role="group" aria-roledescription="slide" aria-label="3 of 3">
+      <span class="k">Velocity</span><h3>Any framework</h3><p>Adapter protocol emits React, Vue, SwiftUI, and more.</p>
+    </div>
+  </div>
+  <div class="cbar">
+    <div class="dots" role="group" aria-label="Choose slide">
+      <button class="dot" type="button" aria-current="true" aria-label="Slide 1"></button>
+      <button class="dot" type="button" aria-label="Slide 2"></button>
+      <button class="dot" type="button" aria-label="Slide 3"></button>
+    </div>
+    <div class="cnav">
+      <button class="cbtn" id="prev" aria-label="Previous slide"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+      <button class="cbtn" id="next" aria-label="Next slide"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+    </div>
+  </div>
+</section>
+
+<h2>Image carousel</h2>
+<section class="gallery" role="group" aria-roledescription="carousel" aria-label="Photo gallery">
+  <div class="frame">
+    <div class="photo current" role="group" aria-roledescription="slide" aria-label="1 of 4: Mountain sunrise" style="background:linear-gradient(135deg,var(--color-chart-1),var(--color-chart-5))"></div>
+    <div class="photo" role="group" aria-roledescription="slide" aria-label="2 of 4: Ocean dusk" style="background:linear-gradient(135deg,var(--color-chart-6),var(--color-chart-3))"></div>
+    <div class="photo" role="group" aria-roledescription="slide" aria-label="3 of 4: Desert dunes" style="background:linear-gradient(135deg,var(--color-chart-2),var(--color-chart-4))"></div>
+    <div class="photo" role="group" aria-roledescription="slide" aria-label="4 of 4: Forest mist" style="background:linear-gradient(135deg,var(--color-chart-3),var(--color-chart-1))"></div>
+    <span class="counter" id="gcounter" aria-hidden="true">1 / 4</span>
+    <button class="garrow prev" id="gprev" aria-label="Previous image"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+    <button class="garrow next" id="gnext" aria-label="Next image"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+  </div>
+  <div class="capbar">
+    <span class="gcap" id="gcap" aria-live="polite">Mountain sunrise</span>
+    <div class="gdots" role="group" aria-label="Choose image">
+      <button class="dot" type="button" aria-current="true" aria-label="Image 1"></button>
+      <button class="dot" type="button" aria-label="Image 2"></button>
+      <button class="dot" type="button" aria-label="Image 3"></button>
+      <button class="dot" type="button" aria-label="Image 4"></button>
+    </div>
+  </div>
+</section>
+
+<h2>Divider</h2>
+<div class="stack">
+  <span>Section one</span>
+  <hr class="div" />
+  <span>Section two</span>
+  <div class="div-text">or</div>
+  <span>Section three</span>
+</div>
+
+<script>
+  // tree: expand/collapse + roving focus + select
+  const tree=document.querySelector('.tree');
+  const items=()=>[...tree.querySelectorAll('.treeitem')].filter(li=>li.offsetParent!==null);
+  tree.addEventListener('click',e=>{
+    const btn=e.target.closest('.node');if(!btn)return;
+    const li=btn.closest('.treeitem');
+    if(li.hasAttribute('aria-expanded'))li.setAttribute('aria-expanded',li.getAttribute('aria-expanded')!=='true');
+    tree.querySelectorAll('[aria-selected="true"]').forEach(n=>n.setAttribute('aria-selected','false'));
+    li.setAttribute('aria-selected','true');
+    tree.querySelectorAll('.node').forEach(n=>n.tabIndex=-1);btn.tabIndex=0;btn.focus();
+  });
+  tree.addEventListener('keydown',e=>{
+    const btn=document.activeElement.closest?.('.node');if(!btn)return;const li=btn.closest('.treeitem');
+    const list=items();const i=list.indexOf(li);
+    const move=j=>{const t=list[j];if(!t)return;e.preventDefault();tree.querySelectorAll('.node').forEach(n=>n.tabIndex=-1);const b=t.querySelector('.node');b.tabIndex=0;b.focus();};
+    if(e.key==='ArrowDown')move(i+1);
+    else if(e.key==='ArrowUp')move(i-1);
+    else if(e.key==='ArrowRight'){if(li.getAttribute('aria-expanded')==='false'){e.preventDefault();li.setAttribute('aria-expanded','true');}else if(li.hasAttribute('aria-expanded'))move(i+1);}
+    else if(e.key==='ArrowLeft'){if(li.getAttribute('aria-expanded')==='true'){e.preventDefault();li.setAttribute('aria-expanded','false');}}
+  });
+  // text carousel (scoped to its section so .dot doesn't collide with the gallery)
+  (function(){
+    const root=document.querySelector('section[aria-label="Product highlights"]');
+    const slides=[...root.querySelectorAll('.slide')],dots=[...root.querySelectorAll('.dot')];
+    let cur=0;
+    function show(n){cur=(n+slides.length)%slides.length;
+      slides.forEach((s,i)=>s.classList.toggle('current',i===cur));
+      dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===cur)));}
+    root.querySelector('#prev').onclick=()=>show(cur-1);
+    root.querySelector('#next').onclick=()=>show(cur+1);
+    dots.forEach((d,i)=>d.onclick=()=>show(i));
+  })();
+  // image gallery
+  (function(){
+    const root=document.querySelector('.gallery');
+    const photos=[...root.querySelectorAll('.photo')],dots=[...root.querySelectorAll('.dot')];
+    const caps=['Mountain sunrise','Ocean dusk','Desert dunes','Forest mist'];
+    const counter=root.querySelector('#gcounter'),cap=root.querySelector('#gcap');
+    let cur=0;
+    function show(n){cur=(n+photos.length)%photos.length;
+      photos.forEach((p,i)=>p.classList.toggle('current',i===cur));
+      dots.forEach((d,i)=>d.setAttribute('aria-current',String(i===cur)));
+      counter.textContent=(cur+1)+' / '+photos.length;cap.textContent=caps[cur];}
+    root.querySelector('#gprev').onclick=()=>show(cur-1);
+    root.querySelector('#gnext').onclick=()=>show(cur+1);
+    dots.forEach((d,i)=>d.onclick=()=>show(i));
+  })();
+</script>
+<script src="icons.js"></script>
+</body>
+</html>

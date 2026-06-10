@@ -7,6 +7,9 @@ node_modules/
 *.tgz
 npm-debug.log*
 
+# Local-only demos (IP) — never commit
+examples/apple-home/
+
 # OS / editor noise
 .DS_Store
 *.swp

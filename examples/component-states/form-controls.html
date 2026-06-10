@@ -11,10 +11,32 @@
   h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
   h2{font-size:var(--text-lg);margin:var(--space-4) 0 var(--space-2)}
   .stack{display:grid;gap:var(--space-3);max-inline-size:360px}
-  label.row{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-base)}
-  input[type=checkbox],input[type=radio]{inline-size:1.15rem;block-size:1.15rem;accent-color:var(--color-action-primary)}
-  input:focus-visible{outline:2px solid var(--color-action-primary);outline-offset:2px}
+  label.row{display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-base);cursor:pointer}
+  label.row.muted{cursor:not-allowed}
+  /* custom thin checkbox + radio: real input is visually hidden, box is drawn */
+  .control{position:relative;inline-size:.95rem;block-size:.95rem;flex:none}
+  .control input{position:absolute;inset:0;inline-size:100%;block-size:100%;margin:0;opacity:0;cursor:inherit}
+  .control .box{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
+    border:1.5px solid var(--color-border-strong);background:var(--color-surface-page);
+    transition:background var(--transition-micro,150ms),border-color var(--transition-micro,150ms)}
+  .control.cb .box{border-radius:.25rem}
+  .control.rb .box{border-radius:var(--radius-full)}
+  .control .box svg{inline-size:.62rem;block-size:.62rem;stroke:var(--color-text-on-action);fill:none;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;opacity:0;transition:opacity var(--transition-micro,150ms)}
+  .control .box .pd{display:none}
+  .control .dot{inline-size:.5rem;block-size:.5rem;border-radius:var(--radius-full);background:var(--color-text-on-action);
+    transform:scale(0);transition:transform var(--transition-micro,150ms)}
+  .control input:hover+.box{border-color:var(--color-action-primary)}
+  .control input:checked+.box{background:var(--color-action-primary);border-color:var(--color-action-primary)}
+  .control.cb input:checked+.box svg,.control.cb input:indeterminate+.box svg{opacity:1}
+  .control.rb input:checked+.box .dot{transform:scale(1)}
+  .control.cb input:indeterminate+.box{background:var(--color-action-primary);border-color:var(--color-action-primary)}
+  .control.cb input:indeterminate+.box .pc{display:none}
+  .control.cb input:indeterminate+.box .pd{display:initial}
+  .control input:focus-visible+.box{box-shadow:var(--shadow-focus-ring)}
+  .control input:disabled+.box{opacity:.45}
   .muted{color:var(--color-text-secondary)}
+  @media(prefers-reduced-motion:reduce){.box,.box svg,.dot{transition:none}}
   /* switch */
   .switch{position:relative;inline-size:2.6rem;block-size:1.5rem;flex:none}
   .switch input{position:absolute;opacity:0;inline-size:100%;block-size:100%;margin:0;cursor:pointer}
@@ -31,17 +53,17 @@
 
 <h2>Checkbox</h2>
 <div class="stack">
-  <label class="row"><input type="checkbox" id="cb1" checked /> Email notifications</label>
-  <label class="row"><input type="checkbox" id="cb2" /> SMS notifications</label>
-  <label class="row"><input type="checkbox" id="cb3" /> Partial selection</label>
-  <label class="row muted"><input type="checkbox" id="cb4" disabled /> Disabled option</label>
+  <label class="row"><span class="control cb"><input type="checkbox" id="cb1" checked /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span> Email notifications</label>
+  <label class="row"><span class="control cb"><input type="checkbox" id="cb2" /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span> SMS notifications</label>
+  <label class="row"><span class="control cb"><input type="checkbox" id="cb3" /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span> Partial selection</label>
+  <label class="row muted"><span class="control cb"><input type="checkbox" id="cb4" disabled /><span class="box"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="pc" d="m5 12 5 5L20 7"/><path class="pd" d="M6 12h12"/></svg></span></span> Disabled option</label>
 </div>
 
 <h2>Radio · notification frequency</h2>
 <div class="stack" role="radiogroup" aria-label="Notification frequency">
-  <label class="row"><input type="radio" name="freq" id="r1" checked /> Real-time</label>
-  <label class="row"><input type="radio" name="freq" id="r2" /> Daily digest</label>
-  <label class="row"><input type="radio" name="freq" id="r3" /> Weekly</label>
+  <label class="row"><span class="control rb"><input type="radio" name="freq" id="r1" checked /><span class="box"><span class="dot"></span></span></span> Real-time</label>
+  <label class="row"><span class="control rb"><input type="radio" name="freq" id="r2" /><span class="box"><span class="dot"></span></span></span> Daily digest</label>
+  <label class="row"><span class="control rb"><input type="radio" name="freq" id="r3" /><span class="box"><span class="dot"></span></span></span> Weekly</label>
 </div>
 
 <h2>Switch</h2>

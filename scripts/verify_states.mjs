@@ -36,9 +36,14 @@ const read = el => {
   // skip non-text form controls (checkbox/radio/switch render natively via accent-color,
   // not CSS text color) and invisible elements — measuring their color/bg is meaningless.
   const isToggle = el.tagName === 'INPUT' && ['checkbox', 'radio'].includes(el.type);
-  const skip = isToggle || el.getAttribute('role') === 'switch' || +cs.opacity === 0;
+  // WCAG 1.4.3 / 1.4.11 exempt disabled (inactive) controls from contrast.
+  const isDisabled = el.disabled || el.getAttribute('aria-disabled') === 'true';
+  const skip = isToggle || el.getAttribute('role') === 'switch' || +cs.opacity === 0 || isDisabled;
   const own = transparent(cs.backgroundColor) ? eff(el.parentElement) : cs.backgroundColor;
-  return { skip, color: cs.color, bg: own, label: (el.textContent || el.value || el.getAttribute('aria-label') || '').trim().slice(0, 18), px: parseFloat(cs.fontSize), bold: (parseInt(cs.fontWeight, 10) || 400) >= 700 };
+  // graphical / icon-only control: no DIRECT text node (only an <svg> or nothing) →
+  // WCAG 1.4.11 non-text contrast applies (3:1), not the 4.5 text rule.
+  const graphical = ![...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+  return { skip, graphical, color: cs.color, bg: own, label: (el.textContent || el.value || el.getAttribute('aria-label') || '').trim().slice(0, 18), px: parseFloat(cs.fontSize), bold: (parseInt(cs.fontWeight, 10) || 400) >= 700 };
 };
 
 const handles = await page.$$('button, a[href], input, select, textarea, [role="button"], [role="switch"]');
@@ -56,7 +61,7 @@ for (const h of handles) {
       const fg = parse(r.color), bg = parse(r.bg);
       if (!fg || !bg) continue;
       checked++;
-      const need = (r.px >= 24 || (r.px >= 18.66 && r.bold)) ? 3.0 : 4.5;
+      const need = r.graphical ? 3.0 : ((r.px >= 24 || (r.px >= 18.66 && r.bold)) ? 3.0 : 4.5);
       const cr = ratio(fg, bg);
       if (cr < need) fails.push(`${state.padEnd(7)} "${r.label}" ${cr.toFixed(2)}:1 (need ${need})  [rgb(${fg}) on rgb(${bg})]`);
     } catch { /* element not hoverable/visible — skip */ }

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tooltip / Popover / Accordion</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-6) 0 var(--space-2)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  /* tooltip (shown for the harness) */
+  .tipwrap{position:relative;display:inline-block}
+  .tip{position:absolute;top:calc(100% + var(--space-2));inset-inline-start:0;z-index:5;
+    background:var(--color-surface-inverse);color:var(--color-text-inverse);font-size:var(--text-sm);
+    padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);box-shadow:var(--shadow-md);white-space:nowrap}
+  /* popover */
+  .pop{margin-block-start:var(--space-2);max-inline-size:280px;background:var(--color-surface-card);
+    border:1px solid var(--color-border-default);border-radius:var(--radius-card);box-shadow:var(--shadow-lg);padding:var(--space-4)}
+  .pop h3{font-size:var(--text-base);margin-block-end:var(--space-1)}
+  .pop p{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  /* accordion */
+  .acc{max-inline-size:520px;background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);overflow:hidden}
+  .acc-item + .acc-item{border-block-start:1px solid var(--color-border-default)}
+  .acc-trigger{width:100%;display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);
+    background:var(--color-surface-card);border:0;cursor:pointer;padding:var(--space-4);font:500 var(--text-base)/1.4 var(--font-sans);color:var(--color-text-primary);text-align:start}
+  .acc-trigger:hover{background:var(--color-surface-raised)}
+  .acc-trigger:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .acc-trigger svg{inline-size:1rem;block-size:1rem;color:var(--color-text-secondary);fill:none;stroke-width:2;transition:transform var(--duration-normal) var(--ease-emphasized)}
+  .acc-trigger[aria-expanded="true"] svg{transform:rotate(180deg)}
+  /* smooth height: grid-rows 0fr -> 1fr (animatable), inner clips overflow */
+  .acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--duration-normal) var(--ease-emphasized)}
+  .acc-panel.open{grid-template-rows:1fr}
+  .acc-panel > .acc-inner{overflow:hidden;min-block-size:0}
+  .acc-inner > p{padding:var(--space-1) var(--space-4) var(--space-4);margin:0;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.5}
+  .acc-panel[hidden]{display:none}
+  @media(prefers-reduced-motion:reduce){.acc-trigger svg,.acc-panel{transition:none}}
+</style>
+</head>
+<body>
+<h1>Overlays</h1>
+
+<h2>Tooltip</h2>
+<div class="tipwrap">
+  <button class="btn btn--secondary" aria-describedby="tip1">Save</button>
+  <span class="tip" role="tooltip" id="tip1">Saves and keeps editing (Cmd S)</span>
+</div>
+
+<h2>Popover</h2>
+<button class="btn btn--secondary" aria-expanded="true" aria-controls="pop1">Filters</button>
+<div class="pop" id="pop1" role="dialog" aria-label="Filters">
+  <h3>Filter results</h3>
+  <p>Narrow the list by status, owner, and date range.</p>
+</div>
+
+<h2>Accordion</h2>
+<div class="acc">
+  <div class="acc-item">
+    <h3><button class="acc-trigger" aria-expanded="true" aria-controls="a1">What is included in the plan?<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></h3>
+    <div class="acc-panel open" id="a1"><div class="acc-inner"><p>Unlimited projects, shared themes, and priority support.</p></div></div>
+  </div>
+  <div class="acc-item">
+    <h3><button class="acc-trigger" aria-expanded="false" aria-controls="a2">Can I cancel anytime?<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></h3>
+    <div class="acc-panel" id="a2" hidden><div class="acc-inner"><p>Yes. Your plan stays active until the end of the billing period.</p></div></div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.acc-trigger').forEach(t=>t.addEventListener('click',()=>{
+    const open=t.getAttribute('aria-expanded')==='true';
+    const panel=document.getElementById(t.getAttribute('aria-controls'));
+    t.setAttribute('aria-expanded',String(!open));
+    if(open){                                   // collapse: animate 1fr->0fr, then hide
+      panel.classList.remove('open');
+      const done=()=>{if(t.getAttribute('aria-expanded')==='false')panel.hidden=true;panel.removeEventListener('transitionend',done);};
+      panel.addEventListener('transitionend',done);
+    }else{                                       // expand: unhide, then animate 0fr->1fr next frame
+      panel.hidden=false;
+      requestAnimationFrame(()=>requestAnimationFrame(()=>panel.classList.add('open')));
+    }
+  }));
+</script>
+<script src="icons.js"></script>
+</body>
+</html>

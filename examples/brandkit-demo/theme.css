@@ -8,6 +8,10 @@
   --color-text-link:#006a6b;--color-feedback-success:#1c6935;--color-text-error:#a3201d;--color-feedback-warning:#8a5a00;
   --color-surface-brand:#e7f1f1;        /* faint brand wash (dark text passes) */
   --color-surface-inverse:#161a1c;--color-text-inverse:#f3f5f7;  /* dark band */
+  /* data-viz categorical (color-blind-aware, from tokens/data-viz.json) */
+  --color-chart-1:#2563eb;--color-chart-2:#e8710a;--color-chart-3:#0e9f6e;
+  --color-chart-4:#d81b7a;--color-chart-5:#7c3aed;--color-chart-6:#0891b2;
+  --color-chart-grid:#d0d5d9;--color-chart-track:#e5e8eb;
   --font-sans:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
   /* type scale (Major Third) */
   --text-xs:.75rem;--text-sm:.875rem;--text-base:1rem;--text-lg:1.125rem;--text-xl:1.25rem;
@@ -22,6 +26,11 @@
   /* depth */
   --shadow-sm:0 1px 2px rgba(20,30,40,.06);--shadow-md:0 10px 30px rgba(20,30,40,.08);--shadow-lg:0 24px 60px rgba(20,30,40,.12);
   --shadow-focus-ring:0 0 0 2px var(--color-surface-page),0 0 0 4px var(--color-action-primary);
+  /* motion */
+  --duration-fast:120ms;--duration-normal:220ms;--duration-slow:320ms;
+  --ease-out:cubic-bezier(.22,.61,.36,1);--ease-in:cubic-bezier(.55,.06,.68,.19);--ease-in-out:cubic-bezier(.45,.05,.55,.95);
+  --ease-emphasized:cubic-bezier(.2,0,0,1);
+  --transition-micro:var(--duration-fast) var(--ease-out);
 }
 :root[data-theme="dark"]{
   --color-surface-page:#101214;--color-surface-card:#242729;--color-surface-raised:#3c4044;
@@ -30,4 +39,8 @@
   --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
   --color-border-default:#3c4044;--color-border-strong:#868d93;
   --color-text-link:#00bdbe;--color-feedback-success:#62bb78;--color-text-error:#f3a39e;--color-feedback-warning:#e0a83a;
+  --color-surface-brand:#103536;        /* dark teal wash — text-link passes on it */
+  --color-chart-1:#60a5fa;--color-chart-2:#fb923c;--color-chart-3:#34d399;
+  --color-chart-4:#f472b6;--color-chart-5:#a78bfa;--color-chart-6:#22d3ee;
+  --color-chart-grid:#3c4044;--color-chart-track:#3c4044;
 }

@@ -38,6 +38,21 @@ const checks = [
   ['Component harnesses — Tabs / Select / Checkbox-Radio-Switch / Toast (states + axe + render, light + dark)',
    ['tabs', 'select', 'form-controls', 'toast'].map(c =>
      `node scripts/verify_states.mjs examples/component-states/${c}.html && node scripts/verify_states.mjs --dark examples/component-states/${c}.html && node scripts/axe_audit.mjs examples/component-states/${c}.html && node scripts/measure_render.mjs --dark examples/component-states/${c}.html`).join(' && ')],
+  ['Component harnesses — Feedback / Navigation / Overlays / Misc (states + axe + render, light + dark)',
+   ['feedback', 'navigation', 'overlays', 'misc'].map(c =>
+     `node scripts/verify_states.mjs examples/component-states/${c}.html && node scripts/verify_states.mjs --dark examples/component-states/${c}.html && node scripts/axe_audit.mjs examples/component-states/${c}.html && node scripts/axe_audit.mjs --dark examples/component-states/${c}.html && node scripts/measure_render.mjs --dark examples/component-states/${c}.html`).join(' && ')],
+  ['Component harnesses — Card / Data Table / Date Picker / File Upload / Search-Field (states + axe, light + dark)',
+   ['card', 'data-table', 'datepicker', 'fileupload', 'search'].map(c =>
+     `node scripts/verify_states.mjs examples/component-states/${c}.html && node scripts/verify_states.mjs --dark examples/component-states/${c}.html && node scripts/axe_audit.mjs examples/component-states/${c}.html && node scripts/axe_audit.mjs --dark examples/component-states/${c}.html`).join(' && ')],
+  ['Component harness — Drawer (focus trap + Escape + states + axe, light + dark)',
+   'node scripts/verify_focustrap.mjs examples/component-states/drawer.html --open="#openBtn" && node scripts/verify_focustrap.mjs examples/component-states/drawer.html --open="#openBtn" --dark && node scripts/verify_states.mjs examples/component-states/drawer.html && node scripts/axe_audit.mjs examples/component-states/drawer.html'],
+  ['Component harnesses — Charts / Tree-Carousel-Gallery / App Shell / Context Menu (states + axe, light + dark)',
+   ['charts', 'data-display', 'app-shell', 'context-menu'].map(c =>
+     `node scripts/verify_states.mjs examples/component-states/${c}.html && node scripts/verify_states.mjs --dark examples/component-states/${c}.html && node scripts/axe_audit.mjs examples/component-states/${c}.html && node scripts/axe_audit.mjs --dark examples/component-states/${c}.html`).join(' && ')],
+  ['Component harness — Command Palette (focus trap + combobox/listbox + states + axe, light + dark)',
+   'node scripts/verify_focustrap.mjs examples/component-states/command-palette.html --open="#openBtn" && node scripts/verify_states.mjs examples/component-states/command-palette.html && node scripts/verify_states.mjs --dark examples/component-states/command-palette.html && node scripts/axe_audit.mjs examples/component-states/command-palette.html && node scripts/axe_audit.mjs --dark examples/component-states/command-palette.html'],
+  ['Responsive — no horizontal overflow at 280/320/414px across every component harness',
+   'node scripts/verify_responsive.mjs examples/component-states'],
 ];
 
 console.log('='.repeat(64));

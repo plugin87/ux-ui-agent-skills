@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>File Upload - dropzone + list</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .uploader{max-inline-size:480px;display:grid;gap:var(--space-4)}
+  .drop{display:grid;justify-items:center;gap:var(--space-2);text-align:center;
+    border:1px dashed var(--color-border-strong);border-radius:var(--radius-card);padding:var(--space-12) var(--space-6);
+    background:var(--color-surface-card);cursor:pointer}
+  .drop:hover{background:var(--color-surface-raised)}
+  .drop:focus-within{box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .drop svg{inline-size:2rem;block-size:2rem;color:var(--color-text-secondary);fill:none;stroke-width:1.5}
+  .drop strong{font-size:var(--text-base)}
+  .drop .hint{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .drop input{position:absolute;width:1px;height:1px;opacity:0}
+  .files{list-style:none;padding:0;margin:0;display:grid;gap:var(--space-2)}
+  .file{display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-3);align-items:center;
+    padding:var(--space-3);border:1px solid var(--color-border-default);border-radius:var(--radius-button);background:var(--color-surface-card)}
+  .file svg.doc{inline-size:1.25rem;block-size:1.25rem;color:var(--color-text-secondary);fill:none;stroke-width:2}
+  .file .name{font-size:var(--text-sm);font-weight:500}
+  .file .size{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .bar{height:.4rem;background:var(--color-surface-raised);border-radius:var(--radius-full);overflow:hidden;margin-block-start:var(--space-1)}
+  .bar > span{display:block;height:100%;background:var(--color-action-primary)}
+  .rm{background:none;border:0;cursor:pointer;color:var(--color-text-secondary);padding:var(--space-1);border-radius:var(--radius-sm)}
+  .rm:hover{color:var(--color-text-primary)}
+  .rm:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .rm svg{inline-size:1rem;block-size:1rem;color:currentColor;fill:none;stroke-width:2}
+</style>
+</head>
+<body>
+<h1>File Upload</h1>
+<div class="uploader">
+  <label class="drop">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-upload"/></svg>
+    <strong>Drag files here, or browse</strong>
+    <span class="hint">PNG, JPG, or PDF up to 10 MB</span>
+    <input type="file" multiple aria-label="Upload files" />
+  </label>
+
+  <ul class="files">
+    <li class="file">
+      <svg class="doc" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>
+      <div><div class="name">report.pdf</div><div class="size">2.4 MB</div></div>
+      <button class="rm" aria-label="Remove report.pdf"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
+    </li>
+    <li class="file">
+      <svg class="doc" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-file"/></svg>
+      <div><div class="name">cover.png</div><div class="size">Uploading 70%</div>
+        <div class="bar" role="progressbar" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100" aria-label="Uploading cover.png"><span style="inline-size:70%"></span></div>
+      </div>
+      <button class="rm" aria-label="Cancel upload of cover.png"><svg viewBox="0 0 24 24"><use href="#i-x"/></svg></button>
+    </li>
+  </ul>
+</div>
+<script src="icons.js"></script>
+</body>
+</html>

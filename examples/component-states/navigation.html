@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Breadcrumb / Pagination / Stepper / Menu</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h2{font-size:var(--text-lg);margin:var(--space-6) 0 var(--space-2)}
+  a{color:var(--color-text-link);text-decoration:none}
+  a:hover{text-decoration:underline}
+  /* breadcrumb */
+  .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);font-size:var(--text-sm);list-style:none;padding:0;margin:0}
+  .crumbs .sep{color:var(--color-text-secondary)}
+  .crumbs [aria-current]{color:var(--color-text-primary);font-weight:500}
+  /* pagination */
+  .pages{display:flex;flex-wrap:wrap;gap:var(--space-1);list-style:none;padding:0;margin:0}
+  .pages a,.pages span{display:grid;place-items:center;min-inline-size:var(--size-control-md);height:var(--size-control-md);
+    padding-inline:var(--space-2);border-radius:var(--radius-button);font-size:var(--text-base);color:var(--color-text-primary)}
+  .pages a:hover{background:var(--color-surface-raised);text-decoration:none}
+  .pages a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .pages [aria-current="page"]{background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .pages [aria-disabled="true"]{color:var(--color-text-secondary);pointer-events:none}
+  /* stepper */
+  .steps{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-2);list-style:none;padding:0;margin:0}
+  .step{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .step .num{inline-size:1.5rem;block-size:1.5rem;border-radius:var(--radius-full);display:grid;place-items:center;
+    border:1px solid var(--color-border-strong);font-size:var(--text-sm);color:var(--color-text-primary)}
+  .step[aria-current="step"]{color:var(--color-text-primary);font-weight:500}
+  .step[aria-current="step"] .num{background:var(--color-action-primary);color:var(--color-text-on-action);border-color:var(--color-action-primary)}
+  .step[data-done] .num{background:var(--color-surface-raised);border-color:var(--color-border-strong)}
+  .steps .line{inline-size:2rem;height:1px;background:var(--color-border-default)}
+  /* menu */
+  .menu{list-style:none;max-inline-size:220px;border:1px solid var(--color-border-default);border-radius:var(--radius-button);
+    background:var(--color-surface-card);box-shadow:var(--shadow-md);padding:var(--space-1)}
+  .menu [role="menuitem"]{display:block;width:100%;text-align:start;background:none;border:0;cursor:pointer;
+    padding:var(--space-2) var(--space-3);border-radius:var(--radius-sm);font:400 var(--text-base)/1.4 var(--font-sans);color:var(--color-text-primary)}
+  .menu [role="menuitem"]:hover{background:var(--color-surface-raised)}
+  .menu [role="menuitem"]:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .menu [role="separator"]{height:1px;background:var(--color-border-default);margin:var(--space-1) 0}
+</style>
+</head>
+<body>
+<h1>Navigation</h1>
+
+<h2>Breadcrumb</h2>
+<nav aria-label="Breadcrumb"><ol class="crumbs">
+  <li><a href="#">Home</a></li><li class="sep" aria-hidden="true">/</li>
+  <li><a href="#">Projects</a></li><li class="sep" aria-hidden="true">/</li>
+  <li><a href="#" aria-current="page">Redesign</a></li>
+</ol></nav>
+
+<h2>Pagination</h2>
+<nav aria-label="Pagination"><ul class="pages">
+  <li><span aria-disabled="true" aria-label="Previous page">&lsaquo;</span></li>
+  <li><span aria-current="page" aria-label="Page 1, current">1</span></li>
+  <li><a href="#" aria-label="Page 2">2</a></li>
+  <li><a href="#" aria-label="Page 3">3</a></li>
+  <li><a href="#" aria-label="Next page">&rsaquo;</a></li>
+</ul></nav>
+
+<h2>Stepper</h2>
+<ol class="steps" aria-label="Checkout">
+  <li class="step" data-done><span class="num">1</span> Cart</li>
+  <li class="line" aria-hidden="true"></li>
+  <li class="step" aria-current="step"><span class="num">2</span> Shipping</li>
+  <li class="line" aria-hidden="true"></li>
+  <li class="step"><span class="num">3</span> Payment</li>
+</ol>
+
+<h2>Menu</h2>
+<div class="menu" role="menu" aria-label="Account">
+  <button role="menuitem">View profile</button>
+  <button role="menuitem">Settings</button>
+  <div role="separator"></div>
+  <button role="menuitem">Sign out</button>
+</div>
+</body>
+</html>

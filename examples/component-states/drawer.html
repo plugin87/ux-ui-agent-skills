@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Drawer - focus trap side panel</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40}
+  .scrim.hidden{display:none}
+  .drawer{position:fixed;inset-block:0;inset-inline-end:0;z-index:41;inline-size:min(92vw,360px);
+    background:var(--color-surface-card);color:var(--color-text-primary);box-shadow:var(--shadow-lg);
+    padding:var(--space-6);display:grid;gap:var(--space-4);align-content:start}
+  .drawer[hidden]{display:none}
+  .drawer h2{font-size:var(--text-xl)}
+  .drawer p{font-size:var(--text-base);color:var(--color-text-secondary)}
+  .field{display:grid;gap:var(--space-2)}
+  .field label{font-size:var(--text-sm);font-weight:500}
+  .field input{height:var(--size-control-md);padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-base)}
+  .field input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .drawer .row{display:flex;gap:var(--space-2);margin-block-start:var(--space-2)}
+</style>
+</head>
+<body>
+<h1>Drawer</h1>
+<button class="btn" id="openBtn">Edit details</button>
+
+<div class="scrim hidden" id="scrim"></div>
+<aside class="drawer hidden" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dtitle" hidden>
+  <h2 id="dtitle">Edit details</h2>
+  <p>Update the project name and owner.</p>
+  <div class="field"><label for="dname">Project name</label><input id="dname" value="Redesign" /></div>
+  <div class="field"><label for="downer">Owner</label><input id="downer" value="Plug" /></div>
+  <div class="row"><button class="btn btn--secondary" id="cancelBtn">Cancel</button><button class="btn" id="saveBtn">Save</button></div>
+</aside>
+
+<script>
+  const openBtn=document.getElementById('openBtn'),scrim=document.getElementById('scrim'),drawer=document.getElementById('drawer'),cancelBtn=document.getElementById('cancelBtn'),saveBtn=document.getElementById('saveBtn');
+  const SEL='a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+  let last=null;
+  function open(){last=document.activeElement;scrim.classList.remove('hidden');drawer.classList.remove('hidden');drawer.removeAttribute('hidden');[...drawer.querySelectorAll(SEL)][0].focus();}
+  function close(){scrim.classList.add('hidden');drawer.classList.add('hidden');drawer.setAttribute('hidden','');last&&last.focus();}
+  openBtn.onclick=open;cancelBtn.onclick=close;saveBtn.onclick=close;scrim.onclick=close;
+  document.addEventListener('keydown',e=>{
+    if(drawer.hasAttribute('hidden'))return;
+    if(e.key==='Escape')return close();
+    if(e.key!=='Tab')return;
+    const f=[...drawer.querySelectorAll(SEL)];const first=f[0],lastEl=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();lastEl.focus();}
+    else if(!e.shiftKey&&document.activeElement===lastEl){e.preventDefault();first.focus();}
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Date Picker - calendar grid</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .cal{inline-size:100%;max-inline-size:300px;border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-4);background:var(--color-surface-card)}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-block-end:var(--space-3)}
+  .cal-head .m{font-weight:600;font-size:var(--text-base)}
+  .nav{inline-size:var(--size-control-md);block-size:var(--size-control-md);display:grid;place-items:center;
+    background:none;border:0;cursor:pointer;border-radius:var(--radius-button);color:var(--color-text-primary)}
+  .nav:hover{background:var(--color-surface-raised)}
+  .nav:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .nav svg{inline-size:1rem;block-size:1rem;color:currentColor;fill:none;stroke-width:2}
+  table{border-collapse:collapse;inline-size:100%}
+  th{font-size:var(--text-xs);color:var(--color-text-secondary);font-weight:600;padding-block:var(--space-1)}
+  td{padding:2px;text-align:center}
+  .day{inline-size:100%;min-inline-size:1.75rem;block-size:2rem;border:0;background:none;cursor:pointer;border-radius:var(--radius-button);
+    font-size:var(--text-sm);color:var(--color-text-primary)}
+  .day:hover{background:var(--color-surface-raised)}
+  .day:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .day[aria-current="date"]{box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .day[aria-pressed="true"]{background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .day[disabled]{color:var(--color-text-secondary);opacity:.45;cursor:not-allowed}
+</style>
+</head>
+<body>
+<h1>Date Picker</h1>
+<div class="cal">
+  <div class="cal-head">
+    <button class="nav" aria-label="Previous month"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-left"/></svg></button>
+    <span class="m" id="calm" aria-live="polite">June 2026</span>
+    <button class="nav" aria-label="Next month"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chevron-right"/></svg></button>
+  </div>
+  <table role="grid" aria-labelledby="calm">
+    <thead><tr>
+      <th scope="col"><abbr title="Sunday">Su</abbr></th><th scope="col"><abbr title="Monday">Mo</abbr></th>
+      <th scope="col"><abbr title="Tuesday">Tu</abbr></th><th scope="col"><abbr title="Wednesday">We</abbr></th>
+      <th scope="col"><abbr title="Thursday">Th</abbr></th><th scope="col"><abbr title="Friday">Fr</abbr></th>
+      <th scope="col"><abbr title="Saturday">Sa</abbr></th>
+    </tr></thead>
+    <tbody>
+      <tr><td><button class="day" disabled tabindex="-1">31</button></td><td><button class="day" tabindex="-1">1</button></td><td><button class="day" tabindex="-1">2</button></td><td><button class="day" tabindex="-1">3</button></td><td><button class="day" tabindex="-1">4</button></td><td><button class="day" tabindex="-1">5</button></td><td><button class="day" tabindex="-1">6</button></td></tr>
+      <tr><td><button class="day" tabindex="-1">7</button></td><td><button class="day" tabindex="-1">8</button></td><td><button class="day" aria-current="date" tabindex="0">9</button></td><td><button class="day" tabindex="-1">10</button></td><td><button class="day" tabindex="-1">11</button></td><td><button class="day" tabindex="-1">12</button></td><td><button class="day" tabindex="-1">13</button></td></tr>
+      <tr><td><button class="day" tabindex="-1">14</button></td><td><button class="day" aria-pressed="true" aria-label="15 June, selected" tabindex="-1">15</button></td><td><button class="day" tabindex="-1">16</button></td><td><button class="day" tabindex="-1">17</button></td><td><button class="day" tabindex="-1">18</button></td><td><button class="day" tabindex="-1">19</button></td><td><button class="day" tabindex="-1">20</button></td></tr>
+      <tr><td><button class="day" tabindex="-1">21</button></td><td><button class="day" tabindex="-1">22</button></td><td><button class="day" tabindex="-1">23</button></td><td><button class="day" tabindex="-1">24</button></td><td><button class="day" tabindex="-1">25</button></td><td><button class="day" tabindex="-1">26</button></td><td><button class="day" tabindex="-1">27</button></td></tr>
+      <tr><td><button class="day" tabindex="-1">28</button></td><td><button class="day" tabindex="-1">29</button></td><td><button class="day" tabindex="-1">30</button></td><td><button class="day" disabled tabindex="-1">1</button></td><td><button class="day" disabled tabindex="-1">2</button></td><td><button class="day" disabled tabindex="-1">3</button></td><td><button class="day" disabled tabindex="-1">4</button></td></tr>
+    </tbody>
+  </table>
+</div>
+<script src="icons.js"></script>
+</body>
+</html>

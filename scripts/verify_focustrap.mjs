@@ -32,7 +32,7 @@ await page.click(open).catch(() => fails.push(`could not click trigger ${open}`)
 await page.waitForTimeout(120);
 
 const sem = await page.evaluate(sel => {
-  const d = [...document.querySelectorAll(sel)].find(el => el.offsetParent !== null || getComputedStyle(el).position === 'fixed');
+  const d = [...document.querySelectorAll(sel)].find(el => { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && (el.offsetParent !== null || cs.position === 'fixed'); });
   if (!d) return { open: false };
   const focusables = [...d.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(e => e.offsetParent !== null);
   return { open: true, role: d.getAttribute('role'), modal: d.getAttribute('aria-modal'),
@@ -53,7 +53,7 @@ let leaked = false, leakWhere = '';
 for (let i = 0; i < steps; i++) {
   await page.keyboard.press('Tab');
   const inside = await page.evaluate(sel => {
-    const d = [...document.querySelectorAll(sel)].find(el => el.offsetParent !== null || getComputedStyle(el).position === 'fixed');
+    const d = [...document.querySelectorAll(sel)].find(el => { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && (el.offsetParent !== null || cs.position === 'fixed'); });
     return d ? d.contains(document.activeElement) : false;
   }, dialogSel);
   if (!inside) { leaked = true; leakWhere = `after ${i + 1} Tab(s)`; break; }
@@ -64,7 +64,7 @@ if (leaked) fails.push(`focus ESCAPED the dialog ${leakWhere} — keyboard trap 
 await page.keyboard.press('Escape');
 await page.waitForTimeout(120);
 const afterEsc = await page.evaluate(({ sel, tid }) => {
-  const d = [...document.querySelectorAll(sel)].find(el => el.offsetParent !== null || getComputedStyle(el).position === 'fixed');
+  const d = [...document.querySelectorAll(sel)].find(el => { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && (el.offsetParent !== null || cs.position === 'fixed'); });
   return { stillOpen: !!d, focusBackOnTrigger: tid ? document.activeElement === document.getElementById(tid) : null };
 }, { sel: dialogSel, tid: triggerWasFocusable });
 if (afterEsc.stillOpen) fails.push('Escape did not close the dialog');

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Command Palette - focus trap + combobox</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-base)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  kbd{font:600 var(--text-xs)/1 var(--font-sans);background:var(--color-surface-raised);color:var(--color-text-primary);border-radius:var(--radius-sm);padding:2px 6px;margin-inline-start:var(--space-2)}
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:40;display:grid;justify-items:center;align-items:start;padding-block-start:12vh}
+  .scrim[hidden]{display:none}
+  .palette{inline-size:min(92vw,560px);background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card);box-shadow:var(--shadow-lg);overflow:hidden}
+  .pinput{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);border-block-end:1px solid var(--color-border-default)}
+  .pinput svg{inline-size:1.1rem;block-size:1.1rem;flex:none;color:var(--color-text-secondary);fill:none;stroke-width:2}
+  .pinput input{flex:1;border:0;background:none;font-size:var(--text-lg);color:var(--color-text-primary);outline:none}
+  .pinput input::placeholder{color:var(--color-text-secondary)}
+  .listbox{list-style:none;margin:0;padding:var(--space-2);max-block-size:46vh;overflow-y:auto}
+  .group{font-size:var(--text-xs);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;padding:var(--space-2) var(--space-2) var(--space-1)}
+  .opt{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-button);cursor:pointer;font-size:var(--text-sm)}
+  .opt svg{inline-size:1.05rem;block-size:1.05rem;flex:none;color:var(--color-text-secondary);fill:none;stroke-width:2}
+  .opt .meta{margin-inline-start:auto;font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .opt[aria-selected="true"]{background:var(--color-surface-brand)}
+  .opt[aria-selected="true"],.opt[aria-selected="true"] svg{color:var(--color-text-link);color:var(--color-text-link)}
+  .empty{padding:var(--space-6);text-align:center;color:var(--color-text-secondary);font-size:var(--text-sm)}
+</style>
+</head>
+<body>
+<h1>Command Palette</h1>
+<button class="btn" id="openBtn">Open command palette <kbd>Cmd K</kbd></button>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="palette" role="dialog" aria-modal="true" aria-label="Command palette">
+    <div class="pinput">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="cmd" type="text" role="combobox" aria-expanded="true" aria-controls="cmdlist" aria-activedescendant="o1"
+             aria-autocomplete="list" placeholder="Type a command or search" autocomplete="off" />
+    </div>
+    <ul class="listbox" id="cmdlist" role="listbox" aria-label="Commands">
+      <li class="group" id="g1" role="presentation">Actions</li>
+      <li class="opt" id="o1" role="option" aria-selected="true"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-plus"/></svg>New project<span class="meta">N</span></li>
+      <li class="opt" id="o2" role="option" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-download"/></svg>Import data<span class="meta">I</span></li>
+      <li class="opt" id="o3" role="option" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-settings"/></svg>Open settings<span class="meta">,</span></li>
+      <li class="group" role="presentation">Navigate</li>
+      <li class="opt" id="o4" role="option" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-home"/></svg>Go to dashboard</li>
+      <li class="opt" id="o5" role="option" aria-selected="false"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-user"/></svg>Go to profile</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  const openBtn=document.getElementById('openBtn'),scrim=document.getElementById('scrim'),input=document.getElementById('cmd'),list=document.getElementById('cmdlist');
+  let last=null;
+  const opts=()=>[...list.querySelectorAll('.opt')].filter(o=>o.offsetParent!==null);
+  function select(o){list.querySelectorAll('.opt').forEach(x=>x.setAttribute('aria-selected','false'));o.setAttribute('aria-selected','true');input.setAttribute('aria-activedescendant',o.id);o.scrollIntoView({block:'nearest'});}
+  function open(){last=document.activeElement;scrim.hidden=false;input.value='';filter();input.focus();}
+  function close(){scrim.hidden=true;last&&last.focus();}
+  openBtn.onclick=open;
+  scrim.addEventListener('click',e=>{if(e.target===scrim)close();});
+  function filter(){const q=input.value.trim().toLowerCase();let first=null,any=false;
+    list.querySelectorAll('.opt').forEach(o=>{const hit=o.textContent.toLowerCase().includes(q);o.style.display=hit?'':'none';if(hit){any=true;if(!first)first=o;}});
+    list.querySelectorAll('.group').forEach(g=>g.style.display=q?'none':'');
+    let e=list.querySelector('.empty');
+    if(!any){if(!e){e=document.createElement('li');e.className='empty';e.id='empty';e.setAttribute('role','option');e.setAttribute('aria-selected','false');e.textContent='No commands match.';list.appendChild(e);}e.style.display='';input.setAttribute('aria-activedescendant','');}
+    else{if(e)e.style.display='none';if(first)select(first);}
+  }
+  input.addEventListener('input',filter);
+  document.addEventListener('keydown',e=>{
+    if(scrim.hidden)return;
+    if(e.key==='Escape')return close();
+    const list2=opts();const cur=list.querySelector('.opt[aria-selected="true"]');const i=list2.indexOf(cur);
+    if(e.key==='ArrowDown'){e.preventDefault();select(list2[Math.min(i+1,list2.length-1)]||list2[0]);}
+    else if(e.key==='ArrowUp'){e.preventDefault();select(list2[Math.max(i-1,0)]||list2[0]);}
+    else if(e.key==='Enter'&&cur){e.preventDefault();close();}
+    else if(e.key==='Tab'){e.preventDefault();} // single focusable: keep focus on input (trap)
+  });
+</script>
+<script src="icons.js"></script>
+</body>
+</html>

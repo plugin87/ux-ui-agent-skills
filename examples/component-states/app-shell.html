@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>App Shell - Header + Sidebar (landmarks)</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary)}
+  .ico{inline-size:1.2rem;block-size:1.2rem;flex:none}
+  .shell{min-block-size:100vh;display:grid;grid-template-rows:auto 1fr;grid-template-columns:240px 1fr;
+    grid-template-areas:"head head" "side main"}
+  /* header */
+  header.bar{grid-area:head;display:flex;align-items:center;gap:var(--space-4);padding:var(--space-3) var(--space-5);
+    background:var(--color-surface-card);border-block-end:1px solid var(--color-border-default)}
+  .brand{display:flex;align-items:center;gap:var(--space-2);font-weight:700;font-size:var(--text-base)}
+  .brand .mark{inline-size:1.6rem;block-size:1.6rem;border-radius:var(--radius-sm);background:var(--color-action-primary);display:grid;place-items:center;color:var(--color-text-on-action)}
+  .brand .mark .ico{inline-size:1rem;block-size:1rem}
+  .hsearch{position:relative;flex:1;min-inline-size:0;max-inline-size:420px;display:flex;align-items:center}
+  .bar .iconbtn[aria-label="Notifications"]{margin-inline-start:auto}  /* push right cluster to the edge */
+  .hsearch .ico{position:absolute;inset-inline-start:var(--space-3);inline-size:1rem;block-size:1rem;color:var(--color-text-secondary);pointer-events:none}
+  .hsearch input{inline-size:100%;height:var(--size-control-md);padding-inline:2.25rem;border-radius:var(--radius-button);
+    border:1px solid var(--color-border-strong);background:var(--color-surface-page);color:var(--color-text-primary);font-size:var(--text-sm)}
+  .hsearch input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-color:var(--color-action-primary)}
+  .iconbtn{inline-size:var(--size-control-md);block-size:var(--size-control-md);display:grid;place-items:center;border:0;background:none;cursor:pointer;border-radius:var(--radius-button);color:var(--color-text-secondary)}
+  .iconbtn:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
+  .iconbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .avatar{inline-size:2rem;block-size:2rem;border-radius:var(--radius-full);background:var(--color-action-primary);color:var(--color-text-on-action);display:grid;place-items:center;font-size:var(--text-xs);font-weight:600}
+  .menutoggle{display:none}
+  /* sidebar */
+  aside.side{grid-area:side;background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default);padding:var(--space-4)}
+  .nav{list-style:none;margin:0;padding:0;display:grid;gap:var(--space-1)}
+  .nav .sec{font-size:var(--text-xs);color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.04em;padding:var(--space-3) var(--space-2) var(--space-1)}
+  .nav a{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);border-radius:var(--radius-button);
+    text-decoration:none;color:var(--color-text-primary);font-size:var(--text-sm);font-weight:500}
+  .nav a:hover{background:var(--color-surface-raised)}
+  .nav a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .nav a[aria-current="page"]{background:var(--color-surface-brand);color:var(--color-text-link)}
+  .nav a .ico{inline-size:1.1rem;block-size:1.1rem}
+  /* main */
+  main.content{grid-area:main;padding:var(--space-6);display:grid;gap:var(--space-5);align-content:start}
+  .head-row{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap}
+  main.content h1{font-size:var(--text-2xl)}
+  main.content .sub{color:var(--color-text-secondary);font-size:var(--text-sm)}
+  .btn{height:var(--size-control-md);padding-inline:var(--space-4);border:0;border-radius:var(--radius-button);font:500 var(--text-sm)/1 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action);display:inline-flex;align-items:center;gap:var(--space-2)}
+  .btn .ico{inline-size:1rem;block-size:1rem}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:var(--space-4)}
+  .stat{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-5);display:grid;gap:var(--space-1)}
+  .stat .n{font-size:var(--text-3xl);font-weight:700;line-height:1.1}
+  .stat .l{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .stat .delta{font-size:var(--text-xs);font-weight:600}
+  .up{color:var(--color-feedback-success)} .down{color:var(--color-text-error)}
+  .panels{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--space-5);align-items:stretch}
+  .panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);overflow:hidden;display:flex;flex-direction:column}
+  .panel h2{font-size:var(--text-base);padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--color-border-default)}
+  .activity{list-style:none;margin:0;padding:var(--space-2)}
+  .activity li{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-button)}
+  .activity li:hover{background:var(--color-surface-raised)}
+  .av{inline-size:2rem;block-size:2rem;border-radius:var(--radius-full);display:grid;place-items:center;background:var(--color-action-primary);color:var(--color-text-on-action);font-size:var(--text-xs);font-weight:600;flex:none}
+  .activity .t{font-size:var(--text-sm)} .activity .t b{font-weight:600}
+  .activity .when{margin-inline-start:auto;font-size:var(--text-xs);color:var(--color-text-secondary);white-space:nowrap}
+  .bars{display:flex;align-items:stretch;gap:var(--space-4);padding:var(--space-5);flex:1;min-block-size:180px}
+  .bars .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:var(--space-2)}
+  .bars .barbox{flex:1;inline-size:100%;display:flex;align-items:flex-end;justify-content:center}
+  .bars .bar{inline-size:100%;max-inline-size:2.2rem;border-radius:var(--radius-sm) var(--radius-sm) 0 0;background:var(--color-action-primary)}
+  .bars .cap{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  /* responsive */
+  @media (max-width:980px){ .panels{grid-template-columns:1fr} }
+  @media (max-width:720px){
+    .shell{display:block}                 /* block stack: header, (sidebar), main, no overlap */
+    aside.side{display:none;border-inline-end:0;border-block-end:1px solid var(--color-border-default)}
+    aside.side.open{display:block}         /* opening pushes main DOWN, never covers it */
+    .menutoggle{display:grid}
+    .hsearch{display:none}                  /* search moves to command palette on mobile */
+    .brand{flex:1;min-inline-size:0;overflow:hidden;white-space:nowrap}
+    header.bar{padding-inline:var(--space-3);gap:var(--space-2)}
+  }
+</style>
+</head>
+<body>
+<script src="icons.js"></script>
+<div class="shell">
+  <header class="bar">
+    <button class="iconbtn menutoggle" id="menuToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="side">
+      <svg class="ico" aria-hidden="true"><use href="#i-menu"/></svg>
+    </button>
+    <span class="brand"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span>Northwind</span>
+    <div class="hsearch">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" aria-label="Search" placeholder="Search" />
+    </div>
+    <button class="iconbtn" aria-label="Notifications"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg></button>
+    <span class="avatar" aria-hidden="true">PL</span>
+  </header>
+
+  <aside class="side" id="side">
+    <nav aria-label="Primary">
+      <ul class="nav">
+        <li class="sec">Workspace</li>
+        <li><a href="#" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-dashboard"/></svg>Dashboard</a></li>
+        <li><a href="#"><svg class="ico" aria-hidden="true"><use href="#i-folder"/></svg>Projects</a></li>
+        <li><a href="#"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Team</a></li>
+        <li class="sec">Account</li>
+        <li><a href="#"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a></li>
+        <li><a href="#"><svg class="ico" aria-hidden="true"><use href="#i-help"/></svg>Help</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <div class="head-row">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="sub">Overview of your workspace for the last 30 days.</p>
+      </div>
+      <button class="btn"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>New project</button>
+    </div>
+
+    <div class="cards">
+      <div class="stat"><div class="l">Active users</div><div class="n">2,481</div><div class="delta up">+12.4%</div></div>
+      <div class="stat"><div class="l">Uptime</div><div class="n">98.2%</div><div class="delta up">+0.3%</div></div>
+      <div class="stat"><div class="l">Open issues</div><div class="n">17</div><div class="delta down">+4</div></div>
+      <div class="stat"><div class="l">Revenue</div><div class="n">$48k</div><div class="delta up">+8.1%</div></div>
+    </div>
+
+    <div class="panels">
+      <section class="panel" aria-labelledby="act-h">
+        <h2 id="act-h">Recent activity</h2>
+        <ul class="activity">
+          <li><span class="av" aria-hidden="true">AL</span><span class="t"><b>Ada Lovelace</b> merged <b>Theme tokens</b></span><span class="when">2m ago</span></li>
+          <li><span class="av" aria-hidden="true">AT</span><span class="t"><b>Alan Turing</b> opened issue <b>#412</b></span><span class="when">1h ago</span></li>
+          <li><span class="av" aria-hidden="true">GH</span><span class="t"><b>Grace Hopper</b> deployed <b>v2.3</b></span><span class="when">3h ago</span></li>
+          <li><span class="av" aria-hidden="true">PL</span><span class="t"><b>Plug</b> invited <b>2 members</b></span><span class="when">yesterday</span></li>
+        </ul>
+      </section>
+
+      <section class="panel" aria-labelledby="rev-h">
+        <h2 id="rev-h">Revenue by quarter</h2>
+        <div class="bars" role="img" aria-label="Revenue by quarter: Q1 32k, Q2 48k, Q3 41k, Q4 60k.">
+          <div class="col"><div class="barbox"><div class="bar" style="block-size:53%"></div></div><span class="cap">Q1</span></div>
+          <div class="col"><div class="barbox"><div class="bar" style="block-size:80%"></div></div><span class="cap">Q2</span></div>
+          <div class="col"><div class="barbox"><div class="bar" style="block-size:68%"></div></div><span class="cap">Q3</span></div>
+          <div class="col"><div class="barbox"><div class="bar" style="block-size:100%"></div></div><span class="cap">Q4</span></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  const t=document.getElementById('menuToggle'),side=document.getElementById('side');
+  t.addEventListener('click',()=>{const open=side.classList.toggle('open');t.setAttribute('aria-expanded',String(open));});
+</script>
+</body>
+</html>

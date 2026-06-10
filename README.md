@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.6-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.3.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.6`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.3.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -322,10 +322,15 @@ This is a **starter kit** — make it yours:
 
 ## 📝 Changelog
 
-### `v2.2.6`
-- 🧩 **Tabs / Select & Combobox / Checkbox-Radio-Switch / Toast harnesses** added to `examples/component-states/`, each gated by `verify_states` + `axe` + `measure_render` (light + dark). `accuracy_report` now **19/19 = 100%**.
-- 🚫 **Anti-AI-pattern doctrine** — `taste/design-taste.md` now bans em-dashes in UI copy, marketing filler words, hollow superlative triads, and colored left-border accent strips on alerts/cards. `scripts/check_no_emoji.py` also flags em/en-dashes in rendered HTML.
-- 🔧 Fixes from gating the new widgets: `verify_states` skips non-text controls (checkbox/radio/switch) and invisible elements; Tabs/Select selected states use accessible contrast in both modes; native-select chevron standardized; combobox listbox de-bulleted; toast dropped the colored left border.
+### `v2.3.0`
+- 🧩 **22 component-states harnesses** — full set under `examples/component-states/`, each gated in light + dark: Button, Input, Modal, Tabs, Select/Combobox, Checkbox-Radio-Switch, Toast, Feedback, Navigation, Overlays, Misc, Card, Data Table, Drawer, Date Picker, File Upload, Search/Form-Field, Charts, Tree/Carousel/**Image carousel**/Divider, Command Palette, App Shell (header + sidebar landmarks), Context Menu. `accuracy_report` now **25/25 = 100%**.
+- 📊 **Charts / data-viz** — Bar, Line+area, Donut, Sparkline, Scatter (`role="img"` + legend), animated on entry (`pathLength` line-draw, `scaleY` bars, staggered points) with `prefers-reduced-motion` parity.
+- 🎨 **lucide icon sprite** — `examples/component-states/icons.js` injects one `<symbol>` sprite; icons are referenced by name `<svg class="ico"><use href="#i-bell"/></svg>` — no per-use path, no network, offline + gate-safe. Every harness icon converted (hand-drawn approximations that rendered as broken glyphs are gone).
+- 📐 **Responsive gate** — `scripts/verify_responsive.mjs` fails on any horizontal overflow at 280 / 320 / 414 px. Fixed fixed-width / unreset-list-padding / non-wrapping-flex / `minmax` traps across the set.
+- 🎚️ **New theme tokens** — motion (`--duration-*`, `--ease-*`, `--transition-micro`), color-blind-aware chart palette (`--color-chart-1..6`), and a dark-aware `--color-surface-brand`.
+- ♿ **Gate refinements** — `verify_states` holds graphical / icon-only controls to **3:1** (WCAG 1.4.11, not 4.5) and exempts disabled controls; `verify_focustrap` no longer false-passes a `display:none` `position:fixed` dialog (caught a drawer that never closed).
+- 🧱 **Verified patterns** — thin custom checkbox/radio (real `<input>` under a `pointer-events:none` box, check + dash as two `<path>` in one `<svg>`), smooth grid-rows accordion, `auto-fit` (not `auto-fill`) card grids, equal-height panels, mobile sidebar that pushes content down instead of overlapping.
+- 📚 **`design-component` skill** — added "RENDER AND LOOK — gates don't prove pixels", responsive, motion, layout, icons-by-sprite, and graphical-control rules.
 
 
 ### `v2.2.5`
