@@ -70,3 +70,8 @@ jobs:
         run: |
           node scripts/axe_audit.mjs examples/sample-app/preview.html
           node scripts/axe_audit.mjs examples/brandkit-demo/index.html
+      - name: Focus-trap + RTL + token-build
+        run: |
+          node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"
+          node scripts/verify_rtl.mjs examples/sample-app/preview.html
+          node scripts/build_tokens.mjs --out dist/tokens.css

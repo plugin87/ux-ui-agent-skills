@@ -540,6 +540,8 @@ scripts/                  ← validate_tokens.py · contrast.py · validate_cont
                             · measure_render.mjs (REAL headless-render WCAG gate — true computed contrast, light+dark)
                             · verify_states.mjs (state-aware WCAG — every element in default/hover/focus)
                             · axe_audit.mjs (axe-core WCAG 2.2 A/AA — ARIA, labels, landmarks, roles)
+                            · verify_focustrap.mjs (modal focus trap: Tab stays in, Escape closes, focus returns)
+                            · verify_rtl.mjs (RTL mirror — no logical-property breakage) · build_tokens.mjs (DTCG → CSS vars)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py

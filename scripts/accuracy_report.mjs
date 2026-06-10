@@ -26,6 +26,9 @@ const checks = [
   ['State-aware WCAG — every element, default/hover/focus (light)', 'node scripts/verify_states.mjs examples/sample-app/preview.html'],
   ['State-aware WCAG — every element, default/hover/focus (dark)', 'node scripts/verify_states.mjs --dark examples/sample-app/preview.html'],
   ['axe-core a11y (ARIA/labels/landmarks) — sample-app', 'node scripts/axe_audit.mjs examples/sample-app/preview.html'],
+  ['Focus-trap (WCAG 2.1.2/2.4.3) — sample-app modal', 'node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"'],
+  ['RTL layout (logical properties, no mirror overflow) — sample-app', 'node scripts/verify_rtl.mjs examples/sample-app/preview.html'],
+  ['Token build resolves all aliases + emits CSS', 'node scripts/build_tokens.mjs --out dist/tokens.css'],
 ];
 
 console.log('='.repeat(64));

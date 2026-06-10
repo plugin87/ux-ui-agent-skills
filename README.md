@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.2.2-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.2.3-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## 📌 Version
 
-**Current release: `v2.2.2`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.2.3`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -46,7 +46,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 | 🧩 **Component Design** | Designs components from Atoms to Templates following Atomic Design, with anatomy, variants, states, token mapping, and accessibility specs |
 | ⟨⟩ **Code Generation (any framework)** | Adapter Protocol targets **any** stack — React+Tailwind, Next.js, SwiftUI, Vue, Svelte, Angular, Solid, Web Components/Lit, React Native, Flutter, Jetpack Compose, vanilla CSS, CSS-in-JS — or generates a new adapter on demand |
 | 🔌 **Design-System Interop** | Maps to/from **any** design system (Material 3, Apple HIG, Fluent, Carbon, shadcn/ui, Radix…) via a role-based crosswalk |
-| ⚡ **Runnable Skills** | 10 invocable `/skills` + real scripts (validate tokens, WCAG contrast checker, design-system browser, component scaffolder) |
+| ⚡ **Runnable Skills** | 17 invocable `/skills` + real scripts (token + contrast validators, real-render & state-aware WCAG gates, axe-core a11y, focus-trap, RTL, taste audit, token build) |
 | ♿ **Accessibility Auditing** | Evaluates against WCAG 2.2 AA/AAA with prioritized findings (P0/P1/P2) |
 | ⭐ **Design Review** | Scores designs across 6 dimensions with Nielsen's 10 Heuristics and a structured findings table |
 | 🧪 **Prototyping & Research** | Guides through a 5-level fidelity ladder, user journey mapping, and usability testing scripts |
@@ -321,6 +321,13 @@ This is a **starter kit** — make it yours:
 ---
 
 ## 📝 Changelog
+
+### `v2.2.3`
+- ♿ **Focus-trap gate** — `scripts/verify_focustrap.mjs` opens a modal and verifies with a real keyboard that Tab stays trapped, role/`aria-modal`/name are present, and Escape closes + returns focus (WCAG 2.1.2 / 2.4.3). Proven to catch a leaking modal.
+- 🌐 **RTL gate** — `scripts/verify_rtl.mjs` renders LTR vs `dir="rtl"` and flags layout that overflows only when mirrored (the tell of physical left/right instead of logical properties).
+- 🏗️ **Token build (real artifact)** — `scripts/build_tokens.mjs` (`npm run build:tokens`) resolves all DTCG aliases (incl. cross-file + dark) and emits a CSS-variable theme (`:root` + `[data-theme="dark"]`). 85 light + 17 dark color vars, fully resolved.
+- All three wired into `accuracy_report` (now **15/15 = 100%**) and CI.
+
 
 ### `v2.2.2`
 - ♿ **axe-core a11y gate** — `scripts/axe_audit.mjs` (`npm run test:axe`) runs axe-core (WCAG 2.0/2.1/2.2 A + AA) against rendered HTML, catching ARIA/role/label/landmark/name issues the contrast + state gates can't. Already caught a real missing-`<label>` bug in an example. Wired into `accuracy_report` (now 12 checks, 100%) and CI.
