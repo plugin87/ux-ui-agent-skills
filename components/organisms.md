@@ -13,7 +13,7 @@ The persistent top-level navigation bar.
 **Grid Structure:**
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ [Logo]   [Nav Item] [Nav Item] [Nav Item]   🔍 [Avatar]│
+│ [Logo]   [Nav Item] [Nav Item] [Nav Item]   [Avatar]│
 │  ↑                   ↑                        ↑        │
 │  Fixed width         Flex grow (center)        Auto     │
 └─────────────────────────────────────────────────────────┘
@@ -172,11 +172,11 @@ A structured data display with sorting, filtering, pagination, and row actions.
 ┌──────────────────────────────────────────┐
 │ [Title]  [Filter] [Search]  [+ Add]     │  ← Toolbar
 ├──┬──────────┬────────┬──────┬───────────┤
-│☐ │ Name ↕   │ Status │ Date │ Actions   │  ← Header row
+│[ ] │ Name ↕   │ Status │ Date │ Actions   │  ← Header row
 ├──┼──────────┼────────┼──────┼───────────┤
-│☐ │ Item A   │ 🟢 Active │ Jan 1│ ⋯      │  ← Data rows
-│☐ │ Item B   │ 🔴 Error  │ Jan 2│ ⋯      │
-│☐ │ Item C   │ ⚪ Draft  │ Jan 3│ ⋯      │
+│[ ] │ Item A   │ (green) Active │ Jan 1│ ⋯      │  ← Data rows
+│[ ] │ Item B   │ (red) Error  │ Jan 2│ ⋯      │
+│[ ] │ Item C   │ (neutral) Draft  │ Jan 3│ ⋯      │
 ├──┴──────────┴────────┴──────┴───────────┤
 │ Showing 1-10 of 50    [< 1 2 3 4 5 >]  │  ← Pagination
 └──────────────────────────────────────────┘

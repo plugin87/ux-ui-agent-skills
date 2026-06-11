@@ -9,14 +9,14 @@ Hugging Face is the rare ML brand that refuses to look serious. The hub leans in
 
 The typographic system is monospace-forward in a way few product brands attempt: **IBM Plex Mono** for headings and tags, **Source Sans Pro** (or Inter) for body. The mix gives every page a "config file is the README" vibe — fitting for a platform built around `.gitattributes` and `model-card.md`.
 
-Shapes are crisp, not soft: 4–6px radii, 1px solid borders that announce themselves rather than hide. Tables are dense, with row hover in a faint gray (`#f3f4f6`). The brand emoji punctuates everything — chips, headings, even error states wear a 🤗 — so the system feels human even when displaying technical data.
+Shapes are crisp, not soft: 4–6px radii, 1px solid borders that announce themselves rather than hide. Tables are dense, with row hover in a faint gray (`#f3f4f6`). The brand emoji punctuates everything — chips, headings, even error states wear a — so the system feels human even when displaying technical data.
 
 **Key Characteristics:**
 - Sunshine yellow `#ffd21e` as the lone saturated accent
 - IBM Plex Mono for headings and tags; Source Sans Pro for body
 - Off-white canvas (`#fafafa`) with crisp 1px borders (`#e5e7eb`)
 - 4–6px radii — closer to brutalist than rounded
-- Hugging-face emoji 🤗 used unironically as a system glyph
+- Hugging-face emoji used unironically as a system glyph
 - Dense tables, minimal padding — a community hub for power users
 - Color-coded model categories (NLP blue, vision green, audio purple)
 

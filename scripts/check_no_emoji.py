@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
-"""Fail if any emoji / decorative pictograph appears in UI output or the taste doctrine.
+"""Fail if any emoji / decorative pictograph appears in UI output, the taste doctrine,
+or the agent's own instruction surface.
 
 The kit forbids emoji in product UI (taste/design-taste.md) — this enforces it so it
-can't drift back. Scans example UI + the taste files by default.
+can't drift back. It also scans the files the AGENT reads on every run (CLAUDE.md,
+the skills, component/workflow/content/accessibility specs): if those contain emoji,
+the model imitates them and emits emoji-laden output. Keeping the instruction surface
+emoji-free is what actually stops emoji in generated design systems.
 
 Usage:
-  python3 scripts/check_no_emoji.py                      # examples/ + taste/
+  python3 scripts/check_no_emoji.py                      # examples/ + taste/ + agent files
   python3 scripts/check_no_emoji.py path/to/src ...
 Exit 0 = clean, 1 = an emoji/pictograph was found.
 """
@@ -14,19 +18,28 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT = [ROOT / "examples", ROOT / "taste"]
+# Scan product UI (examples), the taste doctrine, AND the agent's instruction surface —
+# the files the model loads and imitates. README is marketing/branding and is excluded.
+DEFAULT = [
+    ROOT / "examples", ROOT / "taste",
+    ROOT / "CLAUDE.md", ROOT / ".claude" / "skills",
+    ROOT / "components", ROOT / "workflows", ROOT / "content",
+    ROOT / "accessibility", ROOT / "frameworks",
+    ROOT / "design-systems",
+]
 EXTS = {".md", ".mdx", ".html", ".htm", ".tsx", ".jsx", ".ts", ".js",
         ".vue", ".svelte", ".css", ".scss", ".astro", ".json"}
 
 # Emoji + dingbat pictographs (check marks, stars, etc.). Deliberately EXCLUDES
-# arrows (U+2190–21FF) and box-drawing, which are legitimate typographic notation.
+# arrows (U+2190-21FF) and box-drawing, which are legitimate typographic notation.
+# Ranges are referenced by codepoint only (this file stays emoji-free itself).
 EMOJI = re.compile(
     "[\U0001F000-\U0001FAFF"   # symbols & pictographs, emoticons, transport, supplemental
     "\U00002600-\U000026FF"    # misc symbols
-    "\U00002700-\U000027BF"    # dingbats (✅ ✔ ✗ ✨ ✂ …)
-    "\U00002B00-\U00002BFF"    # misc symbols & arrows pictographs (⭐ …)
+    "\U00002700-\U000027BF"    # dingbats (check marks, stars, scissors, ...)
+    "\U00002B00-\U00002BFF"    # misc symbols & arrow pictographs (star, ...)
     "\U0001FA70-\U0001FAFF"
-    "✅✔✖✨❌❓❔❕️⃣]"
+    "\U0000FE0F\U000020E3]"    # variation selector + combining keycap
 )
 
 

@@ -54,7 +54,7 @@ A text input optimized for search with clear functionality and optional suggesti
 **Anatomy:**
 ```
 ┌─────────────────────────────────────┐
-│ 🔍 Search products...          [×] │
+│ Search products...          [×] │
 └─────────────────────────────────────┘
 │ Recent: Blue widget                 │  ← Optional suggestion dropdown
 │ Popular: Red gadget                 │
@@ -191,9 +191,9 @@ A contextual message communicating feedback, status, or important information.
 | Variant | Icon | Colors | Use Case |
 |---------|------|--------|----------|
 | Info | ⓘ | `feedback.info-*` | Tips, general information |
-| Success | ✓ | `feedback.success-*` | Completed actions |
-| Warning | ⚠ | `feedback.warning-*` | Potential issues |
-| Error | ✕ | `feedback.error-*` | Failures, blocking issues |
+| Success | (pass) | `feedback.success-*` | Completed actions |
+| Warning | Warning: | `feedback.warning-*` | Potential issues |
+| Error | (x) | `feedback.error-*` | Failures, blocking issues |
 
 **Layout:**
 - Full-width within container (not page-width)

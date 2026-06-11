@@ -71,7 +71,7 @@ def main(argv):
     if missing:
         print(f"\nFAIL: {len(missing)} reference(s) to undefined theme token(s):")
         for mm in missing:
-            print("  ✗ " + mm)
+            print("  x " + mm)
         return 1
     print("OK: every component token reference resolves to a defined theme token.")
     return 0

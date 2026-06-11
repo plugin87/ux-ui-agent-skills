@@ -43,13 +43,13 @@ Minimal. Only two elevation levels:
 No shadows on inputs. No shadows on the hero. No neumorphism, no glassmorphism.
 
 ## Do's and Don'ts
-- ✅ Let whitespace breathe. A short headline on 50% of the viewport height is correct.
-- ✅ Use serif for numbers when they matter (pricing, stats).
-- ✅ Draw one accent element per page; the rest is foreground.
-- ❌ No gradients.
-- ❌ No emojis in product copy.
-- ❌ No sentence-case for headings — use title case for H1/H2, sentence case for H3 and below.
-- ❌ No border-radius above 24px; no border-radius below 8px.
+- Let whitespace breathe. A short headline on 50% of the viewport height is correct.
+- Use serif for numbers when they matter (pricing, stats).
+- Draw one accent element per page; the rest is foreground.
+- No gradients.
+- No emojis in product copy.
+- No sentence-case for headings — use title case for H1/H2, sentence case for H3 and below.
+- No border-radius above 24px; no border-radius below 8px.
 
 ## Responsive Behavior
 - **Desktop ≥ 1024px:** 12-col grid, full hero heights, side-by-side columns.

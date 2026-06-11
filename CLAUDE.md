@@ -24,6 +24,8 @@ Never sacrifice a higher-priority concern for a lower one. Beautiful but inacces
 
 This governs every build/review from the **start**, not the end. Trust comes from reproducible gate output, not from assertions.
 
+> **ABSOLUTE: zero emoji in any output.** Never emit an emoji or decorative pictograph (magnifier, check mark, warning sign, colored circles, smiley faces, ballot boxes, dingbat ticks/crosses, and the like) in generated UI, code, JSON, copy, comments, commit messages, or chat — not as an icon, a bullet, a status dot, a rating face, or "polish." Emoji are the number-one tell of machine-generated slop. Every glyph that would be an emoji is instead either a **lucide icon** (inline SVG / `<use href="#i-name">`, `currentColor`) or **plain words** ("Warning:", "(pass)", "Search"). This is not style — it is a hard gate: `python3 scripts/check_no_emoji.py` scans product UI, the taste docs, AND this instruction surface (CLAUDE.md, skills, specs); any emoji fails the build. The only Unicode allowed in diagrams is arrows and box-drawing.
+
 1. **Never state a number you did not measure.** Any contrast ratio, "WCAG pass", "100%", or "all states OK" must come from actually running a gate and reporting its real output — never from reasoning or memory. If you haven't run it, say "not verified yet."
 2. **Verify ALL states, not just resting.** A button that looks fine at rest can fail on hover/focus/active (CSS specificity traps). For any rendered HTML, run `node scripts/verify_states.mjs <file> [--dark]` (real computed contrast in default/hover/focus) — not only `measure_render.mjs`.
 3. **Run the one-command gate before reporting done:** `node scripts/accuracy_report.mjs` (= tokens + contrast + spec + no-hardcode + theme-refs + no-emoji + real-render WCAG + state-aware, light & dark). Report the actual `N/N` line. It is all-or-nothing.
@@ -158,9 +160,9 @@ Examples: `semantic.text.primary`, `component.button.primary-bg-hover`, `semanti
 ### Contrast Requirements (WCAG 2.2)
 | Element | Minimum Ratio | Example |
 |---------|--------------|---------|
-| Normal text (< 24px) | 4.5:1 | `text.primary` on `surface.page` = 15.4:1 ✓ |
-| Large text (≥ 24px or ≥ 18.66px bold) | 3:1 | `text.secondary` on `surface.page` = 5.7:1 ✓ |
-| UI components & graphical objects | 3:1 | `border.strong` on `surface.page` = 4.8:1 ✓ (use for essential control borders). `border.default` = 1.2:1 is decorative-only (dividers/card edges) |
+| Normal text (< 24px) | 4.5:1 | `text.primary` on `surface.page` = 15.4:1 (pass) |
+| Large text (≥ 24px or ≥ 18.66px bold) | 3:1 | `text.secondary` on `surface.page` = 5.7:1 (pass) |
+| UI components & graphical objects | 3:1 | `border.strong` on `surface.page` = 4.8:1 (pass) (use for essential control borders). `border.default` = 1.2:1 is decorative-only (dividers/card edges) |
 | Focus indicators | 3:1 | Focus ring uses `shadow.focus-ring` double ring |
 
 ### Color Usage Rules
@@ -173,7 +175,7 @@ Examples: `semantic.text.primary`, `component.button.primary-bg-hover`, `semanti
    - **Destructive** actions (Delete, Remove, Revoke) → `action.destructive` / `component.button.destructive-bg` — **NEVER** `action.primary`. The same destructive action uses the **same** danger variant **everywhere** (trigger button AND its confirm-modal button — never red in one place and blue in another).
    - **Primary** = the one main affirmative action; **secondary** = neutral (transparent/outline, dark text — **never a colored fill**, so no dark-text-on-blue); **danger** = destructive.
    - Consistency rule: one action role → one variant across all pages. A blue "Delete" is a bug.
-7. **No emoji as UI icons** — emoji are inconsistent across platforms and read as machine-generated slop. Use a real icon set (default: **lucide**) as inline SVG with `currentColor` via the Icon component (`components/icon-system.md`). This includes JS that swaps button labels — swap the `<svg>`/icon, never inject an emoji string.
+7. **No emoji, anywhere — not just as icons** (see the ABSOLUTE banner under Verification Protocol). Emoji are inconsistent across platforms and read as machine-generated slop. Never use one as an icon, bullet, status dot, rating face, section marker, or decoration — in UI, code, JSON, copy, comments, or commit messages. Use a real icon set (default: **lucide**) as inline SVG with `currentColor` via the Icon component (`components/icon-system.md`), or plain words. This includes JS that swaps button labels — swap the `<svg>`/icon, never inject an emoji string. Enforced by `scripts/check_no_emoji.py` (scans UI + taste + the agent instruction files).
 
 ### Color Generation (when creating new palettes)
 Use **OKLCH color space** for perceptually uniform shade scales:
@@ -270,12 +272,12 @@ All interactive components must define these states:
 ## Accessibility Standards
 
 ### Mandatory Checks (P0 — Every Component)
-1. ✅ Keyboard navigable — Tab reaches it, Enter/Space activates it
-2. ✅ Focus visible — Focus ring meets 3:1 contrast
-3. ✅ Screen reader — Announces name, role, state
-4. ✅ Color contrast — 4.5:1 text, 3:1 UI
-5. ✅ Target size — ≥ 24×24px
-6. ✅ No color-only — Information not conveyed by color alone
+1. Keyboard navigable — Tab reaches it, Enter/Space activates it
+2. Focus visible — Focus ring meets 3:1 contrast
+3. Screen reader — Announces name, role, state
+4. Color contrast — 4.5:1 text, 3:1 UI
+5. Target size — ≥ 24×24px
+6. No color-only — Information not conveyed by color alone
 
 ### WCAG 2.2 New Criteria (Prioritize)
 - **2.4.11 Focus Not Obscured** — Sticky headers must not cover focused elements
@@ -387,12 +389,12 @@ Never skip fidelity levels. Validate at each stage:
 
 ### Handoff Checklist
 Before marking a design ready for development:
-1. ✅ All values mapped to design tokens (zero hardcoded values)
-2. ✅ All 8 states documented per interactive element
-3. ✅ Edge cases addressed (long text, empty, overflow, single item, many items)
-4. ✅ Responsive behavior spec'd at each breakpoint
-5. ✅ Animation spec'd (property, duration, easing, reduced-motion fallback)
-6. ✅ Accessibility annotations (ARIA roles, keyboard model, focus management)
+1. All values mapped to design tokens (zero hardcoded values)
+2. All 8 states documented per interactive element
+3. Edge cases addressed (long text, empty, overflow, single item, many items)
+4. Responsive behavior spec'd at each breakpoint
+5. Animation spec'd (property, duration, easing, reduced-motion fallback)
+6. Accessibility annotations (ARIA roles, keyboard model, focus management)
 
 ### Definition of Done
 A component is done when: functional (all variants, states, edge cases), visual (pixel-accurate, all tokens, responsive, dark mode), accessible (keyboard, screen reader, contrast, target size), code quality (TypeScript, no `any`, forwardRef, cva), and tested (unit, visual regression, a11y automated, manual screen reader).
@@ -418,14 +420,14 @@ Full workflow: `workflows/design-to-code.md`
 
 ### Voice & Tone
 - **UI copy**: Clear, concise, actionable. Frontload the verb.
-  - ✅ "Save changes" — ❌ "Click here to save your changes"
-  - ✅ "Email is required" — ❌ "The email field cannot be empty"
+  - Good: "Save changes" / Avoid: "Click here to save your changes"
+  - Good: "Email is required" / Avoid: "The email field cannot be empty"
 - **Error messages**: Say what happened → why → how to fix it.
-  - ✅ "Password must be at least 8 characters. Try adding numbers or symbols."
-  - ❌ "Error: Invalid input"
+  - Good: "Password must be at least 8 characters. Try adding numbers or symbols."
+  - Avoid: "Error: Invalid input"
 - **Empty states**: Explain the value → guide to first action.
-  - ✅ "No projects yet. Create your first project to get started."
-  - ❌ "No data"
+  - Good: "No projects yet. Create your first project to get started."
+  - Avoid: "No data"
 - Full UX writing system — voice principles, tone spectrum, error/empty-state formulas, microcopy patterns, inclusive language, and a pre-ship checklist — in `content/voice-tone.md`.
 
 ---

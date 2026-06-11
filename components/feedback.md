@@ -8,7 +8,7 @@ Communicate system status, progress, and outcomes. Status changes must reach ass
 
 Transient, non-blocking message about a completed action or event.
 
-**Anatomy:** `[icon] [title + message] [action?] [dismiss ✕]`
+**Anatomy:** `[icon] [title + message] [action?] [dismiss (x) ]`
 
 **Variants:**
 | Variant | Icon + Color | Token |

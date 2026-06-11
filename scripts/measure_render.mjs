@@ -84,7 +84,7 @@ for (const f of files) {
   if (fails.length) {
     totalFail += fails.length;
     console.log(`\nFAIL ${f}${mode} — ${fails.length} text pair(s) below WCAG AA:`);
-    for (const x of fails) console.log(`  ✗ <${x.tag}> "${x.text}" ${x.r.toFixed(2)}:1 (need ${x.need})  [rgb(${x.color.map(Math.round)}) on rgb(${x.bg.map(Math.round)})]`);
+    for (const x of fails) console.log(`  x <${x.tag}> "${x.text}" ${x.r.toFixed(2)}:1 (need ${x.need})  [rgb(${x.color.map(Math.round)}) on rgb(${x.bg.map(Math.round)})]`);
   } else {
     console.log(`OK   ${f}${mode} — all ${items.length} text element(s) meet WCAG AA`);
   }

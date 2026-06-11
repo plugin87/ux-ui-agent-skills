@@ -123,7 +123,7 @@ The 1.00 line-height and 288px display scale both assume the **proprietary Bugat
 - Hover state on media blocks: none. The video plays, the CTA becomes clickable, and that is the entire interaction vocabulary.
 
 ### Inputs & Forms
-- The extracted tokens captured **zero input styles** (`⚠ Inputs: 0 styles`). This is because Bugatti.com has essentially no forms on the homepage — no newsletter signup, no search bar, no contact form, no email capture. When forms do appear (on deeper pages), apply these defaults consistent with the rest of the system:
+- The extracted tokens captured **zero input styles** (`Inputs: 0 styles`). This is because Bugatti.com has essentially no forms on the homepage — no newsletter signup, no search bar, no contact form, no email capture. When forms do appear (on deeper pages), apply these defaults consistent with the rest of the system:
   - **Default**: `#000000` background, `1px solid #999999` border, `6px` radius, `#ffffff` text in Bugatti Text Regular 16px, placeholder `#999999`.
   - **Focus**: border transitions to `#ffffff`, no glow — the border change IS the focus signal.
   - **Error**: border stays white; add a `#999999` inline message below. Bugatti does not use red error colors — it stays in the monochrome palette.

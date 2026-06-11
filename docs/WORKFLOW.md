@@ -103,10 +103,10 @@ The ten runnable skills: `design-tokens`, `design-component`, `design-code`, `de
 
 | Perspective | Difficulty | Why |
 |-------------|------------|-----|
-| **Consumer (designer/dev)** | 🟢 Very easy | Just talk in plain language or type `/skill`. No config, no build, no API to memorize. The complexity is hidden inside the knowledge files. |
-| **Install** | 🟢 One command | `npx ux-ui-agent-skills init` and you're done. |
-| **Maintainer (releasing)** | 🟢 Easy now | A release is two commands (see §5). |
-| **Contributor (adding a component/adapter)** | 🟡 Moderate | Must follow the house style and wire the file into `CLAUDE.md`. `workflows/governance.md` is the guide. |
+| **Consumer (designer/dev)** | (on) Very easy | Just talk in plain language or type `/skill`. No config, no build, no API to memorize. The complexity is hidden inside the knowledge files. |
+| **Install** | (on) One command | `npx ux-ui-agent-skills init` and you're done. |
+| **Maintainer (releasing)** | (on) Easy now | A release is two commands (see §5). |
+| **Contributor (adding a component/adapter)** | (partial) Moderate | Must follow the house style and wire the file into `CLAUDE.md`. `workflows/governance.md` is the guide. |
 
 **Bottom line:** the intelligence lives in the files, so the hard part is *authoring the kit* (already done), not *using it*. Consumers have almost nothing to learn.
 
@@ -134,7 +134,7 @@ Edit knowledge files → commit
 └──────────────────────────────────────────────┘
         │
         ▼
-  ✅ GitHub Release is live   +   ✅ npm is updated   — automatically.
+  GitHub Release is live   +   npm is updated   — automatically.
 ```
 
 ### Setup (one-time, already done)

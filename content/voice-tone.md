@@ -39,9 +39,9 @@ Tone shifts along the user's emotional state. Match the moment.
 
 Start actionable text with the verb. Users scan; the verb is the signal.
 
-- ✅ "Save changes" — ❌ "Click here to save your changes"
-- ✅ "Invite teammates" — ❌ "You can invite teammates here"
-- ✅ "Export report" — ❌ "Report exporting"
+- Good: "Save changes" — Avoid: "Click here to save your changes"
+- Good: "Invite teammates" — Avoid: "You can invite teammates here"
+- Good: "Export report" — Avoid: "Report exporting"
 
 Buttons are verbs, not nouns. Label the *outcome*, not the mechanism: "Create account" beats "Submit".
 
@@ -55,7 +55,7 @@ Every error answers three questions in order. Drop "why" only when it's obvious.
 [What happened]  →  [Why, if not obvious]  →  [How to fix it]
 ```
 
-| ❌ Avoid | ✅ Prefer |
+| Avoid | Prefer |
 |----------|-----------|
 | "Error: Invalid input" | "Enter a valid email, like name@example.com" |
 | "Password incorrect" | "That password doesn't match. Try again or reset it." |
@@ -74,9 +74,9 @@ An empty state is an opportunity, not a void. Explain the value, then guide to t
 [What goes here & why it's useful]  →  [Primary action]
 ```
 
-- ✅ "No projects yet. Create your first project to organize your work." → **[Create project]**
-- ✅ "Your inbox is clear. New messages will appear here." (intentional empty — reassure)
-- ❌ "No data" / "Nothing to show" (dead, unhelpful)
+- Good: "No projects yet. Create your first project to organize your work." → **[Create project]**
+- Good: "Your inbox is clear. New messages will appear here." (intentional empty — reassure)
+- Avoid: "No data" / "Nothing to show" (dead, unhelpful)
 
 Distinguish **first-use** empty (guide them) from **cleared** empty (reassure them).
 
@@ -121,13 +121,13 @@ Distinguish **first-use** empty (guide them) from **cleared** empty (reassure th
 
 ## Pre-Ship Copy Checklist
 
-1. ✅ Every button starts with a verb and names the outcome
-2. ✅ Every error says what happened *and* how to fix it — no dead ends
-3. ✅ Every empty state guides to a first action
-4. ✅ Sentence case throughout; no ALL CAPS
-5. ✅ No jargon, error codes, or stack traces shown to users
-6. ✅ No blame on the user; system faults owned by "we"
-7. ✅ Labels present (placeholders are not labels)
-8. ✅ No directional/color-only instructions
-9. ✅ Numbers as numerals; counts shown in confirmations
-10. ✅ Reads naturally aloud — if it sounds robotic, rewrite it
+1. Good: Every button starts with a verb and names the outcome
+2. Good: Every error says what happened *and* how to fix it — no dead ends
+3. Good: Every empty state guides to a first action
+4. Good: Sentence case throughout; no ALL CAPS
+5. Good: No jargon, error codes, or stack traces shown to users
+6. Good: No blame on the user; system faults owned by "we"
+7. Good: Labels present (placeholders are not labels)
+8. Good: No directional/color-only instructions
+9. Good: Numbers as numerals; counts shown in confirmations
+10. Good: Reads naturally aloud — if it sounds robotic, rewrite it

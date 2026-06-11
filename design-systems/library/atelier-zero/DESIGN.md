@@ -31,7 +31,7 @@ X", consult this map before changing tokens:
 
 - **Monocle:** warm paper stock (`#efe7d2`), tight body leading (~1.55),
   monospace coordinates and SHA stamps, the international metadata
-  strip ("Filed under …"), the small ★ in the nav.
+  strip ("Filed under …"), the small in the nav.
 - **Apartamento:** surreal collage composition (plaster + architecture
   + small human figure), torn-edge textures inside the imagery, the
   rotated side notes, and the willingness to leave generous negative
@@ -56,7 +56,7 @@ All values are tokens. Do not invent new hex.
 - **Coral (accent):** `#ed6f5c` — single hot accent. CTA fills,
   Roman-numeral marks, eyebrow underlines, pulse dots, "fin." marks.
 - **Coral-soft:** `#f08e7c` — hover/secondary coral states only.
-- **Mustard:** `#e9b94a` — used sparingly: a single ★ in the nav, a
+- **Mustard:** `#e9b94a` — used sparingly: a single in the nav, a
   highlighted ring in stats, occasional dot on a numbered annotation.
 - **Olive:** `#6e7448` — quiet third accent for tags or partner glyphs.
 
@@ -231,15 +231,15 @@ the page-of-008 counter on the right.
 
 ## 9. Anti-patterns
 
-- ❌ No drop shadows above 30px blur. No gradients on text.
-- ❌ No emoji in product copy. ★ is allowed once in the nav CTA.
-- ❌ No glassmorphism, no neon, no neumorphism, no rounded
+- No drop shadows above 30px blur. No gradients on text.
+- No emoji in product copy. is allowed once in the nav CTA.
+- No glassmorphism, no neon, no neumorphism, no rounded
   corners larger than 24px (except 32px on the dark "Selected Work" panel).
-- ❌ No more than one coral CTA per viewport.
-- ❌ No collage image without corner brackets and at least one
+- No more than one coral CTA per viewport.
+- No collage image without corner brackets and at least one
   monospace annotation.
-- ❌ No Roman numeral skipped — sections must be sequential.
-- ❌ No pure white, no pure black, no pure 100%-saturation accent.
+- No Roman numeral skipped — sections must be sequential.
+- No pure white, no pure black, no pure 100%-saturation accent.
 
 ### Anti-patterns specific to AI-generated imagery
 
@@ -248,16 +248,16 @@ open-design-landing skill. Several common image-model defaults will
 silently break the Atelier Zero aesthetic, so they are forbidden in
 every collage prompt and rejected on visual review:
 
-- ❌ No lens flares, light leaks, bloom, or cinematic post-FX. The
+- No lens flares, light leaks, bloom, or cinematic post-FX. The
   paper-and-museum mood is matte, not cinematic.
-- ❌ No glitch, datamosh, RGB-split, or scanline artifacts.
-- ❌ No photorealistic human faces or stock-portrait people. Plaster
+- No glitch, datamosh, RGB-split, or scanline artifacts.
+- No photorealistic human faces or stock-portrait people. Plaster
   fragments, busts, and small scale figures only — eyes never look at
   the viewer.
-- ❌ No visible AI signatures, watermarks, generator logos, or
+- No visible AI signatures, watermarks, generator logos, or
   hallucinated model captions. The rendered surface must read as a
   printed page, not a model output.
-- ❌ No DSLR-style shallow depth-of-field bokeh on the collage
+- No DSLR-style shallow depth-of-field bokeh on the collage
   fragments — every plane stays in focus.
 
 ## 10. Responsive Behavior

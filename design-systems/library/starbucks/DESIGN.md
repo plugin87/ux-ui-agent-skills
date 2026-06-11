@@ -335,7 +335,7 @@ A repeating component cluster used on menu product pages (e.g., `/menu/product/4
 - Border: `1.5px solid #00754A`
 - Radius: `50px` (full pill)
 - Padding: `14px 40px` (generously larger than default pills — this is a secondary primary action)
-- Label: "Customize" with a gold sparkle ✨ icon inset left
+- Label: "Customize" with a gold sparkle icon inset left
 - Used for: entering the drink-customization flow after size/milk selection
 
 **Add to Order Button (PDP)**
@@ -346,13 +346,13 @@ A repeating component cluster used on menu product pages (e.g., `/menu/product/4
 - Pinned top-right of product card and/or aligned right within the store-availability band
 - Same scale(0.95) active behavior as other primary CTAs
 
-**Rewards Cost Pill — "200★ item"**
+**Rewards Cost Pill — "200item"**
 - Background: transparent
 - Border: `1px solid #cba258` (Gold)
 - Text: `#cba258` (Gold)
 - Radius: `50px` (full pill)
 - Padding: `4px 12px`
-- Content: "200★ item" where `★` is a small filled star glyph — indicates the Rewards Stars required to redeem this item
+- Content: "200item" where `` is a small filled star glyph — indicates the Rewards Stars required to redeem this item
 - Font: Proxima Nova 13/700 with `0.5px` letter-spacing
 - Used only on products that are Rewards-redeemable
 
@@ -558,7 +558,7 @@ Inferred from component width tokens and progressive nav heights:
 
 8. "Build a Starbucks customize flow — under the size selector, 3 stacked outlined-rectangle input rows (white bg, `1px solid #d6dbde` border, `4px` radius). Each has a floating label ('Add-ins', 'Milk', 'Add-ins') above the top border in 13/700 Text Black uppercase. Value centered (e.g., 'Ice', 'Coconut'). Right side: chevron-down in Text Black Soft. For the scoop row, embed a numeric stepper (`−` `1` `+` with circular `32px` outlined buttons). Below all three fields: outlined green 'Customize' pill with gold sparkle icon, `50px` radius, `14px 40px` padding. Pair with a Green Accent filled 'Add to Order' pill in the same row."
 
-9. "Design a Starbucks product description band — full-width House Green (`#1E3932`) below product header. Top: a gold-outlined '200★ item' Rewards Cost Pill (`50px` radius, `4px 12px` padding, gold `#cba258` border and text). Below: product description in white 16/400/1.5. Nutritional inline summary in white 14/700 ('140 calories, 25g sugar, 2.5g fat') with info-icon tooltip. Outlined-white-on-green pill button 'Full nutrition &amp; ingredients list'. 32px vertical padding."
+9. "Design a Starbucks product description band — full-width House Green (`#1E3932`) below product header. Top: a gold-outlined '200item' Rewards Cost Pill (`50px` radius, `4px 12px` padding, gold `#cba258` border and text). Below: product description in white 16/400/1.5. Nutritional inline summary in white 14/700 ('140 calories, 25g sugar, 2.5g fat') with info-icon tooltip. Outlined-white-on-green pill button 'Full nutrition &amp; ingredients list'. 32px vertical padding."
 
 10. "Create a Starbucks nutrition facts table — two-column layout inside a White card. Left column: 'Ingredients' header (24/400 Text Black), followed by ingredient list or 'Not available for this item' placeholder paragraph in 14/400 Text Black Soft. Right column: 'Nutrition' header, then label/value rows (nutrient name left, value right) separated by `1px solid #e7e7e7` hairlines. Typography: labels in 14/400 Text Black, values in 14/700 Text Black right-aligned. Footnote asterisk markers in 13/400 Text Black Soft at the bottom."
 

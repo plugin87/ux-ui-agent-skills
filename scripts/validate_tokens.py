@@ -96,9 +96,9 @@ def main():
 
     print(f"Parsed {len(parsed)}/{len(files)} token files, {len(all_tokens)//2} tokens defined.")
     for e in errors:
-        print("  ✗ " + e)
+        print("  x " + e)
     for u in unresolved:
-        print("  ⚠ " + u)
+        print("  ! " + u)
 
     if errors:
         print("\nFAIL: JSON errors above.")

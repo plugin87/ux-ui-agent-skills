@@ -34,7 +34,7 @@ If a Figma MCP server is connected, prefer its tools/skills over manual steps:
 
 - Figma component **variants/properties** = our variants + sizes + the 8 states (CLAUDE.md). A state that exists in code but not in the Figma variant set is a parity gap — flag it.
 - Name layers/props to match code prop names so handoff is mechanical.
-- Keep a parity checklist per component: variants ✓, sizes ✓, states ✓, tokens bound (no raw hex in Figma) ✓.
+- Keep a parity checklist per component: variants (pass) , sizes (pass) , states (pass) , tokens bound (no raw hex in Figma) (pass) .
 
 ## Verification
 - Every Figma Variable resolves to a token in `tokens/*.json` (no orphan hex in designs).

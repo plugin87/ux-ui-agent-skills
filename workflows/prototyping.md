@@ -112,7 +112,7 @@ Phase 1: Awareness
 ├── Action: Sees ad / lands on homepage
 ├── Touchpoint: Landing page
 ├── Thought: "Does this solve my problem?"
-├── Emotion: Curious 😐
+├── Emotion: Curious (neutral) 
 ├── Opportunity: Clear value prop above the fold
 └── Metric: Bounce rate
 
@@ -120,7 +120,7 @@ Phase 2: Exploration
 ├── Action: Browses features, reads case studies
 ├── Touchpoint: Features page, testimonials
 ├── Thought: "How does this compare to alternatives?"
-├── Emotion: Evaluating 🤔
+├── Emotion: Evaluating (unsure) 
 ├── Opportunity: Comparison table, social proof
 └── Metric: Pages per session, time on site
 
@@ -128,7 +128,7 @@ Phase 3: Decision
 ├── Action: Views pricing, starts trial
 ├── Touchpoint: Pricing page, sign-up flow
 ├── Thought: "Is it worth it? What if I don't like it?"
-├── Emotion: Anxious 😟
+├── Emotion: Anxious (unhappy) 
 ├── Opportunity: Free trial, money-back guarantee, simple pricing
 └── Metric: Trial sign-up rate
 
@@ -136,7 +136,7 @@ Phase 4: Onboarding
 ├── Action: Sets up account, imports data
 ├── Touchpoint: Onboarding wizard, dashboard
 ├── Thought: "How do I get started?"
-├── Emotion: Overwhelmed → Relieved 😰→😊
+├── Emotion: Overwhelmed → Relieved (anxious) →(satisfied) 
 ├── Opportunity: Progressive disclosure, guided setup, quick wins
 └── Metric: Onboarding completion rate, time to first value
 
@@ -144,7 +144,7 @@ Phase 5: Retention
 ├── Action: Regular use, discovers advanced features
 ├── Touchpoint: Dashboard, notifications, reports
 ├── Thought: "This is part of my workflow now"
-├── Emotion: Confident 😊
+├── Emotion: Confident (satisfied) 
 ├── Opportunity: Feature discovery, personalization, integrations
 └── Metric: DAU/MAU, feature adoption, NPS
 ```

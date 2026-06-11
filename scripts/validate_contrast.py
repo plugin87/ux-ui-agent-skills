@@ -138,7 +138,7 @@ def main(argv):
     if fails:
         print(f"FAIL: {len(fails)} required pair(s) below WCAG minimum:")
         for f in fails:
-            print("  ✗ " + f)
+            print("  x " + f)
         return 1
     print("OK: all required contrast pairs pass WCAG 2.2 minimums.")
     return 0

@@ -291,35 +291,35 @@ No neumorphism. No glassmorphism. No coloured shadows. Bottom sheet has no shado
 ## 7. Do's and Don'ts
 
 ### Do
-- ✅ Treat brand red as singular. One CTA accent per screen, no second saturated color competing.
-- ✅ Use translucent fill overlays (`rgba(48,48,52,0.05/.10/.20)`) for hover / disabled / pressed — not separate grey shades.
-- ✅ Round generously: 12–16px on cards, full pill on buttons.
-- ✅ Set body text at `rgba(0,0,0,0.80)` for titles and `rgba(0,0,0,0.62)` for paragraphs — soft black always.
-- ✅ Use `RED Number` (or any tabular-numerals stack) for stats and counts.
-- ✅ Let user-uploaded images carry the color story. The UI is the picture frame.
-- ✅ Default to bottom-sheet for secondary actions on mobile; reserve centered modal for PC and confirmations only.
-- ✅ Tabs are text + 2px underline. Always.
-- ✅ Speak in second person, conversational. "what you just scrolled past" is more RED than "Discover trending content".
+- Treat brand red as singular. One CTA accent per screen, no second saturated color competing.
+- Use translucent fill overlays (`rgba(48,48,52,0.05/.10/.20)`) for hover / disabled / pressed — not separate grey shades.
+- Round generously: 12–16px on cards, full pill on buttons.
+- Set body text at `rgba(0,0,0,0.80)` for titles and `rgba(0,0,0,0.62)` for paragraphs — soft black always.
+- Use `RED Number` (or any tabular-numerals stack) for stats and counts.
+- Let user-uploaded images carry the color story. The UI is the picture frame.
+- Default to bottom-sheet for secondary actions on mobile; reserve centered modal for PC and confirmations only.
+- Tabs are text + 2px underline. Always.
+- Speak in second person, conversational. "what you just scrolled past" is more RED than "Discover trending content".
 
 ### Don't
-- ❌ Don't use purple, deep blue, or black-gold as a primary color. Tech / fintech / luxury vocabulary is the wrong genre — RED is lifestyle.
-- ❌ Don't gradient the brand red itself. The only gradients are functional (search-hotspot badge, video mask).
-- ❌ Don't fill an entire hero with a brand-color background. Brand red is accent-only; a red-bordered hero reads as a sale poster, not a feed.
-- ❌ Don't fabricate the `小红书` wordmark or the RED logotype as artifact output. Tokens are not protectable; the wordmark is — that is the part of the brand identity with actual IP risk. When a logo placeholder is needed, emit a labelled grey block (e.g. an empty pill with `LOGO` in `rgba(0,0,0,0.45)`) and let the user drop in a licensed asset.
-- ❌ Don't use Inter, Helvetica, or Roboto as the Chinese display face. PingFang SC is the system — Latin fallback chains use `-apple-system` first.
-- ❌ Don't reference the `RED Number` family standalone in generated CSS. End users do not have it installed; without the PingFang fallback chain it silently falls back to whatever the OS picks, which breaks digit alignment. Always emit it inside a stack, e.g. `font-family: 'RED Number', PingFang SC, -apple-system, 'Helvetica Neue', Arial, sans-serif;`.
-- ❌ Don't ship light / thin weights at body sizes. Notes carry dense Chinese text; light weights destroy mobile legibility.
-- ❌ Don't add a left-border colored accent stripe to cards (the SaaS / dashboard tell). Cards separate via canvas color and radius, not colored chrome.
-- ❌ Don't drop heavy shadows. Concrete threshold: avoid alpha darker than `rgba(0,0,0,0.15)` or spread greater than `16px`. If the shadow is visible at arm's length on a phone, it is too strong for this system.
-- ❌ Don't pile glassmorphism, neumorphism, or 2020-era trend effects. The visual era reference is "lifestyle magazine", not "tech demo".
-- ❌ Don't write a "Trusted by 10,000+ teams" enterprise social-proof block. UGC trust comes from real people, not logo walls.
-- ❌ Don't write hero CTAs in all-caps Latin. Sentence-case Chinese, sentence-case Latin, no exceptions.
-- ❌ Don't use stock business photography (handshakes, laptop close-ups, conference rooms). Use real-life UGC-style imagery.
-- ❌ Don't use 3D isometric / blob / abstract-network illustrations. They are SaaS-marketing tells. RED uses real photos or hand-drawn editorial illustrations.
-- ❌ Don't write copy in third person ("the platform provides…"). Always second person ("what you want to see").
-- ❌ Don't surface unverifiable stat claims ("10× faster", "save N hours"). RED's brand voice is emotional resonance, not metric promises.
-- ❌ Don't use orange / yellow as a Toast emphasis color. Emphasis in this system is brand red, period.
-- ❌ Don't hard-pin every card to the same height. Variable card height across columns is the realism — don't "fix" it.
+- Don't use purple, deep blue, or black-gold as a primary color. Tech / fintech / luxury vocabulary is the wrong genre — RED is lifestyle.
+- Don't gradient the brand red itself. The only gradients are functional (search-hotspot badge, video mask).
+- Don't fill an entire hero with a brand-color background. Brand red is accent-only; a red-bordered hero reads as a sale poster, not a feed.
+- Don't fabricate the `小红书` wordmark or the RED logotype as artifact output. Tokens are not protectable; the wordmark is — that is the part of the brand identity with actual IP risk. When a logo placeholder is needed, emit a labelled grey block (e.g. an empty pill with `LOGO` in `rgba(0,0,0,0.45)`) and let the user drop in a licensed asset.
+- Don't use Inter, Helvetica, or Roboto as the Chinese display face. PingFang SC is the system — Latin fallback chains use `-apple-system` first.
+- Don't reference the `RED Number` family standalone in generated CSS. End users do not have it installed; without the PingFang fallback chain it silently falls back to whatever the OS picks, which breaks digit alignment. Always emit it inside a stack, e.g. `font-family: 'RED Number', PingFang SC, -apple-system, 'Helvetica Neue', Arial, sans-serif;`.
+- Don't ship light / thin weights at body sizes. Notes carry dense Chinese text; light weights destroy mobile legibility.
+- Don't add a left-border colored accent stripe to cards (the SaaS / dashboard tell). Cards separate via canvas color and radius, not colored chrome.
+- Don't drop heavy shadows. Concrete threshold: avoid alpha darker than `rgba(0,0,0,0.15)` or spread greater than `16px`. If the shadow is visible at arm's length on a phone, it is too strong for this system.
+- Don't pile glassmorphism, neumorphism, or 2020-era trend effects. The visual era reference is "lifestyle magazine", not "tech demo".
+- Don't write a "Trusted by 10,000+ teams" enterprise social-proof block. UGC trust comes from real people, not logo walls.
+- Don't write hero CTAs in all-caps Latin. Sentence-case Chinese, sentence-case Latin, no exceptions.
+- Don't use stock business photography (handshakes, laptop close-ups, conference rooms). Use real-life UGC-style imagery.
+- Don't use 3D isometric / blob / abstract-network illustrations. They are SaaS-marketing tells. RED uses real photos or hand-drawn editorial illustrations.
+- Don't write copy in third person ("the platform provides…"). Always second person ("what you want to see").
+- Don't surface unverifiable stat claims ("10× faster", "save N hours"). RED's brand voice is emotional resonance, not metric promises.
+- Don't use orange / yellow as a Toast emphasis color. Emphasis in this system is brand red, period.
+- Don't hard-pin every card to the same height. Variable card height across columns is the realism — don't "fix" it.
 
 ## 8. Responsive Behavior
 

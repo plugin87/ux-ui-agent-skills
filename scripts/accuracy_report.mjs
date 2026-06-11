@@ -20,7 +20,7 @@ const checks = [
   ['No hardcoded values (hex/px/ms/Tailwind/font) — golden', 'python3 scripts/lint_hardcodes.py examples/golden'],
   ['No hardcoded values — sample-app', 'python3 scripts/lint_hardcodes.py examples/sample-app'],
   ['Every var(--…) resolves to the theme (no floating tokens)', 'python3 scripts/validate_theme_refs.py'],
-  ['No emoji in UI output or taste files', 'python3 scripts/check_no_emoji.py'],
+  ['No emoji in UI output, taste docs, or the agent instruction surface', 'python3 scripts/check_no_emoji.py'],
   ['REAL-render WCAG — sample-app (light)', 'node scripts/measure_render.mjs examples/sample-app/preview.html'],
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],
   ['State-aware WCAG — every element, default/hover/focus (light)', 'node scripts/verify_states.mjs examples/sample-app/preview.html'],
@@ -74,7 +74,7 @@ console.log('-'.repeat(64));
 console.log(` RESULT: ${pass}/${checks.length} checks passed  =  ${pct}%`);
 if (fails.length) {
   console.log('\n FAILURES:');
-  for (const [label, detail] of fails) console.log(`\n  ✗ ${label}\n${detail.split('\n').map(l => '      ' + l).join('\n')}`);
+  for (const [label, detail] of fails) console.log(`\n  x ${label}\n${detail.split('\n').map(l => '      ' + l).join('\n')}`);
   console.log('\n NOT 100% — fix the above. Nothing partial ships.');
   process.exit(1);
 }

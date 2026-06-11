@@ -10,7 +10,7 @@ AA is our minimum (CLAUDE.md). This is the **AAA delta** — the additional succ
 
 | Criterion | AAA bar (vs. AA) | How |
 |-----------|------------------|-----|
-| 1.4.6 Contrast (Enhanced) | **7:1** normal / **4.5:1** large (AA was 4.5/3) | Verify `text.primary` (already ~15:1 ✓); bump `text.secondary` pairings; check `scripts/contrast.py` |
+| 1.4.6 Contrast (Enhanced) | **7:1** normal / **4.5:1** large (AA was 4.5/3) | Verify `text.primary` (already ~15:1 (pass) ); bump `text.secondary` pairings; check `scripts/contrast.py` |
 | 1.4.8 Visual Presentation | line ≤ 80ch, line-height ≥ 1.5, no justification, user color/width control | Our typography defaults comply; add a width/theme control |
 | 1.4.9 Images of Text (No Exception) | no text-in-images at all | Use real text + web fonts; SVG with live `<text>` only if styleable |
 | 1.2.6–1.2.9 | sign language for audio, extended descriptions, live captions/audio-only alt | Media-heavy products only |

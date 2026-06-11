@@ -9,7 +9,7 @@ Beyond the baseline contrast ratios (CLAUDE.md Color Guidelines), this covers us
 ~8% of men, ~0.5% of women. Red–green (deutan/protan) is most common; blue–yellow (tritan) rarer; full achromatopsia rarest.
 
 - **Never encode meaning in hue alone** (WCAG 1.4.1) — pair every color signal with icon, text, shape, or pattern. Red/green status, chart series, required-field marks, map regions: all need a second channel.
-- Don't rely on red-vs-green to distinguish success/error — add ✓/✕ icons and labels.
+- Don't rely on red-vs-green to distinguish success/error — add (pass) /(x) icons and labels.
 - Charts: distinguish series by **marker shape + dash pattern + direct labels**, and use the CVD-safe palette in `tokens/data-viz.json` (Okabe–Ito-derived). Cap categorical series.
 - Test with a simulator (deuteranopia, protanopia, tritanopia, grayscale) — if information disappears in grayscale, it failed.
 
