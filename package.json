@@ -12,6 +12,7 @@
     "test:render": "node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html && node scripts/measure_render.mjs --dark examples/sample-app/preview.html",
     "verify": "node scripts/accuracy_report.mjs",
     "taste": "node scripts/taste_audit.mjs",
+    "taste:slop": "node scripts/slop_tells.mjs",
     "test:states": "node scripts/verify_states.mjs",
     "test:axe": "node scripts/axe_audit.mjs",
     "test:focustrap": "node scripts/verify_focustrap.mjs",

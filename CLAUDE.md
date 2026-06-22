@@ -549,6 +549,7 @@ scripts/                  ← validate_tokens.py · contrast.py · validate_cont
                             · verify_rtl.mjs (RTL mirror — no logical-property breakage) · build_tokens.mjs (DTCG → CSS vars)
                             · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
+                            · slop_tells.mjs (render-based anti-slop tells: single-radius, default/flat shadow, HARDCODED indigo-blue gradient, #000 text, lorem, flat spacing, near-dup neutrals — HIGH fails the gate)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)

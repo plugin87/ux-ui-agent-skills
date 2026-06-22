@@ -53,6 +53,8 @@ const checks = [
    'node scripts/verify_focustrap.mjs examples/component-states/command-palette.html --open="#openBtn" && node scripts/verify_states.mjs examples/component-states/command-palette.html && node scripts/verify_states.mjs --dark examples/component-states/command-palette.html && node scripts/axe_audit.mjs examples/component-states/command-palette.html && node scripts/axe_audit.mjs --dark examples/component-states/command-palette.html'],
   ['Responsive — no horizontal overflow at 280/320/414px across every component harness',
    'node scripts/verify_responsive.mjs examples/component-states'],
+  ['Slop tells — no HIGH anti-slop tell (hardcoded AI gradient, single-radius) across every harness (light + dark)',
+   'node scripts/slop_tells.mjs --strict examples/component-states/*.html examples/sample-app/preview.html && node scripts/slop_tells.mjs --strict --dark examples/component-states/*.html examples/sample-app/preview.html'],
 ];
 
 console.log('='.repeat(64));
