@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.3.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.4.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.3.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.4.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -173,11 +173,18 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 
 ```
 .
-├── CLAUDE.md                  # Agent persona & master instructions
+├── CLAUDE.md                  # Agent persona & master instructions (the session brief)
+├── CONTEXT.md                 # Ubiquitous language — shared domain vocabulary
+├── CLAUDE.local.md            # Personal prefs (gitignored, per-machine)
+├── .mcp.json                  # Project MCP servers (Figma) — no secrets, env-expanded
 │
 ├── .claude/skills/            # Runnable skills — invoke via /name
 │   └── design-tokens · design-component · design-code · design-review · a11y-audit
 │       apply-aesthetic · redesign · migrate-design-system · prototype · ux-writing
+├── .claude/commands/          # Custom slash commands — /gate · /ship · /scaffold-project
+├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
+│
+├── reference/                 # Real screens the agent studies before designing/reviewing
 │
 ├── scripts/                   # Real helper scripts (python3, no deps)
 │   ├── validate_tokens.py     # JSON + alias validation for tokens/
@@ -321,6 +328,14 @@ This is a **starter kit** — make it yours:
 ---
 
 ## Changelog
+
+### `v2.4.0`
+- **Project layout aligned to the recommended Claude Code design-project structure** (Phase A1 of `docs/restructure-plan.md`). Additive only — no knowledge folders moved, no path references changed, `accuracy_report` stays **25/25 = 100%**.
+- **`CONTEXT.md` — ubiquitous language.** A shared domain glossary (3-tier tokens, the 8 states, POUR, gate, token-by-intent, anti-slop, RENDER-AND-LOOK) so the agent names the problem precisely and spends fewer tokens doing it.
+- **Custom slash commands** under `.claude/commands/` — `/gate` (run the one-command gate, report the real N/N), `/ship` (pre-release gate + README/changelog checklist), `/scaffold-project` (generate a new design-product skeleton in the reference layout).
+- **`.claude/settings.json`** — shared permissions (the scripts allowlist), checked into git so the team gates without per-call prompts.
+- **`.mcp.json`** — project-scoped Figma MCP connection, secret-free (`${FIGMA_API_KEY}` env expansion).
+- **`CLAUDE.local.md`** (gitignored) for personal preferences, and **`reference/`** for real screens the agent studies before an `image-to-code` / `redesign` / `design-review` pass.
 
 ### `v2.3.1`
 - **Zero emoji, everywhere.** Purged every emoji / decorative pictograph from the entire repo — the agent instruction surface (CLAUDE.md, skills, component / workflow / content / accessibility specs, design-system library), the gate scripts' output, `cover.html`, `docs/`, and the README. Generated output was picking up emoji because the files the model reads were full of them; the instruction surface is now clean, so the model has nothing to imitate.

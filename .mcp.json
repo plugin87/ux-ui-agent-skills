@@ -1,0 +1,12 @@
+{
+  "_README": "Project-scoped MCP servers, committed to git and shared by the team. NO secrets live here: env values use ${VAR} expansion and are read from each person's environment at runtime. Set FIGMA_API_KEY in your shell/CI before launching. Remove servers you do not use; add personal/optional servers to your gitignored local config instead.",
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--stdio"],
+      "env": {
+        "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+      }
+    }
+  }
+}

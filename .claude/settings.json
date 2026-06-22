@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/accuracy_report.mjs)",
+      "Bash(node scripts/measure_render.mjs:*)",
+      "Bash(node scripts/verify_states.mjs:*)",
+      "Bash(node scripts/verify_responsive.mjs:*)",
+      "Bash(node scripts/verify_rtl.mjs:*)",
+      "Bash(node scripts/verify_focustrap.mjs:*)",
+      "Bash(node scripts/axe_audit.mjs:*)",
+      "Bash(node scripts/taste_audit.mjs:*)",
+      "Bash(node scripts/build_tokens.mjs:*)",
+      "Bash(python3 scripts/validate_tokens.py:*)",
+      "Bash(python3 scripts/validate_contrast.py:*)",
+      "Bash(python3 scripts/validate_component_spec.py:*)",
+      "Bash(python3 scripts/validate_theme_refs.py:*)",
+      "Bash(python3 scripts/lint_hardcodes.py:*)",
+      "Bash(python3 scripts/lint_taste.py:*)",
+      "Bash(python3 scripts/check_no_emoji.py:*)",
+      "Bash(python3 scripts/contrast.py:*)",
+      "Bash(python3 scripts/scaffold_component.py:*)",
+      "Bash(npm test)",
+      "Bash(npm run:*)"
+    ],
+    "deny": []
+  }
+}

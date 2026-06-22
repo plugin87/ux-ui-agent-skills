@@ -10,6 +10,9 @@ npm-debug.log*
 # Local-only demos (IP) — never commit
 examples/apple-home/
 
+# Personal, machine-local preferences — never commit
+CLAUDE.local.md
+
 # OS / editor noise
 .DS_Store
 *.swp
