@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edge cases - hostile content</title>
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
+  h1{font-size:var(--text-2xl);margin-block-end:var(--space-2)}
+  .lede{font-size:var(--text-sm);color:var(--color-text-secondary);max-inline-size:65ch;margin-block-end:var(--space-6)}
+  h2{font-size:var(--text-lg);margin-block:var(--space-6) var(--space-3)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-4)}
+  .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);
+    padding:var(--space-5);display:grid;gap:var(--space-2);min-inline-size:0}
+  .card h3{font-size:var(--text-base)}
+  .card p{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .cap{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  /* Defence 1: unbroken strings must be allowed to break, or they saw through
+     every container they are placed in. */
+  .breakable{overflow-wrap:anywhere}
+  /* Defence 2: deliberate truncation always pairs with the full value in title. */
+  .trunc{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-inline-size:0}
+  .row{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
+  .btn{min-block-size:var(--size-control-md);padding:var(--space-2) var(--space-4);border:0;border-radius:var(--radius-button);
+    font:500 var(--text-sm)/1.3 var(--font-sans);cursor:pointer;background:var(--color-action-primary);color:var(--color-text-on-action);
+    max-inline-size:100%;overflow-wrap:anywhere}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--secondary:focus-visible{box-shadow:inset 0 0 0 1px var(--color-border-strong),var(--shadow-focus-ring)}
+  .badge{display:inline-block;padding:var(--space-1) var(--space-2);border-radius:var(--radius-full);background:var(--color-surface-raised);
+    color:var(--color-text-primary);font-size:var(--text-xs);max-inline-size:100%;overflow-wrap:anywhere}
+  .field{display:grid;gap:var(--space-2);min-inline-size:0}
+  .label{font-size:var(--text-sm);font-weight:500}
+  .control{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);padding:var(--space-2) var(--space-3);
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:var(--color-surface-card);
+    color:var(--color-text-primary);font:var(--text-base)/1.4 var(--font-sans)}
+  .control:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  /* empty state */
+  .empty{display:grid;gap:var(--space-2);justify-items:center;text-align:center;padding:var(--space-6) var(--space-4);
+    border:1px dashed var(--color-border-strong);border-radius:var(--radius-card);color:var(--color-text-secondary)}
+  .empty .ico{inline-size:var(--size-icon-lg,1.5rem);block-size:var(--size-icon-lg,1.5rem);color:var(--color-text-secondary)}
+  .empty h3{font-size:var(--text-base);color:var(--color-text-primary)}
+  .empty p{font-size:var(--text-sm);max-inline-size:40ch}
+  /* stat tiles */
+  .stat{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);
+    padding:var(--space-4);display:grid;gap:var(--space-1);min-inline-size:0}
+  .stat .n{font-size:var(--text-2xl);font-weight:600;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+  .stat .k{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  /* avatar with no image -> initials, never a broken image */
+  .avatar{inline-size:2.5rem;block-size:2.5rem;border-radius:var(--radius-full);background:var(--color-surface-raised);
+    color:var(--color-text-primary);display:grid;place-items:center;font-size:var(--text-sm);font-weight:600;flex:none}
+  /* many items: an intentional scroll container, not a clip */
+  .scroller{max-block-size:18rem;overflow:auto;border:1px solid var(--color-border-default);border-radius:var(--radius-card)}
+  table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm)}
+  th,td{text-align:start;padding:var(--space-3);border-block-end:1px solid var(--color-border-default);max-inline-size:14rem}
+  th{position:sticky;inset-block-start:0;background:var(--color-surface-raised);font-weight:600}
+  .num{text-align:end;font-variant-numeric:tabular-nums}
+  .ico{inline-size:1rem;block-size:1rem;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  /* Universal reset: a narrow selector list here loses to any descendant
+     selector, because a media query adds no specificity. Use !important. */
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main>
+<h1>Edge cases - hostile content</h1>
+<p class="lede">Every other harness renders copy that happens to fit. This one renders what production
+actually contains: pasted tokens with no spaces, names longer than their column, empty collections,
+missing values, and counts with ten digits. A component is only done when it survives this page.</p>
+
+<h2>1 - Long unbroken strings</h2>
+<div class="grid">
+  <article class="card">
+    <span class="cap">Card title</span>
+    <h3 class="breakable">pk_live_51MZq8bK2eCx9vRt7WgYh3NdJfLpQaSzXcVbNmKjHgFdSaPoIuYtReWq</h3>
+    <p>An API key pasted as a record name. It must wrap rather than widen the card.</p>
+  </article>
+  <article class="card">
+    <span class="cap">Button label</span>
+    <div class="row"><button class="btn">Reconnect&nbsp;production-database-replica-eu-west-1</button></div>
+    <p>A label with no natural break point still has to stay inside the button.</p>
+  </article>
+  <article class="card">
+    <span class="cap">Badge</span>
+    <div class="row"><span class="badge">deployment-rollback-pending-approval</span></div>
+    <p>Pills are the first thing a long value bursts.</p>
+  </article>
+  <article class="card">
+    <div class="field">
+      <label class="label" for="url">Webhook URL</label>
+      <input class="control" id="url" type="url"
+        value="https://hooks.example.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX" />
+    </div>
+    <p>The field scrolls its own value; the layout does not move.</p>
+  </article>
+</div>
+
+<h2>2 - Truncation done on purpose</h2>
+<div class="grid">
+  <article class="card">
+    <span class="cap">With ellipsis and full value in the tooltip</span>
+    <p class="trunc" style="max-inline-size:28ch"
+       title="Quarterly revenue reconciliation and variance commentary - EMEA region - final">
+      Quarterly revenue reconciliation and variance commentary - EMEA region - final</p>
+    <p>Cutting text is fine when it is declared and the whole value stays reachable.</p>
+  </article>
+  <article class="card">
+    <span class="cap">Long name beside a fixed control</span>
+    <div class="row">
+      <span class="avatar" aria-hidden="true">AR</span>
+      <span class="trunc" style="flex:1">Anastasia Rodriguez-Fitzgerald</span>
+      <button class="btn btn--secondary">Manage</button>
+    </div>
+    <p>The name shrinks; the button never gets pushed off the row.</p>
+  </article>
+</div>
+
+<h2>3 - Empty, single, and missing</h2>
+<div class="grid">
+  <div class="empty">
+    <svg class="ico" aria-hidden="true"><use href="#i-folder"/></svg>
+    <h3>No invoices yet</h3>
+    <p>Invoices appear here once a customer is billed. Create your first invoice to get started.</p>
+    <button class="btn">Create invoice</button>
+  </div>
+  <div class="empty">
+    <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+    <h3>No results for "qx-9920"</h3>
+    <p>Check the spelling, or search by customer name instead of reference.</p>
+    <button class="btn btn--secondary">Clear search</button>
+  </div>
+  <article class="card">
+    <span class="cap">A collection of exactly one</span>
+    <ul style="margin:0;padding-inline-start:var(--space-5);font-size:var(--text-sm)">
+      <li>Only member of the list</li>
+    </ul>
+    <p>One item must not render like a broken grid of many.</p>
+  </article>
+</div>
+
+<h2>4 - Numbers at both extremes</h2>
+<div class="grid">
+  <div class="stat"><span class="n">1,284,930,776</span><span class="k">Requests this month</span></div>
+  <div class="stat"><span class="n">0</span><span class="k">Failed payments</span></div>
+  <div class="stat"><span class="n">-99.9%</span><span class="k">Change since April</span></div>
+  <div class="stat"><span class="n">n/a</span><span class="k">Not measured yet</span></div>
+</div>
+
+<h2>5 - Many items</h2>
+<!-- A scroll container is only reachable if it is focusable and named. -->
+<div class="scroller" tabindex="0" role="region" aria-label="Audit log">
+  <table>
+    <caption class="cap" style="padding:var(--space-3);text-align:start">Audit log - long list inside a scroll container</caption>
+    <thead><tr><th scope="col">Event</th><th scope="col">Actor</th><th scope="col" class="num">Duration</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+</div>
+</main>
+<script src="icons.js"></script>
+<script>
+  /* Many items: generated so the harness proves scroll behaviour rather than
+     shipping 40 hand-written rows. Deterministic, so renders are comparable. */
+  const EVENTS=['workspace.member.invited','billing.invoice.finalised','integration.webhook.delivery_failed',
+    'auth.session.revoked','export.dataset.completed'];
+  const ACTORS=['Anastasia Rodriguez-Fitzgerald','svc-automation','j.chen','deploy-bot-eu-west-1'];
+  document.getElementById('rows').innerHTML=Array.from({length:40},(_,i)=>{
+    const ev=EVENTS[i%EVENTS.length],ac=ACTORS[i%ACTORS.length];
+    return `<tr><td class="trunc" title="${ev}">${ev}</td><td class="trunc" title="${ac}">${ac}</td>`
+      +`<td class="num">${(i*137%9000)+120} ms</td></tr>`;
+  }).join('');
+</script>
+</body>
+</html>

@@ -55,6 +55,18 @@ const checks = [
    'node scripts/verify_responsive.mjs examples/component-states'],
   ['Slop tells — no HIGH anti-slop tell (hardcoded AI gradient, single-radius) across every harness (light + dark)',
    'node scripts/slop_tells.mjs --strict examples/component-states/*.html examples/sample-app/preview.html && node scripts/slop_tells.mjs --strict --dark examples/component-states/*.html examples/sample-app/preview.html'],
+  ['Target size (WCAG 2.5.8) — every target >= 24x24 or spacing/inline-exempt, mobile + desktop (light + dark)',
+   'node scripts/verify_target_size.mjs examples/component-states && node scripts/verify_target_size.mjs --dark examples/component-states'],
+  ['Reduced motion — policy present, motion stopped under reduce, no content lost across every harness',
+   'node scripts/verify_reduced_motion.mjs examples/component-states'],
+  ['Keyboard (WCAG 2.1.1) — Tab reaches every control, Enter/Space and arrow keys operate the widgets',
+   'node scripts/verify_keyboard.mjs examples/component-states'],
+  ['Token by intent — destructive never wears action.primary, affirmative never wears danger (light + dark)',
+   'node scripts/lint_intent.mjs examples/component-states && node scripts/lint_intent.mjs --dark examples/component-states'],
+  ['Content overflow — no silently clipped text, no overlapping controls, incl. the hostile-content harness',
+   'node scripts/verify_overflow.mjs examples/component-states'],
+  ['Edge cases — hostile content harness (long unbroken strings, empty, single, missing, extremes, many items)',
+   'node scripts/verify_states.mjs examples/component-states/edge-cases.html && node scripts/verify_states.mjs --dark examples/component-states/edge-cases.html && node scripts/axe_audit.mjs examples/component-states/edge-cases.html && node scripts/axe_audit.mjs --dark examples/component-states/edge-cases.html'],
 ];
 
 console.log('='.repeat(64));

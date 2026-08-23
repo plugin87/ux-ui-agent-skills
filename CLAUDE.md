@@ -550,6 +550,16 @@ scripts/                  ← validate_tokens.py · contrast.py · validate_cont
                             · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · slop_tells.mjs (render-based anti-slop tells: single-radius, default/flat shadow, HARDCODED indigo-blue gradient, #000 text, lorem, flat spacing, near-dup neutrals — HIGH fails the gate)
+                            · verify_target_size.mjs (WCAG 2.5.8: every target >= 24x24, with the spec's
+                              spacing/inline/label-hit-area exceptions; --advisory for the 44px sweep)
+                            · verify_reduced_motion.mjs (policy present + motion stopped under reduce +
+                              NO content lost — catches content revealed only by an entrance animation)
+                            · verify_keyboard.mjs (WCAG 2.1.1: Tab reaches it, Enter/Space operates it,
+                              composite widgets reachable and their arrow-key model implemented)
+                            · lint_intent.mjs (token BY INTENT, measured on the render: destructive never
+                              wears action.primary, affirmative never wears danger, same action same variant)
+                            · verify_overflow.mjs (silently clipped text + overlapping controls — the
+                              failures that stay inside the page and survive a happy-path screenshot)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)

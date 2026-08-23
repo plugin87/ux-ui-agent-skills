@@ -68,6 +68,9 @@
   hr.div{border:0;border-block-start:1px solid var(--color-border-default);margin:0}
   .div-text{display:flex;align-items:center;gap:var(--space-3);color:var(--color-text-secondary);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.06em}
   .div-text::before,.div-text::after{content:"";flex:1;border-block-start:1px solid var(--color-border-default)}
+  /* Universal reset: a narrow selector list here loses to any descendant
+     selector, because a media query adds no specificity. Use !important. */
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>

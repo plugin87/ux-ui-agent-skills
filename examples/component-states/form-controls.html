@@ -36,7 +36,9 @@
   .control input:focus-visible+.box{box-shadow:var(--shadow-focus-ring)}
   .control input:disabled+.box{opacity:.45}
   .muted{color:var(--color-text-secondary)}
-  @media(prefers-reduced-motion:reduce){.box,.box svg,.dot{transition:none}}
+  /* Universal reset: a narrow selector list here loses to any descendant
+     selector, because a media query adds no specificity. Use !important. */
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
   /* switch */
   .switch{position:relative;inline-size:2.6rem;block-size:1.5rem;flex:none}
   .switch input{position:absolute;opacity:0;inline-size:100%;block-size:100%;margin:0;cursor:pointer}
@@ -45,7 +47,6 @@
   .switch input:checked+.track{background:var(--color-action-primary)}
   .switch input:checked+.track .thumb{left:1.25rem}
   .switch input:focus-visible+.track{box-shadow:var(--shadow-focus-ring)}
-  @media(prefers-reduced-motion:reduce){.track,.thumb{transition:none}}
 </style>
 </head>
 <body>

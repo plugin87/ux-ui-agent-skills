@@ -73,5 +73,28 @@
 
 </div>
 <script src="icons.js"></script>
+<script>
+  /* Combobox keyboard model (WAI-ARIA): focus stays on the input and the arrows
+     move aria-activedescendant, so a screen reader announces the active option
+     without the input losing focus. Enter commits, Escape collapses. */
+  const box=document.getElementById('c2');
+  const opts=[...document.querySelectorAll('#c2list .opt')];
+  function activate(i){
+    const next=opts[(i+opts.length)%opts.length];
+    opts.forEach(o=>o.setAttribute('aria-selected',String(o===next)));
+    box.setAttribute('aria-activedescendant',next.id);
+    next.scrollIntoView({block:'nearest'});
+  }
+  box.addEventListener('keydown',e=>{
+    const i=opts.findIndex(o=>o.id===box.getAttribute('aria-activedescendant'));
+    if(e.key==='ArrowDown'){e.preventDefault();activate(i+1);}
+    else if(e.key==='ArrowUp'){e.preventDefault();activate(i-1);}
+    else if(e.key==='Home'){e.preventDefault();activate(0);}
+    else if(e.key==='End'){e.preventDefault();activate(opts.length-1);}
+    else if(e.key==='Enter'&&opts[i]){e.preventDefault();box.value=opts[i].textContent;}
+    else if(e.key==='Escape'){box.setAttribute('aria-expanded','false');}
+  });
+  opts.forEach((o,i)=>o.addEventListener('click',()=>{activate(i);box.value=o.textContent;box.focus();}));
+</script>
 </body>
 </html>
