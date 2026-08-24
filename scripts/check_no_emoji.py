@@ -22,10 +22,11 @@ ROOT = Path(__file__).resolve().parent.parent
 # the files the model loads and imitates. README is marketing/branding and is excluded.
 DEFAULT = [
     ROOT / "examples", ROOT / "taste",
-    ROOT / "CLAUDE.md", ROOT / ".claude" / "skills",
+    ROOT / "CLAUDE.md", ROOT / "CONTEXT.md",
+    ROOT / ".claude" / "skills", ROOT / ".claude" / "rules", ROOT / ".claude" / "commands",
     ROOT / "components", ROOT / "workflows", ROOT / "content",
     ROOT / "accessibility", ROOT / "frameworks",
-    ROOT / "design-systems",
+    ROOT / "design-systems", ROOT / "templates",
 ]
 EXTS = {".md", ".mdx", ".html", ".htm", ".tsx", ".jsx", ".ts", ".js",
         ".vue", ".svelte", ".css", ".scss", ".astro", ".json"}

@@ -98,6 +98,45 @@ cp -r ux-ui-agent-skills/ your-project/
 
 ---
 
+## Start a New Design Project
+
+The kit is the engine. A product repo that uses it wants its own lean layout, and
+`templates/product-design/` is that starter, shipped ready to copy:
+
+```
+your-product/
+  CLAUDE.md              the brief Claude reads every session (lean, placeholders to fill)
+  CLAUDE.local.md        your personal prefs, gitignored
+  .mcp.json              Figma / Notion connections, env-expanded, no secrets
+  .claude/
+    rules/               components.md · tokens.md · accessibility.md — load only when relevant
+    skills/              repeatable workflows your team adds
+    commands/            /gate — the project's own all-or-nothing check
+    settings.json        shared permissions, checked into git
+  design-tokens.json     source of truth: color, type, spacing (light + dark, WCAG-verified)
+  src/components/        the real UI Claude reads and edits
+  public/images/         real images so prototypes do not break
+  reference/             real screens Claude studies for context
+```
+
+In Claude Code, from a clone of this repo:
+
+```text
+/scaffold-project ../your-product
+```
+
+It copies the template, installs the engine areas next to it
+(`npx ux-ui-agent-skills add tokens components taste accessibility workflows content
+frameworks design-systems scripts skills`), and walks the placeholders with you.
+The project brief stays short on purpose: it loads on every turn, so everything
+that is not needed every turn lives in `.claude/rules/` or a skill.
+
+The seeded theme is not a guess. `python3 scripts/validate_template.py` proves the
+layout is complete, every alias resolves, and the required contrast pairs pass
+WCAG 2.2 AA in both light and dark before a project starts from it.
+
+---
+
 ## How to Use
 
 > **New here?** Read [**docs/WORKFLOW.md**](docs/WORKFLOW.md) for the full end-to-end picture — how the Request Router loads layers on demand, real usage scenarios, and the automated release pipeline.
@@ -118,18 +157,36 @@ There are **three ways** to drive the kit. Use whichever fits the moment.
 
 Type a slash command to invoke a capability directly. Each skill loads only the files it needs and can run its own scripts.
 
+Each `SKILL.md` carries an `invocation` field, so it is clear which ones you drive and which ones the agent reaches for on its own. Both kinds can be typed as a slash command.
+
+**User-invoked — you start them, they orchestrate a whole job**
+
 | Command | What it does |
 |---------|--------------|
-| `/design-tokens` | Generate / extend / validate DTCG tokens, palettes, multi-brand theming |
-| `/design-component` | Spec a component (anatomy, variants, 8 states, a11y) |
-| `/design-code` | Generate code for **any** framework via the Adapter Protocol |
-| `/design-review` | Score a design (6 dimensions + Nielsen) with a findings table |
-| `/a11y-audit` | WCAG 2.2 audit + contrast checks |
-| `/apply-aesthetic` | Apply an archetype or one of 138 design systems |
+| `/brandkit` | A whole brand foundation from a brief: tokens, light + dark, one theme.css, WCAG-verified |
 | `/redesign` | Audit-first upgrade of an existing UI without breaking it |
-| `/migrate-design-system` | Map to/from Material 3, Apple HIG, shadcn, Radix, etc. |
-| `/prototype` | Move up the fidelity ladder + plan usability testing |
-| `/ux-writing` | Write/review buttons, errors, empty states, microcopy |
+| `/image-to-code` | A screenshot or mockup becomes token-driven, accessible code |
+| `/prototype` | Move up the fidelity ladder and plan the usability test |
+| `/migrate-design-system` | Map to or from Material 3, Apple HIG, shadcn, Radix, and the rest |
+| `/governance` | Version, contribute, deprecate: how the system is allowed to change |
+
+**Model-invoked — the discipline the agent applies while it works**
+
+| Command | What it does |
+|---------|--------------|
+| `/design-tokens` | Generate, extend, or validate DTCG tokens, palettes, multi-brand theming |
+| `/design-component` | Spec a component: anatomy, variants, the 8 states, a11y |
+| `/design-code` | Generate code for any framework via the Adapter Protocol |
+| `/design-review` | Score a design across 6 dimensions plus Nielsen, with a findings table |
+| `/a11y-audit` | WCAG 2.2 audit and contrast checks |
+| `/apply-aesthetic` | Apply an archetype or one of 138 named design systems |
+| `/design-qa` | Stand up the CI gates that keep regressions out |
+| `/ux-writing` | Write or review buttons, errors, empty states, microcopy |
+| `/token-build` | Tokens to CSS, Tailwind, iOS, Android, Compose |
+| `/figma-integration` | Token to Figma Variable sync and component parity |
+| `/performance` | Core Web Vitals, layout shift, animation cost |
+
+Three slash commands round it out: `/gate` runs the whole gate and reports the real N/N, `/ship` adds the release checklist, and `/scaffold-project` starts a new product repo from the template.
 
 ```text
 /design-code  a pricing card in Vue, dark-mode aware
@@ -173,11 +230,14 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 
 ```
 .
-├── CLAUDE.md                  # Agent persona & master instructions (the session brief)
+├── CLAUDE.md                  # Agent persona, gates, router — the always-on brief (~270 lines)
 ├── CONTEXT.md                 # Ubiquitous language — shared domain vocabulary
 ├── CLAUDE.local.md            # Personal prefs (gitignored, per-machine)
 ├── .mcp.json                  # Project MCP servers (Figma) — no secrets, env-expanded
 │
+├── .claude/rules/             # Depth split out of CLAUDE.md, loaded only when relevant
+│   └── tokens-and-color · typography-and-spacing · components · accessibility
+│       frameworks · review-and-research · brand-and-operations
 ├── .claude/skills/            # Runnable skills — invoke via /name
 │   └── design-tokens · design-component · design-code · design-review · a11y-audit
 │       apply-aesthetic · redesign · migrate-design-system · prototype · ux-writing
@@ -185,6 +245,10 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
+│
+├── templates/product-design/  # Starter layout for a NEW product repo — /scaffold-project
+│   ├── CLAUDE.md · CLAUDE.local.md.template · .mcp.json · design-tokens.json
+│   └── .claude/{rules,skills,commands,settings.json} · src/components · public/images · reference
 │
 ├── scripts/                   # Real helper scripts (python3, no deps)
 │   ├── validate_tokens.py     # JSON + alias validation for tokens/

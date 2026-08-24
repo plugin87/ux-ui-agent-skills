@@ -6,7 +6,8 @@ essential foreground/background pairs against WCAG 2.2 minimums, in BOTH light a
 
 Usage:
   python3 scripts/validate_contrast.py
-  python3 scripts/validate_contrast.py --aaa   # also report 7:1 (AAA) for body text
+  python3 scripts/validate_contrast.py --aaa            # also report 7:1 (AAA) for body text
+  python3 scripts/validate_contrast.py design-tokens.json   # any DTCG file of the same shape
 Exit 0 = all required pairs pass; 1 = a required pair fails (or a token is missing).
 """
 import json
@@ -119,10 +120,13 @@ def check(data, overrides, mode, pairs, aaa, required):
 
 def main(argv):
     aaa = "--aaa" in argv
-    if not COLORS.exists():
-        print(f"ERROR: {COLORS} not found")
+    paths = [a for a in argv if not a.startswith("--")]
+    source = Path(paths[0]).resolve() if paths else COLORS
+    if not source.exists():
+        print(f"ERROR: {source} not found")
         return 1
-    data = json.loads(COLORS.read_text())
+    print(f"Source: {source}")
+    data = json.loads(source.read_text())
     dark = data.get("dark") if isinstance(data.get("dark"), dict) else None
     fails = []
     fails += check(data, None, "LIGHT", PAIRS, aaa, True)

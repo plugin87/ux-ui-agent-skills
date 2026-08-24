@@ -1,6 +1,7 @@
 ---
 name: redesign
 description: Upgrade an existing website or app to premium quality without breaking functionality — audit the current design, identify generic/AI tells, then apply taste and system rules surgically. Use when the user wants to improve, modernize, polish, or "make better" an existing UI/codebase.
+invocation: user
 ---
 
 # Skill: Redesign & Audit
@@ -19,4 +20,4 @@ Audit-first redesign that preserves behavior.
 Never sacrifice a working feature for aesthetics. Never ship a brand color that fails contrast. Never remove existing accessibility affordances. Deliver complete files — no placeholders.
 
 ## Single-theme consistency (critical for multi-page apps)
-Consolidate to ONE shared token theme and make **every page** consume it — a redesign that leaves different pages on different palettes has failed. Replace per-page/ad-hoc colors with semantic tokens; verify with `scripts/lint_hardcodes.py` that no page reintroduces off-theme values. Theme switches must come from the single token source, not page edits (CLAUDE.md → Single-Theme Consistency).
+Consolidate to ONE shared token theme and make **every page** consume it — a redesign that leaves different pages on different palettes has failed. Replace per-page/ad-hoc colors with semantic tokens; verify with `scripts/lint_hardcodes.py` that no page reintroduces off-theme values. Theme switches must come from the single token source, not page edits (`.claude/rules/tokens-and-color.md` → Single-Theme Consistency).

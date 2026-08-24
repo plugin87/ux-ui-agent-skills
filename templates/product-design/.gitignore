@@ -1,0 +1,18 @@
+# Personal, machine-local preferences - never commit
+CLAUDE.local.md
+
+# node / npm
+node_modules/
+*.tgz
+npm-debug.log*
+
+# Build output
+dist/
+build/
+.next/
+
+# OS / editor noise
+.DS_Store
+*.swp
+.idea/
+.vscode/

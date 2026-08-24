@@ -1,6 +1,7 @@
 ---
 name: prototype
 description: Move an idea up the fidelity ladder (content-first → wireframe → low-fi → high-fi → code) with a validation plan at each level, plus user-journey mapping and usability-testing scripts. Use when the user wants to prototype, wireframe, map a user flow, or plan/run usability testing.
+invocation: user
 ---
 
 # Skill: Prototype & Research

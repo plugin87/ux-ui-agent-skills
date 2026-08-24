@@ -1,6 +1,7 @@
 ---
 name: a11y-audit
 description: Audit a UI or design against WCAG 2.2 AA/AAA and ARIA patterns, returning criterion-referenced findings with severity and specific fixes. Use when the user wants an accessibility check, contrast verification, keyboard/screen-reader review, or wants to confirm a component meets POUR.
+invocation: model
 ---
 
 # Skill: Accessibility Audit

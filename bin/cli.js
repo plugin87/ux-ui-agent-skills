@@ -6,6 +6,7 @@
  * Zero dependencies — Node built-ins only.
  *
  *   npx ux-ui-skills init [dest]        Install the full kit (default dest: cwd)
+ *   npx ux-ui-skills new [dest]         Scaffold a NEW product repo from the starter template
  *   npx ux-ui-skills add <area>...      Install specific areas
  *   npx ux-ui-skills list               List available areas
  *   npx ux-ui-skills help
@@ -32,6 +33,7 @@ const AREAS = {
   content: 'content',
   scripts: 'scripts',
   skills: '.claude/skills',
+  rules: '.claude/rules',
 };
 
 const DESC = {
@@ -46,6 +48,7 @@ const DESC = {
   content: 'Voice & tone / UX writing system',
   scripts: 'validate_tokens · contrast · design_systems · scaffold_component',
   skills: '10 runnable Claude skills (.claude/skills/)',
+  rules: 'Depth split out of CLAUDE.md, loaded on demand (.claude/rules/)',
 };
 
 const C = {
@@ -106,6 +109,34 @@ function installAreas(areaKeys, destRoot, flags) {
   }
 }
 
+// `new` — scaffold a product repo: the starter layout + the engine areas it needs.
+// The template ships CLAUDE.local.md as *.template so this repo's own gitignore
+// cannot swallow it; the suffix is dropped on the way out.
+const TEMPLATE = path.join('templates', 'product-design');
+
+function cmdNew(destRoot, flags) {
+  const src = path.join(ROOT, TEMPLATE);
+  if (!fs.existsSync(src)) {
+    console.error(`  ${C.red}missing in package:${C.reset} ${TEMPLATE}`);
+    process.exit(1);
+  }
+  console.log(`\n${C.bold}Scaffolding a new design project${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
+  for (const entry of fs.readdirSync(src)) {
+    const out = entry === 'CLAUDE.local.md.template' ? 'CLAUDE.local.md' : entry;
+    copyRecursive(path.join(src, entry), path.join(destRoot, out), flags);
+  }
+  // the engine, minus its own CLAUDE.md and rules: the product repo keeps the lean
+  // brief and the three project rules the template ships, not the engine's depth
+  installAreas(Object.keys(AREAS).filter(k => k !== 'claude' && k !== 'rules'), destRoot, flags);
+  console.log(`\n${C.bold}Next${C.reset}`);
+  console.log(`  1. Fill the placeholders in ${C.cyan}CLAUDE.md${C.reset} (product, user, stack, vocabulary).`);
+  console.log(`  2. Point ${C.cyan}design-tokens.json${C.reset} at your brand, then prove it:`);
+  console.log(`     ${C.dim}python3 scripts/validate_contrast.py design-tokens.json${C.reset}`);
+  console.log(`  3. Put real screens in ${C.cyan}reference/${C.reset} and real imagery in ${C.cyan}public/images/${C.reset}.`);
+  console.log(`  4. Set the MCP env vars (FIGMA_API_KEY, ...) in your shell. Never commit a secret.`);
+  console.log(`  5. Run ${C.cyan}/gate${C.reset} in Claude Code before calling anything done.`);
+}
+
 function cmdList() {
   console.log(`\n${C.bold}Available areas${C.reset}\n`);
   for (const key of Object.keys(AREAS)) {
@@ -121,6 +152,7 @@ ${C.bold}ux-ui-agent-skills${C.reset} — install the design-system skill kit
 
 ${C.bold}Usage${C.reset}
   npx ux-ui-skills ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
+  npx ux-ui-skills ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
   npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
   npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
   npx ux-ui-skills ${C.cyan}help${C.reset}
@@ -132,6 +164,7 @@ ${C.bold}Flags${C.reset}
 ${C.bold}Examples${C.reset}
   npx ux-ui-skills init
   npx ux-ui-skills init ./my-app
+  npx ux-ui-skills new ./my-product
   npx ux-ui-skills add tokens taste design-systems
   npx ux-ui-skills add skills --force
 `);
@@ -154,6 +187,13 @@ function main() {
     const destRoot = path.resolve(rest[0] || process.cwd());
     console.log(`\n${C.bold}Installing full kit${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
     installAreas(Object.keys(AREAS), destRoot, flags);
+    return summary(destRoot);
+  }
+
+  if (cmd === 'new') {
+    const destRoot = path.resolve(rest[0] || process.cwd());
+    if (!flags.dry) fs.mkdirSync(destRoot, { recursive: true });
+    cmdNew(destRoot, flags);
     return summary(destRoot);
   }
 

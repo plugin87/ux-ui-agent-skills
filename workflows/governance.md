@@ -21,7 +21,7 @@ Treat the token + component API as a public contract and version with SemVer:
 
 1. **Propose** — open an issue: problem, evidence (where it recurs), proposed pattern. Check it isn't an existing component/variant first.
 2. **Validate** — does it serve a real, repeated need? One-off → keep it in the product, not the system.
-3. **Design to the bar** — full spec: anatomy, variants, sizes, the 8 states, token mapping, a11y (CLAUDE.md Component Quality Bar).
+3. **Design to the bar** — full spec: anatomy, variants, sizes, the 8 states, token mapping, a11y (`.claude/rules/components.md` → Component Quality Bar).
 4. **Review** — run `workflows/design-review.md` + `a11y-audit`; verify tokens with `scripts/validate_tokens.py` and contrast with `scripts/contrast.py`.
 5. **Document & ship** — add the spec file, wire it into CLAUDE.md (File Reference Map + relevant table), bump version, changelog.
 

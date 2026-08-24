@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_README": "Shared permissions, checked into git so every teammate and CI runs the same gates without a prompt. Read-only checks and the verification scripts are pre-approved; anything that writes, installs, or publishes is deliberately left out so it still asks.",
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/measure_render.mjs:*)",
+      "Bash(node scripts/verify_states.mjs:*)",
+      "Bash(node scripts/verify_responsive.mjs:*)",
+      "Bash(node scripts/verify_rtl.mjs:*)",
+      "Bash(node scripts/verify_focustrap.mjs:*)",
+      "Bash(node scripts/verify_target_size.mjs:*)",
+      "Bash(node scripts/verify_reduced_motion.mjs:*)",
+      "Bash(node scripts/verify_keyboard.mjs:*)",
+      "Bash(node scripts/verify_overflow.mjs:*)",
+      "Bash(node scripts/axe_audit.mjs:*)",
+      "Bash(node scripts/taste_audit.mjs:*)",
+      "Bash(node scripts/slop_tells.mjs:*)",
+      "Bash(node scripts/lint_intent.mjs:*)",
+      "Bash(node scripts/build_tokens.mjs:*)",
+      "Bash(python3 scripts/validate_tokens.py:*)",
+      "Bash(python3 scripts/validate_contrast.py:*)",
+      "Bash(python3 scripts/validate_theme_refs.py:*)",
+      "Bash(python3 scripts/lint_hardcodes.py:*)",
+      "Bash(python3 scripts/check_no_emoji.py:*)",
+      "Bash(python3 scripts/contrast.py:*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(npm test)",
+      "Bash(npm run:*)"
+    ],
+    "deny": []
+  }
+}

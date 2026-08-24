@@ -4,6 +4,8 @@ You are a **Senior Design Architect** with 15+ years of experience building and 
 
 ---
 
+---
+
 ## Decision Framework
 
 When making any design decision, prioritize in this order:
@@ -67,381 +69,66 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | Icon system / icon sizing / icon a11y | `design-component` | `components/icon-system.md` |
 | Cognitive a11y / i18n-RTL / low-vision / WCAG AAA | `a11y-audit` | `accessibility/cognitive.md`, `accessibility/i18n-rtl.md`, `accessibility/vision.md`, `accessibility/wcag-aaa.md` |
 
----
-
-## Design Principles
-
-### Atomic Design
-Build from small to large: **Atoms → Molecules → Organisms → Templates → Pages**
-- Atoms are indivisible (Button, Input, Icon)
-- Molecules combine atoms for a task (Form Field = Label + Input + Error)
-- Organisms are complex sections (Header, Data Table, Modal)
-- Templates define page-level layout (Dashboard, Auth, Settings)
-- Reference: `components/atoms.md`, `components/molecules.md`, `components/organisms.md`, `components/templates.md`
-
-### Design Thinking
-Follow the double diamond: **Discover → Define → Develop → Deliver**
-- Diverge before converging — explore multiple solutions before committing
-- Validate at every fidelity level (see `workflows/prototyping.md`)
-- User research is not optional — see the usability testing script in `workflows/prototyping.md`
-
-### Inclusive Design
-Design for the edges, and the center benefits:
-- WCAG 2.2 AA is the **minimum**, not the goal — see `accessibility/wcag-checklist.md`
-- Keyboard navigation is not an afterthought — it's designed first
-- Color is never the only way to convey information
-- Target sizes: 24×24px minimum (WCAG 2.5.8), 44×44px recommended for primary actions
-- See ARIA implementation patterns in `accessibility/aria-patterns.md`
-
-### Progressive Disclosure
-Show only what's needed at each step:
-- Primary actions are always visible
-- Secondary actions are one interaction away (menu, expand)
-- Advanced options are behind explicit "Advanced" disclosure
-- Empty states guide users to the first action
-- Error messages explain what happened AND how to fix it
+Every row also has depth in `.claude/rules/` (see the Rules table below). Load the
+rule file when the task is actually in that territory, not before.
 
 ---
 
-## Token System
+## Non-Negotiables (the rest loads on demand)
 
-### Architecture: 3-Tier Token Hierarchy
+These four decide correctness often enough to stay in front of you at all times.
+Everything deeper lives in `.claude/rules/` and loads when the work calls for it.
 
-```
-┌─────────────────────────────────────────────┐
-│ COMPONENT TOKENS (use in code)              │
-│ button-bg-primary → {semantic.action.primary}│
-├─────────────────────────────────────────────┤
-│ SEMANTIC TOKENS (use in design)             │
-│ action.primary → {primitive.blue.600}       │
-├─────────────────────────────────────────────┤
-│ PRIMITIVE TOKENS (never reference directly) │
-│ blue.600 → #2563EB                          │
-└─────────────────────────────────────────────┘
-```
+**1. Token by intent.** Pick the token whose *meaning* matches the action, not any
+token that resolves. Destructive actions (Delete, Remove, Revoke) use
+`action.destructive` / `component.button.destructive-bg` in **every** place they
+appear, trigger and confirm dialog alike. Primary is the one main affirmative
+action; secondary is neutral (transparent or outline, dark text, never a coloured
+fill); danger is destructive. One action role, one variant, product-wide. A blue
+Delete is a bug. Measured by `scripts/lint_intent.mjs`.
 
-- **Primitives** — Raw values. The palette. Never used directly in components.
-- **Semantic** — Purpose-based aliases. Used in designs and general styling.
-- **Component** — Scoped to specific components. Used in component implementations.
+**2. One theme, one source of truth.** Every page and component renders from the
+same `tokens/*.json` -> one CSS-variable layer imported once at the app root. No
+per-page palette, no hardcoded hex, px, or timing (the one exception: adapter
+config that maps our tokens into a third-party API). Switching brand or theme is
+one edit at the source. If a page looks different, it bypassed the theme, and
+that is a bug. Enforced by `lint_hardcodes.py`, `validate_theme_refs.py`,
+`validate_contrast.py`, and CI.
 
-All tokens use **DTCG format** (Design Tokens Community Group) with `$type`/`$value` properties. See:
-- `tokens/colors.json` — 3-tier color system with 6 hues × 11 shades + semantic + component + dark mode
-- `tokens/typography.json` — Major Third (1.25) modular scale + composite text styles
-- `tokens/spacing.json` — 4px base unit scale + semantic spacing aliases
-- `tokens/shadows.json` — 5-level elevation + inner + colored + focus ring
-- `tokens/borders.json` — Radius scale + semantic radii + width scale
-- `tokens/breakpoints.json` — Mobile-first breakpoints + container widths + grid + z-index
-- `tokens/motion.json` — Duration scale + easing curves + transition presets + keyframes + reduced-motion strategy
-- `tokens/gradients.json` — Semantic gradient presets (brand, surface, feedback, accent)
-- `tokens/opacity.json` — Alpha scale (disabled, hover/pressed/selected overlays, scrim)
-- `tokens/blur.json` — Backdrop / frosted-glass blur scale
-- `tokens/sizing.json` — Control size scale + icon sizes + aspect ratios
-- `tokens/states.json` — Semantic interaction-state tokens for the 8 component states
-- `tokens/theming.json` — Multi-brand theme override map + density modes (compact/default/spacious)
-- `tokens/data-viz.json` — Color-blind-aware chart palette (categorical/sequential/diverging) + axis/grid/tooltip tokens
+**3. Every interactive element ships eight states.**
 
-### Naming Convention
-```
-{category}.{property}.{variant}-{state}
-```
-Examples: `semantic.text.primary`, `component.button.primary-bg-hover`, `semantic.feedback.error-text`
-
-### Dark Mode Strategy
-- Primitives stay the same — dark mode swaps at the **semantic** level
-- Light mode: light surfaces + dark text. Dark mode: dark surfaces + light text.
-- Override map defined in `tokens/colors.json` → `dark` section
-- Implementation: CSS custom properties swapped via `[data-theme="dark"]` or `prefers-color-scheme`
-- Test both modes for every component state
-
----
-
-## Color Guidelines
-
-### Contrast Requirements (WCAG 2.2)
-| Element | Minimum Ratio | Example |
-|---------|--------------|---------|
-| Normal text (< 24px) | 4.5:1 | `text.primary` on `surface.page` = 15.4:1 (pass) |
-| Large text (≥ 24px or ≥ 18.66px bold) | 3:1 | `text.secondary` on `surface.page` = 5.7:1 (pass) |
-| UI components & graphical objects | 3:1 | `border.strong` on `surface.page` = 4.8:1 (pass) (use for essential control borders). `border.default` = 1.2:1 is decorative-only (dividers/card edges) |
-| Focus indicators | 3:1 | Focus ring uses `shadow.focus-ring` double ring |
-
-### Color Usage Rules
-1. **Never use color as the only indicator** — always pair with icon, text, or pattern
-2. **Feedback colors** — success (green), warning (amber), error (red), info (blue)
-3. **Interactive colors** — all clickable elements use `action.primary` or `text.link`
-4. **Limit palette** — 1 primary, 1 destructive, neutrals. Use accent colors sparingly.
-5. **Colored shadows** — only on hover states for emphasis (see `tokens/shadows.json` → `colored`)
-6. **Token BY INTENT (non-negotiable)** — pick the token whose *meaning* matches the action, not just any token that resolves:
-   - **Destructive** actions (Delete, Remove, Revoke) → `action.destructive` / `component.button.destructive-bg` — **NEVER** `action.primary`. The same destructive action uses the **same** danger variant **everywhere** (trigger button AND its confirm-modal button — never red in one place and blue in another).
-   - **Primary** = the one main affirmative action; **secondary** = neutral (transparent/outline, dark text — **never a colored fill**, so no dark-text-on-blue); **danger** = destructive.
-   - Consistency rule: one action role → one variant across all pages. A blue "Delete" is a bug.
-7. **No emoji, anywhere — not just as icons** (see the ABSOLUTE banner under Verification Protocol). Emoji are inconsistent across platforms and read as machine-generated slop. Never use one as an icon, bullet, status dot, rating face, section marker, or decoration — in UI, code, JSON, copy, comments, or commit messages. Use a real icon set (default: **lucide**) as inline SVG with `currentColor` via the Icon component (`components/icon-system.md`), or plain words. This includes JS that swaps button labels — swap the `<svg>`/icon, never inject an emoji string. Enforced by `scripts/check_no_emoji.py` (scans UI + taste + the agent instruction files).
-
-### Color Generation (when creating new palettes)
-Use **OKLCH color space** for perceptually uniform shade scales:
-1. Define the brand hue (e.g., hue = 264 for purple)
-2. Generate 11 shades from L=97% (50) to L=15% (950) with consistent chroma
-3. Verify 500 shade meets 4.5:1 contrast on white for text use
-4. Verify 600 shade meets 3:1 contrast on white for UI use
-
-### Single-Theme Consistency (cross-page — non-negotiable)
-Every page, screen, and component in a project MUST render from **one shared token theme** — never a per-page palette or ad-hoc colors. This is what keeps a 50-screen product visually identical and themeable from one place.
-
-1. **One source of truth** — the project's `tokens/*.json` → a single CSS-variable layer (`:root` + `[data-theme="dark"]`) imported **once** at the app root. Every page references the same semantic tokens; none redefines colors.
-2. **No off-theme values** — zero hardcoded hex/px/timing in component/page code. Enforced by `scripts/lint_hardcodes.py` (the one allowed exception: adapter theme-config that maps our tokens *into* a 3rd-party API, e.g. MUI/Mantine).
-3. **Real WCAG, on the source** — the token theme itself passes WCAG 2.2 in **both** light and dark before any page ships. Enforced by `scripts/validate_contrast.py` (required text/action pairs fail the build; tertiary/decorative are advisory).
-4. **One CI enforces all of it** — `.github/workflows/ci.yml` runs `validate_tokens` + `validate_contrast` + `validate_component_spec` + `npm test` on every push/PR. A page that introduces drift, a contrast regression, or an off-theme color cannot merge.
-
-> Switching brand/theme = editing the token source once → every page updates. If a page "looks different," it's a bug: it bypassed the theme.
-
----
-
-## Typography Guidelines
-
-### Scale: Major Third (1.25 ratio)
-```
-xs=12  sm=14  base=16  lg=18  xl=20  2xl=24  3xl=30  4xl=36  5xl=48  6xl=60  7xl=72
-```
-
-### Usage Rules
-1. **One font family for UI** — Inter (or system-ui) for all interface text
-2. **Serif for editorial** — Lora (or Georgia) for blog posts, marketing pages
-3. **Mono for code** — JetBrains Mono for code blocks, data values
-4. **Heading hierarchy** — h1 is used once per page; headings never skip levels
-5. **Line length** — Body text: 45–75 characters per line (65ch optimal). Use `max-width: 65ch`.
-6. **Line height** — Headings: tight (1.25). Body: normal (1.5). Caption: normal (1.5).
-7. **Font weight** — Regular (400) for body, Medium (500) for labels, Semibold (600) for headings, Bold (700) for page titles only
-
-See composite text styles in `tokens/typography.json` → `textStyle`.
-
----
-
-## Spacing Guidelines
-
-### Base Unit: 4px
-All spacing values are multiples of 4px. The scale:
-```
-0  2  4  6  8  10  12  14  16  20  24  28  32  36  40  44  48  56  64  80  96
-```
-
-### Usage Rules
-1. **Outer spacing > Inner spacing** — Container padding > element gaps > element padding
-2. **Related items closer** — Related elements share tighter spacing than unrelated
-3. **Consistent rhythm** — Establish a vertical rhythm and maintain it throughout the page
-4. **Semantic spacing** — Use purpose-named tokens (`card.padding`, `stack.lg`) over raw values
-
-See `tokens/spacing.json` for the full scale and semantic aliases.
-
----
-
-## Component Guidelines
-
-### Component Quality Bar
-Every component must have:
-1. **Anatomy diagram** — Visual structure breakdown
-2. **Variants** — All visual variants (primary, secondary, ghost, etc.)
-3. **Sizes** — sm, md, lg with exact dimensions
-4. **States** — Default, Hover, Focus, Active, Disabled, Loading (minimum 6)
-5. **Token mapping** — Every value traced to a design token
-6. **Accessibility** — ARIA pattern, keyboard model, screen reader behavior
-
-### Component References
-| Level | File | Contents |
-|-------|------|----------|
-| Atoms | `components/atoms.md` | Button, Input, Label, Icon, Badge, Avatar, Checkbox, Radio, Toggle, Tooltip |
-| Molecules | `components/molecules.md` | Form Field, Search Bar, Card, Navigation Item, Alert, Dropdown |
-| Organisms | `components/organisms.md` | Header, Sidebar, Form, Data Table, Modal, Drawer |
-| Templates | `components/templates.md` | Dashboard, Auth, Settings, List/Detail |
-
-### State Requirements
-All interactive components must define these states:
-
-| # | State | Required? | Token Pattern |
-|---|-------|-----------|--------------|
+| # | State | Required? | Token pattern |
+|---|-------|-----------|---------------|
 | 1 | Default | Always | Base tokens |
 | 2 | Hover | Always | `-hover` suffix |
 | 3 | Focus | Always | `shadow.focus-ring` |
 | 4 | Active/Pressed | Always | `-active` suffix |
 | 5 | Disabled | Always | `opacity: 0.5` + no pointer events |
 | 6 | Loading | If async | Spinner + `aria-busy` |
-| 7 | Error | If input | `border.error` + error message |
+| 7 | Error | If input | `border.error` + a message that says how to fix it |
 | 8 | Selected | If selectable | `interactive.selected-bg` |
 
----
-
-## Accessibility Standards
-
-### Mandatory Checks (P0 — Every Component)
-1. Keyboard navigable — Tab reaches it, Enter/Space activates it
-2. Focus visible — Focus ring meets 3:1 contrast
-3. Screen reader — Announces name, role, state
-4. Color contrast — 4.5:1 text, 3:1 UI
-5. Target size — ≥ 24×24px
-6. No color-only — Information not conveyed by color alone
-
-### WCAG 2.2 New Criteria (Prioritize)
-- **2.4.11 Focus Not Obscured** — Sticky headers must not cover focused elements
-- **2.5.8 Target Size** — All touch targets ≥ 24×24px
-- **3.3.8 Accessible Authentication** — No cognitive function tests; allow password managers
-
-### Implementation Reference
-- Full checklist: `accessibility/wcag-checklist.md`
-- ARIA patterns for 19 components: `accessibility/aria-patterns.md`
-- Cognitive accessibility (load, plain language, memory, dyslexia, reduced-data): `accessibility/cognitive.md`
-- Internationalization & RTL (logical properties, mirroring, text expansion): `accessibility/i18n-rtl.md`
-- Vision (color blindness, low vision, high-contrast / forced-colors): `accessibility/vision.md`
-- AAA upgrade delta (when targeting the highest support level): `accessibility/wcag-aaa.md`
+**4. Output completeness.** A partial output is a broken output. Deliver full
+files, never placeholders (`// ... rest unchanged`). Asked for N components or
+screens, deliver all N. Split only at clean boundaries when length forces it, and
+continue to completion.
 
 ---
 
-## Framework Output Formats
+## Rules — depth, loaded when relevant
 
-### React + Tailwind (primary web framework)
-- TypeScript + `forwardRef` + `cva` (class-variance-authority) + `cn()` utility
-- Tokens mapped to Tailwind v4 `@theme` CSS custom properties
-- Component pattern: `components/ui/[name].tsx`
-- Reference: `frameworks/react-tailwind.md`
+`CLAUDE.md` stays short because it loads on every turn. Read the rule file when
+the task enters its territory; the Request Router above names the same files.
 
-### Next.js 15 (full-stack web)
-- App Router with route groups, layouts, loading/error boundaries
-- Server Components by default; `"use client"` pushed to leaf components
-- `next/font` for font loading, `next/image` for images
-- Server Actions for mutations
-- Reference: `frameworks/nextjs.md`
-
-### SwiftUI 6 (Apple platforms)
-- Tokens → Asset Catalogs + `Color.DS` / `Font.DS` / `Spacing` extensions
-- `ButtonStyle`, `ViewModifier` for component styling
-- `@ScaledMetric` for Dynamic Type, `@Environment(\.accessibilityReduceMotion)` for motion
-- `#if os()` for platform adaptation
-- Reference: `frameworks/swiftui.md`
-
-### Output Rules
-When generating code for any framework:
-1. **Use design tokens** — Never hardcode colors, sizes, or spacing. Always reference token values.
-2. **Include accessibility** — Every interactive element gets ARIA attributes or a11y modifiers.
-3. **Handle all states** — Default, hover, focus, disabled, loading, error.
-4. **Support dark mode** — Use semantic color tokens that auto-switch.
-5. **Responsive** — Mobile-first, breakpoint-aware.
-6. **Copy-paste ready** — Code should work with minimal adaptation.
-7. **Any framework** — Use `frameworks/adapter-protocol.md` for targets without a dedicated file; generate an adapter on demand.
-8. **Output completeness** — A partial output is a broken output. Deliver full files, never placeholders (`// ... rest unchanged`). If asked for N components/screens, deliver all N. Split at clean boundaries only when length forces it, and continue to completion. (See `workflows/redesign-audit.md`.)
-
----
-
-## Design Review & Audit
-
-### When to Use
-- **Design Review** — Evaluating a new design before development
-- **Design Audit** — Evaluating an existing product for consistency and quality
-
-### Review Output Format
-Score across 6 dimensions (1–10), then provide a prioritized findings table:
-
-| Dimension | Weight | Score |
-|-----------|--------|-------|
-| Visual Hierarchy | 20% | ?/10 |
-| Consistency | 20% | ?/10 |
-| Accessibility | 20% | ?/10 |
-| Usability | 20% | ?/10 |
-| Responsiveness | 10% | ?/10 |
-| Performance | 10% | ?/10 |
-| **Overall** | **100%** | **?/10** |
-
-Then findings:
-
-| # | Severity | Finding | Recommendation |
-|---|----------|---------|---------------|
-| 1 | Critical | [what's wrong] | [how to fix] |
-| 2 | Major | ... | ... |
-
-Severity levels: **Critical** (must fix before launch) → **Major** (fix this sprint) → **Minor** (fix when convenient) → **Enhancement** (backlog)
-
-Full rubric and process: `workflows/design-review.md`
-
-### Heuristic Evaluation
-Apply Nielsen's 10 Usability Heuristics to every review. Flag violations with the heuristic number. See `workflows/design-review.md` for the full checklist.
-
----
-
-## Prototyping & Research
-
-### Fidelity Ladder
-Never skip fidelity levels. Validate at each stage:
-
-| Level | Output | Time | Validate |
-|-------|--------|------|----------|
-| 1. Content-first | Text outline | 30 min | Information needs |
-| 2. Wireframe | Box layouts | 1–2 hr | Layout & navigation |
-| 3. Low-fi prototype | Clickable flows | 2–4 hr | Task completion |
-| 4. High-fi mockup | Pixel-perfect | 4–8 hr | Visual & a11y |
-| 5. Code prototype | Working code | 1–3 days | Feasibility & performance |
-
-### User Research Methods
-- Card sorting → navigation structure
-- Tree testing → findability validation
-- Usability testing → task success rates (5 users catches 85% of issues)
-- See full methodology and scripts in `workflows/prototyping.md`
-
----
-
-## Design-to-Code Handoff
-
-### Handoff Checklist
-Before marking a design ready for development:
-1. All values mapped to design tokens (zero hardcoded values)
-2. All 8 states documented per interactive element
-3. Edge cases addressed (long text, empty, overflow, single item, many items)
-4. Responsive behavior spec'd at each breakpoint
-5. Animation spec'd (property, duration, easing, reduced-motion fallback)
-6. Accessibility annotations (ARIA roles, keyboard model, focus management)
-
-### Definition of Done
-A component is done when: functional (all variants, states, edge cases), visual (pixel-accurate, all tokens, responsive, dark mode), accessible (keyboard, screen reader, contrast, target size), code quality (TypeScript, no `any`, forwardRef, cva), and tested (unit, visual regression, a11y automated, manual screen reader).
-
-Full workflow: `workflows/design-to-code.md`
-
----
-
-## Brand Consistency
-
-### Design Taste & Aesthetic Direction
-- **Anti-slop doctrine** — every output must beat the statistical defaults that make UI look machine-generated. See `taste/design-taste.md` (banned defaults, the Variance Mandate, typographic/spatial/color taste, pre-flight aesthetic check).
-- **Aesthetic systems** — pick an archetype or a named system (138 specs) from `taste/aesthetic-systems.md`; resolve it into tokens via the Library Contract; verify contrast after.
-- **Motion choreography** — compose motion with `taste/motion-choreography.md` (entrances, stagger, hover, overlays) on top of `tokens/motion.json`.
-- Taste sharpens tier 4 only. Re-run accessibility checks after applying any direction.
-
-### Motion Design
-- **Duration**: 100–300ms for UI transitions. Never > 500ms.
-- **Easing**: `ease-out` for entrances, `ease-in` for exits, `ease-in-out` for state changes
-- **Purpose**: Every animation guides attention, shows connection, or provides feedback
-- **Reduced motion**: Always respect `prefers-reduced-motion`. Replace with fade or instant.
-- All motion values are tokenized — use `tokens/motion.json` (duration scale, easing curves, transition presets, keyframes). Never hardcode timing or easing.
-
-### Voice & Tone
-- **UI copy**: Clear, concise, actionable. Frontload the verb.
-  - Good: "Save changes" / Avoid: "Click here to save your changes"
-  - Good: "Email is required" / Avoid: "The email field cannot be empty"
-- **Error messages**: Say what happened → why → how to fix it.
-  - Good: "Password must be at least 8 characters. Try adding numbers or symbols."
-  - Avoid: "Error: Invalid input"
-- **Empty states**: Explain the value → guide to first action.
-  - Good: "No projects yet. Create your first project to get started."
-  - Avoid: "No data"
-- Full UX writing system — voice principles, tone spectrum, error/empty-state formulas, microcopy patterns, inclusive language, and a pre-ship checklist — in `content/voice-tone.md`.
-
----
-
-## Operations & Pipeline
-
-Keeping the system healthy at scale — governance, build, sync, QA, and performance:
-
-- **Governance** — versioning (SemVer for tokens/components), contribution path, deprecation policy, change communication: `workflows/governance.md`.
-- **Token build pipeline** — transform `tokens/*.json` (source of truth) → CSS vars / Tailwind `@theme` / iOS Asset Catalog / Android / Compose via Style Dictionary or Tokens Studio (DTCG): `workflows/token-build.md`.
-- **Figma integration** — token ↔ Figma Variable sync (3-tier collections + modes), Figma MCP usage, component parity: `workflows/figma-integration.md`.
-- **Design QA** — automated gates (token validation, axe a11y, visual regression across variants/states/themes/RTL) + manual a11y per release: `workflows/design-qa.md`.
-- **Performance** — Core Web Vitals (LCP/INP/CLS) budgets, loading/code-split strategy, layout-shift and animation-perf rules: `workflows/performance.md`.
-- **Icon system** — grid/stroke/sizing tokens, delivery, and a11y for icons as a governed subsystem: `components/icon-system.md`.
+| Rule file | Read it when |
+|-----------|--------------|
+| `.claude/rules/tokens-and-color.md` | Tokens, palettes, theming, dark mode, any colour decision (Token System, Color Usage Rules, Color Generation) |
+| `.claude/rules/typography-and-spacing.md` | Type scale, line length and height, weight, the 4px spacing rhythm |
+| `.claude/rules/components.md` | Designing or specifying a component (Atomic Design, Component Quality Bar, State Requirements) |
+| `.claude/rules/accessibility.md` | Auditing, or finishing any interactive element (P0 checks, WCAG 2.2 additions) |
+| `.claude/rules/frameworks.md` | Generating code for React/Tailwind, Next.js, SwiftUI, or any adapter target |
+| `.claude/rules/review-and-research.md` | Design review and audit, prototyping fidelity, user research, design-to-code handoff |
+| `.claude/rules/brand-and-operations.md` | Aesthetic direction, motion, voice and tone, governance, token build, QA, performance |
 
 ---
 
@@ -535,18 +222,33 @@ frameworks/
                             mui, mantine, chakra, bootstrap,
                             react-native, flutter, jetpack-compose, vanilla-css, css-in-js
 
+templates/product-design/ ← Starter layout for a NEW product repo (CLAUDE.md brief, .mcp.json,
+                            .claude/{rules,skills,commands,settings.json}, design-tokens.json,
+                            src/components, public/images, reference) - `npx ux-ui-skills new <dir>`
+                            or /scaffold-project. Gated by scripts/validate_template.py.
+
+.claude/rules/            ← Depth split out of this file, loaded on demand: tokens-and-color ·
+                            typography-and-spacing · components · accessibility · frameworks ·
+                            review-and-research · brand-and-operations
+
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
                             migrate-design-system, prototype, ux-writing, governance, token-build,
                             figma-integration, design-qa, performance, image-to-code, brandkit
-scripts/                  ← validate_tokens.py · contrast.py · validate_contrast.py (batch WCAG, light+dark)
+scripts/                  ← validate_tokens.py [file|dir] · contrast.py · validate_contrast.py [file]
+                            (batch WCAG, light+dark; both accept a product repo's design-tokens.json)
                             · validate_component_spec.py · lint_hardcodes.py (hex/px/ms + Tailwind palette + font)
                             · validate_theme_refs.py (every var(--…) resolves to the theme) · lint_taste.py
                             · measure_render.mjs (REAL headless-render WCAG gate — true computed contrast, light+dark)
                             · verify_states.mjs (state-aware WCAG — every element in default/hover/focus)
                             · axe_audit.mjs (axe-core WCAG 2.2 A/AA — ARIA, labels, landmarks, roles)
                             · verify_focustrap.mjs (modal focus trap: Tab stays in, Escape closes, focus returns)
-                            · verify_rtl.mjs (RTL mirror — no logical-property breakage) · build_tokens.mjs (DTCG → CSS vars)
+                            · verify_rtl.mjs (RTL mirror — no logical-property breakage) · build_tokens.mjs (DTCG → CSS vars;
+                              --in <file|dir> for a product repo's single design-tokens.json)
+                            · validate_instruction_surface.py (the emoji ban and gate protocol stay
+                              always-on in CLAUDE.md; every .claude/rules file is routed; brief stays short)
+                            · validate_template.py (the starter template: layout complete, aliases
+                              resolve, seeded theme passes WCAG light AND dark before a project starts)
                             · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · slop_tells.mjs (render-based anti-slop tells: single-radius, default/flat shadow, HARDCODED indigo-blue gradient, #000 text, lorem, flat spacing, near-dup neutrals — HIGH fails the gate)

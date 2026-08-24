@@ -1,0 +1,215 @@
+{
+  "$schema": "https://design-tokens.github.io/community-group/format/",
+  "$description": "Source of truth for this product: color, type, spacing. DTCG format, 3-tier architecture (primitive -> semantic -> component). Edit ONE value here and every screen follows. Values are seeded from the verified kit defaults, so light and dark both pass WCAG 2.2 AA before you change anything. After editing, re-run the contrast gate.",
+
+  "primitive": {
+    "$description": "Raw palette. Never reference these directly from a component.",
+    "gray": {
+      "50":  { "$type": "color", "$value": "#f9fafb" },
+      "100": { "$type": "color", "$value": "#f3f4f6" },
+      "200": { "$type": "color", "$value": "#e5e7eb" },
+      "300": { "$type": "color", "$value": "#d1d5db" },
+      "400": { "$type": "color", "$value": "#9ca3af" },
+      "500": { "$type": "color", "$value": "#6b7280" },
+      "600": { "$type": "color", "$value": "#4b5563" },
+      "700": { "$type": "color", "$value": "#374151" },
+      "800": { "$type": "color", "$value": "#1f2937" },
+      "900": { "$type": "color", "$value": "#111827" },
+      "950": { "$type": "color", "$value": "#030712" }
+    },
+    "brand": {
+      "$description": "Replace this ramp with your brand hue. Keep 600 at >= 4.5:1 against white so it can carry white text.",
+      "50":  { "$type": "color", "$value": "#eff6ff" },
+      "100": { "$type": "color", "$value": "#dbeafe" },
+      "200": { "$type": "color", "$value": "#bfdbfe" },
+      "300": { "$type": "color", "$value": "#93c5fd" },
+      "400": { "$type": "color", "$value": "#60a5fa" },
+      "500": { "$type": "color", "$value": "#3b82f6" },
+      "600": { "$type": "color", "$value": "#2563eb" },
+      "700": { "$type": "color", "$value": "#1d4ed8" },
+      "800": { "$type": "color", "$value": "#1e40af" },
+      "900": { "$type": "color", "$value": "#1e3a8a" },
+      "950": { "$type": "color", "$value": "#172554" }
+    },
+    "red":   { "500": { "$type": "color", "$value": "#ef4444" }, "600": { "$type": "color", "$value": "#dc2626" }, "700": { "$type": "color", "$value": "#b91c1c" }, "400": { "$type": "color", "$value": "#f87171" } },
+    "green": { "500": { "$type": "color", "$value": "#22c55e" }, "600": { "$type": "color", "$value": "#16a34a" }, "700": { "$type": "color", "$value": "#15803d" }, "400": { "$type": "color", "$value": "#4ade80" } },
+    "amber": { "500": { "$type": "color", "$value": "#f59e0b" }, "600": { "$type": "color", "$value": "#d97706" }, "700": { "$type": "color", "$value": "#b45309" }, "400": { "$type": "color", "$value": "#fbbf24" } },
+    "white": { "$type": "color", "$value": "#ffffff" }
+  },
+
+  "semantic": {
+    "$description": "Purpose-based aliases. This is the tier you design and style with.",
+    "surface": {
+      "page":   { "$type": "color", "$value": "{primitive.white}" },
+      "card":   { "$type": "color", "$value": "{primitive.white}" },
+      "raised": { "$type": "color", "$value": "{primitive.gray.100}" },
+      "sunken": { "$type": "color", "$value": "{primitive.gray.50}" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "{primitive.gray.900}" },
+      "secondary": { "$type": "color", "$value": "{primitive.gray.600}" },
+      "tertiary":  { "$type": "color", "$value": "{primitive.gray.500}" },
+      "on-action": { "$type": "color", "$value": "{primitive.white}" },
+      "link":      { "$type": "color", "$value": "{primitive.brand.600}" }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "{primitive.gray.200}", "$description": "Decorative only (dividers, card edges). Too low-contrast for an essential control border." },
+      "strong":  { "$type": "color", "$value": "{primitive.gray.500}", "$description": "3:1 against the page. Use for any border that carries meaning." }
+    },
+    "action": {
+      "primary":         { "$type": "color", "$value": "{primitive.brand.600}" },
+      "primary-hover":   { "$type": "color", "$value": "{primitive.brand.700}" },
+      "primary-active":  { "$type": "color", "$value": "{primitive.brand.800}" },
+      "danger":          { "$type": "color", "$value": "{primitive.red.600}", "$description": "Destructive ONLY. Delete/Remove/Revoke never wear action.primary." },
+      "danger-hover":    { "$type": "color", "$value": "{primitive.red.700}" }
+    },
+    "feedback": {
+      "success": { "$type": "color", "$value": "{primitive.green.600}" },
+      "warning": { "$type": "color", "$value": "{primitive.amber.700}" },
+      "error":   { "$type": "color", "$value": "{primitive.red.600}" },
+      "info":    { "$type": "color", "$value": "{primitive.brand.600}" }
+    }
+  },
+
+  "component": {
+    "$description": "Scoped to one component. This is the tier component code references.",
+    "button": {
+      "primary-bg":       { "$type": "color", "$value": "{semantic.action.primary}" },
+      "primary-bg-hover": { "$type": "color", "$value": "{semantic.action.primary-hover}" },
+      "primary-text":     { "$type": "color", "$value": "{semantic.text.on-action}" },
+      "destructive-bg":   { "$type": "color", "$value": "{semantic.action.danger}" },
+      "destructive-text": { "$type": "color", "$value": "{semantic.text.on-action}" },
+      "secondary-bg":     { "$type": "color", "$value": "transparent", "$description": "Neutral, never a colored fill." },
+      "secondary-text":   { "$type": "color", "$value": "{semantic.text.primary}" },
+      "secondary-border": { "$type": "color", "$value": "{semantic.border.strong}" }
+    },
+    "input": {
+      "bg":            { "$type": "color", "$value": "{semantic.surface.card}" },
+      "border":        { "$type": "color", "$value": "{semantic.border.strong}" },
+      "border-error":  { "$type": "color", "$value": "{semantic.feedback.error}" },
+      "text":          { "$type": "color", "$value": "{semantic.text.primary}" },
+      "placeholder":   { "$type": "color", "$value": "{semantic.text.tertiary}" }
+    }
+  },
+
+  "dark": {
+    "$description": "Dark mode swaps at the SEMANTIC tier only. Primitives never change. Applied via [data-theme=\"dark\"].",
+    "surface": {
+      "page":   { "$type": "color", "$value": "{primitive.gray.950}" },
+      "card":   { "$type": "color", "$value": "{primitive.gray.900}" },
+      "raised": { "$type": "color", "$value": "{primitive.gray.800}" },
+      "sunken": { "$type": "color", "$value": "{primitive.gray.950}" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "{primitive.gray.50}" },
+      "secondary": { "$type": "color", "$value": "{primitive.gray.300}" },
+      "tertiary":  { "$type": "color", "$value": "{primitive.gray.400}" },
+      "on-action": { "$type": "color", "$value": "{primitive.white}" },
+      "link":      { "$type": "color", "$value": "{primitive.brand.400}", "$description": "brand.600 is only 3.9:1 on a dark surface. The lighter step is required here." }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "{primitive.gray.800}" },
+      "strong":  { "$type": "color", "$value": "{primitive.gray.500}" }
+    },
+    "action": {
+      "primary":        { "$type": "color", "$value": "{primitive.brand.600}" },
+      "primary-hover":  { "$type": "color", "$value": "{primitive.brand.700}" },
+      "primary-active": { "$type": "color", "$value": "{primitive.brand.800}" },
+      "danger":         { "$type": "color", "$value": "{primitive.red.600}" },
+      "danger-hover":   { "$type": "color", "$value": "{primitive.red.700}" }
+    },
+    "feedback": {
+      "success": { "$type": "color", "$value": "{primitive.green.400}" },
+      "warning": { "$type": "color", "$value": "{primitive.amber.400}" },
+      "error":   { "$type": "color", "$value": "{primitive.red.400}" },
+      "info":    { "$type": "color", "$value": "{primitive.brand.400}" }
+    }
+  },
+
+  "font": {
+    "family": {
+      "sans": { "$type": "fontFamily", "$value": "Inter, system-ui, -apple-system, sans-serif" },
+      "mono": { "$type": "fontFamily", "$value": "\"JetBrains Mono\", ui-monospace, monospace" }
+    },
+    "size": {
+      "$description": "Major Third (1.25) modular scale.",
+      "xs":   { "$type": "dimension", "$value": "0.75rem" },
+      "sm":   { "$type": "dimension", "$value": "0.875rem" },
+      "base": { "$type": "dimension", "$value": "1rem" },
+      "lg":   { "$type": "dimension", "$value": "1.125rem" },
+      "xl":   { "$type": "dimension", "$value": "1.25rem" },
+      "2xl":  { "$type": "dimension", "$value": "1.5rem" },
+      "3xl":  { "$type": "dimension", "$value": "1.875rem" },
+      "4xl":  { "$type": "dimension", "$value": "2.25rem" }
+    },
+    "weight": {
+      "regular":  { "$type": "fontWeight", "$value": 400 },
+      "medium":   { "$type": "fontWeight", "$value": 500 },
+      "semibold": { "$type": "fontWeight", "$value": 600 },
+      "bold":     { "$type": "fontWeight", "$value": 700 }
+    },
+    "leading": {
+      "tight":  { "$type": "number", "$value": 1.25 },
+      "normal": { "$type": "number", "$value": 1.5 }
+    }
+  },
+
+  "space": {
+    "$description": "4px base unit. Every gap and pad is a multiple of it.",
+    "1":  { "$type": "dimension", "$value": "0.25rem" },
+    "2":  { "$type": "dimension", "$value": "0.5rem" },
+    "3":  { "$type": "dimension", "$value": "0.75rem" },
+    "4":  { "$type": "dimension", "$value": "1rem" },
+    "5":  { "$type": "dimension", "$value": "1.25rem" },
+    "6":  { "$type": "dimension", "$value": "1.5rem" },
+    "8":  { "$type": "dimension", "$value": "2rem" },
+    "10": { "$type": "dimension", "$value": "2.5rem" },
+    "12": { "$type": "dimension", "$value": "3rem" },
+    "16": { "$type": "dimension", "$value": "4rem" }
+  },
+
+  "radius": {
+    "$description": "More than one radius on the page. A single radius everywhere is a slop tell.",
+    "sm":     { "$type": "dimension", "$value": "0.25rem" },
+    "md":     { "$type": "dimension", "$value": "0.5rem" },
+    "lg":     { "$type": "dimension", "$value": "0.75rem" },
+    "button": { "$type": "dimension", "$value": "{radius.md}" },
+    "card":   { "$type": "dimension", "$value": "{radius.lg}" },
+    "full":   { "$type": "dimension", "$value": "9999px" }
+  },
+
+  "shadow": {
+    "sm": { "$type": "shadow", "$value": "0 1px 2px rgba(16, 24, 40, 0.06)" },
+    "md": { "$type": "shadow", "$value": "0 4px 12px rgba(16, 24, 40, 0.08)" },
+    "lg": { "$type": "shadow", "$value": "0 12px 32px rgba(16, 24, 40, 0.12)" },
+    "focus-ring": { "$type": "shadow", "$value": "0 0 0 2px {semantic.surface.page}, 0 0 0 4px {semantic.action.primary}", "$description": "Double ring so it stays visible on any surface." }
+  },
+
+  "motion": {
+    "duration": {
+      "instant": { "$type": "duration", "$value": "100ms" },
+      "fast":    { "$type": "duration", "$value": "150ms" },
+      "normal":  { "$type": "duration", "$value": "250ms" }
+    },
+    "easing": {
+      "out":       { "$type": "cubicBezier", "$value": [0, 0, 0.2, 1] },
+      "in":        { "$type": "cubicBezier", "$value": [0.4, 0, 1, 1] },
+      "emphasized":{ "$type": "cubicBezier", "$value": [0.2, 0, 0, 1] }
+    },
+    "$description": "Never above 500ms. Always pair with a prefers-reduced-motion branch."
+  },
+
+  "size": {
+    "control": {
+      "sm": { "$type": "dimension", "$value": "2rem" },
+      "md": { "$type": "dimension", "$value": "2.5rem" },
+      "lg": { "$type": "dimension", "$value": "3rem" }
+    },
+    "icon": {
+      "sm": { "$type": "dimension", "$value": "1rem" },
+      "md": { "$type": "dimension", "$value": "1.25rem" },
+      "lg": { "$type": "dimension", "$value": "1.5rem" }
+    },
+    "target-min": { "$type": "dimension", "$value": "1.5rem", "$description": "24px, the WCAG 2.5.8 floor. 44px for primary touch actions." }
+  }
+}

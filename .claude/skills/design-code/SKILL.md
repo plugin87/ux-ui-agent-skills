@@ -1,6 +1,7 @@
 ---
 name: design-code
 description: Generate production-ready, accessible, token-driven component code for ANY framework — React+Tailwind, Next.js, SwiftUI, Vue, Svelte, Angular, Solid, Web Components/Lit, React Native, Flutter, Jetpack Compose, vanilla CSS, or CSS-in-JS. Use when the user wants working UI code for a component or screen in a specific stack.
+invocation: model
 ---
 
 # Skill: Design Code
@@ -27,7 +28,7 @@ Code is the highest-stakes output — self-check every time:
 3. **Accessibility wired** — correct role/ARIA per `accessibility/aria-patterns.md`, keyboard model, focus management, ≥24px target; verify contrast (`scripts/contrast.py`) for any new color pair.
 4. **Dark mode + reduced motion + responsive** — semantic tokens swap; motion has a `prefers-reduced-motion` fallback; layout is mobile-first.
 5. **Completeness** — full files, no `// ...`; if asked for N, deliver N. If any check fails, fix before returning (run `a11y-audit` if unsure).
-6. **Single-theme consistency** — consume the project's ONE shared token theme (the root CSS-var layer); never define a per-page palette or new colors. Across multiple pages/screens, the same semantic tokens must drive every surface so the whole product stays visually identical and themeable from one place (CLAUDE.md → Single-Theme Consistency).
+6. **Single-theme consistency** — consume the project's ONE shared token theme (the root CSS-var layer); never define a per-page palette or new colors. Across multiple pages/screens, the same semantic tokens must drive every surface so the whole product stays visually identical and themeable from one place (`.claude/rules/tokens-and-color.md` → Single-Theme Consistency).
 7. **One shared primitive layer** — build ONE reusable component per atom (`Button`, `Input`, `Modal`, `Badge` via `cva`/equivalent); never repeat utility-class clusters inline across files or hand-roll a div-as-modal per screen. Overlays reuse the single `Modal` primitive: focus trap, `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape, **return focus on close**, backdrop (WCAG 2.4.3 + 2.1.2). See `examples/golden/Button.tsx` + `examples/golden/Modal.tsx`.
 8. **Font loading** — NEVER `@import` web fonts in CSS (render-blocking). Use a framework loader (`next/font`) or `<link rel="preconnect">` + `<link rel="preload">` with `font-display: swap`; self-host when possible. Font family comes from a token (`--font-sans`), never a literal.
 9. **Semantic token BY INTENT + consistency** — the token's *meaning* must match the action: destructive (Delete/Remove) → `action.destructive` (danger), **never** `action.primary`; secondary = neutral outline/transparent with dark text (**never a colored fill** → no dark-text-on-blue). The SAME action uses the SAME variant **everywhere** (a trigger button and its confirm button must match — not red in one place and blue in another). Gates don't catch this — you must.

@@ -65,6 +65,10 @@ const checks = [
    'node scripts/lint_intent.mjs examples/component-states && node scripts/lint_intent.mjs --dark examples/component-states'],
   ['Content overflow — no silently clipped text, no overlapping controls, incl. the hostile-content harness',
    'node scripts/verify_overflow.mjs examples/component-states'],
+  ['Instruction surface — always-on rules stay in CLAUDE.md, every rule file routed, brief within budget',
+   'python3 scripts/validate_instruction_surface.py'],
+  ['Starter template — reference layout complete, tokens resolve, seeded theme passes WCAG (light + dark)',
+   'python3 scripts/validate_template.py'],
   ['Edge cases — hostile content harness (long unbroken strings, empty, single, missing, extremes, many items)',
    'node scripts/verify_states.mjs examples/component-states/edge-cases.html && node scripts/verify_states.mjs --dark examples/component-states/edge-cases.html && node scripts/axe_audit.mjs examples/component-states/edge-cases.html && node scripts/axe_audit.mjs --dark examples/component-states/edge-cases.html'],
 ];

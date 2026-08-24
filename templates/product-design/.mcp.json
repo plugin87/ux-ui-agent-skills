@@ -1,0 +1,20 @@
+{
+  "_README": "Project-scoped MCP servers, committed to git so the whole team shares the same connections. NO secrets live here: env values use ${VAR} expansion and are read from each person's environment at runtime. Set the variables in your shell or CI before launching. Delete the servers you do not use, and keep personal ones in your gitignored local config instead.",
+  "mcpServers": {
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--stdio"],
+      "env": {
+        "FIGMA_API_KEY": "${FIGMA_API_KEY}"
+      }
+    },
+    "notion": {
+      "_note": "Remove this block if the team does not keep specs in Notion.",
+      "command": "npx",
+      "args": ["-y", "@notionhq/notion-mcp-server"],
+      "env": {
+        "NOTION_API_KEY": "${NOTION_API_KEY}"
+      }
+    }
+  }
+}

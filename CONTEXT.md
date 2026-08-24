@@ -11,15 +11,17 @@ concept, add it here in the same line + pointer form.
 
 - **3-tier tokens** — primitive (raw palette, never used directly) then semantic
   (purpose alias, used in design) then component (scoped to a component, used in
-  code). Source: `tokens/*.json`, `CLAUDE.md` -> "Token System".
+  code). Source: `tokens/*.json`, `.claude/rules/tokens-and-color.md` -> "Token System".
 - **DTCG** — Design Tokens Community Group format: every token is `$type` +
   `$value`. Source: `tokens/`.
 - **token by intent** — pick the token whose *meaning* matches the action, not
   one that merely resolves to the right color. Destructive -> `action.destructive`
-  everywhere, never `action.primary`. Source: `CLAUDE.md` -> "Color Usage Rules".
+  everywhere, never `action.primary`. Source: `CLAUDE.md` -> Non-Negotiables,
+  `.claude/rules/tokens-and-color.md` -> "Color Usage Rules".
 - **single-theme consistency** — one shared token theme drives every page; no
   per-page palette, no off-theme hex/px/timing. Source: `CLAUDE.md` ->
-  "Single-Theme Consistency".
+  Non-Negotiables, `.claude/rules/tokens-and-color.md` -> "Single-Theme
+  Consistency".
 - **dark-at-semantic** — dark mode swaps at the semantic layer; primitives stay
   fixed. Source: `tokens/colors.json` -> `dark`.
 
@@ -27,9 +29,11 @@ concept, add it here in the same line + pointer form.
 
 - **the 8 states** — Default, Hover, Focus, Active, Disabled, Loading, Error,
   Selected. Interactive components define all that apply. Source: `CLAUDE.md` ->
-  "State Requirements", `tokens/states.json`.
+  Non-Negotiables, `.claude/rules/components.md` -> "State Requirements",
+  `tokens/states.json`.
 - **component quality bar** — anatomy, variants, sizes, the 8 states, token
-  mapping, accessibility. Source: `CLAUDE.md` -> "Component Quality Bar".
+  mapping, accessibility. Source: `.claude/rules/components.md` -> "Component
+  Quality Bar".
 - **atomic design** — Atoms -> Molecules -> Organisms -> Templates -> Pages.
   Source: `components/`.
 

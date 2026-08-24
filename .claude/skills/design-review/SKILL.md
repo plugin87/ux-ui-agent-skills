@@ -1,6 +1,7 @@
 ---
 name: design-review
 description: Review or audit a design/UI across 6 weighted dimensions with Nielsen's 10 heuristics and a prioritized findings table. Use when the user wants a design critique, quality score, heuristic evaluation, or audit of an existing screen, page, or product before/after build.
+invocation: model
 ---
 
 # Skill: Design Review

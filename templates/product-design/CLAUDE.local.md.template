@@ -1,0 +1,26 @@
+# CLAUDE.local.md — your personal preferences
+
+<!-- Shipped as CLAUDE.local.md.template so it survives the kit's own
+     gitignore. /scaffold-project drops it into your project as
+     CLAUDE.local.md, already ignored there. -->
+
+Gitignored. Never committed, never shared. `CLAUDE.md` is the team brief; this
+file is just you. It refines HOW you want help, and never overrides the project's
+non-negotiables.
+
+## Working style
+
+- Verbosity: <keep replies tight, show the gate output, skip the narration>
+- When a build is green, say so plainly with the real N/N line.
+- Ask before <installing dependencies / touching CI / pushing>.
+
+## Defaults when I do not specify
+
+- Framework: <React + Tailwind>
+- Aesthetic direction: <editorial-minimal>
+- Chart library: <none, hand-rolled SVG>
+
+## Local-only notes
+
+Machine-specific paths, scratch ideas, and in-progress experiments that should
+not reach the shared repo go here.

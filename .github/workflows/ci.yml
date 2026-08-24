@@ -43,6 +43,24 @@ jobs:
       - name: No emoji in UI output or taste files
         run: python3 scripts/check_no_emoji.py
 
+      - name: Instruction surface intact (no demoted rule, no orphan rule file)
+        run: python3 scripts/validate_instruction_surface.py
+
+      - name: Starter template sound (layout, aliases, WCAG light + dark)
+        run: python3 scripts/validate_template.py
+
+      - name: Scaffold smoke - `new` produces the reference layout
+        run: |
+          node bin/cli.js new /tmp/scaffold-smoke
+          test -f /tmp/scaffold-smoke/CLAUDE.md
+          test -f /tmp/scaffold-smoke/CLAUDE.local.md
+          test -f /tmp/scaffold-smoke/design-tokens.json
+          test -f /tmp/scaffold-smoke/.claude/settings.json
+          test -d /tmp/scaffold-smoke/.claude/rules
+          test -d /tmp/scaffold-smoke/src/components
+          test ! -f /tmp/scaffold-smoke/CLAUDE.local.md.template
+          cd /tmp/scaffold-smoke && python3 scripts/validate_contrast.py design-tokens.json
+
       - name: CLI smoke + npm test
         run: npm test
 

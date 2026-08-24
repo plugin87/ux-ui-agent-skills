@@ -1,6 +1,7 @@
 ---
 name: figma-integration
 description: Keep Figma and code in sync — map the 3-tier DTCG tokens to Figma Variables (collections + modes), sync in either direction, use the Figma MCP when connected, and verify component parity (variants/states). Use when the user wants to push tokens/components to Figma, pull a design into code, set up token↔Variable sync, or check design-code drift.
+invocation: model
 ---
 
 # Skill: Figma Integration

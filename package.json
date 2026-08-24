@@ -17,6 +17,8 @@
     "a11y:keyboard": "node scripts/verify_keyboard.mjs",
     "a11y:reduced-motion": "node scripts/verify_reduced_motion.mjs",
     "lint:intent": "node scripts/lint_intent.mjs",
+    "validate:template": "python3 scripts/validate_template.py",
+    "validate:surface": "python3 scripts/validate_instruction_surface.py",
     "verify:overflow": "node scripts/verify_overflow.mjs",
     "test:states": "node scripts/verify_states.mjs",
     "test:axe": "node scripts/axe_audit.mjs",
@@ -42,7 +44,10 @@
     "workflows/",
     "content/",
     "scripts/",
-    ".claude/skills/"
+    "templates/",
+    ".claude/skills/",
+    ".claude/rules/",
+    ".claude/commands/"
   ],
   "keywords": [
     "design-system",

@@ -1,12 +1,17 @@
 #!/usr/bin/env python3
-"""Validate the DTCG token files in tokens/.
+"""Validate DTCG token files.
 
 Checks:
-  1. Every tokens/*.json parses as valid JSON.
-  2. Every {alias.reference} resolves to a token defined somewhere in tokens/.
+  1. Every token file parses as valid JSON.
+  2. Every {alias.reference} resolves to a token defined in the same set.
 
 Usage:
-  python3 scripts/validate_tokens.py
+  python3 scripts/validate_tokens.py                    # the engine's tokens/ directory
+  python3 scripts/validate_tokens.py design-tokens.json # any file or directory
+
+With explicit paths the set is treated as self-contained, so an unresolved alias
+FAILS. The default tokens/ run only warns, because a reference there may point at
+a token that is about to be added.
 Exit code 0 = all good, 1 = problems found.
 """
 import json
@@ -47,12 +52,23 @@ def collect_aliases(value):
     return found
 
 
-def main():
-    if not TOKENS.is_dir():
-        print(f"ERROR: {TOKENS} not found")
-        return 1
-
-    files = sorted(TOKENS.glob("*.json"))
+def main(argv=()):
+    explicit = [Path(a) for a in argv if not a.startswith("-")]
+    if explicit:
+        files = []
+        for p in explicit:
+            if p.is_dir():
+                files += sorted(p.glob("*.json"))
+            elif p.is_file():
+                files.append(p)
+            else:
+                print(f"ERROR: {p} not found")
+                return 1
+    else:
+        if not TOKENS.is_dir():
+            print(f"ERROR: {TOKENS} not found")
+            return 1
+        files = sorted(TOKENS.glob("*.json"))
     if not files:
         print("ERROR: no token files found")
         return 1
@@ -104,6 +120,9 @@ def main():
         print("\nFAIL: JSON errors above.")
         return 1
     if unresolved:
+        if explicit:
+            print(f"\nFAIL: {len(unresolved)} unresolved alias(es) in a self-contained token set.")
+            return 1
         print(f"\nWARN: {len(unresolved)} unresolved alias(es) — may reference tokens to be added.")
         # warnings don't fail the build
     print("\nOK: all token files valid JSON.")
@@ -111,4 +130,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

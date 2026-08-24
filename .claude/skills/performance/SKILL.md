@@ -1,6 +1,7 @@
 ---
 name: performance
 description: Optimize UI performance against Core Web Vitals — LCP, INP, CLS — with loading/code-split strategy, layout-shift prevention, and animation performance rules. Use when the user wants to improve speed, fix jank or layout shift, hit Web Vitals budgets, or make a UI feel fast on low-end devices.
+invocation: model
 ---
 
 # Skill: Performance
