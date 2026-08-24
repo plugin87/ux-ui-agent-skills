@@ -23,6 +23,7 @@
       "Bash(python3 scripts/validate_theme_refs.py:*)",
       "Bash(python3 scripts/validate_template.py:*)",
       "Bash(python3 scripts/validate_instruction_surface.py:*)",
+      "Bash(node evals/run.mjs:*)",
       "Bash(python3 scripts/lint_hardcodes.py:*)",
       "Bash(python3 scripts/lint_taste.py:*)",
       "Bash(python3 scripts/check_no_emoji.py:*)",

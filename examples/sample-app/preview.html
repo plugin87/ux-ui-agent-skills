@@ -36,7 +36,7 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);transition:background var(--transition-micro),color var(--transition-micro)}
 .container{max-inline-size:var(--bp-lg);margin-inline:auto;padding:var(--space-6)}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);border-block-end:1px solid var(--color-border-default);padding-block-end:var(--space-4);margin-block-end:var(--space-6)}
+.topbar{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--space-4);border-block-end:1px solid var(--color-border-default);padding-block-end:var(--space-4);margin-block-end:var(--space-6)}
 .page-title{font-size:var(--text-3xl);line-height:var(--leading-tight);font-weight:700;margin:0}
 .subtle{color:var(--color-text-secondary);font-size:var(--text-sm);margin:var(--space-1) 0 0}
 .grid{display:grid;gap:var(--space-4);grid-template-columns:1fr;margin-block:var(--space-6)}
@@ -86,7 +86,7 @@ body{margin:0;font-family:var(--font-sans);background:var(--color-surface-page);
       <h1 class="page-title">Analytics</h1>
       <p class="subtle">Last 30 days · one shared theme · light + dark</p>
     </div>
-    <div style="display:flex;gap:var(--space-2)">
+    <div style="display:flex;flex-wrap:wrap;gap:var(--space-2)">
       <button class="btn btn--secondary" id="themeBtn" aria-pressed="false"><svg class="icon" id="themeIcon"><use href="#i-moon"/></svg> <span id="themeLabel">Dark</span></button>
       <button class="btn">Export</button>
     </div>

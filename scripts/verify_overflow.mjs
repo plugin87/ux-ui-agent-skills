@@ -59,10 +59,23 @@ const AUDIT = () => {
     return r.width > 0 && r.height > 0;
   };
 
+  /* Screen-reader-only text is clipped ON PURPOSE: the sr-only pattern hides it
+     from sight (a 1px box, or clip-path: inset(50%)) while leaving it in the
+     accessibility tree. Flagging it would punish correct a11y work. */
+  const srOnly = (el) => {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    if (r.width <= 1 || r.height <= 1) return true;
+    if (cs.clipPath && cs.clipPath !== 'none' && /inset\(\s*50%/.test(cs.clipPath)) return true;
+    if (cs.clip && cs.clip !== 'auto' && /rect\(\s*0(px)?[,\s]/.test(cs.clip)) return true;
+    return /(^|\s)(sr-only|visually-hidden|visuallyhidden|screen-reader-only)(\s|$)/i
+      .test(typeof el.className === 'string' ? el.className : '');
+  };
+
   // ---- A. silently clipped text
   const clipped = [];
   for (const el of document.querySelectorAll('body *')) {
-    if (!vis(el)) continue;
+    if (!vis(el) || srOnly(el)) continue;
     // Only judge elements that own text directly — not layout wrappers.
     const ownsText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 2);
     if (!ownsText) continue;

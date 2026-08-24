@@ -1,6 +1,6 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 15 runnable skills. Install into any project with npx.",
   "type": "commonjs",
   "bin": {
@@ -19,6 +19,8 @@
     "lint:intent": "node scripts/lint_intent.mjs",
     "validate:template": "python3 scripts/validate_template.py",
     "validate:surface": "python3 scripts/validate_instruction_surface.py",
+    "eval": "node evals/run.mjs",
+    "eval:self": "node evals/run.mjs --self-test",
     "verify:overflow": "node scripts/verify_overflow.mjs",
     "test:states": "node scripts/verify_states.mjs",
     "test:axe": "node scripts/axe_audit.mjs",

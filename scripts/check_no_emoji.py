@@ -24,9 +24,10 @@ DEFAULT = [
     ROOT / "examples", ROOT / "taste",
     ROOT / "CLAUDE.md", ROOT / "CONTEXT.md",
     ROOT / ".claude" / "skills", ROOT / ".claude" / "rules", ROOT / ".claude" / "commands",
+    ROOT / ".claude" / "agents", ROOT / "evals", ROOT / "templates",
     ROOT / "components", ROOT / "workflows", ROOT / "content",
     ROOT / "accessibility", ROOT / "frameworks",
-    ROOT / "design-systems", ROOT / "templates",
+    ROOT / "design-systems",
 ]
 EXTS = {".md", ".mdx", ".html", ".htm", ".tsx", ".jsx", ".ts", ".js",
         ".vue", ".svelte", ".css", ".scss", ".astro", ".json"}

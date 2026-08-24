@@ -65,6 +65,8 @@ const checks = [
    'node scripts/lint_intent.mjs examples/component-states && node scripts/lint_intent.mjs --dark examples/component-states'],
   ['Content overflow — no silently clipped text, no overlapping controls, incl. the hostile-content harness',
    'node scripts/verify_overflow.mjs examples/component-states'],
+  ['Eval harness — the 12-gate cold-start scorer runs green on the reference app',
+   'node evals/run.mjs --self-test'],
   ['Instruction surface — always-on rules stay in CLAUDE.md, every rule file routed, brief within budget',
    'python3 scripts/validate_instruction_surface.py'],
   ['Starter template — reference layout complete, tokens resolve, seeded theme passes WCAG (light + dark)',

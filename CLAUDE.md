@@ -34,7 +34,7 @@ This governs every build/review from the **start**, not the end. Trust comes fro
 4. **Build with the gates, not after.** Generate against the rules, then gate; if a gate fails, fix and re-run until green. Do not announce success between failures.
 5. **Render and LOOK — gates don't prove pixels.** The contrast/axe gates pass while the UI is still visibly broken: a checkbox that won't toggle, a dash stuck at the bottom of its box, a checkmark and dash of mismatched weight, an answer panel showing a grey "band", unequal widths, no expand animation. For any component, screenshot the harness (transitions off, pointer parked off it) and inspect every state AND after interaction — and click each control to assert the state actually changed. See `design-component` skill → "RENDER AND LOOK".
 6. **Responsive is gated too.** `node scripts/verify_responsive.mjs <file|dir>` — no horizontal overflow at 280/320/414px. Mobile-first; a fixed-px width that can't shrink is a bug.
-7. **Honest scope.** These gates prove *objective correctness* (token-consistency, accessibility, no drift). They do **not** prove subjective taste/beauty — say so; pair taste with `scripts/taste_audit.mjs` + human review, and never claim auto-100% on aesthetics.
+7. **Honest scope.** These gates prove *objective correctness* (token-consistency, accessibility, no drift). They do **not** prove subjective taste/beauty — say so, and never claim auto-100% on aesthetics. For the half no script can score, run **`/critique`** (the adversarial `design-critic` reviewer: renders it, argues for rejection, cites evidence per finding) alongside `scripts/taste_audit.mjs` + `scripts/slop_tells.mjs` and a human read. A passing gate is never evidence of taste.
 
 > If you're about to type a quality number, stop: did a gate just produce it? If not, run the gate.
 > If you're about to say a component "looks right", stop: did you screenshot it and click it? If not, render it.
@@ -68,6 +68,8 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | Calendar / Carousel / Tree | `design-component` | `components/data-display.md` |
 | Icon system / icon sizing / icon a11y | `design-component` | `components/icon-system.md` |
 | Cognitive a11y / i18n-RTL / low-vision / WCAG AAA | `a11y-audit` | `accessibility/cognitive.md`, `accessibility/i18n-rtl.md`, `accessibility/vision.md`, `accessibility/wcag-aaa.md` |
+| Critique / taste verdict / "is this actually good" | `/critique` | `.claude/agents/design-critic.md`, `taste/*`; `scripts/taste_audit.mjs`, `scripts/slop_tells.mjs` |
+| Eval the kit itself (cold-start brief -> measured output) | - | `evals/README.md`, `evals/briefs/*`; `node evals/run.mjs` |
 
 Every row also has depth in `.claude/rules/` (see the Rules table below). Load the
 rule file when the task is actually in that territory, not before.
@@ -231,6 +233,8 @@ templates/product-design/ ← Starter layout for a NEW product repo (CLAUDE.md b
                             typography-and-spacing · components · accessibility · frameworks ·
                             review-and-research · brand-and-operations
 
+.claude/agents/           ← design-critic: the adversarial reviewer behind /critique
+
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
                             migrate-design-system, prototype, ux-writing, governance, token-build,
@@ -264,6 +268,9 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               failures that stay inside the page and survive a happy-path screenshot)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
+evals/                    ← Cold-start briefs + `run.mjs`: point every objective gate at what an
+                            agent produced from a brief. Scores correctness, refuses to score taste.
+
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)
 ```

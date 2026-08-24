@@ -43,6 +43,9 @@ jobs:
       - name: No emoji in UI output or taste files
         run: python3 scripts/check_no_emoji.py
 
+      - name: Eval harness self-test (the cold-start scorer still works)
+        run: node evals/run.mjs --list
+
       - name: Instruction surface intact (no demoted rule, no orphan rule file)
         run: python3 scripts/validate_instruction_surface.py
 
@@ -93,3 +96,5 @@ jobs:
           node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"
           node scripts/verify_rtl.mjs examples/sample-app/preview.html
           node scripts/build_tokens.mjs --out dist/tokens.css
+      - name: Eval harness self-test (12 objective gates on the reference app)
+        run: node evals/run.mjs --self-test

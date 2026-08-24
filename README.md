@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.4.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.5.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -46,7 +46,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 | **Component Design** | Designs components from Atoms to Templates following Atomic Design, with anatomy, variants, states, token mapping, and accessibility specs |
 | **Code Generation (any framework)** | Adapter Protocol targets **any** stack — React+Tailwind, Next.js, SwiftUI, Vue, Svelte, Angular, Solid, Web Components/Lit, React Native, Flutter, Jetpack Compose, vanilla CSS, CSS-in-JS — or generates a new adapter on demand |
 | **Design-System Interop** | Maps to/from **any** design system (Material 3, Apple HIG, Fluent, Carbon, shadcn/ui, Radix…) via a role-based crosswalk |
-| **Runnable Skills** | 17 invocable `/skills` + real scripts (token + contrast validators, real-render & state-aware WCAG gates, axe-core a11y, focus-trap, RTL, taste audit, token build) |
+| **Runnable Skills** | 17 invocable `/skills` (each declaring `invocation: user|model`) + 4 slash commands + real scripts: token and contrast validators, real-render and state-aware WCAG gates, axe-core a11y, focus-trap, RTL, target size, keyboard, reduced motion, overflow, token-by-intent, taste and slop audits, token build |
 | **Accessibility Auditing** | Evaluates against WCAG 2.2 AA/AAA with prioritized findings (P0/P1/P2) |
 | **Design Review** | Scores designs across 6 dimensions with Nielsen's 10 Heuristics and a structured findings table |
 | **Prototyping & Research** | Guides through a 5-level fidelity ladder, user journey mapping, and usability testing scripts |
@@ -208,6 +208,9 @@ python3 scripts/lint_hardcodes.py src/             # no off-theme hex/px/timing 
 python3 scripts/lint_taste.py page.html            # heuristic anti-slop taste check
 python3 scripts/design_systems.py list             # browse the 138-system library
 python3 scripts/scaffold_component.py "Date Picker" # emit a component spec stub
+python3 scripts/validate_template.py               # the starter template stays sound
+python3 scripts/validate_instruction_surface.py    # no always-on rule got demoted
+node    evals/run.mjs --self-test                  # the cold-start scorer still works
 ```
 
 These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity, **WCAG contrast in light + dark**, spec completeness, and zero hardcoded values — so theme/color stays consistent across every page and accessibility is enforced, not assumed.
@@ -223,6 +226,39 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 ```
 
 > **Tip:** skills compose. `apply-aesthetic` always re-verifies contrast through `a11y-audit`; `redesign` calls `design-review` + `a11y-audit` automatically.
+
+---
+
+## Proving It, and Admitting What Cannot Be Proven
+
+The kit ships **35 objective gates** behind one command:
+
+```bash
+node scripts/accuracy_report.mjs     # 35/35 or it fails — no partial credit
+```
+
+Token validity, WCAG contrast on a real headless render in light *and* dark, every
+element in default/hover/focus, axe roles and names, focus traps, RTL, responsive
+at 280/320/414, target size, keyboard operability, reduced motion (including
+content that only an animation reveals), silent text clipping, token-by-intent,
+and zero emoji anywhere in the output or the instruction surface.
+
+That is correctness. It is not quality, and the kit says so out loud:
+
+| Question | Answer | How |
+|---|---|---|
+| Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
+| Is it any good? | Judged, never scored | `/critique` — an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
+| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 12 objective gates at what the agent produced |
+
+`/critique` exists because a passing gate is never evidence of taste. It refuses to
+review from source alone, screenshots at 1280 and 390 in both themes, clicks every
+control, and returns a verdict with the three reasons a senior designer would send
+the work back.
+
+The eval suite exists because "the kit's own examples pass" is a weaker claim than
+"an agent given only this kit and a brief produces work that passes". Building it
+caught two real defects the 34-check gate had missed. See `evals/README.md`.
 
 ---
 
@@ -243,6 +279,9 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 │       apply-aesthetic · redesign · migrate-design-system · prototype · ux-writing
 ├── .claude/commands/          # Custom slash commands — /gate · /ship · /scaffold-project
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
+├── .claude/agents/            # design-critic — the adversarial reviewer behind /critique
+│
+├── evals/                     # Cold-start briefs + run.mjs — 12 objective gates on produced work
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
 │
@@ -392,6 +431,15 @@ This is a **starter kit** — make it yours:
 ---
 
 ## Changelog
+
+### `v2.5.0`
+- **Enforcement caught up with the doctrine: `accuracy_report` 25 -> 35 checks, still all-or-nothing 100%.** Five new render-based gates close rules the kit preached and nothing checked: `verify_target_size.mjs` (WCAG 2.5.8 with the spec's real spacing / inline / label-hit-area exceptions), `verify_reduced_motion.mjs` (policy present, motion stopped, and **no content lost** — catches content only an entrance animation reveals), `verify_keyboard.mjs` (WCAG 2.1.1, ARIA-aware: roving `tabindex` and `aria-activedescendant` widgets judged by orphan-widget and dead-arrow signals, not by Tab), `lint_intent.mjs` (token **by intent**, measured on the render: a destructive action wearing `action.primary` fails), `verify_overflow.mjs` (silently clipped text and overlapping controls, with screen-reader-only text correctly exempt). Plus `slop_tells.mjs` as a hard gate. Each one was proven to FAIL on a deliberate violation before it was trusted — and together they found real bugs the previous 25 checks passed: a dead `prefers-reduced-motion` rule lost to CSS specificity, a harness with no motion policy at all, and three composite widgets that declared a roving-tabindex model with zero arrow-key handlers.
+- **`/critique` — the honest answer to "is it any good?"** A new adversarial `design-critic` subagent (`.claude/agents/design-critic.md`) that refuses to review from source, screenshots at 1280 and 390 in light and dark, clicks every control, and returns a verdict plus the three reasons a senior designer would reject the work. Every finding must cite evidence. A passing gate is never accepted as evidence of taste.
+- **`evals/` — does the kit transfer to a cold start?** Four cold-start briefs plus `node evals/run.mjs <brief-id>`, which points twelve objective gates at what an agent actually produced and prints the brief's requirements for human judgement. `--self-test` runs the same scorer on the reference app and is gated in CI, so the harness cannot rot. Building it found two real defects the 34-check gate had missed.
+- **Starter template for a new product repo** — `templates/product-design/` is the recommended Claude Code design-project layout, ready to copy: a lean always-on brief, `.claude/{rules,skills,commands,settings.json}`, a WCAG-verified `design-tokens.json` (light + dark), `src/components/`, `public/images/`, `reference/`. Scaffold it with **`npx ux-ui-agent-skills new <dir>`**, or `/scaffold-project`. Gated by `validate_template.py` (layout complete, aliases resolve, required contrast pairs pass in both themes).
+- **`CLAUDE.md` cut 576 -> ~276 lines.** Depth moved to `.claude/rules/` (7 files) and loads only when the work calls for it; headings are unchanged so every existing pointer still resolves. The emoji ban, the gate protocol, token-by-intent, one-theme, the 8-state table, and output completeness stay always-on — and `validate_instruction_surface.py` fails the build if one of them is ever demoted, if a rule file is orphaned, or if the brief regrows past its budget.
+- **Skills declare how they are invoked** — `invocation: user|model` in all 17 `SKILL.md`, regrouped in the README: six user-invoked skills that orchestrate a whole job, eleven model-invoked ones that are the discipline the agent applies while it works.
+- **Scripts take a path now**, so a product repo can gate its own single-file theme: `validate_tokens.py [file|dir]` (with explicit paths an unresolved alias FAILS), `validate_contrast.py [file]`, `build_tokens.mjs --in <file|dir>`. Verified end to end inside a freshly scaffolded repo.
 
 ### `v2.4.0`
 - **Project layout aligned to the recommended Claude Code design-project structure** (Phase A1 of `docs/restructure-plan.md`). Additive only — no knowledge folders moved, no path references changed, `accuracy_report` stays **25/25 = 100%**.
