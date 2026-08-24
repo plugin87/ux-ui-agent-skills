@@ -32,7 +32,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.5.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.5.2`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -432,8 +432,12 @@ This is a **starter kit** — make it yours:
 
 ## Changelog
 
+### `v2.5.2`
+- **The 280px overflow, actually fixed at the root.** `v2.5.1` made the field row wrap, which was not the cause: an `<input>` keeps an intrinsic ~20-character width, and inside a CSS grid that intrinsic width sizes the column and pushes the card past the viewport. Linux Chromium's slightly wider metrics were enough to tip it 2px over, so CI stayed red while macOS looked fine. The inputs now shrink (`inline-size:100%; min-inline-size:0`), and the page holds at 280px with the root font scaled to 1.5x, so the margin no longer depends on a font stack at all.
+- Method worth keeping: font metrics differ per platform, so "passes at 280px on my machine" is not the same claim as "passes at 280px". Scaling the root font is a cheap local proxy for a wider fallback font.
+
 ### `v2.5.1`
-- **The reference app now survives 280px on any font metrics.** The v2.5.0 eval self-test went red on CI (Linux Chromium renders the settings label 2px wider than macOS Chrome does) — exactly the kind of environment-dependent overflow the responsive gate exists to catch. The label row wraps and can shrink now, verified down to 240px, so the margin no longer depends on a font stack.
+- **First attempt at the 280px overflow (insufficient, see `v2.5.2`).** The v2.5.0 eval self-test went red on CI (Linux Chromium renders the settings label 2px wider than macOS Chrome does) — exactly the kind of environment-dependent overflow the responsive gate exists to catch. The label row wraps and can shrink now, verified down to 240px, so the margin no longer depends on a font stack.
 
 ### `v2.5.0`
 - **Enforcement caught up with the doctrine: `accuracy_report` 25 -> 35 checks, still all-or-nothing 100%.** Five new render-based gates close rules the kit preached and nothing checked: `verify_target_size.mjs` (WCAG 2.5.8 with the spec's real spacing / inline / label-hit-area exceptions), `verify_reduced_motion.mjs` (policy present, motion stopped, and **no content lost** — catches content only an entrance animation reveals), `verify_keyboard.mjs` (WCAG 2.1.1, ARIA-aware: roving `tabindex` and `aria-activedescendant` widgets judged by orphan-widget and dead-arrow signals, not by Tab), `lint_intent.mjs` (token **by intent**, measured on the render: a destructive action wearing `action.primary` fails), `verify_overflow.mjs` (silently clipped text and overlapping controls, with screen-reader-only text correctly exempt). Plus `slop_tells.mjs` as a hard gate. Each one was proven to FAIL on a deliberate violation before it was trusted — and together they found real bugs the previous 25 checks passed: a dead `prefers-reduced-motion` rule lost to CSS specificity, a harness with no motion policy at all, and three composite widgets that declared a roving-tabindex model with zero arrow-key handlers.
