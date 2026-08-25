@@ -41,6 +41,31 @@ Show only what's needed at each step:
 
 ---
 
+## Narrow-width defences (the four causes that actually bite)
+
+A layout that fits at 280px on one machine can overflow on another, because font
+metrics differ per platform. Prove it with `node scripts/verify_responsive.mjs
+<file|dir> --scale=1.25`, and know the usual causes:
+
+1. **An `<input>` keeps an intrinsic width of about twenty characters.** In a grid
+   that intrinsic width sizes the column. Fix: `inline-size:100%; min-inline-size:0`.
+2. **A grid or flex item keeps `min-width:auto`**, so a child that refuses to shrink
+   widens its own track. Fix: `min-inline-size:0` on the item, or pin the track with
+   `grid-template-columns:minmax(0,1fr)`.
+3. **One unbreakable token** — an email, a URL, an API key — sets the element's
+   min-content width. Fix: `overflow-wrap:anywhere`, which shrinks min-content too;
+   `break-word` alone does not.
+4. **A `white-space:nowrap` tooltip or pill has no upper bound.** Fix:
+   `max-inline-size:min(<n>rem, calc(100vw - <gutter>))`.
+
+And one that hides from screenshots: an absolutely positioned **`.sr-only` span with
+no positioned ancestor** resolves against the initial containing block. Inside a
+horizontal scroller it lands outside the viewport and inflates
+`document.documentElement.scrollWidth`, so the page reports a huge overflow while
+everything visible sits inside it. Give the span a positioned ancestor.
+
+---
+
 ## Component Guidelines
 
 ### Component Quality Bar

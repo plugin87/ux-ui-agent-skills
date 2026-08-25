@@ -257,6 +257,8 @@ review from source alone, screenshots at 1280 and 390 in both themes, clicks eve
 control, and returns a verdict with the three reasons a senior designer would send
 the work back.
 
+Runs are recorded in `evals/RESULTS.md` with their provenance attached — who built the output and whether they could see the kit while doing it — because a run without that context is not evidence of anything.
+
 The eval suite exists because "the kit's own examples pass" is a weaker claim than
 "an agent given only this kit and a brief produces work that passes". Building it
 caught two real defects the 34-check gate had missed. See `evals/README.md`.

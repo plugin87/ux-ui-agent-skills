@@ -81,6 +81,27 @@ jobs:
             exit 1
           fi
 
+      - name: Preflight - is NPM_TOKEN a usable Automation token?
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::error::Repo secret NPM_TOKEN is empty. Create an npm *Automation* token"
+            echo "::error::(npmjs.com -> Access Tokens -> Generate New Token -> Automation; Classic"
+            echo "::error::'Publish' tokens still prompt for 2FA and fail here), then add it as the"
+            echo "::error::repo secret NPM_TOKEN. The GitHub Release above was created regardless."
+            exit 1
+          fi
+          if ! npm whoami >/dev/null 2>&1; then
+            echo "::error::NPM_TOKEN is set but the registry rejects it (401). It is most likely a"
+            echo "::error::Classic 'Publish' token, an expired token, or one scoped to another"
+            echo "::error::account. Replace it with an npm Automation token, which bypasses 2FA."
+            echo "::error::Nothing else is wrong: the tag, the version guard, and the GitHub"
+            echo "::error::Release all passed."
+            exit 1
+          fi
+          echo "authenticated as $(npm whoami)"
+
       - name: Publish to npm
         run: npm publish --provenance --access public
         env:
