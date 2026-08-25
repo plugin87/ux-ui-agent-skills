@@ -33,6 +33,10 @@ PAIRS = [
 # for any boundary that identifies a control).
 ADVISORY = [
     ("semantic.text.tertiary",  "semantic.surface.page", 4.5, "tertiary/incidental text on page"),
+    # Found by an eval run: secondary text on a RAISED surface (table headers, chips,
+    # selected rows) is a very common pairing and is tighter than on the page. It is
+    # advisory rather than required only because tightening it moves a shared token.
+    ("semantic.text.secondary", "semantic.surface.raised", 4.5, "secondary text on raised surface"),
     ("semantic.border.default", "semantic.surface.page", 3.0, "default border on page (decorative)"),
 ]
 

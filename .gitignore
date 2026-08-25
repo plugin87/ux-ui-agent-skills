@@ -13,9 +13,7 @@ examples/apple-home/
 # Personal, machine-local preferences — never commit
 CLAUDE.local.md
 
-# eval runs are local artefacts; the folder stays, the output does not
-evals/out/*
-!evals/out/.gitkeep
+# eval outputs are committed as fixtures: they are what the 13-gate scorer runs against
 
 # python bytecode
 __pycache__/

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projects - one project</title>
+<link rel="stylesheet" href="../../../examples/brandkit-demo/theme.css" />
+<link rel="stylesheet" href="base.css" />
+</head>
+<body>
+<main class="page">
+  <div class="top">
+    <h1>Projects</h1>
+    <button class="btn" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>New project</button>
+  </div>
+
+  <section aria-labelledby="active-h" style="display:grid;gap:var(--space-4)">
+    <h2 id="active-h">Active</h2>
+    <div class="grid">
+      <article class="card">
+        <h2>Harbourside rebrand</h2>
+        <p class="muted">Fieldwork Studio. Kickoff 12 August, first review 2 September.</p>
+        <p class="card__meta">
+          <span class="dot dot--live" aria-hidden="true"></span>
+          <span>Active</span><span aria-hidden="true">&middot;</span>
+          <span>3 members</span><span aria-hidden="true">&middot;</span>
+          <span>14 files</span>
+        </p>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-2);margin-block-start:var(--space-2)">
+          <button class="btn btn--secondary" type="button">Open</button>
+          <button class="btn btn--secondary" type="button">Invite people</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="hero" aria-labelledby="next-h" style="padding:var(--space-6)">
+    <h2 id="next-h" style="font-size:var(--text-lg)">One project is a good start</h2>
+    <p class="lede">Teams get the most out of this once a second project exists to compare against:
+      shared members carry over, and the invoice view starts grouping by client.</p>
+    <button class="btn" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Create another project</button>
+  </section>
+</main>
+<script src="../../../examples/component-states/icons.js"></script>
+</body>
+</html>

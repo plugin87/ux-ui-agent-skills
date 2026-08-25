@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Billing - Northwind</title>
+<link rel="stylesheet" href="../../../examples/brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    line-height:var(--leading-normal);padding:var(--space-6)}
+  .page{max-inline-size:64rem;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-8)}
+  .lede{color:var(--color-text-secondary);max-inline-size:60ch}
+  h1{font-size:var(--text-3xl);line-height:var(--leading-tight);letter-spacing:-0.02em}
+  h2{font-size:var(--text-lg);line-height:var(--leading-snug)}
+  h3{font-size:var(--text-sm);font-weight:600;color:var(--color-text-secondary);
+    text-transform:uppercase;letter-spacing:0.08em}
+
+  /* One loud panel, then quieter ones: the plan is the focal point of this page. */
+  .plan{background:var(--color-surface-card);border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-lg);padding:var(--space-8);box-shadow:var(--shadow-md);
+    display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-5)}
+  .plan__price{font-size:var(--text-5xl);line-height:var(--leading-tight);letter-spacing:-0.03em}
+  .plan__price span{font-size:var(--text-base);color:var(--color-text-secondary);letter-spacing:normal}
+  .plan__meta{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center}
+  .feature{display:flex;gap:var(--space-2);align-items:flex-start;font-size:var(--text-sm);
+    color:var(--color-text-secondary)}
+  .feature svg{color:var(--color-feedback-success);flex:none;margin-block-start:0.125rem}
+
+  .panels{display:grid;gap:var(--space-5);grid-template-columns:repeat(auto-fit,minmax(min(18rem,100%),1fr))}
+  .panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card);padding:var(--space-5);box-shadow:var(--shadow-sm);
+    display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-3);align-content:start}
+  .panel > *{min-inline-size:0}
+
+  .badge{display:inline-flex;align-items:center;gap:var(--space-1);inline-size:fit-content;
+    padding:var(--space-1) var(--space-3);border-radius:var(--radius-full);font-size:var(--text-xs);
+    font-weight:600;background:var(--color-surface-raised);color:var(--color-text-secondary)}
+  .badge--live{background:var(--color-action-primary);color:var(--color-text-on-action)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+    min-block-size:var(--size-control-md);min-inline-size:var(--size-control-md);
+    padding-inline:var(--space-4);border:1px solid transparent;border-radius:var(--radius-button);
+    font:inherit;font-weight:500;font-size:var(--text-sm);cursor:pointer;
+    background:var(--color-action-primary);color:var(--color-text-on-action);
+    transition:background var(--duration-fast) var(--ease-out)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);border-color:var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .btn--danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+  .btn--danger:hover{background:var(--color-action-danger-hover)}
+  .btn svg{inline-size:1rem;block-size:1rem;fill:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;flex:none}
+  .actions{display:flex;flex-wrap:wrap;gap:var(--space-3)}
+
+  .card-number{font-size:var(--text-lg);letter-spacing:0.12em}
+  /* An email or URL is one unbreakable token; `anywhere` also shrinks the
+     element's min-content size, which is what keeps the card from widening. */
+  .muted{color:var(--color-text-secondary);font-size:var(--text-sm);overflow-wrap:anywhere}
+
+  /* A wide table is allowed to scroll inside its own panel, never to widen the page. */
+  .scroller{overflow-x:auto}
+  table{border-collapse:collapse;inline-size:100%;min-inline-size:34rem;font-size:var(--text-sm)}
+  caption{text-align:start;padding-block-end:var(--space-3);color:var(--color-text-secondary);
+    font-size:var(--text-sm)}
+  th,td{text-align:start;padding:var(--space-3);border-block-end:1px solid var(--color-border-default);
+    vertical-align:top}
+  th{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-secondary)}
+  td.num{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .trunc{display:block;max-inline-size:22rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  .empty{display:grid;gap:var(--space-2);justify-items:start;padding:var(--space-6);
+    border:1px dashed var(--color-border-strong);border-radius:var(--radius-card)}
+  .empty svg{inline-size:1.5rem;block-size:1.5rem;fill:none;stroke:currentColor;stroke-width:1.5;
+    color:var(--color-text-secondary)}
+
+  .danger-zone{border:1px solid var(--color-action-danger);border-radius:var(--radius-card);
+    padding:var(--space-5);display:grid;gap:var(--space-3);justify-items:start}
+
+  .backdrop{position:fixed;inset:0;display:grid;place-items:center;padding:var(--space-4);z-index:50;
+    background:color-mix(in srgb, var(--color-surface-inverse) 62%, transparent)}
+  .backdrop[hidden]{display:none}
+  .dialog{background:var(--color-surface-card);border-radius:var(--radius-lg);padding:var(--space-6);
+    inline-size:min(28rem,100%);box-shadow:var(--shadow-lg);display:grid;gap:var(--space-4)}
+  .dialog__head{display:flex;gap:var(--space-3);align-items:flex-start}
+  .dialog__head svg{inline-size:1.25rem;block-size:1.25rem;fill:none;stroke:currentColor;stroke-width:2;
+    color:var(--color-action-danger);flex:none;margin-block-start:0.125rem}
+  .field{display:grid;gap:var(--space-2)}
+  .field label{font-size:var(--text-sm);font-weight:500}
+  input[type=text]{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
+    padding-inline:var(--space-3);border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-button);background:var(--color-surface-page);
+    color:var(--color-text-primary);font:inherit;font-size:var(--text-base)}
+  input[type=text]:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+
+  /* An absolutely positioned sr-only span resolves against the initial containing
+     block when no ancestor is positioned, so inside a horizontal scroller it lands
+     outside the viewport and inflates the document's scroll width. Give it a
+     positioned ancestor and it stays where it belongs. */
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);
+    white-space:nowrap}
+  .btn,td,th,.card-number{position:relative}
+
+  /* Motion is a courtesy, never the thing that makes content visible. */
+  @media (prefers-reduced-motion: reduce){
+    /* The reset is the near-zero duration itself, so it cannot come from a motion token. */
+    *,*::before,*::after{animation-duration:1ms !important;animation-iteration-count:1 !important; /* ds-allow-hardcode */
+      transition-duration:1ms !important;scroll-behavior:auto !important} /* ds-allow-hardcode */
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <header>
+    <h1>Billing</h1>
+    <p class="lede">Your plan, payment method, and every invoice we have issued. Changes take effect
+      at the start of the next billing period.</p>
+  </header>
+
+  <section class="plan" aria-labelledby="plan-h">
+    <div class="plan__meta">
+      <h2 id="plan-h">Team</h2>
+      <span class="badge badge--live">Current plan</span>
+    </div>
+    <p class="plan__price">$49 <span>per month, billed annually</span></p>
+    <div class="panels" style="gap:var(--space-3)">
+      <p class="feature"><svg aria-hidden="true" width="16" height="16"><use href="#i-check"/></svg>
+        Up to 20 members, 8 currently used</p>
+      <p class="feature"><svg aria-hidden="true" width="16" height="16"><use href="#i-check"/></svg>
+        Unlimited reconciliations and exports</p>
+      <p class="feature"><svg aria-hidden="true" width="16" height="16"><use href="#i-check"/></svg>
+        Renews 1 September 2026</p>
+    </div>
+    <div class="actions">
+      <button class="btn" type="button">Change plan</button>
+      <button class="btn btn--secondary" type="button">Compare plans</button>
+    </div>
+  </section>
+
+  <div class="panels">
+    <section class="panel" aria-labelledby="pay-h">
+      <h3 id="pay-h">Payment method</h3>
+      <p class="card-number">
+        <span aria-hidden="true">&bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242</span>
+        <span class="sr-only">Visa card ending in 4242</span>
+      </p>
+      <p class="muted">Expires 04 / 2029. Billed to accounts@northwind.example.</p>
+      <div class="actions">
+        <button class="btn btn--secondary" type="button">
+          <svg aria-hidden="true"><use href="#i-pencil"/></svg>Update card</button>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="next-h">
+      <h3 id="next-h">Next invoice</h3>
+      <p class="plan__price" style="font-size:var(--text-3xl)">$588.00</p>
+      <p class="muted">Issued 1 September 2026 to the card above. Includes 8 seats and no add-ons.</p>
+      <div class="actions">
+        <button class="btn btn--secondary" type="button">
+          <svg aria-hidden="true"><use href="#i-file-text"/></svg>Preview invoice</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="hist-h">
+    <h3 id="hist-h">Billing history</h3>
+    <div class="scroller">
+      <table>
+        <caption>Every invoice issued on this account. Amounts are in US dollars.</caption>
+        <thead>
+          <tr><th scope="col">Invoice</th><th scope="col">Description</th><th scope="col">Date</th>
+            <th scope="col" style="text-align:end">Amount</th><th scope="col"><span class="sr-only">Download</span></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NW-2026-0812</td>
+            <td><span class="trunc" title="Annual Team subscription, 8 seats, plus prorated seat additions for August">Annual Team subscription, 8 seats, plus prorated seat additions for August</span></td>
+            <td>1 Aug 2026</td>
+            <td class="num">$588.00</td>
+            <td><button class="btn btn--secondary" type="button" style="padding-inline:var(--space-2)">
+              <svg aria-hidden="true"><use href="#i-download"/></svg><span class="sr-only">Download invoice NW-2026-0812</span></button></td>
+          </tr>
+          <tr>
+            <td>NW-2026-0701</td>
+            <td><span class="trunc" title="Enterprise migration, one-off">Enterprise migration, one-off</span></td>
+            <td>1 Jul 2026</td>
+            <td class="num">$124,900,000.00</td>
+            <td><button class="btn btn--secondary" type="button" style="padding-inline:var(--space-2)">
+              <svg aria-hidden="true"><use href="#i-download"/></svg><span class="sr-only">Download invoice NW-2026-0701</span></button></td>
+          </tr>
+          <tr>
+            <td>NW-2026-0601</td>
+            <td><span class="trunc" title="Annual Team subscription, 6 seats">Annual Team subscription, 6 seats</span></td>
+            <td>1 Jun 2026</td>
+            <td class="num">$441.00</td>
+            <td><button class="btn btn--secondary" type="button" style="padding-inline:var(--space-2)">
+              <svg aria-hidden="true"><use href="#i-download"/></svg><span class="sr-only">Download invoice NW-2026-0601</span></button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="hist2-h">
+    <h3 id="hist2-h">Billing history, new account</h3>
+    <div class="empty">
+      <svg aria-hidden="true"><use href="#i-file-text"/></svg>
+      <p><strong>No invoices yet.</strong></p>
+      <p class="muted">Your first invoice appears here the day after your trial ends, on 12 September 2026.</p>
+      <button class="btn btn--secondary" type="button">View pricing</button>
+    </div>
+  </section>
+
+  <section class="danger-zone" aria-labelledby="cancel-h">
+    <h3 id="cancel-h">Cancel subscription</h3>
+    <p class="muted">Cancelling keeps your data readable until 1 September 2026, then deletes it.
+      Export anything you need first.</p>
+    <button class="btn btn--danger" type="button" id="cancelTrigger">
+      <svg aria-hidden="true"><use href="#i-trash"/></svg>Cancel subscription</button>
+  </section>
+</main>
+
+<div class="backdrop" id="backdrop" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title" aria-describedby="dlg-desc">
+    <div class="dialog__head">
+      <svg aria-hidden="true"><use href="#i-alert-triangle"/></svg>
+      <h2 id="dlg-title">Cancel the Team subscription?</h2>
+    </div>
+    <p id="dlg-desc" class="muted">Billing stops immediately. Your workspace stays readable until
+      1 September 2026 and is deleted after that. This cannot be undone.</p>
+    <div class="field">
+      <label for="confirmField">Type CANCEL to confirm</label>
+      <input type="text" id="confirmField" autocomplete="off" autocapitalize="characters"
+        aria-describedby="confirmHint" />
+      <p id="confirmHint" class="muted">Confirmation is case sensitive.</p>
+    </div>
+    <div class="actions">
+      <button class="btn btn--secondary" type="button" id="keepBtn">Keep subscription</button>
+      <button class="btn btn--danger" type="button" id="confirmBtn" disabled>
+        <svg aria-hidden="true"><use href="#i-trash"/></svg>Cancel subscription</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../../examples/component-states/icons.js"></script>
+<script>
+  const trigger = document.getElementById('cancelTrigger');
+  const bd = document.getElementById('backdrop');
+  const keep = document.getElementById('keepBtn');
+  const confirmBtn = document.getElementById('confirmBtn');
+  const field = document.getElementById('confirmField');
+  const SEL = 'a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])';
+  let last = null;
+
+  function open() {
+    last = document.activeElement;
+    bd.hidden = false;
+    field.value = '';
+    confirmBtn.disabled = true;
+    field.focus();
+  }
+  function close() { bd.hidden = true; last && last.focus(); }
+
+  trigger.addEventListener('click', open);
+  keep.addEventListener('click', close);
+  confirmBtn.addEventListener('click', close);
+  field.addEventListener('input', () => { confirmBtn.disabled = field.value !== 'CANCEL'; });
+  bd.addEventListener('click', e => { if (e.target === bd) close(); });
+  document.addEventListener('keydown', e => {
+    if (bd.hidden) return;
+    if (e.key === 'Escape') return close();
+    if (e.key !== 'Tab') return;
+    const f = [...bd.querySelectorAll(SEL)];
+    const first = f[0], lastEl = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
+    else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
+  });
+</script>
+</body>
+</html>

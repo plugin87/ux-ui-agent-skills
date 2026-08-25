@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Notifications</title>
+<link rel="stylesheet" href="../../../examples/brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    line-height:var(--leading-normal);padding:var(--space-6);overflow-wrap:anywhere}
+  .page{max-inline-size:48rem;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr);
+    gap:var(--space-6)}
+  .top{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;justify-content:space-between}
+  h1{font-size:var(--text-2xl);line-height:var(--leading-tight);letter-spacing:-0.02em}
+  h2{font-size:var(--text-base)}
+  .muted{color:var(--color-text-secondary);font-size:var(--text-sm)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+    min-block-size:var(--size-control-md);min-inline-size:var(--size-control-md);
+    padding-inline:var(--space-4);border:1px solid transparent;border-radius:var(--radius-button);
+    font:inherit;font-weight:500;font-size:var(--text-sm);cursor:pointer;
+    background:transparent;color:var(--color-text-primary);border-color:var(--color-border-strong)}
+  .btn:hover{background:var(--color-surface-raised)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .ico,.btn svg{inline-size:1rem;block-size:1rem;fill:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  .filters{display:flex;flex-wrap:wrap;gap:var(--space-2)}
+  .chip{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:var(--size-control-md);
+    padding-inline:var(--space-3);border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-pill);background:transparent;color:var(--color-text-primary);
+    font:inherit;font-size:var(--text-sm);cursor:pointer}
+  .chip:hover{background:var(--color-surface-raised)}
+  .chip:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .chip[aria-pressed="true"]{background:var(--color-surface-inverse);color:var(--color-text-inverse);
+    border-color:var(--color-surface-inverse)}
+
+  .feed{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-2);list-style:none;padding:0;margin:0}
+  .item{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3);
+    padding:var(--space-4);border:1px solid var(--color-border-default);border-radius:var(--radius-card);
+    background:var(--color-surface-card);
+    animation:rise var(--duration-normal) var(--ease-out) both}
+  .item--unread{border-inline-start:3px solid var(--color-action-primary);
+    background:var(--color-surface-card);box-shadow:var(--shadow-sm)}
+  .item__icon{inline-size:2rem;block-size:2rem;border-radius:var(--radius-sm);display:grid;
+    place-items:center;background:var(--color-surface-page);color:var(--color-text-secondary);
+    border:1px solid var(--color-border-default)}
+  .item__icon svg{inline-size:1.125rem;block-size:1.125rem;stroke-width:1.75}
+  .item__body{display:grid;gap:var(--space-1);min-inline-size:0}
+  .item__title{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:baseline}
+  .item--unread .item__title strong{font-weight:700}
+  .kind{font-size:var(--text-xs);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--color-text-primary)}
+  .new{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-xs);
+    font-weight:600;color:var(--color-text-on-action);background:var(--color-action-primary);
+    padding-inline:var(--space-2);border-radius:var(--radius-full)}
+  time{font-size:var(--text-xs);color:var(--color-text-secondary);white-space:nowrap}
+  .item__actions{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-block-start:var(--space-2)}
+
+  .empty{display:grid;gap:var(--space-2);justify-items:start;padding:var(--space-8);
+    border:1px dashed var(--color-border-strong);border-radius:var(--radius-card)}
+  .empty .mark{inline-size:2rem;block-size:2rem;display:grid;place-items:center;
+    border-radius:var(--radius-sm);background:var(--color-surface-raised);color:var(--color-text-secondary)}
+  .empty .mark svg{inline-size:1.25rem;block-size:1.25rem;stroke-width:1.5}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);
+    white-space:nowrap}
+  .item,.btn,.chip{position:relative}
+
+  /* The entrance is decoration: every item is fully visible at the end of it, and the
+     reduced-motion branch simply lands there immediately. Nothing is revealed by motion. */
+  @keyframes rise{from{opacity:.001;transform:translateY(var(--space-2))}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:1ms !important;animation-iteration-count:1 !important; /* ds-allow-hardcode */
+      transition-duration:1ms !important;scroll-behavior:auto !important} /* ds-allow-hardcode */
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="top">
+    <h1>Notifications</h1>
+    <button class="btn" type="button" id="markAll">
+      <svg aria-hidden="true"><use href="#i-check"/></svg>Mark all as read</button>
+  </div>
+
+  <div class="filters" role="group" aria-label="Filter notifications">
+    <button class="chip" type="button" aria-pressed="true">All</button>
+    <button class="chip" type="button" aria-pressed="false">Mentions</button>
+    <button class="chip" type="button" aria-pressed="false">Comments</button>
+    <button class="chip" type="button" aria-pressed="false">Billing</button>
+    <button class="chip" type="button" aria-pressed="false">System</button>
+  </div>
+
+  <section aria-labelledby="feed-h" style="display:grid;gap:var(--space-3)">
+    <h2 id="feed-h">Recent <span class="muted" id="unreadCount">3 unread</span></h2>
+    <ul class="feed">
+      <li class="item item--unread">
+        <span class="item__icon"><svg aria-hidden="true"><use href="#i-users"/></svg></span>
+        <div class="item__body">
+          <p class="item__title">
+            <span class="kind">Mention</span>
+            <span class="new">New</span>
+            <time datetime="2026-08-25T05:12" title="25 August 2026 at 05:12">2 hours ago</time>
+          </p>
+          <p><strong>Priya Raghunathan</strong> mentioned you in <strong>Harbourside rebrand</strong>:
+            "the second logo pass is ready, but the wordmark still sits too tight against the mark at
+            small sizes and I would rather fix that before we send anything to print this week."</p>
+          <div class="item__actions">
+            <button class="btn" type="button">Open thread</button>
+            <button class="btn" type="button">Mark as read<span class="sr-only">, mention from Priya Raghunathan</span></button>
+          </div>
+        </div>
+      </li>
+      <li class="item item--unread">
+        <span class="item__icon"><svg aria-hidden="true"><use href="#i-alert-circle"/></svg></span>
+        <div class="item__body">
+          <p class="item__title">
+            <span class="kind">Billing</span>
+            <span class="new">New</span>
+            <time datetime="2026-08-24T22:40" title="24 August 2026 at 22:40">9 hours ago</time>
+          </p>
+          <p>Your card ending 4242 was declined for invoice NW-2026-0812. Payment retries on
+            27 August, and access continues until then.</p>
+          <div class="item__actions">
+            <button class="btn" type="button">Update card</button>
+          </div>
+        </div>
+      </li>
+      <li class="item item--unread">
+        <span class="item__icon"><svg aria-hidden="true"><use href="#i-file-text"/></svg></span>
+        <div class="item__body">
+          <p class="item__title">
+            <span class="kind">Comment</span>
+            <span class="new">New</span>
+            <time datetime="2026-08-24T14:05" title="24 August 2026 at 14:05">yesterday</time>
+          </p>
+          <p><strong>j.chen</strong> commented on <strong>Meridian annual report</strong>: "page 14 chart
+            is using last quarter's numbers."</p>
+        </div>
+      </li>
+      <li class="item">
+        <span class="item__icon"><svg aria-hidden="true"><use href="#i-settings"/></svg></span>
+        <div class="item__body">
+          <p class="item__title">
+            <span class="kind">System</span>
+            <time datetime="2026-08-22T09:00" title="22 August 2026 at 09:00">3 days ago</time>
+          </p>
+          <p>Two-factor authentication is now required for everyone in Fieldwork Studio.
+            You enrolled on 22 August, so nothing else is needed.</p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="empty-h" style="display:grid;gap:var(--space-3)">
+    <h2 id="empty-h">Archived</h2>
+    <div class="empty">
+      <span class="mark"><svg aria-hidden="true"><use href="#i-archive"/></svg></span>
+      <p><strong>Nothing archived yet.</strong></p>
+      <p class="muted">Notifications you archive stay here for 90 days, so you can find the one you
+        dismissed too quickly.</p>
+    </div>
+  </section>
+</main>
+<script src="../../../examples/component-states/icons.js"></script>
+<script>
+  const markAll = document.getElementById('markAll');
+  const count = document.getElementById('unreadCount');
+  function refresh() {
+    const unread = document.querySelectorAll('.item--unread').length;
+    count.textContent = unread === 0 ? 'all read' : unread + ' unread';
+    markAll.disabled = unread === 0;
+    markAll.title = unread === 0 ? 'Nothing to mark: every notification is already read' : '';
+  }
+  markAll.addEventListener('click', () => {
+    for (const el of document.querySelectorAll('.item--unread')) {
+      el.classList.remove('item--unread');
+      const tag = el.querySelector('.new'); if (tag) tag.remove();
+    }
+    refresh();
+  });
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn || !btn.textContent.startsWith('Mark as read')) return;
+    btn.closest('.item').classList.remove('item--unread');
+    const tag = btn.closest('.item').querySelector('.new'); if (tag) tag.remove();
+    btn.remove(); refresh();
+  });
+  for (const chip of document.querySelectorAll('.chip')) {
+    chip.addEventListener('click', () => {
+      for (const c of document.querySelectorAll('.chip')) c.setAttribute('aria-pressed', String(c === chip));
+    });
+  }
+  refresh();
+</script>
+</body>
+</html>

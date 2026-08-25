@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Orders - operations</title>
+<link rel="stylesheet" href="../../../examples/brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    line-height:var(--leading-normal);padding:var(--space-5);overflow-wrap:anywhere}
+  .page{max-inline-size:78rem;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr);
+    gap:var(--space-6)}
+  h1{font-size:var(--text-2xl);line-height:var(--leading-tight);letter-spacing:-0.02em}
+  h2{font-size:var(--text-base)}
+  .muted{color:var(--color-text-secondary);font-size:var(--text-sm)}
+
+  /* Density is deliberate: the filter bar breathes, the rows do not. */
+  .bar{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;
+    padding:var(--space-4);background:var(--color-surface-card);
+    border:1px solid var(--color-border-default);border-radius:var(--radius-card)}
+  .bar__group{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center}
+  .search{flex:1 1 14rem;min-inline-size:0;display:flex;align-items:center;gap:var(--space-2);
+    padding-inline:var(--space-3);min-block-size:var(--size-control-md);
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
+    background:var(--color-surface-page)}
+  .search input{border:0;background:none;font:inherit;font-size:var(--text-sm);
+    color:var(--color-text-primary);inline-size:100%;min-inline-size:0;padding-block:var(--space-2)}
+  .search input:focus-visible{outline:none}
+  .search:focus-within{box-shadow:var(--shadow-focus-ring)}
+
+  .chip{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:var(--size-control-md);
+    padding-inline:var(--space-3);border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-pill);background:transparent;color:var(--color-text-primary);
+    font:inherit;font-size:var(--text-sm);cursor:pointer}
+  .chip:hover{background:var(--color-surface-raised)}
+  .chip:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .chip[aria-pressed="true"]{background:var(--color-surface-inverse);color:var(--color-text-inverse);
+    border-color:var(--color-surface-inverse)}
+  .chip[aria-pressed="true"] .ico{display:inline}
+  .chip .ico{display:none}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+    min-block-size:var(--size-control-md);min-inline-size:var(--size-control-md);
+    padding-inline:var(--space-4);border:1px solid transparent;border-radius:var(--radius-button);
+    font:inherit;font-weight:500;font-size:var(--text-sm);cursor:pointer;
+    background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .btn:hover{background:var(--color-action-primary-hover)}
+  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .btn--secondary{background:transparent;color:var(--color-text-primary);border-color:var(--color-border-strong)}
+  .btn--secondary:hover{background:var(--color-surface-raised)}
+  .ico,.btn svg{inline-size:1rem;block-size:1rem;fill:none;stroke:currentColor;stroke-width:2;
+    stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+  .panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card);display:grid;grid-template-columns:minmax(0,1fr)}
+  .panel__head{display:flex;flex-wrap:wrap;gap:var(--space-3);align-items:center;
+    justify-content:space-between;padding:var(--space-4) var(--space-5);
+    border-block-end:1px solid var(--color-border-default)}
+  .scroller{overflow-x:auto}
+  table{border-collapse:collapse;inline-size:100%;min-inline-size:46rem;font-size:var(--text-sm)}
+  th,td{text-align:start;padding:var(--space-2) var(--space-3);
+    border-block-end:1px solid var(--color-border-default);position:relative}
+  thead th{padding:0;background:var(--color-surface-raised)}
+  .sort{inline-size:100%;display:flex;align-items:center;gap:var(--space-2);
+    padding:var(--space-3);border:0;background:none;font:inherit;font-size:var(--text-xs);
+    font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--color-text-primary);
+    cursor:pointer;text-align:start}
+  /* Secondary text on the raised header row is only 4.24:1 in dark. A column label
+     is not decoration, so it takes the primary colour and quietens by weight instead. */
+  .sort:hover{background:var(--color-surface-page)}
+  .sort:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .sort .ico{opacity:0}
+  th[aria-sort] .sort .ico{opacity:1;color:var(--color-text-primary)}
+  td.num{text-align:end;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .trunc{display:block;max-inline-size:18rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  tbody tr:hover{background:var(--color-surface-raised)}
+
+  /* Selection is never colour alone: a checked box, a bold row, and a left rule. */
+  tr[aria-selected="true"]{background:var(--color-surface-raised);font-weight:500}
+  tr[aria-selected="true"] td:first-child{box-shadow:inset 2px 0 0 0 var(--color-action-primary)}
+  .pick{display:flex;align-items:center;justify-content:center;padding:var(--space-2);cursor:pointer}
+  .pick input{inline-size:1.125rem;block-size:1.125rem;accent-color:var(--color-action-primary);margin:0}
+  .pick input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+
+  .status{display:inline-flex;align-items:center;gap:var(--space-2);white-space:nowrap}
+  .dot{inline-size:.5rem;block-size:.5rem;border-radius:var(--radius-full);flex:none}
+  .dot--ok{background:var(--color-feedback-success)}
+  .dot--hold{background:var(--color-feedback-warning)}
+  .dot--fail{background:var(--color-action-danger)}
+
+  .empty{display:grid;gap:var(--space-2);justify-items:start;padding:var(--space-8) var(--space-5)}
+  .empty .mark{inline-size:2rem;block-size:2rem;display:grid;place-items:center;
+    border-radius:var(--radius-sm);background:var(--color-surface-raised);color:var(--color-text-secondary)}
+  .empty .mark svg{inline-size:1.25rem;block-size:1.25rem;stroke-width:1.5}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);
+    white-space:nowrap}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:1ms !important;animation-iteration-count:1 !important; /* ds-allow-hardcode */
+      transition-duration:1ms !important;scroll-behavior:auto !important} /* ds-allow-hardcode */
+  }
+</style>
+</head>
+<body>
+<main class="page">
+  <h1>Orders</h1>
+
+  <div class="bar">
+    <label class="search">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <span class="sr-only">Search orders by number or customer</span>
+      <input type="search" placeholder="Search orders" />
+    </label>
+    <div class="bar__group" role="group" aria-label="Filter by status">
+      <button class="chip" type="button" aria-pressed="true">
+        <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Open</button>
+      <button class="chip" type="button" aria-pressed="false">
+        <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>On hold</button>
+      <button class="chip" type="button" aria-pressed="false">
+        <svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Failed</button>
+    </div>
+    <button class="btn btn--secondary" type="button">
+      <svg aria-hidden="true"><use href="#i-download"/></svg>Export</button>
+  </div>
+
+  <section class="panel" aria-labelledby="orders-h">
+    <div class="panel__head">
+      <h2 id="orders-h">Open orders <span class="muted">6 of 1,284</span></h2>
+      <p class="muted" id="selCount" aria-live="polite">1 order selected</p>
+    </div>
+    <div class="scroller">
+      <table>
+        <caption class="sr-only">Open orders, sortable by column</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only">Select</span></th>
+            <th scope="col" aria-sort="ascending">
+              <button class="sort" type="button">Order<svg class="ico" aria-hidden="true"><use href="#i-chevron-up"/></svg>
+                <span class="sr-only">sorted ascending, activate to sort descending</span></button></th>
+            <th scope="col"><button class="sort" type="button">Customer
+              <svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              <span class="sr-only">activate to sort ascending</span></button></th>
+            <th scope="col"><button class="sort" type="button">Status
+              <svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              <span class="sr-only">activate to sort ascending</span></button></th>
+            <th scope="col"><button class="sort" type="button">Placed
+              <svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              <span class="sr-only">activate to sort ascending</span></button></th>
+            <th scope="col"><button class="sort" type="button" style="justify-content:flex-end">Total
+              <svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg>
+              <span class="sr-only">activate to sort ascending</span></button></th>
+            <th scope="col"><span class="sr-only">Row actions</span></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="none-h">
+    <div class="panel__head"><h2 id="none-h">Failed orders <span class="muted">0 of 1,284</span></h2></div>
+    <div class="empty">
+      <span class="mark"><svg aria-hidden="true"><use href="#i-check"/></svg></span>
+      <p><strong>No failed orders in the last 30 days.</strong></p>
+      <p class="muted">The filter is set to Failed and this window is clean. Widen the date range or
+        clear the filter to see the other 1,284 orders.</p>
+      <button class="btn btn--secondary" type="button">Clear filter</button>
+    </div>
+  </section>
+</main>
+<script src="../../../examples/component-states/icons.js"></script>
+<script>
+  const ROWS = [
+    ['NW-88214','Anastasia Rodriguez-Fitzgerald','ok','Open','21 Aug 2026, 09:14','$1,240.00',true],
+    ['NW-88213','Puget Freight and Logistics Cooperative of Greater Seattle','hold','On hold','21 Aug 2026, 08:02','$124,900,000.00',false],
+    ['NW-88212','j.chen','ok','Open','20 Aug 2026, 17:45','$88.40',false],
+    ['NW-88211','Calloway Press','fail','Failed','20 Aug 2026, 11:20','$2,310.75',false],
+    ['NW-88210','Saltmarsh Provisions','ok','Open','19 Aug 2026, 15:31','$412.00',false],
+    ['NW-88209','Ridgeline Outfitters and Supply Company Limited','ok','Open','19 Aug 2026, 09:58','$7,004.19',false]
+  ];
+  document.getElementById('rows').innerHTML = ROWS.map(([id, cust, tone, status, placed, total, sel], i) => `
+    <tr aria-selected="${sel}">
+      <td><label class="pick"><input type="checkbox" ${sel ? 'checked' : ''} />
+        <span class="sr-only">Select order ${id}</span></label></td>
+      <td>${id}</td>
+      <td><span class="trunc" title="${cust}">${cust}</span></td>
+      <td><span class="status"><span class="dot dot--${tone}" aria-hidden="true"></span>${status}</span></td>
+      <td>${placed}</td>
+      <td class="num">${total}</td>
+      <td><button class="btn btn--secondary" type="button" style="padding-inline:var(--space-2)">
+        <svg aria-hidden="true"><use href="#i-more-vertical"/></svg>
+        <span class="sr-only">Actions for order ${id}</span></button></td>
+    </tr>`).join('');
+
+  document.getElementById('rows').addEventListener('change', e => {
+    if (e.target.type !== 'checkbox') return;
+    e.target.closest('tr').setAttribute('aria-selected', e.target.checked);
+    const n = document.querySelectorAll('#rows input:checked').length;
+    document.getElementById('selCount').textContent =
+      n === 0 ? 'No orders selected' : n === 1 ? '1 order selected' : n + ' orders selected';
+  });
+  for (const chip of document.querySelectorAll('.chip')) {
+    chip.addEventListener('click', () => chip.setAttribute('aria-pressed',
+      chip.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'));
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projects - forty projects</title>
+<link rel="stylesheet" href="../../../examples/brandkit-demo/theme.css" />
+<link rel="stylesheet" href="base.css" />
+<style>
+  .count{font-size:var(--text-sm);color:var(--color-text-secondary);font-weight:400}
+  .card--pinned{border-color:var(--color-border-strong);box-shadow:var(--shadow-md)}
+  .pin{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-xs);
+    font-weight:600;color:var(--color-text-link)}
+</style>
+</head>
+<body>
+<main class="page">
+  <div class="top">
+    <h1>Projects</h1>
+    <button class="btn" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>New project</button>
+  </div>
+
+  <section aria-labelledby="pin-h" style="display:grid;gap:var(--space-4)">
+    <h2 id="pin-h">Pinned <span class="count">2 projects</span></h2>
+    <div class="grid" id="pinned"></div>
+  </section>
+
+  <section aria-labelledby="imp-h" style="display:grid;gap:var(--space-4)">
+    <h2 id="imp-h">Still importing <span class="count">1 project</span></h2>
+    <div class="grid">
+      <article class="card" aria-busy="true" aria-labelledby="imp-name">
+        <h2 id="imp-name">Northbank archive</h2>
+        <p class="muted">Importing 1,240 files. This usually takes a few minutes.</p>
+        <p class="skeleton skeleton--wide"></p>
+        <p class="skeleton skeleton--short"></p>
+        <p class="card__meta"><span>Import started 4 minutes ago</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="all-h" style="display:grid;gap:var(--space-4)">
+    <h2 id="all-h">All projects <span class="count">40 projects</span></h2>
+    <div class="grid" id="all"></div>
+  </section>
+</main>
+<script src="../../../examples/component-states/icons.js"></script>
+<script>
+  /* Deterministic content so two renders are comparable, and varied enough that the
+     grid does not read as one repeated card. */
+  const CLIENTS = ['Harbourside','Fieldwork','Northbank','Alder & Co','Meridian','Puget Freight',
+    'Calloway Press','Ridgeline','Saltmarsh','Vantage Health'];
+  const WORK = ['rebrand','site build','annual report','campaign','packaging'];
+  const card = (name, sub, status, members, files, pinned) => `
+    <article class="card${pinned ? ' card--pinned' : ''}">
+      ${pinned ? '<span class="pin"><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Pinned</span>' : ''}
+      <h2>${name}</h2>
+      <p class="muted">${sub}</p>
+      <p class="card__meta">
+        <span class="dot dot--${status === 'Active' ? 'live' : 'paused'}" aria-hidden="true"></span>
+        <span>${status}</span><span aria-hidden="true">&middot;</span>
+        <span>${members} members</span><span aria-hidden="true">&middot;</span>
+        <span>${files} files</span>
+      </p>
+    </article>`;
+  document.getElementById('pinned').innerHTML =
+    card('Harbourside rebrand', 'Fieldwork Studio. First review 2 September.', 'Active', 3, 14, true) +
+    card('Meridian annual report', 'Meridian Group. Copy due 28 August.', 'Active', 5, 62, true);
+  document.getElementById('all').innerHTML = Array.from({ length: 40 }, (_, i) => {
+    const name = `${CLIENTS[i % CLIENTS.length]} ${WORK[(i * 3) % WORK.length]}`;
+    const status = i % 4 === 3 ? 'Paused' : 'Active';
+    return card(name, `Updated ${(i % 27) + 1} August 2026.`, status, (i % 6) + 1, (i * 13 % 240) + 4, false);
+  }).join('');
+</script>
+</body>
+</html>
