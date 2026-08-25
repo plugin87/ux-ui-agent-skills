@@ -23,8 +23,8 @@
  * Usage: node scripts/verify_reduced_motion.mjs <file.html | dir> [--threshold=0.1]
  * Exit 1 on any signal.
  */
-import { readdirSync, statSync } from 'node:fs';
-import { resolve, join } from 'node:path';
+import { readdirSync, statSync, readFileSync } from 'node:fs';
+import { resolve, join, dirname } from 'node:path';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { console.log('verify_reduced_motion: playwright not installed — SKIPPED'); process.exit(0); }
@@ -45,7 +45,7 @@ const files = targets.flatMap(t => {
 }).sort();
 
 /** Snapshot every element's visibility + motion, keyed by document order. */
-const SNAPSHOT = (THRESHOLD) => {
+const SNAPSHOT = ({ THRESHOLD, linkedCss }) => {
   const MOTION_PROPS = /transform|translate|rotate|scale|top|left|right|bottom|width|height|margin|inset|\ball\b/;
 
   const describe = (el, i) => {
@@ -65,9 +65,14 @@ const SNAPSHOT = (THRESHOLD) => {
     }
   };
   for (const sheet of document.styleSheets) {
-    try { scanRules(sheet.cssRules); } catch { /* cross-origin sheet */ }
+    try { scanRules(sheet.cssRules); } catch { /* unreadable sheet, see linkedCss */ }
     if (hasPolicy) break;
   }
+  /* Chromium treats a file:// <link> stylesheet as cross-origin, so its cssRules
+     throw and an external policy looks like no policy at all. Real projects keep
+     their CSS in a file, so the runner reads those files from disk and hands the
+     text in here rather than punishing anyone who is not writing inline <style>. */
+  if (!hasPolicy && linkedCss && /@media[^{]*prefers-reduced-motion/.test(linkedCss)) hasPolicy = true;
 
   const els = [...document.querySelectorAll('body *')];
   const visible = {};
@@ -104,12 +109,20 @@ const problems = [];
 
 for (const f of files) {
   const name = f.split('/').pop();
+  // Read every stylesheet the page links, so a policy that lives in a .css file
+  // counts the same as one written inline.
+  const html = readFileSync(f, 'utf8');
+  const linkedCss = [...html.matchAll(/<link[^>]+rel=["']?stylesheet["']?[^>]*>/gi)]
+    .map(m => (m[0].match(/href=["']([^"']+)["']/i) || [])[1])
+    .filter(h => h && !/^(https?:)?\/\//.test(h))
+    .map(h => { try { return readFileSync(resolve(dirname(f), h), 'utf8'); } catch { return ''; } })
+    .join('\n');
 
   const shoot = async (reducedMotion) => {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion });
     await page.goto('file://' + f);
     await page.waitForTimeout(450); // let entrance animations settle
-    const snap = await page.evaluate(SNAPSHOT, THRESHOLD);
+    const snap = await page.evaluate(SNAPSHOT, { THRESHOLD, linkedCss });
     await page.close();
     return snap;
   };

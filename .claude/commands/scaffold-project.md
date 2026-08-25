@@ -61,16 +61,18 @@ Steps:
    Use `add`, not `init`: `init` also writes the full engine `CLAUDE.md` over the
    lean project brief. The project brief stays short by design, and the engine
    knowledge loads from the copied folders when a task needs it.
-4. Fill in the placeholders in `CLAUDE.md` with the user: product, primary user,
+4. Install the render gates' one dependency in the target: `npm i -D playwright`.
+   Skipping this is silent: every render gate prints `SKIPPED` and exits 0.
+5. Fill in the placeholders in `CLAUDE.md` with the user: product, primary user,
    stack, icon set, vocabulary. Leave nothing in angle brackets behind.
-5. Point `design-tokens.json` at the brand: replace the `primitive.brand` ramp,
+6. Point `design-tokens.json` at the brand: replace the `primitive.brand` ramp,
    keep the semantic and component tiers, then prove it still passes:
 
    ```
    python3 scripts/validate_contrast.py
    ```
 
-6. Remind the user to fill `reference/` with real screens and `public/images/`
+7. Remind the user to fill `reference/` with real screens and `public/images/`
    with real imagery, and to set the MCP env vars (`FIGMA_API_KEY`, ...) in their
    own shell. Never write a secret into `.mcp.json`.
 

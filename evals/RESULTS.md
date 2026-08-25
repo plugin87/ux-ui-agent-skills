@@ -9,6 +9,8 @@ built the output, and whether they could see the kit's internals while doing it.
 | 2026-08-25 | `first-run-empty` | In-session (contaminated) | **14/14** first submission | 5/5 by hand | Clean pass, and that is the point: see "what a repeat run proves" |
 | 2026-08-25 | `data-density` | In-session (contaminated) | **14/14**; 10/13 first, then caught again by gate 14 | 5/5 by hand | Header contrast, then a sort header that declared `aria-sort` and sorted nothing |
 | 2026-08-25 | `notification-center` | In-session (contaminated) | **14/14**; 11/13 first | 5/5 by hand | Same 4.24:1 pair again, this time on the unread row |
+| 2026-08-25 | `first-run-empty` | **BLIND** subagent, scaffolded project | **14/14** | 5/5 by hand | Found the component-tier dark bug and the external-CSS blind spot |
+| 2026-08-25 | `billing-settings` | **BLIND** subagent, scaffolded project | **14/14** | 6/6 by hand | Found the missing scrim token, the colours-only theme, and the intent gate's vocabulary |
 
 ## 2026-08-25 — billing-settings
 
@@ -125,3 +127,46 @@ What it found on its first run:
   the critique that named this exact bug.** The affordance got written, the behaviour
   did not. That is the most useful result in this file: the gate caught the author who
   already knew about the failure mode, which is precisely what a gate is for.
+
+
+## 2026-08-25 (evening) — the blind runs, and what they cost the kit
+
+Two subagents, each given a scaffolded project (`ux-ui-skills new`, which installs
+the kit and ships **no example screens**), the brief verbatim, and nothing else. No
+design hints, no trap warnings, no mention that anything would be scored. Neither
+could see the conversation that built the kit; both met `CLAUDE.md` and
+`.claude/rules/` the way a new user's agent does.
+
+**Both scored 14/14 on an independent run of `evals/run.mjs`** — scored by this
+session, not by the agents' own claims. That is the transfer result the suite was
+built for, and it is the first evidence in this file that is not a memory result.
+
+Both agents found the verification workflow on their own and ran it. One of them
+rebuilt its theme with `build_tokens.mjs --in design-tokens.json` because
+`.claude/rules/tokens.md` told it to. That is the kit working.
+
+### What they broke on, and what it cost
+
+Every one of these is a kit defect that the in-session runs never hit, because I was
+linking a finished demo theme instead of starting from the template.
+
+| # | What a blind agent hit | Root cause | Fixed |
+|---|---|---|---|
+| 1 | A secondary button rendered dark-on-dark, 1.13:1, caught by the state gate | `build_tokens.mjs` emitted the **component tier into `:root` only**. Component tokens alias into semantic ones, which do have dark overrides - so every component token stayed pinned to its light value in dark mode | `res()` now re-resolves through the dark map and the component tier is emitted into the dark block |
+| 2 | Same bug, found independently by the other agent | as above | as above |
+| 3 | A reduced-motion policy in an external stylesheet read as "no policy" | Chromium treats a `file://` `<link>` sheet as cross-origin, so `sheet.cssRules` throws and `verify_reduced_motion.mjs` silently skipped it. **Every real project keeps its CSS in a file**, so the gate was blind exactly where it mattered. One agent worked around it by duplicating the policy inline | The runner now reads linked stylesheets from disk and hands the text to the check. Negative-tested: an external policy passes, no policy anywhere still fails |
+| 4 | A modal backdrop had no token to use | `templates/product-design/design-tokens.json` had no `semantic.surface.scrim` | Added, light and dark |
+| 5 | `var(--space-4)`, `var(--text-sm)` and friends were undefined on the first screen | `build_tokens.mjs` emitted **colours only**. A project scaffolded from the template got a theme with no type, space, radius, shadow, motion or size | The build now emits the whole system under the names the kit's own components use |
+| 6 | A Cancel-subscription flow scored as "0 intent-bearing controls" | `lint_intent.mjs` did not know `cancel subscription`, `close account`, `unsubscribe` are destructive | Vocabulary widened. Bare `cancel` stays out: it is the dismiss button on every dialog in the world |
+| 7 | Both agents lost time to Playwright not resolving in a fresh project | The template shipped gates that need `npm i -D playwright`, and never said so. Worse, the render gates print `SKIPPED` and **exit 0** without it, which reads like a pass | Documented in the template's `CLAUDE.md`, its `/gate` command, and `/scaffold-project` |
+
+### The honest reading
+
+- **Proven now:** an agent that has never seen this kit, given a brief and the
+  scaffolded project, produces work that passes all fourteen objective gates. The
+  rules transfer well enough to survive a cold start.
+- **Also proven:** the template path had five real defects that four in-session runs
+  never surfaced, because I kept reaching for a finished demo theme. A blind run is
+  worth more than four familiar ones.
+- **Still not proven:** taste. Both outputs pass the gates and read reasonably in a
+  screenshot; neither has been through `/critique`.

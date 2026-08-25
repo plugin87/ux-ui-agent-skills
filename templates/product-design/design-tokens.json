@@ -43,7 +43,8 @@
       "page":   { "$type": "color", "$value": "{primitive.white}" },
       "card":   { "$type": "color", "$value": "{primitive.white}" },
       "raised": { "$type": "color", "$value": "{primitive.gray.100}" },
-      "sunken": { "$type": "color", "$value": "{primitive.gray.50}" }
+      "sunken": { "$type": "color", "$value": "{primitive.gray.50}" },
+      "scrim":  { "$type": "color", "$value": "rgba(3, 7, 18, 0.6)", "$description": "Behind a modal. Dims the page without hiding it." }
     },
     "text": {
       "primary":   { "$type": "color", "$value": "{primitive.gray.900}" },
@@ -98,7 +99,8 @@
       "page":   { "$type": "color", "$value": "{primitive.gray.950}" },
       "card":   { "$type": "color", "$value": "{primitive.gray.900}" },
       "raised": { "$type": "color", "$value": "{primitive.gray.800}" },
-      "sunken": { "$type": "color", "$value": "{primitive.gray.950}" }
+      "sunken": { "$type": "color", "$value": "{primitive.gray.950}" },
+      "scrim":  { "$type": "color", "$value": "rgba(0, 0, 0, 0.72)" }
     },
     "text": {
       "primary":   { "$type": "color", "$value": "{primitive.gray.50}" },

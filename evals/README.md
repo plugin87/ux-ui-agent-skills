@@ -10,6 +10,22 @@ rest.
 
 ## The protocol
 
+There are two ways to get a genuine cold start. The second one is what this repo
+actually uses, because it can be run on demand.
+
+**A. A fresh human session.** Open a new session in a directory with the kit
+installed and paste the brief. No prior conversation, no hints.
+
+**B. A blind subagent.** Scaffold a clean project (`npx ux-ui-agent-skills new
+<dir>`, which installs the kit but ships no example screens), then hand a subagent
+the brief and the project path and nothing else. The subagent does not see the
+conversation that built the kit, so it meets `CLAUDE.md` and the rules the way a
+new user's agent does. Setup facts (where the project is, where to write output)
+are allowed; design hints, trap warnings, and gate coaching are not. If the agent
+finds the verification workflow on its own and runs it, that is the kit working,
+and it counts as a result rather than as cheating.
+
+
 1. **Cold start.** Open a fresh session in a directory that has the kit installed
    (`npx ux-ui-agent-skills init`, or a repo scaffolded with
    `npx ux-ui-agent-skills new`). No prior conversation, no hints, no follow-up

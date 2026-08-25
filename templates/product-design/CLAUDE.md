@@ -53,6 +53,9 @@ It runs the theme checks against `design-tokens.json` and the render checks
 against every harness in `src/components/`. The full command list lives in
 `.claude/commands/gate.md`.
 
+The render gates need headless Chrome: run `npm i -D playwright` once in this
+project. Without it they print `SKIPPED` and exit 0, which reads like a pass.
+
 Gates prove objective correctness: token consistency, contrast in light and dark,
 keyboard operability, target size, reduced motion, responsive behaviour, no
 hardcoded values, no emoji. They do NOT prove taste. Screenshot the screen, click

@@ -51,7 +51,11 @@ const files = targets.flatMap(t => {
 }).sort();
 
 const COLLECT = () => {
-  const DESTRUCTIVE = /\b(delete|remove|revoke|destroy|discard|erase|deactivate|terminate|wipe|unpublish|uninstall|drop)\b/i;
+  /* `cancel subscription`, `close account`, `unsubscribe` are destructive in every
+     product that has them; a blind eval run shipped a Cancel flow this gate scored
+     as "0 intent-bearing controls". Bare `cancel` stays out: it is the dismiss
+     button on every dialog in the world. */
+  const DESTRUCTIVE = /\b(delete|remove|revoke|destroy|discard|erase|deactivate|terminate|wipe|unpublish|uninstall|drop|unsubscribe|cancel\s+(subscription|plan|account|membership)|close\s+account|leave\s+(team|workspace|organisation|organization))\b/i;
   const AFFIRMATIVE = /\b(save|confirm|continue|submit|publish|apply|create|send)\b/i;
 
   // Resolve theme tokens to real rgb by probing, so we compare like with like.
