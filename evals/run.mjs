@@ -75,6 +75,7 @@ const GATES = [
   ['State-aware WCAG, default/hover/focus (light + dark)', each(f => `node scripts/verify_states.mjs ${f} && node scripts/verify_states.mjs --dark ${f}`)],
   ['axe-core a11y: roles, names, landmarks (light + dark)', each(f => `node scripts/axe_audit.mjs ${f} && node scripts/axe_audit.mjs --dark ${f}`)],
   ['Responsive: no overflow at 280/320/414', `node scripts/verify_responsive.mjs ${D}`],
+  ['Responsive under wider font metrics (1.25x root)', `node scripts/verify_responsive.mjs ${D} --scale=1.25`],
   ['Target size (WCAG 2.5.8), mobile + desktop', `node scripts/verify_target_size.mjs ${D} && node scripts/verify_target_size.mjs --dark ${D}`],
   ['Keyboard (WCAG 2.1.1): reach and operate', `node scripts/verify_keyboard.mjs ${D}`],
   ['Reduced motion: stopped, and no content lost', `node scripts/verify_reduced_motion.mjs ${D}`],

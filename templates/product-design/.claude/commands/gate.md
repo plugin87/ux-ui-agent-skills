@@ -27,6 +27,7 @@ node scripts/verify_states.mjs        src/components/<harness>
 node scripts/verify_states.mjs --dark src/components/<harness>
 node scripts/axe_audit.mjs            src/components/<harness>
 node scripts/verify_responsive.mjs    src/components
+node scripts/verify_responsive.mjs    src/components --scale=1.25
 node scripts/verify_target_size.mjs   src/components
 node scripts/verify_keyboard.mjs      src/components
 node scripts/verify_reduced_motion.mjs src/components

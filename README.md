@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.4.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-3.0.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -18,6 +18,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-17-14b8a6?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-36-16a34a?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
 ![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
@@ -32,7 +33,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.5.2`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v3.0.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -249,7 +250,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique` — an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 12 objective gates at what the agent produced |
+| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 13 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
 review from source alone, screenshots at 1280 and 390 in both themes, clicks every
@@ -281,7 +282,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
 ├── .claude/agents/            # design-critic — the adversarial reviewer behind /critique
 │
-├── evals/                     # Cold-start briefs + run.mjs — 12 objective gates on produced work
+├── evals/                     # Cold-start briefs + run.mjs — 13 objective gates on produced work
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
 │
@@ -432,21 +433,35 @@ This is a **starter kit** — make it yours:
 
 ## Changelog
 
-### `v2.5.2`
-- **The 280px overflow, actually fixed at the root.** `v2.5.1` made the field row wrap, which was not the cause: an `<input>` keeps an intrinsic ~20-character width, and inside a CSS grid that intrinsic width sizes the column and pushes the card past the viewport. Linux Chromium's slightly wider metrics were enough to tip it 2px over, so CI stayed red while macOS looked fine. The inputs now shrink (`inline-size:100%; min-inline-size:0`), and the page holds at 280px with the root font scaled to 1.5x, so the margin no longer depends on a font stack at all.
-- Method worth keeping: font metrics differ per platform, so "passes at 280px on my machine" is not the same claim as "passes at 280px". Scaling the root font is a cheap local proxy for a wider fallback font.
+### `v3.0.0`
 
-### `v2.5.1`
-- **First attempt at the 280px overflow (insufficient, see `v2.5.2`).** The v2.5.0 eval self-test went red on CI (Linux Chromium renders the settings label 2px wider than macOS Chrome does) — exactly the kind of environment-dependent overflow the responsive gate exists to catch. The label row wraps and can shrink now, verified down to 240px, so the margin no longer depends on a font stack.
+The release where the kit stopped taking its own word for anything. Enforcement went from **25 to 36 objective checks**, the always-on brief was cut in half, and the two things a gate genuinely cannot do — judge taste, and prove the kit works from a cold start — got real machinery instead of a disclaimer.
 
-### `v2.5.0`
-- **Enforcement caught up with the doctrine: `accuracy_report` 25 -> 35 checks, still all-or-nothing 100%.** Five new render-based gates close rules the kit preached and nothing checked: `verify_target_size.mjs` (WCAG 2.5.8 with the spec's real spacing / inline / label-hit-area exceptions), `verify_reduced_motion.mjs` (policy present, motion stopped, and **no content lost** — catches content only an entrance animation reveals), `verify_keyboard.mjs` (WCAG 2.1.1, ARIA-aware: roving `tabindex` and `aria-activedescendant` widgets judged by orphan-widget and dead-arrow signals, not by Tab), `lint_intent.mjs` (token **by intent**, measured on the render: a destructive action wearing `action.primary` fails), `verify_overflow.mjs` (silently clipped text and overlapping controls, with screen-reader-only text correctly exempt). Plus `slop_tells.mjs` as a hard gate. Each one was proven to FAIL on a deliberate violation before it was trusted — and together they found real bugs the previous 25 checks passed: a dead `prefers-reduced-motion` rule lost to CSS specificity, a harness with no motion policy at all, and three composite widgets that declared a roving-tabindex model with zero arrow-key handlers.
-- **`/critique` — the honest answer to "is it any good?"** A new adversarial `design-critic` subagent (`.claude/agents/design-critic.md`) that refuses to review from source, screenshots at 1280 and 390 in light and dark, clicks every control, and returns a verdict plus the three reasons a senior designer would reject the work. Every finding must cite evidence. A passing gate is never accepted as evidence of taste.
-- **`evals/` — does the kit transfer to a cold start?** Four cold-start briefs plus `node evals/run.mjs <brief-id>`, which points twelve objective gates at what an agent actually produced and prints the brief's requirements for human judgement. `--self-test` runs the same scorer on the reference app and is gated in CI, so the harness cannot rot. Building it found two real defects the 34-check gate had missed.
-- **Starter template for a new product repo** — `templates/product-design/` is the recommended Claude Code design-project layout, ready to copy: a lean always-on brief, `.claude/{rules,skills,commands,settings.json}`, a WCAG-verified `design-tokens.json` (light + dark), `src/components/`, `public/images/`, `reference/`. Scaffold it with **`npx ux-ui-agent-skills new <dir>`**, or `/scaffold-project`. Gated by `validate_template.py` (layout complete, aliases resolve, required contrast pairs pass in both themes).
-- **`CLAUDE.md` cut 576 -> ~276 lines.** Depth moved to `.claude/rules/` (7 files) and loads only when the work calls for it; headings are unchanged so every existing pointer still resolves. The emoji ban, the gate protocol, token-by-intent, one-theme, the 8-state table, and output completeness stay always-on — and `validate_instruction_surface.py` fails the build if one of them is ever demoted, if a rule file is orphaned, or if the brief regrows past its budget.
-- **Skills declare how they are invoked** — `invocation: user|model` in all 17 `SKILL.md`, regrouped in the README: six user-invoked skills that orchestrate a whole job, eleven model-invoked ones that are the discipline the agent applies while it works.
-- **Scripts take a path now**, so a product repo can gate its own single-file theme: `validate_tokens.py [file|dir]` (with explicit paths an unresolved alias FAILS), `validate_contrast.py [file]`, `build_tokens.mjs --in <file|dir>`. Verified end to end inside a freshly scaffolded repo.
+**Breaking**
+
+- **`CLAUDE.md` is now ~276 lines, not 576.** Depth moved to `.claude/rules/` (7 files) and loads only when the work calls for it. Headings are unchanged, so pointers into them still resolve, but anyone who vendored the old single-file brief should re-copy: `npx ux-ui-agent-skills add claude rules`. Always-on and non-negotiable: the emoji ban, the gate protocol, token-by-intent, one-theme, the 8-state table, output completeness. `validate_instruction_surface.py` fails the build if one of them is ever demoted, if a rule file is orphaned, or if the brief regrows past its budget.
+- **`init` installs a new area (`rules`)**, and the package now ships `templates/`, `.claude/rules/`, `.claude/commands/`.
+
+**Enforcement: 25 -> 36 checks, still all-or-nothing**
+
+- Five render-based gates for rules the kit preached and nothing checked: `verify_target_size.mjs` (WCAG 2.5.8 with the spec's real spacing / inline / label-hit-area exceptions), `verify_reduced_motion.mjs` (policy present, motion stopped, and **no content lost** — catches content only an entrance animation reveals), `verify_keyboard.mjs` (WCAG 2.1.1, ARIA-aware: roving `tabindex` and `aria-activedescendant` widgets judged by orphan-widget and dead-arrow signals, not by Tab), `lint_intent.mjs` (token **by intent**, measured on the render: a destructive action wearing `action.primary` fails), `verify_overflow.mjs` (silently clipped text and overlapping controls, with screen-reader-only text correctly exempt). `slop_tells.mjs` became a hard gate.
+- Each was proven to FAIL on a deliberate violation before it was trusted, and together they found real bugs the previous 25 checks passed: a dead `prefers-reduced-motion` rule lost to CSS specificity, a harness with no motion policy at all, and three composite widgets that declared a roving-tabindex model with zero arrow-key handlers.
+- **Responsive is proven against font metrics, not one machine.** `verify_responsive.mjs --scale` renders the same narrow widths under a larger root font: the proxy for another platform's wider fallback font (Linux Chromium measured a label 2px wider than macOS Chrome and broke a 280px layout that looked clean locally) and for a user with larger text. Every example now holds at 280px at 1.25x, and that run is a gate. Root causes worth knowing: an `<input>` keeps an intrinsic ~20-character width that sizes its grid column; a grid item keeps `min-width:auto` and can widen its own track; a `white-space:nowrap` tooltip has no upper bound; a `<table>` without `table-layout:fixed` is sized by its cells' min-content.
+- New harness `edge-cases.html` renders what production actually contains: unbroken 60-character strings, empty and single-item collections, missing values, ten-digit counts, forty rows.
+
+**Judgement, where measurement ends**
+
+- **`/critique`** and the `design-critic` subagent. Its stance is adversarial by design: the work is mediocre until the render proves otherwise, **a passing gate is never evidence of taste**, and every finding must cite evidence — a file and line, a measured number, or something specific in a specific screenshot. It refuses to review from source alone, screenshots at 1280 and 390 in light and dark, clicks every control, and returns a verdict plus the three reasons a senior designer would send the work back.
+
+**Evals: does the kit survive a cold start?**
+
+- **`evals/`** — four cold-start briefs and `node evals/run.mjs <brief-id>`, which points thirteen objective gates at what an agent actually produced and prints the brief's requirements for human judgement. `--self-test` scores the reference app with the same gates and is itself a gate, so the harness cannot rot unnoticed. Building it exposed two real defects the 34-check gate had missed: the reference app overflowed at 280px, and `verify_overflow` was flagging screen-reader-only text as silently clipped.
+
+**Starting a real product with the kit**
+
+- **`templates/product-design/`** is the recommended Claude Code design-project layout, ready to use: a lean always-on brief, `.claude/{rules,skills,commands,settings.json}`, a WCAG-verified `design-tokens.json` (light + dark), `src/components/`, `public/images/`, `reference/`. Scaffold with **`npx ux-ui-agent-skills new <dir>`** or `/scaffold-project`, and `validate_template.py` keeps it sound (layout complete, aliases resolve, required contrast pairs pass in both themes).
+- **Scripts take a path**, so a product repo can gate its own single-file theme: `validate_tokens.py [file|dir]` (with explicit paths an unresolved alias FAILS), `validate_contrast.py [file]`, `build_tokens.mjs --in <file|dir>`. Verified end to end inside a freshly scaffolded repo.
+- **Skills declare how they are invoked** — `invocation: user|model` across all 17 `SKILL.md`, regrouped in this README: six user-invoked skills that orchestrate a job, eleven model-invoked ones that are the discipline the agent applies while it works.
 
 ### `v2.4.0`
 - **Project layout aligned to the recommended Claude Code design-project structure** (Phase A1 of `docs/restructure-plan.md`). Additive only — no knowledge folders moved, no path references changed, `accuracy_report` stays **25/25 = 100%**.

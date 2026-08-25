@@ -17,10 +17,12 @@
   .nav:hover{background:var(--color-surface-raised)}
   .nav:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   .nav svg{inline-size:1rem;block-size:1rem;color:currentColor;fill:none;stroke-width:2}
-  table{border-collapse:collapse;inline-size:100%}
+  /* fixed layout: the seven columns divide the card. Without it each cell's
+     min-content (the day button's minimum) sizes the table wider than its card. */
+  table{border-collapse:collapse;inline-size:100%;table-layout:fixed}
   th{font-size:var(--text-xs);color:var(--color-text-secondary);font-weight:600;padding-block:var(--space-1)}
   td{padding:2px;text-align:center}
-  .day{inline-size:100%;min-inline-size:1.75rem;block-size:2rem;border:0;background:none;cursor:pointer;border-radius:var(--radius-button);
+  .day{inline-size:100%;min-inline-size:0;block-size:2rem;border:0;background:none;cursor:pointer;border-radius:var(--radius-button);
     font-size:var(--text-sm);color:var(--color-text-primary)}
   .day:hover{background:var(--color-surface-raised)}
   .day:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}

@@ -253,7 +253,9 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               always-on in CLAUDE.md; every .claude/rules file is routed; brief stays short)
                             · validate_template.py (the starter template: layout complete, aliases
                               resolve, seeded theme passes WCAG light AND dark before a project starts)
-                            · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness)
+                            · verify_responsive.mjs (no horizontal overflow at 280/320/414px — every harness;
+                              --scale=1.25 stresses it with a wider root font: another platform's fallback
+                              font or a user's larger text size, which is how a 280px layout breaks in CI)
                             · taste_audit.mjs (render-based taste signal: type-scale, uniform repetition, measure, palette)
                             · slop_tells.mjs (render-based anti-slop tells: single-radius, default/flat shadow, HARDCODED indigo-blue gradient, #000 text, lorem, flat spacing, near-dup neutrals — HIGH fails the gate)
                             · verify_target_size.mjs (WCAG 2.5.8: every target >= 24x24, with the spec's
