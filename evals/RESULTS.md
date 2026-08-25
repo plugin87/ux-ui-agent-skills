@@ -5,10 +5,10 @@ built the output, and whether they could see the kit's internals while doing it.
 
 | Date | Brief | Provenance | Objective | Requirements | Notes |
 |---|---|---|---|---|---|
-| 2026-08-25 | `billing-settings` | In-session (contaminated, see below) | **13/13** after 4 rounds; **8/13** on the first submission | 6/6 by hand | Five gate failures on the first pass, all real |
-| 2026-08-25 | `first-run-empty` | In-session (contaminated) | **13/13** first submission | 5/5 by hand | Clean pass, and that is the point: see "what a repeat run proves" |
-| 2026-08-25 | `data-density` | In-session (contaminated) | **13/13** after 1 round; **10/13** first | 5/5 by hand | Column labels 4.24:1 on the raised header row, dark only |
-| 2026-08-25 | `notification-center` | In-session (contaminated) | **13/13** after 1 round; **11/13** first | 5/5 by hand | Same 4.24:1 pair again, this time on the unread row |
+| 2026-08-25 | `billing-settings` | In-session (contaminated, see below) | **14/14**; 8/13 on the first submission | 6/6 by hand | Five gate failures on the first pass, all real |
+| 2026-08-25 | `first-run-empty` | In-session (contaminated) | **14/14** first submission | 5/5 by hand | Clean pass, and that is the point: see "what a repeat run proves" |
+| 2026-08-25 | `data-density` | In-session (contaminated) | **14/14**; 10/13 first, then caught again by gate 14 | 5/5 by hand | Header contrast, then a sort header that declared `aria-sort` and sorted nothing |
+| 2026-08-25 | `notification-center` | In-session (contaminated) | **14/14**; 11/13 first | 5/5 by hand | Same 4.24:1 pair again, this time on the unread row |
 
 ## 2026-08-25 — billing-settings
 
@@ -96,3 +96,32 @@ Four briefs, four 13/13 results, one contaminated author. The honest reading:
   who had just read the rules. A blind cold-start run — fresh session, brief pasted
   verbatim, no coaching — is still the only thing that answers the question the suite
   was built for.
+
+
+## 2026-08-25 (later) — the gate that came out of the critique
+
+`/critique` reviewed the kit's own `examples/` and its Critical finding was a header
+in `data-table.html` that declared `aria-sort="ascending"`, drew a chevron, lit up on
+hover, and sorted nothing. Every existing gate passed it: the button is focusable,
+operable, large enough, and legible in every state. What no gate checked was whether
+the state it advertises ever changes.
+
+`scripts/verify_interactive.mjs` now checks exactly that, and it is gate 37 in the
+kit and gate 14 in this suite. Signal [A] fails a control that declares `aria-sort`,
+`aria-pressed`, `aria-expanded`, `aria-checked`, `aria-selected`, or a state-bearing
+role, and changes nothing on a real click — no attribute anywhere, no DOM mutation,
+no focus landing elsewhere. Signal [B] reports an inert plain button as advisory,
+because a states harness legitimately ships static demo buttons. `data-demo-state`
+opts a deliberate state *rendering* out, and has to be written by hand so the
+exemption is a claim on the record.
+
+What it found on its first run:
+
+- `data-table.html` — the critique's Critical finding, now wired to really sort.
+- `datepicker.html` — a day drawn as selected that never moved when clicked. Now
+  selects on click and on Enter/Space.
+- `button.html`, `card.html` — genuine state renderings, marked `data-demo-state`.
+- **`evals/out/data-density/index.html` — my own fixture, written hours after reading
+  the critique that named this exact bug.** The affordance got written, the behaviour
+  did not. That is the most useful result in this file: the gate caught the author who
+  already knew about the failure mode, which is precisely what a gate is for.

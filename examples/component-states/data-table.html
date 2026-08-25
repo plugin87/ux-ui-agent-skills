@@ -73,6 +73,27 @@
   </table>
 </div>
 <script>
+  /* Sorting: the header declares aria-sort and draws a chevron, so it has to sort.
+     A decorative sort control is the failure a designer spots in two seconds and no
+     contrast gate can see. */
+  const table=document.querySelector('table');
+  const tbody=table.querySelector('tbody');
+  [...table.querySelectorAll('th .sortbtn')].forEach(btn=>{
+    const th=btn.closest('th');
+    const col=[...th.parentElement.children].indexOf(th);
+    btn.addEventListener('click',()=>{
+      const asc=th.getAttribute('aria-sort')!=='ascending';
+      for(const other of table.querySelectorAll('th[aria-sort]'))
+        if(other!==th)other.removeAttribute('aria-sort');
+      th.setAttribute('aria-sort',asc?'ascending':'descending');
+      const icon=btn.querySelector('use');
+      if(icon)icon.setAttribute('href',asc?'#i-chevron-up':'#i-chevron-down');
+      const rows=[...tbody.rows].sort((a,b)=>
+        a.cells[col].textContent.trim().localeCompare(b.cells[col].textContent.trim())*(asc?1:-1));
+      rows.forEach(r=>tbody.appendChild(r));
+    });
+  });
+
   const all=document.getElementById('all');
   const rows=[...document.querySelectorAll('tbody input[type=checkbox]')];
   function sync(){const n=rows.filter(r=>r.checked).length;all.checked=n===rows.length;all.indeterminate=n>0&&n<rows.length;}

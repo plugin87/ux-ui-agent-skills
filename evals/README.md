@@ -24,11 +24,13 @@ rest.
    node evals/run.mjs <brief-id>
    ```
 
-   Thirteen objective gates on the real render: hardcodes, emoji, WCAG in light
+   Fourteen objective gates on the real render: hardcodes, emoji, WCAG in light
    and dark, state-aware contrast, axe, responsive at 280/320/414, the same widths
    again under a 1.25x root font (a wider fallback font on another platform, or a
    user with larger text), target size, keyboard, reduced motion, content overflow,
-   token by intent, slop tells. One `N/N`, all or nothing.
+   token by intent, slop tells, and interactive truth - a control that declares
+   `aria-sort` or `aria-pressed` has to change something when it is clicked. One
+   `N/N`, all or nothing.
 
 5. **Judge the half no script can.** Run `/critique` on the output, then read the
    brief's Requirements list yourself. That list is where the real failures live:
@@ -59,7 +61,7 @@ silently clipped. Both are fixed.
 
 ## What this is not
 
-It is not a benchmark, and it does not produce a percentage for quality. Thirteen
+It is not a benchmark, and it does not produce a percentage for quality. Fourteen
 gates passing means the work is correct, not that it is good. The briefs list a
 "Known traps" section precisely because those traps are what separates the two,
 and no script in this repo can see them.

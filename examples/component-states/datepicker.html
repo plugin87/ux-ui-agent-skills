@@ -70,8 +70,20 @@
     days.forEach(d=>d.tabIndex=d===next?0:-1);
     next.focus();
   }
+  /* Selection: clicking a day moves the selected state. A day that draws itself as
+     selected and does nothing when clicked is a lie the eye cannot see. */
+  function select(day){
+    days.forEach(d=>{
+      const on=d===day;
+      d.setAttribute('aria-pressed',String(on));
+      const label=d.textContent.trim();
+      d.setAttribute('aria-label',on?label+' June, selected':label+' June');
+    });
+  }
   days.forEach(day=>{
+    day.addEventListener('click',()=>{if(!day.disabled)select(day);});
     day.addEventListener('keydown',e=>{
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();select(day);return;}
       const i=days.indexOf(day),row=Math.floor(i/COLS);
       const step={ArrowRight:1,ArrowLeft:-1,ArrowDown:COLS,ArrowUp:-COLS}[e.key];
       if(step!==undefined){e.preventDefault();focusIndex(i+step,Math.sign(step));return;}

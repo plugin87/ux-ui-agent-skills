@@ -191,6 +191,29 @@
         <span class="sr-only">Actions for order ${id}</span></button></td>
     </tr>`).join('');
 
+  /* The headers declare aria-sort and draw a chevron, so they sort. Caught by
+     verify_interactive on the first run of that gate: writing the affordance and
+     forgetting the behaviour is apparently easy to do twice. */
+  const table = document.querySelector('table');
+  const tbody = document.getElementById('rows');
+  for (const btn of table.querySelectorAll('th .sort')) {
+    const th = btn.closest('th');
+    const col = [...th.parentElement.children].indexOf(th);
+    btn.addEventListener('click', () => {
+      const asc = th.getAttribute('aria-sort') !== 'ascending';
+      for (const other of table.querySelectorAll('th[aria-sort]')) if (other !== th) other.removeAttribute('aria-sort');
+      th.setAttribute('aria-sort', asc ? 'ascending' : 'descending');
+      const icon = btn.querySelector('use');
+      if (icon) icon.setAttribute('href', asc ? '#i-chevron-up' : '#i-chevron-down');
+      const num = th.textContent.includes('Total');
+      const val = r => r.cells[col].textContent.trim();
+      const rows = [...tbody.rows].sort((a, b) => (num
+        ? Number(val(a).replace(/[^0-9.]/g, '')) - Number(val(b).replace(/[^0-9.]/g, ''))
+        : val(a).localeCompare(val(b))) * (asc ? 1 : -1));
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  }
+
   document.getElementById('rows').addEventListener('change', e => {
     if (e.target.type !== 'checkbox') return;
     e.target.closest('tr').setAttribute('aria-selected', e.target.checked);

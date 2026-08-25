@@ -266,6 +266,9 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               composite widgets reachable and their arrow-key model implemented)
                             · lint_intent.mjs (token BY INTENT, measured on the render: destructive never
                               wears action.primary, affirmative never wears danger, same action same variant)
+                            · verify_interactive.mjs (a control that DECLARES aria-sort/pressed/expanded/
+                              checked must change something on a real click — catches the sort header that
+                              draws a chevron and sorts nothing; `data-demo-state` opts a state rendering out)
                             · verify_overflow.mjs (silently clipped text + overlapping controls — the
                               failures that stay inside the page and survive a happy-path screenshot)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)

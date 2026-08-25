@@ -81,6 +81,7 @@ const GATES = [
   ['Reduced motion: stopped, and no content lost', `node scripts/verify_reduced_motion.mjs ${D}`],
   ['Content overflow: nothing clipped or overlapping', `node scripts/verify_overflow.mjs ${D}`],
   ['Token by intent: destructive never wears primary', `node scripts/lint_intent.mjs ${D}`],
+  ['Interactive truth: a declared state contract is honoured', `node scripts/verify_interactive.mjs ${D}`],
   ['Slop tells: no HIGH tell (light + dark)', `node scripts/slop_tells.mjs --strict ${files.map(q).join(' ')} && node scripts/slop_tells.mjs --strict --dark ${files.map(q).join(' ')}`],
 ];
 

@@ -18,7 +18,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-17-14b8a6?style=flat-square)
-![Gates](https://img.shields.io/badge/objective_gates-36-16a34a?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-37-16a34a?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
 ![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
@@ -232,7 +232,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 
 ## Proving It, and Admitting What Cannot Be Proven
 
-The kit ships **35 objective gates** behind one command:
+The kit ships **37 objective gates** behind one command:
 
 ```bash
 node scripts/accuracy_report.mjs     # 35/35 or it fails — no partial credit
@@ -250,7 +250,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique` — an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 13 objective gates at what the agent produced |
+| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 14 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
 review from source alone, screenshots at 1280 and 390 in both themes, clicks every
@@ -284,7 +284,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
 ├── .claude/agents/            # design-critic — the adversarial reviewer behind /critique
 │
-├── evals/                     # Cold-start briefs + run.mjs — 13 objective gates on produced work
+├── evals/                     # Cold-start briefs + run.mjs — 14 objective gates on produced work
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
 │

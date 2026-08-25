@@ -67,6 +67,8 @@ const checks = [
    'node scripts/verify_overflow.mjs examples/component-states'],
   ['Responsive under wider font metrics — every example holds at 280px with a 1.25x root font',
    'node scripts/verify_responsive.mjs examples/component-states --scale=1.25 && node scripts/verify_responsive.mjs examples/sample-app --scale=1.25 && node scripts/verify_responsive.mjs examples/apple-demo --scale=1.25 && node scripts/verify_responsive.mjs examples/brandkit-demo --scale=1.25'],
+  ['Interactive truth — every control that declares a state contract honours it on a real click',
+   'node scripts/verify_interactive.mjs examples/component-states && node scripts/verify_interactive.mjs examples/sample-app'],
   ['Eval harness — the 13-gate cold-start scorer runs green on the reference app',
    'node evals/run.mjs --self-test'],
   ['Instruction surface — always-on rules stay in CLAUDE.md, every rule file routed, brief within budget',

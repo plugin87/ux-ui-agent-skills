@@ -22,6 +22,7 @@
     "eval": "node evals/run.mjs",
     "eval:self": "node evals/run.mjs --self-test",
     "verify:overflow": "node scripts/verify_overflow.mjs",
+    "verify:interactive": "node scripts/verify_interactive.mjs",
     "test:states": "node scripts/verify_states.mjs",
     "test:axe": "node scripts/axe_audit.mjs",
     "test:focustrap": "node scripts/verify_focustrap.mjs",
