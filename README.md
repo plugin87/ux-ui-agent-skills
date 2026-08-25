@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-3.0.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.5.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -33,7 +33,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v3.0.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.5.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -433,11 +433,11 @@ This is a **starter kit** — make it yours:
 
 ## Changelog
 
-### `v3.0.0`
+### `v2.5.0`
 
 The release where the kit stopped taking its own word for anything. Enforcement went from **25 to 36 objective checks**, the always-on brief was cut in half, and the two things a gate genuinely cannot do — judge taste, and prove the kit works from a cold start — got real machinery instead of a disclaimer.
 
-**Breaking**
+**Heads-up if you vendored `CLAUDE.md`**
 
 - **`CLAUDE.md` is now ~276 lines, not 576.** Depth moved to `.claude/rules/` (7 files) and loads only when the work calls for it. Headings are unchanged, so pointers into them still resolve, but anyone who vendored the old single-file brief should re-copy: `npx ux-ui-agent-skills add claude rules`. Always-on and non-negotiable: the emoji ban, the gate protocol, token-by-intent, one-theme, the 8-state table, output completeness. `validate_instruction_surface.py` fails the build if one of them is ever demoted, if a rule file is orphaned, or if the brief regrows past its budget.
 - **`init` installs a new area (`rules`)**, and the package now ships `templates/`, `.claude/rules/`, `.claude/commands/`.
