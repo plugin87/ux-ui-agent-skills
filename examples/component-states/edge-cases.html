@@ -8,7 +8,7 @@
 <style>
   *{box-sizing:border-box;margin:0}
   body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
-  h1{font-size:var(--text-2xl);margin-block-end:var(--space-2)}
+  h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.02em;margin-block-end:var(--space-2)}
   .lede{font-size:var(--text-sm);color:var(--color-text-secondary);max-inline-size:65ch;margin-block-end:var(--space-6)}
   h2{font-size:var(--text-lg);margin-block:var(--space-6) var(--space-3)}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:var(--space-4)}
@@ -20,6 +20,8 @@
   .card h3{font-size:var(--text-base)}
   .card p{font-size:var(--text-sm);color:var(--color-text-secondary)}
   .cap{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  /* The worst case gets the most room, so the row is not four identical boxes. */
+  @media(min-width:56rem){.card--wide{grid-column:span 2}}
   /* Defence 1: unbroken strings must be allowed to break, or they saw through
      every container they are placed in. */
   .breakable{overflow-wrap:anywhere}
@@ -77,7 +79,7 @@ missing values, and counts with ten digits. A component is only done when it sur
 
 <h2>1 - Long unbroken strings</h2>
 <div class="grid">
-  <article class="card">
+  <article class="card card--wide">
     <span class="cap">Card title</span>
     <h3 class="breakable">pk_live_51MZq8bK2eCx9vRt7WgYh3NdJfLpQaSzXcVbNmKjHgFdSaPoIuYtReWq</h3>
     <p>An API key pasted as a record name. It must wrap rather than widen the card.</p>
@@ -176,5 +178,6 @@ missing values, and counts with ten digits. A component is only done when it sur
       +`<td class="num">${(i*137%9000)+120} ms</td></tr>`;
   }).join('');
 </script>
+<footer style="margin-block-start:var(--space-10);padding-block-start:var(--space-5);border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm);max-inline-size:65ch">Component harness. Every state above is rendered so the gates can measure it: contrast in both themes, hover and focus, target size, keyboard, reduced motion, and overflow.</footer>
 </body>
 </html>

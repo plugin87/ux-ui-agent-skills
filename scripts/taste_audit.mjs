@@ -8,7 +8,8 @@
  * Checks (high-signal subset of the Pre-Flight Aesthetic Check):
  *   - Type-scale drama   : biggest heading vs body size (timid contrast = slop)
  *   - Uniform repetition : 3+ equal-size, equal-class siblings (no focal point)
- *   - Body measure       : paragraphs wider than ~75ch (readability/taste fail)
+ *   - Body measure       : paragraphs wider than ~80 REAL characters (a `ch` is measured
+ *                          in the element's own font, not guessed at 0.5em)
  *   - Palette discipline  : too many distinct accent hues
  *   - Pure #000/#fff      : harsh, amateur
  *   - Macro whitespace    : cramped section seams
@@ -39,6 +40,21 @@ for (const f of files) {
 
   const data = await page.evaluate(() => {
     const vis = el => { const r = el.getBoundingClientRect(); const s = getComputedStyle(el); return r.width > 1 && r.height > 1 && s.visibility !== 'hidden' && +s.opacity !== 0; };
+    /* Measure a real character, do not assume one. A `ch` is the width of "0" in the
+       element's own font: 0.63em in Inter, 0.5em in a condensed face. Guessing 0.5em
+       made this check flag `max-width: 65ch` - the width the kit itself recommends. */
+    const chCache = {};
+    const probe = document.createElement('span');
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:pre;inline-size:auto';
+    document.body.appendChild(probe);
+    const chWidth = (s) => {
+      const key = s.fontSize + '|' + s.fontFamily + '|' + s.fontWeight;
+      if (chCache[key]) return chCache[key];
+      probe.style.font = `${s.fontWeight} ${s.fontSize}/1 ${s.fontFamily}`;
+      probe.textContent = '0'.repeat(20);
+      const w = probe.getBoundingClientRect().width / 20;
+      return (chCache[key] = w || parseFloat(s.fontSize) * 0.5);
+    };
     const texts = [];
     for (const el of document.querySelectorAll('body *')) {
       if (['SCRIPT', 'STYLE', 'SVG', 'PATH'].includes(el.tagName)) continue;
@@ -46,7 +62,7 @@ for (const f of files) {
       if (!direct || !vis(el)) continue;
       const s = getComputedStyle(el), r = el.getBoundingClientRect();
       texts.push({ tag: el.tagName, px: parseFloat(s.fontSize), weight: parseInt(s.fontWeight, 10) || 400,
-        chars: el.textContent.trim().length, w: r.width });
+        chars: el.textContent.trim().length, w: r.width, ch: chWidth(s) });
     }
     // uniform repetition: LARGE sibling blocks (cards/sections) with same tag+class and near-equal size.
     // Small elements (icons, buttons) are excluded — uniformity there is fine.
@@ -94,7 +110,7 @@ for (const f of files) {
   const ratio = maxHead && bodyPx ? maxHead / bodyPx : 0;
   if (ratio && ratio < 2.0) findings.push(['HIGH', `Timid type-scale contrast: biggest heading ${maxHead}px vs body ${bodyPx}px = ${ratio.toFixed(1)}x (premium ≥ ~2.5x). Make display type dramatically bigger and shorter.`]);
   if (data.uniform >= 3) findings.push(['MED', `${data.uniform} equal-size blocks "${data.uniformKey}" — fine for a dashboard metric row, but on a marketing/feature section break symmetry (one hero item / bento sizing).`]);
-  const wide = data.texts.filter(t => t.tag === 'P' && t.w / (t.px * 0.5) > 80);
+  const wide = data.texts.filter(t => t.tag === 'P' && t.chars > 40 && t.w / (t.ch || t.px * 0.5) > 80);
   if (wide.length) findings.push(['MED', `${wide.length} paragraph(s) wider than ~80ch — constrain body to 60–75ch (max-width: 65ch).`]);
   if (data.hues > 6) findings.push(['MED', `${data.hues} distinct accent hues — palette sprawl. One primary + at most one accent; neutrals carry the rest.`]);
 

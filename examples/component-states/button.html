@@ -10,7 +10,7 @@
      every variant × state so the gates (verify_states, axe, measure_render) can prove it. */
   *{box-sizing:border-box;margin:0}
   body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
-  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.02em;margin-bottom:var(--space-4)}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-4)}
   .cell{display:grid;gap:var(--space-2);justify-items:start;padding:var(--space-4);border:1px solid var(--color-border-default);border-radius:var(--radius-card);background:var(--color-surface-card)}
   .cell small{font-size:var(--text-sm);color:var(--color-text-secondary)}
@@ -44,5 +44,6 @@
   <div class="cell"><small>Toggle · selected</small><button class="btn" role="button" aria-pressed="true" data-demo-state>Bold</button></div>
   <div class="cell"><small>Toggle · unselected</small><button class="btn btn--secondary" aria-pressed="false" data-demo-state>Bold</button></div>
 </div>
+<footer style="margin-block-start:var(--space-10);padding-block-start:var(--space-5);border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm);max-inline-size:65ch">Component harness. Every state above is rendered so the gates can measure it: contrast in both themes, hover and focus, target size, keyboard, reduced motion, and overflow.</footer>
 </body>
 </html>

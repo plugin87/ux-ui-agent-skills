@@ -437,14 +437,14 @@ This is a **starter kit** — make it yours:
 
 ### `v2.5.0`
 
-The release where the kit stopped taking its own word for anything. Enforcement went from **25 to 36 objective checks**, the always-on brief was cut in half, and the two things a gate genuinely cannot do — judge taste, and prove the kit works from a cold start — got real machinery instead of a disclaimer.
+The release where the kit stopped taking its own word for anything. Enforcement went from **25 to 37 objective checks**, the always-on brief was cut in half, and the two things a gate genuinely cannot do — judge taste, and prove the kit works from a cold start — got real machinery instead of a disclaimer.
 
 **Heads-up if you vendored `CLAUDE.md`**
 
 - **`CLAUDE.md` is now ~276 lines, not 576.** Depth moved to `.claude/rules/` (7 files) and loads only when the work calls for it. Headings are unchanged, so pointers into them still resolve, but anyone who vendored the old single-file brief should re-copy: `npx ux-ui-agent-skills add claude rules`. Always-on and non-negotiable: the emoji ban, the gate protocol, token-by-intent, one-theme, the 8-state table, output completeness. `validate_instruction_surface.py` fails the build if one of them is ever demoted, if a rule file is orphaned, or if the brief regrows past its budget.
 - **`init` installs a new area (`rules`)**, and the package now ships `templates/`, `.claude/rules/`, `.claude/commands/`.
 
-**Enforcement: 25 -> 36 checks, still all-or-nothing**
+**Enforcement: 25 -> 37 checks, still all-or-nothing**
 
 - Five render-based gates for rules the kit preached and nothing checked: `verify_target_size.mjs` (WCAG 2.5.8 with the spec's real spacing / inline / label-hit-area exceptions), `verify_reduced_motion.mjs` (policy present, motion stopped, and **no content lost** — catches content only an entrance animation reveals), `verify_keyboard.mjs` (WCAG 2.1.1, ARIA-aware: roving `tabindex` and `aria-activedescendant` widgets judged by orphan-widget and dead-arrow signals, not by Tab), `lint_intent.mjs` (token **by intent**, measured on the render: a destructive action wearing `action.primary` fails), `verify_overflow.mjs` (silently clipped text and overlapping controls, with screen-reader-only text correctly exempt). `slop_tells.mjs` became a hard gate.
 - Each was proven to FAIL on a deliberate violation before it was trusted, and together they found real bugs the previous 25 checks passed: a dead `prefers-reduced-motion` rule lost to CSS specificity, a harness with no motion policy at all, and three composite widgets that declared a roving-tabindex model with zero arrow-key handlers.
@@ -454,6 +454,9 @@ The release where the kit stopped taking its own word for anything. Enforcement 
 **Judgement, where measurement ends**
 
 - **`/critique`** and the `design-critic` subagent. Its stance is adversarial by design: the work is mediocre until the render proves otherwise, **a passing gate is never evidence of taste**, and every finding must cite evidence — a file and line, a measured number, or something specific in a specific screenshot. It refuses to review from source alone, screenshots at 1280 and 390 in light and dark, clicks every control, and returns a verdict plus the three reasons a senior designer would send the work back.
+- **The critique was run on the kit's own examples, and it returned `reject`.** What it found is fixed here, not filed: a `data-table` header that declared `aria-sort`, drew a chevron and sorted nothing; a datepicker day drawn as selected that never moved; an Export button styled like a live action with no handler; and an "Email notifications" control that was a `role="switch"` in name only, identical in both states, ignoring the kit's own Toggle spec. The reference app now leads with one hero metric instead of four equal cards, closes with a real footer instead of empty canvas, carries an elevation scale rather than one flat shadow, and every harness gained display type at `--text-4xl` (the doctrine's own 2.5x bar) and a closing note. `taste_audit` and `slop_tells` are now clean on every example, in both themes.
+- **Gate 37, `verify_interactive.mjs`, exists because of that critique.** A control that declares `aria-sort` / `aria-pressed` / `aria-expanded` / `aria-checked` / `aria-selected`, or wears a state-bearing role, must change something on a real click - any attribute, any DOM mutation, or focus landing somewhere other than itself. `data-demo-state` opts a deliberate state *rendering* out, and has to be written by hand so the exemption is on the record. It caught the original bug, two more like it, and then an eval fixture written hours after the critique that named the failure mode.
+- **`taste_audit` measures a real character now.** Its line-length check assumed `1ch` was half an em and therefore flagged `max-width: 65ch` - the width the kit itself recommends. It measures the element's own font instead.
 
 **Evals: does the kit survive a cold start?**
 

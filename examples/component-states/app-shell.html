@@ -49,6 +49,11 @@
   .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr));gap:var(--space-4)}
   .stat{background:var(--color-surface-card);border:1px solid var(--color-border-default);border-radius:var(--radius-card);padding:var(--space-5);display:grid;gap:var(--space-1)}
+  /* One metric leads. Four identical tiles give the eye nowhere to land. */
+  .stat--lead{padding:var(--space-6);box-shadow:var(--shadow-md);border-color:var(--color-border-strong)}
+  .stat--lead .n{font-size:var(--text-4xl)}
+  @media(min-width:56rem){.stat--lead{grid-column:span 2}}
+  .stat__note{font-size:var(--text-sm);color:var(--color-text-secondary);max-inline-size:40ch;margin:var(--space-1) 0 0}
   .stat .n{font-size:var(--text-3xl);font-weight:700;line-height:1.1}
   .stat .l{font-size:var(--text-sm);color:var(--color-text-secondary)}
   .stat .delta{font-size:var(--text-xs);font-weight:600}
@@ -120,7 +125,7 @@
     </div>
 
     <div class="cards">
-      <div class="stat"><div class="l">Active users</div><div class="n">2,481</div><div class="delta up">+12.4%</div></div>
+      <div class="stat stat--lead"><div class="l">Active users</div><div class="n">2,481</div><div class="delta up">+12.4%</div><p class="stat__note">Signed in at least once in the last 30 days. Seats invited but never used are excluded.</p></div>
       <div class="stat"><div class="l">Uptime</div><div class="n">98.2%</div><div class="delta up">+0.3%</div></div>
       <div class="stat"><div class="l">Open issues</div><div class="n">17</div><div class="delta down">+4</div></div>
       <div class="stat"><div class="l">Revenue</div><div class="n">$48k</div><div class="delta up">+8.1%</div></div>
@@ -154,5 +159,6 @@
   const t=document.getElementById('menuToggle'),side=document.getElementById('side');
   t.addEventListener('click',()=>{const open=side.classList.toggle('open');t.setAttribute('aria-expanded',String(open));});
 </script>
+<footer style="margin-block-start:var(--space-10);padding-block-start:var(--space-5);border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm);max-inline-size:65ch">Component harness. Every state above is rendered so the gates can measure it: contrast in both themes, hover and focus, target size, keyboard, reduced motion, and overflow.</footer>
 </body>
 </html>

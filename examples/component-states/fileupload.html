@@ -8,7 +8,7 @@
 <style>
   *{box-sizing:border-box;margin:0}
   body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);padding:var(--space-6)}
-  h1{font-size:var(--text-2xl);margin-bottom:var(--space-4)}
+  h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.02em;margin-bottom:var(--space-4)}
   .uploader{max-inline-size:480px;display:grid;gap:var(--space-4)}
   .drop{display:grid;justify-items:center;gap:var(--space-2);text-align:center;
     border:1px dashed var(--color-border-strong);border-radius:var(--radius-card);padding:var(--space-12) var(--space-6);
@@ -59,5 +59,6 @@
   </ul>
 </div>
 <script src="icons.js"></script>
+<footer style="margin-block-start:var(--space-10);padding-block-start:var(--space-5);border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm);max-inline-size:65ch">Component harness. Every state above is rendered so the gates can measure it: contrast in both themes, hover and focus, target size, keyboard, reduced motion, and overflow.</footer>
 </body>
 </html>

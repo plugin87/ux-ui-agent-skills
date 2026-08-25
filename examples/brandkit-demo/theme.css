@@ -34,7 +34,7 @@
 }
 :root[data-theme="dark"]{
   --color-surface-page:#101214;--color-surface-card:#242729;--color-surface-raised:#3c4044;
-  --color-text-primary:#f3f5f7;--color-text-secondary:#9fa6ac;--color-text-on-action:#ffffff;
+  --color-text-primary:#f3f5f7;--color-text-secondary:#adb4ba;--color-text-on-action:#ffffff;
   --color-action-primary:#006a6b;--color-action-primary-hover:#004e4f;
   --color-action-danger:#ba4542;--color-action-danger-hover:#95302f;
   --color-border-default:#3c4044;--color-border-strong:#868d93;
