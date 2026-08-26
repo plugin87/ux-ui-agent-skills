@@ -7,6 +7,8 @@ on:
   push:
     branches: ["**"]
   pull_request:
+  # Lets a run be started by hand when a push does not register one.
+  workflow_dispatch:
 
 permissions:
   contents: read
