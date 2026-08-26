@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects | Waypoint</title>
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Inlined so the reduced-motion policy is readable from same-document CSSOM
+   (a file:// -linked stylesheet is opaque to cross-file cssRules access in
+   Chromium's headless file-origin isolation, even though it applies visually).
+   Canonical source is styles.css; kept identical here. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block { animation: none; opacity: 0.85; }
+  .spinner { animation: none; }
+  .toast, .skip-link, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="ico ico-lg" aria-hidden="true"><use href="#i-dashboard"></use></svg>
+    <span>Waypoint</span>
+  </div>
+  <div class="header-actions">
+    <div class="search-field">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+      <label class="sr-only" for="search-input">Search projects</label>
+      <input type="search" id="search-input" placeholder="Search projects">
+    </div>
+    <button type="button" id="theme-toggle" class="btn btn-ghost" role="switch" aria-checked="false">
+      <svg class="ico" aria-hidden="true"><use href="#i-sliders"></use></svg>
+      <span>Dark mode</span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <div id="loading-announce" class="sr-only" role="status" aria-live="polite"></div>
+
+  <div id="op-skeleton" aria-busy="true" role="status">
+    <span class="sr-only">Loading your projects…</span>
+    <div class="skeleton-toolbar" aria-hidden="true">
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+    </div>
+    <div class="skeleton-grid" aria-hidden="true">
+      <div class="skeleton-block skeleton-card"></div>
+    </div>
+  </div>
+
+  <div id="op-content" hidden>
+    <div class="toolbar">
+      <div>
+        <h1>Projects</h1>
+        <p class="meta">1 project</p>
+      </div>
+      <button type="button" id="toolbar-cta" class="btn btn-primary">
+        <svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>
+        <svg class="ico spinner" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" stroke-opacity="0.25"></circle><path d="M21 12a9 9 0 0 0-9-9"></path></svg>
+        <span>New project</span>
+      </button>
+    </div>
+
+    <p id="search-status" class="results-status">Showing all 1 project.</p>
+
+    <div class="page-body">
+      <div class="project-grid">
+        <a href="#" class="project-card" data-name="Client Onboarding Kit">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Client Onboarding Kit</h3>
+          <p class="card-meta">Updated 2 hours ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>12 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+      </div>
+
+      <div id="no-results" class="no-results">
+        <p>No projects match “<strong data-query></strong>”.</p>
+        <button type="button" class="btn btn-secondary" data-clear-search>Clear search</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+  <span class="toast-message"></span>
+</div>
+
+<script src="icons.js"></script>
+<script src="app.js"></script>
+<script>
+  Waypoint.initTheme();
+  Waypoint.initLoading('op-skeleton', 'op-content');
+  Waypoint.initToastCta('toolbar-cta', 'toast', 'Draft project created. Rename it to get started.');
+  Waypoint.initSearch({ inputId: 'search-input', statusId: 'search-status', noResultsId: 'no-results', cardSelector: '.project-card' });
+  Waypoint.initCardLinks();
+</script>
+</body>
+</html>

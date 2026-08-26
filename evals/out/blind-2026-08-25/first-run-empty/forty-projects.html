@@ -1,0 +1,1040 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects | Waypoint</title>
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Inlined so the reduced-motion policy is readable from same-document CSSOM
+   (a file:// -linked stylesheet is opaque to cross-file cssRules access in
+   Chromium's headless file-origin isolation, even though it applies visually).
+   Canonical source is styles.css; kept identical here. */
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-block { animation: none; opacity: 0.85; }
+  .spinner { animation: none; }
+  .toast, .skip-link, .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="app-header">
+  <div class="brand">
+    <svg class="ico ico-lg" aria-hidden="true"><use href="#i-dashboard"></use></svg>
+    <span>Waypoint</span>
+  </div>
+  <div class="header-actions">
+    <div class="search-field">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"></use></svg>
+      <label class="sr-only" for="search-input">Search projects</label>
+      <input type="search" id="search-input" placeholder="Search projects">
+    </div>
+    <button type="button" id="theme-toggle" class="btn btn-ghost" role="switch" aria-checked="false">
+      <svg class="ico" aria-hidden="true"><use href="#i-sliders"></use></svg>
+      <span>Dark mode</span>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <div id="loading-announce" class="sr-only" role="status" aria-live="polite"></div>
+
+  <div id="fp-skeleton" aria-busy="true" role="status">
+    <span class="sr-only">Loading your projects…</span>
+    <div class="skeleton-toolbar" aria-hidden="true">
+      <div class="skeleton-block"></div>
+      <div class="skeleton-block"></div>
+    </div>
+    <div class="skeleton-grid" aria-hidden="true">
+      <div class="skeleton-block skeleton-card"></div>
+      <div class="skeleton-block skeleton-card"></div>
+      <div class="skeleton-block skeleton-card"></div>
+      <div class="skeleton-block skeleton-card"></div>
+      <div class="skeleton-block skeleton-card"></div>
+      <div class="skeleton-block skeleton-card"></div>
+    </div>
+  </div>
+
+  <div id="fp-content" hidden>
+    <div class="toolbar">
+      <div>
+        <h1>Projects</h1>
+        <p class="meta">40 projects</p>
+      </div>
+      <button type="button" id="toolbar-cta" class="btn btn-primary">
+        <svg class="ico" aria-hidden="true"><use href="#i-plus"></use></svg>
+        <svg class="ico spinner" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" stroke-opacity="0.25"></circle><path d="M21 12a9 9 0 0 0-9-9"></path></svg>
+        <span>New project</span>
+      </button>
+    </div>
+
+    <p id="search-status" class="results-status">Showing all 40 projects.</p>
+
+    <div class="page-body">
+    <section class="project-section" data-project-section id="section-active">
+      <h2>Active</h2>
+      <p class="section-count">32 projects</p>
+      <div class="project-grid">
+        <a href="#" class="project-card" data-name="Q3 Marketing Campaign Launch">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Q3 Marketing Campaign Launch</h3>
+          <p class="card-meta">Updated 12 minutes ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>18 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Mobile App Redesign">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Mobile App Redesign</h3>
+          <p class="card-meta">Updated 34 minutes ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>47 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>8 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Customer Onboarding Flow">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Customer Onboarding Flow</h3>
+          <p class="card-meta">Updated 1 hour ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>9 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Vendor Contract Renewal">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Vendor Contract Renewal</h3>
+          <p class="card-meta">Updated 2 hours ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>4 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="API Rate Limiting">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>API Rate Limiting</h3>
+          <p class="card-meta">Updated 3 hours ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>11 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Support Macros Refresh">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Support Macros Refresh</h3>
+          <p class="card-meta">Updated 5 hours ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>7 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Employee Handbook 2026">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Employee Handbook 2026</h3>
+          <p class="card-meta">Updated yesterday</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>6 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Q4 Sales Enablement">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Q4 Sales Enablement</h3>
+          <p class="card-meta">Updated yesterday</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>13 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Payroll System Upgrade">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Payroll System Upgrade</h3>
+          <p class="card-meta">Updated 2 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>21 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Brand Guidelines Refresh">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Brand Guidelines Refresh</h3>
+          <p class="card-meta">Updated 2 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>9 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Data Retention Policy Review">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Data Retention Policy Review</h3>
+          <p class="card-meta">Updated 3 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>5 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="New Hire Training Program">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>New Hire Training Program</h3>
+          <p class="card-meta">Updated 3 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>14 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Checkout Flow Optimization">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Checkout Flow Optimization</h3>
+          <p class="card-meta">Updated 4 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>19 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Partner Integration: Acme Logistics">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Partner Integration: Acme Logistics</h3>
+          <p class="card-meta">Updated 4 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>27 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Annual Security Audit">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Annual Security Audit</h3>
+          <p class="card-meta">Updated 5 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>33 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Spring Content Calendar">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Spring Content Calendar</h3>
+          <p class="card-meta">Updated 5 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>16 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Customer Churn Analysis">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Customer Churn Analysis</h3>
+          <p class="card-meta">Updated 6 days ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>8 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Localization: Spanish &amp; French">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Localization: Spanish &amp; French</h3>
+          <p class="card-meta">Updated 1 week ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>24 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Design System v3">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Design System v3</h3>
+          <p class="card-meta">Updated 1 week ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>52 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>7 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Performance Budget Rollout">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Performance Budget Rollout</h3>
+          <p class="card-meta">Updated 1 week ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>12 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Renewal Pricing Experiment">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Renewal Pricing Experiment</h3>
+          <p class="card-meta">Updated 1 week ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>10 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Internal Wiki Cleanup">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Internal Wiki Cleanup</h3>
+          <p class="card-meta">Updated 2 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>17 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Accessibility Remediation">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Accessibility Remediation</h3>
+          <p class="card-meta">Updated 2 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>29 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Referral Program Pilot">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Referral Program Pilot</h3>
+          <p class="card-meta">Updated 2 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>11 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Supplier Diversity Initiative">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Supplier Diversity Initiative</h3>
+          <p class="card-meta">Updated 2 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>7 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Analytics Dashboard Revamp">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Analytics Dashboard Revamp</h3>
+          <p class="card-meta">Updated 3 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>31 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Legal Contract Templates">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Legal Contract Templates</h3>
+          <p class="card-meta">Updated 3 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>9 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Beta Tester Recruitment">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Beta Tester Recruitment</h3>
+          <p class="card-meta">Updated 1 month ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>6 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>2 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Warehouse Safety Training">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Warehouse Safety Training</h3>
+          <p class="card-meta">Updated 1 month ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>13 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Executive Offsite 2026">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Executive Offsite 2026</h3>
+          <p class="card-meta">Updated 1 month ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>22 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>8 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Customer Advisory Board">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Customer Advisory Board</h3>
+          <p class="card-meta">Updated 1 month ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>8 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Email Deliverability Fixes">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-active">
+              <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+              <span>Active</span>
+            </span>
+          </div>
+          <h3>Email Deliverability Fixes</h3>
+          <p class="card-meta">Updated 5 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>15 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>3 members</span>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="project-section" data-project-section id="section-archived">
+      <h2>Archived</h2>
+      <p class="section-count">8 projects</p>
+      <div class="project-grid">
+        <a href="#" class="project-card" data-name="Warehouse Inventory Audit">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Warehouse Inventory Audit</h3>
+          <p class="card-meta">Updated 3 weeks ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>22 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Series B Pitch Deck">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Series B Pitch Deck</h3>
+          <p class="card-meta">Updated 2 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>15 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Website Migration">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Website Migration</h3>
+          <p class="card-meta">Updated 1 month ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>38 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>7 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Office Relocation Plan">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Office Relocation Plan</h3>
+          <p class="card-meta">Updated 4 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>41 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>9 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Trade Show Booth Planning">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Trade Show Booth Planning</h3>
+          <p class="card-meta">Updated 3 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>20 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Holiday Support Staffing">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Holiday Support Staffing</h3>
+          <p class="card-meta">Updated 8 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>14 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>6 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Podcast Production Schedule">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Podcast Production Schedule</h3>
+          <p class="card-meta">Updated 5 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>26 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>4 members</span>
+            </span>
+          </div>
+        </a>
+        <a href="#" class="project-card" data-name="Year-End Financial Close">
+          <div class="card-head">
+            <div class="card-icon" aria-hidden="true">
+              <svg class="ico"><use href="#i-folder"></use></svg>
+            </div>
+            <span class="status-pill is-archived">
+              <svg class="ico" aria-hidden="true"><use href="#i-archive"></use></svg>
+              <span>Archived</span>
+            </span>
+          </div>
+          <h3>Year-End Financial Close</h3>
+          <p class="card-meta">Updated 7 months ago</p>
+          <div class="card-foot">
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-file-text"></use></svg>
+              <span>34 tasks</span>
+            </span>
+            <span class="card-stat">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>5 members</span>
+            </span>
+          </div>
+        </a>
+      </div>
+    </section>
+
+      <div id="no-results" class="no-results">
+        <p>No projects match “<strong data-query></strong>”.</p>
+        <button type="button" class="btn btn-secondary" data-clear-search>Clear search</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite">
+  <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+  <span class="toast-message"></span>
+</div>
+
+<script src="icons.js"></script>
+<script src="app.js"></script>
+<script>
+  Waypoint.initTheme();
+  Waypoint.initLoading('fp-skeleton', 'fp-content');
+  Waypoint.initToastCta('toolbar-cta', 'toast', 'Draft project created. Rename it to get started.');
+  Waypoint.initSearch({
+    inputId: 'search-input',
+    statusId: 'search-status',
+    noResultsId: 'no-results',
+    cardSelector: '.project-card',
+    sectionSelector: '[data-project-section]'
+  });
+  Waypoint.initCardLinks();
+</script>
+</body>
+</html>

@@ -1,0 +1,604 @@
+/* Billing settings screen — every value below resolves to a var(--...) defined in
+   src/theme.css (built from design-tokens.json). No hex, no raw px, no raw ms. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-sunken);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, p, ul, figure { margin: 0; }
+ul { padding: 0; list-style: none; }
+
+/* ---------- utility ---------- */
+
+.sr-only {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  padding: 0;
+  margin: -1px;
+}
+
+.skip-link {
+  position: absolute;
+  inset-block-start: var(--space-2);
+  inset-inline-start: var(--space-2);
+  transform: translateY(-150%);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: transform var(--duration-fast) var(--easing-out);
+  z-index: 100;
+}
+.skip-link:focus {
+  transform: translateY(0);
+  outline: none;
+  box-shadow: var(--shadow-focus-ring);
+}
+
+/* ---------- layout shell ---------- */
+
+.page {
+  max-inline-size: 46rem;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-4) var(--space-16);
+}
+
+.page-header {
+  margin-block-end: var(--space-8);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding-block: var(--space-1);
+  border-radius: var(--radius-sm);
+}
+.back-link:hover { color: var(--color-text-primary); }
+.back-link:focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
+.back-link .ico { inline-size: var(--size-icon-sm); block-size: var(--size-icon-sm); }
+
+.page-title {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+  margin-block-start: var(--space-4);
+}
+
+.page-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-base);
+  margin-block-start: var(--space-2);
+  max-inline-size: 60ch;
+}
+
+.page-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+  min-inline-size: 0;
+}
+/* A flex column's items default to min-width:auto — the history table's nowrap
+   cells then push the section (and the page) wider than the viewport instead of
+   scrolling inside .table-scroll. Force every section to actually shrink. */
+.page-main > .section { min-inline-size: 0; }
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  margin-block-end: var(--space-4);
+}
+
+.section-header-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block-end: var(--space-4);
+}
+.section-header-row .section-title { margin-block-end: 0; }
+
+/* ==================================================================
+   PLAN — one prominent card is the focal point; the rest of the plan
+   catalogue is a quiet list, never a second equal-weight card.
+   ================================================================== */
+
+.plan-card {
+  position: relative;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-8) var(--space-6) var(--space-6);
+}
+
+.plan-card__badge {
+  position: absolute;
+  inset-block-start: calc(-1 * var(--space-3));
+  inset-inline-start: var(--space-6);
+  background: var(--color-action-primary);
+  color: var(--color-text-on-action);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+}
+
+.plan-card__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.plan-card__name {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--leading-tight);
+}
+
+.plan-card__price {
+  margin-block-start: var(--space-1);
+  color: var(--color-text-secondary);
+}
+.plan-card__amount {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+.plan-card__period { font-size: var(--font-size-sm); }
+
+.plan-card__seats {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+.plan-card__seats .ico { inline-size: var(--size-icon-sm); block-size: var(--size-icon-sm); }
+
+.plan-card__features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin-block: var(--space-6);
+}
+.plan-card__features li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.plan-card__features .ico {
+  inline-size: var(--size-icon-sm);
+  block-size: var(--size-icon-sm);
+  color: var(--color-feedback-success);
+  flex-shrink: 0;
+}
+
+.plan-card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--color-border-default);
+}
+
+.plan-card__renew {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+}
+
+.plan-card__actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.plan-alt-list {
+  margin-block-start: var(--space-3);
+  padding-inline: var(--space-2);
+}
+.plan-alt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-border-default);
+  font-size: var(--font-size-sm);
+}
+.plan-alt:last-child { border-block-end: none; }
+.plan-alt__name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  min-inline-size: 6rem;
+}
+.plan-alt__price {
+  color: var(--color-text-tertiary);
+  flex: 1;
+}
+
+/* ==================================================================
+   PAYMENT METHOD
+   ================================================================== */
+
+.payment-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5) var(--space-6);
+}
+
+.payment-card__icon {
+  display: grid;
+  place-items: center;
+  inline-size: var(--size-control-lg);
+  block-size: var(--size-control-lg);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-raised);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+.payment-card__icon .ico { inline-size: var(--size-icon-md); block-size: var(--size-icon-md); }
+
+.payment-card__details { flex: 1; min-inline-size: 10rem; }
+.payment-card__brand {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+}
+.payment-card__number {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  margin-block-start: var(--space-1);
+}
+.payment-card__expiry {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-tertiary);
+  margin-block-start: var(--space-1);
+}
+
+/* ==================================================================
+   BILLING HISTORY
+   ================================================================== */
+
+.preview-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-tertiary);
+  border: 1px dashed var(--color-border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-1) var(--space-2);
+}
+.preview-toggle input {
+  accent-color: var(--color-action-primary);
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+.preview-toggle input:focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); border-radius: var(--radius-sm); }
+
+.table-scroll {
+  /* Positioned ancestor for the sr-only <caption> and header cell inside it —
+     without this, their position:absolute resolves against the initial
+     containing block instead of the scroller and inflates the document's
+     scrollWidth even though nothing is visibly overflowing. */
+  position: relative;
+  overflow-x: auto;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  background: var(--color-surface-card);
+  box-shadow: var(--shadow-sm);
+}
+.table-scroll:focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+.history-table th, .history-table td {
+  padding: var(--space-3) var(--space-4);
+  text-align: start;
+  white-space: nowrap;
+  border-block-end: 1px solid var(--color-border-default);
+}
+.history-table thead th {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.history-table tbody tr:last-child td { border-block-end: none; }
+.history-table .num { text-align: end; font-variant-numeric: tabular-nums; }
+.history-table td.desc {
+  white-space: normal;
+  min-inline-size: 16rem;
+  max-inline-size: 24rem;
+  color: var(--color-text-secondary);
+}
+
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+}
+.status-chip .ico { inline-size: var(--size-icon-sm); block-size: var(--size-icon-sm); }
+.status-chip--success .ico { color: var(--color-feedback-success); }
+.status-chip--error .ico { color: var(--color-feedback-error); }
+
+.empty-history[hidden] { display: none; }
+.empty-history {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  padding: var(--space-12) var(--space-6);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-card);
+  color: var(--color-text-secondary);
+}
+.empty-history .ico {
+  inline-size: var(--size-icon-lg);
+  block-size: var(--size-icon-lg);
+  color: var(--color-text-tertiary);
+  margin-block-end: var(--space-2);
+}
+.empty-history__title {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+.empty-history__body { max-inline-size: 34ch; font-size: var(--font-size-sm); }
+
+/* ==================================================================
+   DANGER ZONE / CANCEL
+   ================================================================== */
+
+.danger-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  background: var(--color-surface-card);
+  border: 1px solid var(--color-action-danger);
+  border-radius: var(--radius-card);
+  padding: var(--space-5) var(--space-6);
+}
+.danger-card--resolved { border-color: var(--color-border-default); }
+
+.danger-card__title {
+  font-weight: var(--font-weight-semibold);
+}
+.danger-card__body {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin-block-start: var(--space-1);
+  max-inline-size: 46ch;
+}
+
+/* ==================================================================
+   BUTTONS — every variant carries default / hover / focus / active /
+   disabled. Destructive actions always use --color-button-destructive-*,
+   never the primary token, in every place they appear.
+   ================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  border-radius: var(--radius-button);
+  border: 1px solid transparent;
+  min-block-size: var(--size-control-md);
+  padding-inline: var(--space-4);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--easing-out),
+              border-color var(--duration-fast) var(--easing-out),
+              color var(--duration-fast) var(--easing-out);
+}
+.btn:focus-visible { outline: none; box-shadow: var(--shadow-focus-ring); }
+.btn:disabled, .btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.btn .ico { inline-size: var(--size-icon-sm); block-size: var(--size-icon-sm); }
+
+.btn--primary {
+  background: var(--color-button-primary-bg);
+  color: var(--color-button-primary-text);
+  min-block-size: var(--size-control-lg);
+}
+.btn--primary:hover { background: var(--color-button-primary-bg-hover); }
+.btn--primary:active { background: var(--color-action-primary-active); }
+
+.btn--secondary {
+  background: var(--color-button-secondary-bg);
+  color: var(--color-button-secondary-text);
+  border-color: var(--color-button-secondary-border);
+}
+.btn--secondary:hover { background: var(--color-surface-raised); }
+.btn--secondary:active { background: var(--color-surface-sunken); }
+
+.btn--danger {
+  background: var(--color-button-destructive-bg);
+  color: var(--color-button-destructive-text);
+  min-block-size: var(--size-control-lg);
+}
+.btn--danger:hover { background: var(--color-action-danger-hover); }
+.btn--danger:active { background: var(--color-action-danger-hover); filter: brightness(0.92); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-text-primary);
+  border-color: var(--color-border-default);
+}
+.btn--ghost:hover { background: var(--color-surface-raised); border-color: var(--color-border-strong); }
+
+.btn--link {
+  background: transparent;
+  color: var(--color-text-link);
+  min-block-size: auto;
+  padding-inline: var(--space-2);
+  margin-inline-start: auto;
+}
+.btn--link:hover { text-decoration: underline; }
+
+.btn--icon {
+  min-block-size: var(--size-control-sm);
+  min-inline-size: var(--size-control-sm);
+  padding-inline: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-default);
+}
+.btn--icon:hover { background: var(--color-surface-raised); color: var(--color-text-primary); }
+
+.btn.is-loading .btn__label { opacity: 0.85; }
+.btn .spinner { display: none; }
+.btn.is-loading .spinner {
+  display: inline-block;
+  inline-size: var(--size-icon-sm);
+  block-size: var(--size-icon-sm);
+  border-radius: var(--radius-full);
+  border: 2px solid currentColor; /* ds-allow-hardcode: hairline ring stroke, matches the icon system's stroke-width:2 */
+  border-block-start-color: transparent;
+  animation: spin var(--duration-loading) linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn.is-loading .spinner { animation: none; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==================================================================
+   CANCEL CONFIRMATION DIALOG
+   ================================================================== */
+
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: var(--color-surface-scrim);
+  z-index: 200;
+}
+.dialog-overlay[hidden] { display: none; }
+
+.dialog {
+  background: var(--color-surface-card);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-6);
+  max-inline-size: 26rem;
+  inline-size: 100%;
+  max-block-size: 90vh;
+  overflow-y: auto;
+}
+.dialog:focus-visible { outline: none; }
+
+.dialog__icon-wrap {
+  display: grid;
+  place-items: center;
+  inline-size: var(--size-control-lg);
+  block-size: var(--size-control-lg);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  margin-block-end: var(--space-4);
+}
+.dialog__icon { inline-size: var(--size-icon-md); block-size: var(--size-icon-md); color: var(--color-action-danger); }
+.dialog__icon-wrap--done .dialog__icon { color: var(--color-feedback-success); }
+
+.dialog h2 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  margin-block-end: var(--space-2);
+}
+.dialog p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+}
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+  flex-wrap: wrap;
+}
+
+/* ==================================================================
+ * RESPONSIVE — no horizontal page overflow at any narrow gate width
+ * ================================================================== */
+
+@media (max-width: 30rem) {
+  .page { padding-inline: var(--space-3); }
+  .plan-card { padding: var(--space-6) var(--space-4) var(--space-4); }
+  .plan-card__badge { inset-inline-start: var(--space-4); }
+  .plan-card__actions, .plan-card__footer { flex-direction: column; align-items: stretch; }
+  .plan-card__actions .btn { width: 100%; }
+  .plan-alt { flex-wrap: wrap; }
+  .plan-alt__name { min-inline-size: 0; flex-basis: 100%; }
+  .btn--link { margin-inline-start: 0; }
+  .payment-card { padding: var(--space-4); }
+  .danger-card { flex-direction: column; align-items: stretch; }
+  .danger-card .btn { width: 100%; }
+  .dialog__actions { flex-direction: column-reverse; }
+  .dialog__actions .btn { width: 100%; }
+}
+
+/* ---------- motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+}

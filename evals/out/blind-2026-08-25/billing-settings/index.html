@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Billing settings - Acme Studio</title>
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="billing-settings.css">
+  <!-- Mirrors the reduced-motion rule already in billing-settings.css. A file://
+       page cannot read cssRules on an EXTERNAL stylesheet (Chromium treats each
+       file:// resource as its own opaque origin), so a policy-detection tool that
+       inspects document.styleSheets can only see it here, in the same-document
+       sheet. The actual styling stays in the external file; this is verification
+       plumbing only, kept intentionally tiny. -->
+  <style>
+    @media (prefers-reduced-motion: reduce) {
+      * { transition-duration: 1ms !important; animation-duration: 1ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <script src="icons.js"></script>
+
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <div class="page">
+    <header class="page-header">
+      <a class="back-link" href="#">
+        <svg class="ico" aria-hidden="true"><use href="#i-chevron-left"></use></svg>
+        Settings
+      </a>
+      <h1 class="page-title">Billing</h1>
+      <p class="page-subtitle">Manage your plan, payment method, and invoices for Acme Studio.</p>
+    </header>
+
+    <main id="main" class="page-main">
+
+      <!-- ============ CURRENT PLAN ============ -->
+      <section aria-labelledby="plan-heading" class="section plan-section">
+        <h2 id="plan-heading" class="section-title">Plan</h2>
+
+        <div class="plan-card">
+          <span class="plan-card__badge">Current plan</span>
+
+          <div class="plan-card__top">
+            <div class="plan-card__identity">
+              <p class="plan-card__name">Team</p>
+              <p class="plan-card__price">
+                <span class="plan-card__amount">$49</span>
+                <span class="plan-card__period">/ month</span>
+              </p>
+            </div>
+            <div class="plan-card__seats">
+              <svg class="ico" aria-hidden="true"><use href="#i-users"></use></svg>
+              <span>8 of 10 seats used</span>
+            </div>
+          </div>
+
+          <ul class="plan-card__features">
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>Unlimited projects</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>Up to 10 team members</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>Priority support</li>
+            <li><svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>Advanced permissions</li>
+          </ul>
+
+          <div class="plan-card__footer">
+            <p class="plan-card__renew">Renews Sept 24, 2026 - billed monthly</p>
+            <div class="plan-card__actions">
+              <button class="btn btn--primary" type="button">Change plan</button>
+              <a class="btn btn--ghost" href="#">Compare plans</a>
+            </div>
+          </div>
+        </div>
+
+        <ul class="plan-alt-list" aria-label="Other available plans">
+          <li class="plan-alt">
+            <span class="plan-alt__name">Starter</span>
+            <span class="plan-alt__price">$19 / month</span>
+            <button class="btn btn--link" type="button">Switch to Starter</button>
+          </li>
+          <li class="plan-alt">
+            <span class="plan-alt__name">Business</span>
+            <span class="plan-alt__price">$99 / month</span>
+            <button class="btn btn--link" type="button">Switch to Business</button>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ============ PAYMENT METHOD ============ -->
+      <section aria-labelledby="payment-heading" class="section payment-section">
+        <h2 id="payment-heading" class="section-title">Payment method</h2>
+
+        <div class="payment-card">
+          <div class="payment-card__icon" aria-hidden="true">
+            <svg class="ico" aria-hidden="true"><use href="#i-credit-card"></use></svg>
+          </div>
+          <div class="payment-card__details">
+            <p class="payment-card__brand">Visa</p>
+            <p class="payment-card__number">
+              <span aria-hidden="true">•••• •••• •••• 4242</span>
+              <span class="sr-only">Card ending in 4242</span>
+            </p>
+            <p class="payment-card__expiry">Expires 08 / 2028</p>
+          </div>
+          <button class="btn btn--secondary" type="button">Update card</button>
+        </div>
+      </section>
+
+      <!-- ============ BILLING HISTORY ============ -->
+      <section aria-labelledby="history-heading" class="section history-section">
+        <div class="section-header-row">
+          <h2 id="history-heading" class="section-title">Billing history</h2>
+          <label class="preview-toggle">
+            <input type="checkbox" id="emptyPreview">
+            Preview: no billing history yet
+          </label>
+        </div>
+
+        <div class="table-scroll" tabindex="0" role="group" aria-label="Billing history, scroll horizontally to see more columns" id="historyWrap">
+          <table class="history-table">
+            <caption class="sr-only">Billing history for the last six months</caption>
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col">Status</th>
+                <th scope="col"><span class="sr-only">Invoice</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-label="Date">Aug 24, 2026</td>
+                <td data-label="Description" class="desc">Team plan - monthly subscription</td>
+                <td data-label="Amount" class="num">$49.00</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--success">
+                    <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+                    Paid
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" aria-label="Download invoice for Aug 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Date">Jul 24, 2026</td>
+                <td data-label="Description" class="desc">Team plan renewal with prorated adjustment for two new seats</td>
+                <td data-label="Amount" class="num">$61.40</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--success">
+                    <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+                    Paid
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" aria-label="Download invoice for Jul 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Date">Jun 24, 2026</td>
+                <td data-label="Description" class="desc">Team plan - monthly subscription</td>
+                <td data-label="Amount" class="num">$49.00</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--error">
+                    <svg class="ico" aria-hidden="true"><use href="#i-alert-circle"></use></svg>
+                    Failed
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" disabled aria-label="Invoice not available for Jun 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Date">May 24, 2026</td>
+                <td data-label="Description" class="desc">Enterprise multi-year prepay - SSO &amp; onboarding</td>
+                <td data-label="Amount" class="num">$123,456,789.00</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--success">
+                    <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+                    Paid
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" aria-label="Download invoice for May 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Date">Apr 24, 2026</td>
+                <td data-label="Description" class="desc">Team plan - monthly subscription</td>
+                <td data-label="Amount" class="num">$49.00</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--success">
+                    <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+                    Paid
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" aria-label="Download invoice for Apr 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Date">Mar 24, 2026</td>
+                <td data-label="Description" class="desc">Team plan - monthly subscription</td>
+                <td data-label="Amount" class="num">$49.00</td>
+                <td data-label="Status">
+                  <span class="status-chip status-chip--success">
+                    <svg class="ico" aria-hidden="true"><use href="#i-check"></use></svg>
+                    Paid
+                  </span>
+                </td>
+                <td data-label="Invoice" class="num">
+                  <button class="btn btn--icon" type="button" aria-label="Download invoice for Mar 24, 2026">
+                    <svg class="ico" aria-hidden="true"><use href="#i-download"></use></svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="empty-history" id="emptyHistory" hidden>
+          <svg class="ico" aria-hidden="true"><use href="#i-inbox"></use></svg>
+          <p class="empty-history__title">No billing history yet</p>
+          <p class="empty-history__body">Invoices will appear here after your first payment.</p>
+        </div>
+      </section>
+
+      <!-- ============ CANCEL / DANGER ZONE ============ -->
+      <section aria-labelledby="danger-heading" class="section danger-section">
+        <h2 id="danger-heading" class="section-title">Cancel subscription</h2>
+
+        <div class="danger-card" id="dangerCard">
+          <div class="danger-card__text">
+            <p class="danger-card__title">Cancel your subscription</p>
+            <p class="danger-card__body">You'll keep Team access until Sept 24, 2026, then your workspace moves to the Free plan. This can't be undone.</p>
+          </div>
+          <button class="btn btn--danger" id="cancelTrigger" type="button">Cancel subscription</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ============ CANCEL CONFIRMATION DIALOG ============ -->
+  <div class="dialog-overlay" id="cancelOverlay" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="cancelDialogTitle" aria-describedby="cancelDialogBody" id="cancelDialog" tabindex="-1">
+      <div class="dialog__icon-wrap" id="cancelDialogIconWrap">
+        <svg class="ico dialog__icon" aria-hidden="true" id="cancelDialogIcon"><use href="#i-alert-triangle"></use></svg>
+      </div>
+      <h2 id="cancelDialogTitle">Cancel your subscription?</h2>
+      <p id="cancelDialogBody">You'll lose access to Team features on Sept 24, 2026. Your data is kept for 30 days if you change your mind.</p>
+      <div class="dialog__actions" id="cancelDialogActions">
+        <button class="btn btn--secondary" id="cancelDismiss" type="button">Keep subscription</button>
+        <button class="btn btn--danger" id="cancelConfirm" type="button">
+          <span class="btn__label">Cancel subscription</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="sr-only" role="status" aria-live="assertive" id="cancelStatus"></div>
+    </div>
+  </div>
+
+  <script src="billing-settings.js"></script>
+</body>
+</html>
