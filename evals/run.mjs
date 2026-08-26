@@ -95,7 +95,7 @@ let pass = 0;
 const fails = [];
 for (const [name, cmd] of GATES) {
   let ok = true, out = '';
-  try { out = execSync(cmd, { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] }).toString(); }
+  try { out = execSync(cmd, { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, DS_REQUIRE_BROWSER: '1' } }).toString(); }
   catch (e) { ok = false; out = (e.stdout?.toString() || '') + (e.stderr?.toString() || ''); }
   console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${name}`);
   if (ok) pass++;
@@ -105,7 +105,7 @@ for (const [name, cmd] of GATES) {
 // Advisory: taste signals. Reported, never scored - taste is not a percentage.
 let taste = '';
 try {
-  taste = execSync(each(f => `node scripts/taste_audit.mjs ${f}`), { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'] }).toString();
+  taste = execSync(each(f => `node scripts/taste_audit.mjs ${f}`), { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, DS_REQUIRE_BROWSER: '1' } }).toString();
 } catch (e) { taste = (e.stdout?.toString() || ''); }
 const signals = (taste.match(/\b(HIGH|MED)\b/g) || []).length;
 

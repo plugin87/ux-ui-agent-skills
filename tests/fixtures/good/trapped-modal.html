@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>trapped modal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --color-surface-page:#ffffff; --color-surface-raised:#f4f4f6;
+    --color-text-primary:#1d1d1f; --color-text-on-action:#ffffff;
+    --color-action-primary:#1d4ed8; --color-action-danger:#b3261e;
+    --color-border-strong:#6b6b70; --radius-md:10px; --radius-lg:20px;
+    --space-3:12px; --space-4:16px; --space-6:24px;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; }
+  body { background:var(--color-surface-page); color:var(--color-text-primary);
+         font:16px/1.5 system-ui, sans-serif; }
+  main { padding:var(--space-6); }
+  h1 { font-size:44px; line-height:1.1; margin:0 0 var(--space-4); }
+  h2 { font-size:20px; margin:0 0 var(--space-3); }
+  .btn { min-block-size:44px; padding-block:var(--space-3); padding-inline:var(--space-4);
+         border:1px solid var(--color-border-strong); border-radius:var(--radius-md);
+         background:transparent; color:var(--color-text-primary); font:inherit; cursor:pointer; }
+  .btn-danger { background:var(--color-action-danger); color:var(--color-text-on-action);
+                border-color:transparent; }
+  .scrim { position:fixed; inset:0; background:rgba(11,11,12,.6); display:none; }
+  .scrim[data-open="true"] { display:grid; place-items:center; }
+  .dialog { background:var(--color-surface-raised); padding:var(--space-6);
+            border-radius:var(--radius-lg); inline-size:min(400px, calc(100vw - 32px)); }
+  .row { display:flex; gap:var(--space-3); flex-wrap:wrap; margin-block-start:var(--space-4); }
+</style></head>
+<body>
+<main>
+  <h1>Members</h1>
+  <button type="button" class="btn btn-danger" id="openBtn">Remove member</button>
+  <button type="button" class="btn" id="afterBtn">Unrelated action</button>
+</main>
+<div class="scrim" id="scrim">
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h2 id="dlgTitle">Remove member</h2>
+    <p>They lose access immediately. This cannot be undone.</p>
+    <div class="row">
+      <button type="button" class="btn" id="cancelBtn">Cancel</button>
+      <button type="button" class="btn btn-danger" id="confirmBtn">Remove member</button>
+    </div>
+  </div>
+</div>
+<script>
+  const scrim = document.getElementById('scrim');
+  const dialog = scrim.querySelector('[role="dialog"]');
+  const openBtn = document.getElementById('openBtn');
+  let returnTo = null;
+
+  const focusable = () => [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+    .filter(el => !el.disabled);
+
+  function open() {
+    returnTo = document.activeElement;
+    scrim.setAttribute('data-open', 'true');
+    focusable()[0].focus();
+    document.addEventListener('keydown', onKey, true);
+  }
+  function close() {
+    scrim.removeAttribute('data-open');
+    document.removeEventListener('keydown', onKey, true);
+    if (returnTo) returnTo.focus();
+  }
+  function onKey(e) {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const items = focusable();
+    const first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
+  openBtn.addEventListener('click', open);
+  document.getElementById('cancelBtn').addEventListener('click', close);
+</script>
+</body></html>

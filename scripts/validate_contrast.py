@@ -108,7 +108,13 @@ def check(data, overrides, mode, pairs, aaa, required):
         fg = resolve(data, fg_path, overrides)
         bg = resolve(data, bg_path, overrides)
         if fg is None or bg is None:
-            print(f"  ? {label}: token missing ({fg_path}={fg}, {bg_path}={bg}) — skipped")
+            # A required pair whose tokens are absent measures nothing. Skipping it
+            # printed "OK: all required contrast pairs pass" for a file with no tokens
+            # at all — the docstring always promised a missing token fails, so it does.
+            mark = "FAIL" if required else "?"
+            print(f"  {mark} {label}: token missing ({fg_path}={fg}, {bg_path}={bg})")
+            if required:
+                issues.append(f"{mode}: {label} — token missing ({fg_path}={fg}, {bg_path}={bg})")
             continue
         r = ratio(fg, bg)
         ok = r >= minr

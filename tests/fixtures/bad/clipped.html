@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>clipped text</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  /* A fixed-height box with overflow:hidden: the last lines vanish with no cue. */
+  .note { inline-size:320px; block-size:40px; overflow:hidden; border:1px solid #6b6b70;
+          padding:8px; border-radius:8px; }
+</style></head>
+<body><main>
+  <h1>Note</h1>
+  <div class="note">This note is several lines long and the box is only tall enough for
+  one of them, so the rest is silently cut off with no scrollbar, no ellipsis and no
+  affordance that anything is missing at all.</div>
+</main></body></html>

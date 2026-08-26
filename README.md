@@ -8,7 +8,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.5.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.5.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -33,7 +33,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.5.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.5.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -435,6 +435,25 @@ This is a **starter kit** — make it yours:
 
 ## Changelog
 
+### `v2.5.1`
+
+The release that checks the checkers. Every gate in this kit pointed at examples that already pass, which proves a gate says yes to good work and never that it can still say no. `tests/` supplies the other half, and building it turned up four places where a gate reported green without having looked at anything.
+
+**`tests/` — negative fixtures, one per gate**
+
+- `npm run test:gates` runs the full suite (needs Playwright and real Chrome); `npm run test:unit` runs the browser-free half. Runner is Node's built-in `node --test` — no new dependency.
+- Every gate now has input built to break exactly the thing it measures: an emoji in UI, raw hex, a dangling alias, a sub-AA token pair, a floating `var()`, a button that only fails contrast on hover, a control with no accessible name, a 16x16 target with a crowded neighbour, a blue Delete, a 280px overflow, a toggle Enter and Space cannot operate, silently clipped text, content revealed only by an entrance animation, a dialog Tab walks out of, an `aria-sort` header that sorts nothing, a physical margin that will not mirror under RTL, the hardcoded indigo gradient, and a 1.5x type scale. Each must exit 1. `tests/fixtures/good/clean-panel.html` must survive all sixteen render gates in light and dark.
+- A pass is not accepted on trust: `rejects()` requires exit status exactly 1 and refuses three near-misses that would otherwise read as a detection — a usage message (nine gates print one and exit 0 when handed nothing, so a typo'd path would look clean), a `SKIPPED` line, and an exit 1 whose output does not match the signal under test.
+- The suite itself was verified by mutation, not assertion: `check_no_emoji` made to stop reporting its hits, `validate_contrast` made to stop failing a bad pair, and `verify_states` made to always exit 0 — each turned the suite red.
+- `tests/README.md` records what is still not covered rather than implying it is: five scripts hardwire the repo root and ignore argv, `verify_keyboard.mjs` filters on tabbability before auditing so a `<div role="button">` with no `tabindex` is invisible to it, `build_tokens.mjs` has no failure mode at all, and taste remains unmeasurable.
+
+**Four false greens, found and fixed**
+
+- **A missing browser no longer reads as a pass.** Fourteen of the fifteen render gates printed `SKIPPED` and exited 0 when Playwright could not be imported — on a clean CI runner or a fresh install, `accuracy_report.mjs` would have reported 100% with fourteen gates having measured nothing. `DS_REQUIRE_BROWSER=1` turns that into exit 1, and `accuracy_report.mjs`, `evals/run.mjs` and CI's render job all set it. Without the flag the gates stay skippable for local convenience.
+- **`validate_contrast.py` passed a token file containing no tokens.** A required pair whose tokens could not be resolved printed `?` and was skipped, so an empty or differently-shaped `design-tokens.json` produced "OK: all required contrast pairs pass". Its own docstring always promised that a missing token fails; now it does.
+- **`check_no_emoji.py` and `lint_hardcodes.py` returned OK for a path that does not exist.** Scanning zero files read as clean, so a renamed directory in CI would have passed silently. Both now error on a missing path, and on a path that exists but holds nothing scannable.
+- **Gate counts in prose had drifted and nothing checked them.** `ci.yml` said "12 objective gates" where the array had 14, and the README said "thirteen" and "34-check gate". `tests/meta/registry.test.mjs` now counts the real arrays and holds every claim in CI, the README and `accuracy_report.mjs` to them.
+
 ### `v2.5.0`
 
 The release where the kit stopped taking its own word for anything. Enforcement went from **25 to 37 objective checks**, the always-on brief was cut in half, and the two things a gate genuinely cannot do — judge taste, and prove the kit works from a cold start — got real machinery instead of a disclaimer.
@@ -460,7 +479,7 @@ The release where the kit stopped taking its own word for anything. Enforcement 
 
 **Evals: does the kit survive a cold start?**
 
-- **`evals/`** — four cold-start briefs and `node evals/run.mjs <brief-id>`, which points thirteen objective gates at what an agent actually produced and prints the brief's requirements for human judgement. `--self-test` scores the reference app with the same gates and is itself a gate, so the harness cannot rot unnoticed. Building it exposed two real defects the 34-check gate had missed: the reference app overflowed at 280px, and `verify_overflow` was flagging screen-reader-only text as silently clipped.
+- **`evals/`** — four cold-start briefs and `node evals/run.mjs <brief-id>`, which points fourteen objective gates at what an agent actually produced and prints the brief's requirements for human judgement. `--self-test` scores the reference app with the same gates and is itself a gate, so the harness cannot rot unnoticed. Building it exposed two real defects the full accuracy gate had missed: the reference app overflowed at 280px, and `verify_overflow` was flagging screen-reader-only text as silently clipped.
 
 **Starting a real product with the kit**
 

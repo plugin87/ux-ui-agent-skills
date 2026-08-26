@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>physical offsets do not mirror</title>
+<style>
+  html, body { margin:0; }
+  body { background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  /* Over-constrained with a PHYSICAL margin. In LTR the browser drops margin-right
+     and nothing overflows; in RTL it drops margin-left instead, honours margin-right,
+     and the row is pushed past the inline edge. A logical margin-inline-end would
+     mirror correctly and this file would pass. */
+  .row { inline-size: calc(100% - 100px); margin-right: 300px;
+         background:#f2f2f5; border:1px solid #d8d8dc; padding:16px; box-sizing:border-box; }
+</style></head>
+<body><main>
+  <h1>Timeline</h1>
+  <div class="row">A row offset with a physical margin instead of a logical one.</div>
+</main></body></html>

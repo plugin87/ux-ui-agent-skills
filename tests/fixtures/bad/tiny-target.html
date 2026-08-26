@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>tiny target</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  /* A flex row so the buttons blockify (no SC 2.5.8 "inline" exception), 16x16
+     with 2px between them (no spacing exception either). */
+  .row { display:flex; gap:2px; }
+  .chip { inline-size:16px; block-size:16px; padding:0; border:1px solid #6b6b70;
+          background:#ffffff; border-radius:4px; font-size:9px; line-height:1; }
+</style></head>
+<body><main>
+  <h1>Filters</h1>
+  <div class="row">
+    <button type="button" class="chip" aria-label="Remove tag one">x</button>
+    <button type="button" class="chip" aria-label="Remove tag two">x</button>
+    <button type="button" class="chip" aria-label="Remove tag three">x</button>
+  </div>
+</main></body></html>

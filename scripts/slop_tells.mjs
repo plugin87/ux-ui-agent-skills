@@ -27,7 +27,14 @@
 import { resolve } from 'node:path';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
-catch { console.log('slop_tells: playwright not installed — SKIPPED'); process.exit(0); }
+catch {
+  // A missing browser must not read as a pass. Without DS_REQUIRE_BROWSER the gate
+  // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
+  // machine that cannot render fails loudly instead of reporting green on nothing.
+  const required = process.env.DS_REQUIRE_BROWSER === "1";
+  console.log(`slop_tells: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  process.exit(required ? 1 : 0);
+}
 
 const argv = process.argv.slice(2);
 const strict = argv.includes('--strict');

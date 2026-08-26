@@ -60,9 +60,19 @@ UI_EXTS = {".html", ".htm", ".tsx", ".jsx", ".vue", ".svelte"}
 DASH = re.compile("[—–]")  # em-dash / en-dash — an AI-pattern tell in UI copy
 
 def main(argv):
-    paths = [Path(a) for a in argv] or DEFAULT
+    explicit = [Path(a) for a in argv]
+    paths = explicit or DEFAULT
+    # A path that is not there scans nothing and used to print OK — a renamed
+    # directory in CI would pass silently. Green has to mean "looked and found none".
+    missing = [p for p in explicit if not p.exists()]
+    if missing:
+        print("ERROR: path(s) not found: " + ", ".join(str(m) for m in missing))
+        return 1
     hits = []
     files = list(iter_files(paths))
+    if explicit and not files:
+        print(f"ERROR: no scannable file(s) under {', '.join(str(p) for p in explicit)}")
+        return 1
     for f in files:
         try:
             text = f.read_text(encoding="utf-8")

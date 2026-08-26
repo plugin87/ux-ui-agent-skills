@@ -283,6 +283,11 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
 evals/                    ← Cold-start briefs + `run.mjs`: point every objective gate at what an
                             agent produced from a brief. Scores correctness, refuses to score taste.
 
+tests/                    ← The gates checked against BROKEN input: every gate must still
+                            reject a deliberate defect (`npm run test:gates`), plus contrast
+                            unit math and CLI/scaffold checks (`npm run test:unit`).
+                            A gate that only ever sees passing examples proves nothing.
+
 .github/workflows/        ← ci.yml (quality gates: tokens + contrast + spec + npm test on push/PR)
                             · release.yml (auto GitHub Release + npm publish on tag)
 ```

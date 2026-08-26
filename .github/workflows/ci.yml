@@ -67,6 +67,9 @@ jobs:
       - name: CLI smoke + npm test
         run: npm test
 
+      - name: Unit + CLI tests (no browser needed)
+        run: npm run test:unit
+
   render:
     # Real-render WCAG gate — opens the example HTML in headless Chromium and
     # measures the actual computed-style contrast of every text element (light + dark).
@@ -101,5 +104,11 @@ jobs:
           node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"
           node scripts/verify_rtl.mjs examples/sample-app/preview.html
           node scripts/build_tokens.mjs --out dist/tokens.css
-      - name: Eval harness self-test (12 objective gates on the reference app)
+      - name: Eval harness self-test (14 objective gates on the reference app)
         run: node evals/run.mjs --self-test
+
+      - name: Meta-gates - every gate still REJECTS a broken fixture
+        # The gates above all run against examples that pass. This is the half that
+        # proves they can still fail: negative fixtures per gate, plus the guards
+        # against a gate reporting green without having looked.
+        run: npm run test:gates

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>motion hides content</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  /* The card is invisible until an entrance animation runs. Under reduced motion
+     the animation never plays, so the content is simply gone. */
+  .card { opacity:0; transform:translateY(16px); animation:rise 600ms ease-out forwards; }
+  @keyframes rise { to { opacity:1; transform:none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .card { animation:none; }
+  }
+</style></head>
+<body><main>
+  <h1>Activity</h1>
+  <div class="card"><p>Three deploys finished this morning and two are still running.</p></div>
+</main></body></html>

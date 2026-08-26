@@ -1,0 +1,4 @@
+.page { background: var(--color-surface-page); }
+.title { color: var(--color-text-primary); }
+/* This one is defined nowhere — a floating token that renders as nothing. */
+.subtitle { color: var(--color-text-tertiary); }

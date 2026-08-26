@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>sort that sorts nothing</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  table { border-collapse:collapse; }
+  th, td { text-align:start; padding:10px 16px; border-block-end:1px solid #d8d8dc; }
+  th button { background:none; border:0; font:inherit; color:inherit; min-height:44px; }
+</style></head>
+<body><main>
+  <h1>Invoices</h1>
+  <table>
+    <thead>
+      <tr>
+        <!-- Declares a sort contract and honours none of it: clicking changes nothing. -->
+        <th aria-sort="ascending"><button type="button" id="sortBtn">Amount</button></th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>120.00</td><td>Paid</td></tr>
+      <tr><td>340.00</td><td>Open</td></tr>
+    </tbody>
+  </table>
+</main></body></html>

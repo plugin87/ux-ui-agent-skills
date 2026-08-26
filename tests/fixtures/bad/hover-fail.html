@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>hover fails</title>
+<style>
+  :root { --color-surface-page:#ffffff; --color-action-primary:#1d4ed8; }
+  body { margin:0; background:var(--color-surface-page); font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  /* Resting passes. Hover swaps to a pale fill that does not — the exact
+     specificity trap CLAUDE.md warns about: fine at rest, broken on hover. */
+  .btn { background:var(--color-action-primary); color:#ffffff; border:0;
+         padding:10px 16px; border-radius:8px; font:inherit; min-height:44px; }
+  .btn:hover { background:#cfe0ff; }
+</style></head>
+<body><main>
+  <h1>Settings</h1>
+  <button type="button" class="btn">Save changes</button>
+</main></body></html>

@@ -1,0 +1,6 @@
+{
+  "color": {
+    "blue": { "600": { "$type": "color", "$value": "#2563EB" } },
+    "action": { "primary": { "$type": "color", "$value": "{color.blue.500}" } }
+  }
+}

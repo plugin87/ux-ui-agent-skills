@@ -1,0 +1,6 @@
+.card {
+  color: #1d1d1f;
+  padding: 17px;
+  transition: opacity 240ms ease-out;
+  font-family: Inter, sans-serif;
+}

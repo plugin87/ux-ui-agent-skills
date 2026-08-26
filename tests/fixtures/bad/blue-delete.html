@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>blue delete</title>
+<style>
+  /* Both accent tokens must exist or lint_intent skips the page entirely. */
+  :root {
+    --color-surface-page:#ffffff;
+    --color-text-primary:#1d1d1f;
+    --color-action-primary:#1d4ed8;
+    --color-action-danger:#b3261e;
+    --color-text-on-action:#ffffff;
+  }
+  body { margin:0; background:var(--color-surface-page); color:var(--color-text-primary);
+         font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  .btn { border:0; padding:10px 16px; border-radius:8px; font:inherit; min-height:44px;
+         color:var(--color-text-on-action); }
+  .btn-primary { background:var(--color-action-primary); }
+</style></head>
+<body><main>
+  <h1>Project</h1>
+  <button type="button" class="btn btn-primary">Save changes</button>
+  <!-- A destructive action wearing the PRIMARY accent: the blue Delete. -->
+  <button type="button" class="btn btn-primary">Delete project</button>
+</main></body></html>

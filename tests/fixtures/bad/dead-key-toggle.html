@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>dead key toggle</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  .toggle { display:inline-flex; align-items:center; min-height:44px; padding:10px 16px;
+            border:1px solid #6b6b70; border-radius:8px; cursor:pointer; background:#ffffff; }
+  .toggle[aria-pressed="true"] { background:#e7efff; }
+</style></head>
+<body><main>
+  <h1>Notifications</h1>
+  <!-- Tab reaches it and it declares a pressed state, but only a mouse click
+       flips it: Enter and Space do nothing. WCAG 2.1.1. -->
+  <div class="toggle" role="button" tabindex="0" aria-pressed="false"
+       onclick="this.setAttribute('aria-pressed', this.getAttribute('aria-pressed')==='true'?'false':'true')">
+    Mute this thread
+  </div>
+</main></body></html>

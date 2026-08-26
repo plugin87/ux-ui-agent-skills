@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>clean panel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --color-surface-page:#ffffff;
+    --color-surface-raised:#f4f4f6;
+    --color-text-primary:#1d1d1f;
+    --color-text-secondary:#55575c;
+    --color-text-on-action:#ffffff;
+    --color-action-primary:#1d4ed8;
+    --color-action-primary-hover:#173fad;
+    --color-action-danger:#b3261e;
+    --color-action-danger-hover:#8f1e18;
+    --color-border-strong:#6b6b70;
+    --radius-sm:4px;
+    --radius-md:10px;
+    --radius-lg:20px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:16px;
+    --space-6:24px;
+    --duration-fast:160ms;
+    --ease-out:cubic-bezier(.2,.8,.3,1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-surface-page:#0b0b0c;
+      --color-surface-raised:#1c1c1f;
+      --color-text-primary:#f5f5f7;
+      --color-text-secondary:#b0b0b6;
+      --color-text-on-action:#0b0b0c;
+      --color-action-primary:#9ec1ff;
+      --color-action-primary-hover:#c2d8ff;
+      --color-action-danger:#ff9d94;
+      --color-action-danger-hover:#ffc0ba;
+      --color-border-strong:#8a8a90;
+    }
+  }
+  :root[data-theme="dark"] {
+    --color-surface-page:#0b0b0c;
+    --color-surface-raised:#1c1c1f;
+    --color-text-primary:#f5f5f7;
+    --color-text-secondary:#b0b0b6;
+    --color-text-on-action:#0b0b0c;
+    --color-action-primary:#9ec1ff;
+    --color-action-primary-hover:#c2d8ff;
+    --color-action-danger:#ff9d94;
+    --color-action-danger-hover:#ffc0ba;
+    --color-border-strong:#8a8a90;
+  }
+
+  * { box-sizing:border-box; }
+  html, body { margin:0; }
+  body { background:var(--color-surface-page); color:var(--color-text-primary);
+         font:16px/1.5 system-ui, sans-serif; }
+  main { padding:var(--space-6); max-inline-size:64ch; margin-inline:auto; }
+
+  /* Display type is a different size, not a bolder body: 44/16 = 2.75x. */
+  h1 { font-size:44px; line-height:1.1; letter-spacing:-.02em; margin:0 0 var(--space-3); }
+  h2 { font-size:20px; line-height:1.3; margin:var(--space-6) 0 var(--space-2); }
+  p  { margin:0 0 var(--space-4); color:var(--color-text-secondary); }
+  .key { font-family:ui-monospace, monospace; overflow-wrap:anywhere; }
+
+  .panel { background:var(--color-surface-raised); border:1px solid var(--color-border-strong);
+           border-radius:var(--radius-lg); padding:var(--space-4); }
+  .actions { display:flex; flex-wrap:wrap; gap:var(--space-3); margin-block-start:var(--space-4); }
+
+  .btn { min-block-size:44px; padding-block:var(--space-3); padding-inline:var(--space-4);
+         border:1px solid transparent; border-radius:var(--radius-md); font:inherit;
+         color:var(--color-text-on-action); cursor:pointer;
+         transition:background-color var(--duration-fast) var(--ease-out); }
+  .btn:focus-visible { outline:3px solid var(--color-action-primary); outline-offset:2px; }
+  .btn-primary { background:var(--color-action-primary); }
+  .btn-primary:hover { background:var(--color-action-primary-hover); }
+  /* Destructive wears the danger token, here and anywhere else it appears. */
+  .btn-danger { background:var(--color-action-danger); }
+  .btn-danger:hover { background:var(--color-action-danger-hover); }
+  .btn-quiet { background:transparent; color:var(--color-text-primary);
+               border-color:var(--color-border-strong); border-radius:var(--radius-sm); }
+  .btn-quiet[aria-pressed="true"] { background:var(--color-surface-raised); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation:none !important; transition:none !important; }
+  }
+</style></head>
+<body>
+<main>
+  <h1>Deploy key</h1>
+  <p>Rotate this key if anyone outside the team has seen it.</p>
+
+  <section class="panel" aria-labelledby="keyHeading">
+    <h2 id="keyHeading">Current key</h2>
+    <p class="key">sk-live-8fd2c41a9b7e05236cd18af49b7e0523aa61c9d4f80b2e77</p>
+    <div class="actions">
+      <button type="button" class="btn btn-primary">Rotate key</button>
+      <button type="button" class="btn btn-danger">Revoke key</button>
+      <button type="button" class="btn btn-quiet" id="muteBtn" aria-pressed="false">Mute alerts</button>
+    </div>
+  </section>
+</main>
+<script>
+  // A declared state contract has to be honoured — by pointer and by keyboard.
+  const mute = document.getElementById('muteBtn');
+  const toggle = () => mute.setAttribute('aria-pressed',
+    mute.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+  mute.addEventListener('click', toggle);
+  mute.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+  });
+</script>
+</body></html>

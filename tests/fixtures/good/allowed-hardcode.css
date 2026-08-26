@@ -1,0 +1,11 @@
+/* The escape hatches must still work, or every adapter theme-config becomes
+   unlintable. Inline form is per-line; block form spans a region. */
+.mui-theme {
+  color: #1d1d1f; /* ds-allow-hardcode */
+}
+/* ds-allow-hardcode:start */
+.vendor-block {
+  padding: 17px;
+  transition: opacity 240ms ease-out;
+}
+/* ds-allow-hardcode:end */

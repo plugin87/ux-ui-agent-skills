@@ -95,7 +95,16 @@ def main(argv):
         print(__doc__)
         return 0
 
+    missing = [a for a in args if not Path(a).exists()]
+    if missing:
+        # Same reason as check_no_emoji: scanning nothing must not read as clean.
+        print("ERROR: path(s) not found: " + ", ".join(missing))
+        return 1
+
     files = list(iter_files(args, exts))
+    if not files:
+        print(f"ERROR: no lintable file(s) under {', '.join(args)}")
+        return 1
     violations = 0
     for f in files:
         try:

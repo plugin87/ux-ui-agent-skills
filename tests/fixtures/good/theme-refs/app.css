@@ -1,0 +1,3 @@
+.page { background: var(--color-surface-page); }
+.title { color: var(--color-text-primary); }
+.subtitle { color: var(--color-text-tertiary); }

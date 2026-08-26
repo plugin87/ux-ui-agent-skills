@@ -1,0 +1,6 @@
+.card {
+  color: var(--color-text-primary);
+  padding: var(--space-4);
+  transition: opacity var(--duration-fast) var(--ease-out);
+  font-family: var(--font-sans);
+}

@@ -1,0 +1,21 @@
+{
+  "semantic": {
+    "text": {
+      "primary":   { "$type": "color", "$value": "#9a9a9e" },
+      "secondary": { "$type": "color", "$value": "#55575c" },
+      "tertiary":  { "$type": "color", "$value": "#8e8e93" },
+      "link":      { "$type": "color", "$value": "#1d4ed8" },
+      "on-action": { "$type": "color", "$value": "#ffffff" }
+    },
+    "surface": {
+      "page":   { "$type": "color", "$value": "#ffffff" },
+      "card":   { "$type": "color", "$value": "#ffffff" },
+      "raised": { "$type": "color", "$value": "#f2f2f5" }
+    },
+    "action": { "primary": { "$type": "color", "$value": "#1d4ed8" } },
+    "border": {
+      "strong":  { "$type": "color", "$value": "#6b6b70" },
+      "default": { "$type": "color", "$value": "#d8d8dc" }
+    }
+  }
+}
