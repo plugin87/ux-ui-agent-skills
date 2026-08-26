@@ -48,7 +48,7 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | Request | Skill | Load |
 |---------|-------|------|
 | Generate/extend/validate tokens, palettes, theming | `design-tokens` | `tokens/*.json`, "Token System"; `scripts/validate_tokens.py` |
-| Design a component spec | `design-component` | `components/*`, `accessibility/aria-patterns.md`, `tokens/*`; `scripts/scaffold_component.py` |
+| Design or build a screen / component | `design-component` | `components/*`, `accessibility/aria-patterns.md`, `tokens/*`; `scripts/scaffold_component.py` |
 | Generate code in any framework | `design-code` | `frameworks/adapter-protocol.md` → `frameworks/` + `frameworks/adapters/*`, `components/*` |
 | Review / audit / score a design | `design-review` | `workflows/design-review.md`, `taste/design-taste.md` |
 | Accessibility / WCAG / contrast check | `a11y-audit` | `accessibility/*`; `scripts/contrast.py` |
@@ -78,7 +78,7 @@ rule file when the task is actually in that territory, not before.
 
 ## Non-Negotiables (the rest loads on demand)
 
-These four decide correctness often enough to stay in front of you at all times.
+These five decide correctness often enough to stay in front of you at all times.
 Everything deeper lives in `.claude/rules/` and loads when the work calls for it.
 
 **1. Token by intent.** Pick the token whose *meaning* matches the action, not any
@@ -110,7 +110,14 @@ that is a bug. Enforced by `lint_hardcodes.py`, `validate_theme_refs.py`,
 | 7 | Error | If input | `border.error` + a message that says how to fix it |
 | 8 | Selected | If selectable | `interactive.selected-bg` |
 
-**4. Output completeness.** A partial output is a broken output. Deliver full
+**4. One thing leads.** Every screen has a first place for the eye, and display type
+is at least 2.5x the body size. Four equal cards, three equal plan tiles, a grid of
+identical tiles: the eye lands nowhere and the screen reads as generated. An empty
+state owns its viewport instead of floating under the header, and a page ends on
+purpose. Depth in `.claude/rules/components.md` -> "Composition"; measured (as a
+signal, never a score) by `scripts/taste_audit.mjs`.
+
+**5. Output completeness.** A partial output is a broken output. Deliver full
 files, never placeholders (`// ... rest unchanged`). Asked for N components or
 screens, deliver all N. Split only at clean boundaries when length forces it, and
 continue to completion.
@@ -126,7 +133,7 @@ the task enters its territory; the Request Router above names the same files.
 |-----------|--------------|
 | `.claude/rules/tokens-and-color.md` | Tokens, palettes, theming, dark mode, any colour decision (Token System, Color Usage Rules, Color Generation) |
 | `.claude/rules/typography-and-spacing.md` | Type scale, line length and height, weight, the 4px spacing rhythm |
-| `.claude/rules/components.md` | Designing or specifying a component (Atomic Design, Component Quality Bar, State Requirements) |
+| `.claude/rules/components.md` | Building ANY screen or component: composition and focal point, type scale, empty states, narrow-width defences, the Component Quality Bar, State Requirements |
 | `.claude/rules/accessibility.md` | Auditing, or finishing any interactive element (P0 checks, WCAG 2.2 additions) |
 | `.claude/rules/frameworks.md` | Generating code for React/Tailwind, Next.js, SwiftUI, or any adapter target |
 | `.claude/rules/review-and-research.md` | Design review and audit, prototyping fidelity, user research, design-to-code handoff |

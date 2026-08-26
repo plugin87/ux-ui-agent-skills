@@ -54,6 +54,27 @@ rest is not done.
    a missing image, a number with nine digits. Handle them or the layout breaks
    in production instead of in review.
 
+## Composition, before anything is styled
+
+No gate can see any of this, and every one of them came out of a real review.
+
+1. **One thing leads.** Four equal cards give the eye nowhere to land. Make the lead
+   item bigger, heavier, or give it its own row.
+2. **Display type is at least 2.5x the body size.** 24px over 16px is bold body text.
+3. **An empty state owns its viewport** - a small block under the header with a void
+   below reads as a page that failed to load.
+4. **A page ends on purpose:** a footer, a summary, something that closes it.
+5. **A long list needs one differentiator** (recency, status, a badge) or forty rows
+   read as one row repeated.
+6. **Feedback may not outrun the truth.** A success toast over an unchanged list is a
+   lie the user catches immediately.
+7. **A sideways-scrolling region needs a visible cue** - an edge fade or a scrollbar.
+   An `aria-label` serves screen readers only.
+8. **Loading is not disabled.** Keep the control at full strength, swap the label for
+   a spinner. Dimming reads as "you cannot do this".
+9. **Scaffolding does not ship.** Preview toggles and debug rows go behind a query
+   parameter, not into the screen.
+
 ## Narrow-width defences
 
 A layout that fits at 280px on your machine can overflow on someone else's, because

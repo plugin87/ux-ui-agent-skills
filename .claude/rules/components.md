@@ -41,6 +41,44 @@ Show only what's needed at each step:
 
 ---
 
+## Composition, before anything is styled
+
+A blind cold-start run produced two screens that passed all fourteen gates and still
+came back from review as "rework". Everything the critic named was a composition
+decision no gate can see, so the decisions live here.
+
+1. **One thing leads.** Every screen has a first place for the eye. Four equal stat
+   cards, three equal plan cards, a grid of identical tiles: the eye lands nowhere
+   and the screen reads as generated. Give the lead item more size, more weight, or
+   its own row, and let the rest be quiet.
+2. **Display type is a different size, not a bolder body.** The largest heading
+   should be at least 2.5x the body size. 24px over 16px is bold body text.
+   `taste_audit.mjs` measures this and calls it a HIGH finding.
+3. **An empty state owns the viewport it is in.** A small centred block pinned under
+   the header with a thousand pixels of nothing below it reads as a page that failed
+   to load, not as a considered zero-state. Fill the space or centre in it, and give
+   the sparse case real content: what this will look like, what to do first.
+4. **A page ends on purpose.** A footer, a summary line, a secondary panel: something
+   that says the content is finished rather than missing.
+5. **A long list needs one differentiator.** Forty identical cards are forty
+   identical cards. Surface something that varies (recency, status, a badge) so the
+   eye has somewhere to land while scrolling.
+6. **Feedback may not outrun the truth.** A toast that says "Draft project created"
+   while the list still shows the same items is a lie the user catches immediately.
+   Either change the data or change the copy.
+7. **A hidden overflow needs a visible cue.** A table that scrolls sideways inside
+   its own region must show that it does - an edge fade, a scrollbar, an arrow. An
+   `aria-label` mentioning it serves screen readers only, and sighted users simply
+   lose the columns.
+8. **Loading is not disabled.** Reusing the disabled dimming for an in-flight action
+   reads as "you cannot do this", not "this is happening". Keep the control at full
+   strength and swap the label for a spinner.
+9. **Nothing that is scaffolding ships.** A preview checkbox, a debug toggle, a
+   "test" row: if it is not product, it does not render in the product screen. Put it
+   behind a query parameter or a build flag.
+
+---
+
 ## Narrow-width defences (the four causes that actually bite)
 
 A layout that fits at 280px on one machine can overflow on another, because font

@@ -19,6 +19,12 @@
  *   click has no observable effect. Harnesses legitimately ship static demo buttons,
  *   so this is reported, never failed.
  *
+ * Signal [C] INVISIBLE STATE (fails): the control's state attribute flips, but the
+ *   control itself looks exactly the same - same computed styles, same text, same
+ *   geometry, everywhere inside it. A screen reader hears the change and a sighted
+ *   user sees nothing. Found by a critique of a blind eval run: a theme toggle that
+ *   said "Dark mode" with the same icon in both states, flipping only aria-checked.
+ *
  * Opt-out: `data-demo-state` on a control means "this is a RENDERING of a state, not a
  * live control" - what a states harness legitimately ships when it shows a toggle in
  * both positions. The marker has to be written by hand, so the exemption is a claim
@@ -100,8 +106,33 @@ const WATCH = () => {
   o.observe(document.documentElement, { attributes: true, childList: true, subtree: true, characterData: true });
 };
 
+/* What the control LOOKS like, itself and everything inside it. Compared before and
+   after the click: an identical fingerprint next to a flipped state attribute means
+   the state is audible and invisible. */
+const STATE_OF = ({ sel, attrs }) => {
+  const el = document.querySelector(sel);
+  if (!el) return null;
+  const owner = el.closest('th,[role="columnheader"],[role="tab"],[role="option"]') || el;
+  return attrs.map(a => `${a}=${el.getAttribute(a) ?? owner.getAttribute(a) ?? ''}`).join(',');
+};
+
+const FINGERPRINT = (sel) => {
+  const root = document.querySelector(sel);
+  if (!root) return null;
+  const props = ['backgroundColor', 'color', 'borderColor', 'borderWidth', 'boxShadow',
+    'transform', 'opacity', 'outlineColor', 'backgroundImage', 'textDecorationLine', 'fontWeight'];
+  const one = (el) => {
+    const cs = getComputedStyle(el), r = el.getBoundingClientRect();
+    return props.map(p => cs[p]).join('|') + '|' + Math.round(r.width) + 'x' + Math.round(r.height)
+      + '|' + (el.getAttribute('href') || '') + '|' + (el.tagName === 'use' ? el.getAttribute('href') : '');
+  };
+  const parts = [one(root), (root.textContent || '').replace(/\s+/g, ' ').trim()];
+  for (const el of root.querySelectorAll('*')) parts.push(one(el));
+  return parts.join('~');
+};
+
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
-const dead = [], inert = [];
+const dead = [], inert = [], invisible = [];
 let checked = 0;
 
 for (const f of files) {
@@ -121,6 +152,10 @@ for (const f of files) {
     await p.goto('file://' + f);
     if (dark) await p.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
     await p.evaluate(WATCH);
+    const declaredAttrs = c.declares.filter(d => !d.startsWith('role='));
+    const before = c.declares.length ? await p.evaluate(FINGERPRINT, c.sel) : null;
+    const stateBefore = declaredAttrs.length
+      ? await p.evaluate(STATE_OF, { sel: c.sel, attrs: declaredAttrs }) : null;
     let changed = null;
     try {
       await p.click(c.sel, { timeout: 1500 });
@@ -132,16 +167,33 @@ for (const f of files) {
         const now = document.activeElement;
         return { mut: window.__mut, focusMoved: window.__focus !== now && now !== me };
       }, c.sel);
+      if (c.declares.length) {
+        await p.waitForTimeout(260);          // let a transition finish before comparing
+        changed.after = await p.evaluate(FINGERPRINT, c.sel);
+        changed.stateAfter = declaredAttrs.length
+          ? await p.evaluate(STATE_OF, { sel: c.sel, attrs: declaredAttrs }) : null;
+      }
     } catch { changed = { mut: -1, focusMoved: false, error: true }; }
     await p.close();
     checked++;
     if (!changed || changed.error) continue;             // could not click: not evidence
     const moved = changed.mut > 0 || changed.focusMoved;
-    if (moved) continue;
+    if (moved) {
+      /* Only when the state VALUE actually moved. Clicking the day that is already
+         selected, or the tab that is already current, legitimately changes nothing
+         about that control - that is a no-op, not a hidden state. */
+      const stateMoved = stateBefore !== null && changed.stateAfter !== null
+        && stateBefore !== changed.stateAfter;
+      if (stateMoved && before && changed.after && before === changed.after) {
+        invisible.push(`${f.split('/').pop()}  ${c.label} — ${c.declares.join(', ')} flipped, but the control looks identical`);
+      }
+      continue;
+    }
     const where = `${f.split('/').pop()}  ${c.label}`;
     if (c.declares.length) dead.push(`${where} — declares ${c.declares.join(', ')} but a click changes nothing`);
     else inert.push(`${where} — click has no observable effect`);
   }
+
 }
 await browser.close();
 
@@ -157,5 +209,11 @@ if (inert.length) {
   for (const i of inert.slice(0, 8)) console.log('    - [B inert] ' + i);
   if (inert.length > 8) console.log(`    ... and ${inert.length - 8} more`);
 }
-if (dead.length && !advisory) process.exit(1);
+if (invisible.length) {
+  console.log(`verify_interactive: ${advisory ? 'ADVISORY' : 'FAIL'}${mode} — a state change nobody can see`);
+  for (const i of invisible) console.log('  x [C invisible] ' + i);
+  console.log('  Fix: give the control itself a visual state - a track that fills, an icon that');
+  console.log('       swaps, a label that changes. aria-checked alone serves only a screen reader.');
+}
+if ((dead.length || invisible.length) && !advisory) process.exit(1);
 console.log(`verify_interactive: OK${mode} — ${checked} control(s) clicked across ${files.length} file(s); every declared state contract is honoured.`);

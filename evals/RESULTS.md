@@ -170,3 +170,40 @@ linking a finished demo theme instead of starting from the template.
   worth more than four familiar ones.
 - **Still not proven:** taste. Both outputs pass the gates and read reasonably in a
   screenshot; neither has been through `/critique`.
+
+
+## 2026-08-26 — `/critique` on the blind outputs: **rework**
+
+The two blind screens pass all fourteen gates. A critic that rendered them, clicked
+through them, and tried to reject them came back with `rework` and eight findings,
+five of them Major. Nothing it found is measurable, which is the point.
+
+Its three reasons, unsoftened:
+
+1. The empty and one-project dashboard states are "unfinished, not minimal" - a
+   centred block under the header with a void below it reads as a page that failed
+   to load.
+2. The theme toggle "communicates nothing about its own state": same icon, same word
+   in both themes, only `aria-checked` moves.
+3. One control lies and one should not exist - a "Draft project created" toast over a
+   list that never changes, and a QA preview checkbox rendering in the production
+   billing screen.
+
+The rest: a horizontally scrolling table with no visible scroll cue at 390px, timid
+type scale (24px over 16px), forty undifferentiated cards, and a loading state that
+reuses the disabled dimming so it reads as "you cannot do this".
+
+**The fixtures were not edited.** They are the record of what a cold-start agent
+produced; patching them would be editing the experiment. The findings were spent on
+the kit instead:
+
+| Finding | What changed in the kit |
+|---|---|
+| Toggle with no visible state | **Gate 37 gained signal [C]:** a control whose state attribute VALUE moves while its own rendered fingerprint stays byte-identical now fails. Guarded against the obvious false positive - clicking the already-selected day or the already-current tab is a no-op, not a hidden state - and negative-tested both ways |
+| Empty state in a void, no focal point, timid type, forty identical cards, toast over unchanged data, invisible scroll cue, loading-as-disabled, shipped scaffolding | **A "Composition, before anything is styled" section** in `.claude/rules/components.md` and in the product template, nine rules, each one traceable to a finding above |
+| The rules existed only in `taste/`, which nothing routed to while a screen was being built | The Request Router row now reads "Building ANY screen or component", and **Non-Negotiable 4 in the always-on brief** states the focal-point and 2.5x type-scale rule outright. A cold-start agent meets it on turn one instead of never |
+
+That last row is the real lesson of this critique. The kit *had* most of these rules,
+in `taste/design-taste.md`, and both blind agents built entire screens without ever
+opening that file - because nothing pointed there until someone asked for a review.
+A rule that only loads during a review is a rule that arrives after the work.
