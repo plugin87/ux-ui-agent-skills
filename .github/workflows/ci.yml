@@ -13,6 +13,12 @@ on:
 permissions:
   contents: read
 
+# One run per ref. A duplicate (a slow push registering after a manual dispatch,
+# or two pushes in a row) cancels the older one instead of running twice.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     runs-on: ubuntu-latest

@@ -81,7 +81,23 @@ jobs:
             exit 1
           fi
 
+      - name: Is this version already on the registry?
+        id: exists
+        run: |
+          VER="$(node -p "require('./package.json').version")"
+          NAME="$(node -p "require('./package.json').name")"
+          # Unauthenticated read - this must work even when NPM_TOKEN is broken.
+          CODE="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/$NAME/$VER")"
+          if [ "$CODE" = "200" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$NAME@$VER is already published (a manual npm publish, or a re-run of this tag). Nothing to do - npm cannot publish over an existing version, so this is success, not failure."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "$NAME@$VER is not on the registry yet (HTTP $CODE) - publishing."
+          fi
+
       - name: Preflight - is NPM_TOKEN a usable Automation token?
+        if: steps.exists.outputs.skip != 'true'
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
@@ -103,6 +119,7 @@ jobs:
           echo "authenticated as $(npm whoami)"
 
       - name: Publish to npm
+        if: steps.exists.outputs.skip != 'true'
         run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
