@@ -32,9 +32,11 @@ const TOKENS = SINGLE ? dirname(IN) : IN;
 // 1) load every token file into a global path->value map (file-namespaced + bare)
 const all = {};
 const SOURCES = SINGLE ? [IN.split('/').pop()] : readdirSync(TOKENS).filter(n => n.endsWith('.json'));
+const TREES = {};
 for (const f of SOURCES) {
   const data = JSON.parse(readFileSync(join(TOKENS, f)));
   const stem = f.replace(/\.json$/, '');
+  TREES[stem] = data;
   (function walk(o, p) {
     if (o && typeof o === 'object') {
       if ('$value' in o) { all[p] = o.$value; all[`${stem}.${p}`] = o.$value; }
@@ -103,42 +105,112 @@ if (colors.dark) {
    this within minutes of starting. Groups map to the names the kit's own components
    and rules use. */
 const GROUPS = [
-  ['font.family', 'font-'], ['font.size', 'text-'], ['font.weight', 'weight-'],
-  ['font.leading', 'leading-'], ['space', 'space-'], ['radius', 'radius-'],
-  ['shadow', 'shadow-'], ['motion.duration', 'duration-'], ['motion.easing', 'ease-'],
-  ['size', 'size-'], ['opacity', 'opacity-'], ['blur', 'blur-'], ['z', 'z-'],
+  [['font.family', 'typography.fontFamily'], 'font-'],
+  [['font.size', 'typography.fontSize'], 'text-'],
+  [['font.weight', 'typography.fontWeight'], 'weight-'],
+  [['font.leading', 'typography.lineHeight'], 'leading-'],
+  [['space', 'spacing.scale'], 'space-'],
+  [['radius', 'borders.radius'], 'radius-'],
+  [['borders.radius-semantic'], 'radius-'],
+  [['shadow', 'shadows.elevation'], 'shadow-'],
+  [['shadows.inner'], 'shadow-inner-'],
+  [['shadows.focus-ring'], 'shadow-focus-ring'],
+  [['motion.duration'], 'duration-'],
+  [['motion.easing'], 'ease-'],
+  [['motion.transition'], 'transition-'],
+  [['size', 'sizing'], 'size-'],
+  [['opacity'], 'opacity-'],
+  [['blur'], 'blur-'],
+  [['z', 'breakpoints.z-index'], 'z-'],
+  [['breakpoints.breakpoint'], 'bp-'],
+  [['data-viz.categorical', 'chart.categorical'], 'color-chart-'],
+  [['data-viz.grid.line'], 'color-chart-grid'],
+  [['data-viz.axis'], 'color-chart-axis-'],
 ];
-const at = (path) => path.split('.').reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), colors);
 
-function cssValue(v, dark = null) {
-  if (Array.isArray(v)) return `cubic-bezier(${v.join(', ')})`;           // DTCG cubicBezier
+/* A single self-contained design-tokens.json holds every group inside one tree, so
+   `colors` IS that tree. The kit's own tokens/ is a DIRECTORY, where space lives in
+   spacing.json and radius in borders.json - looking those up inside colors.json
+   returned undefined and emitted NOTHING but colour. That is exactly the failure
+   this section exists to prevent, and it shipped: a directory build produced 85
+   colour vars and left every var(--space-*) undefined. Resolve against both shapes. */
+function lookup(path) {
+  const parts = path.split('.');
+  const direct = parts.reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), colors);
+  if (direct) return direct;
+  const [stem, ...rest] = parts;
+  return rest.reduce((o, k) => (o && typeof o === 'object' ? o[k] : undefined), TREES[stem]);
+}
+const at = (paths) => (Array.isArray(paths) ? paths : [paths]).map(lookup).find(Boolean);
+
+/* DTCG composites are not all arrays of numbers. Treating every array as a
+   cubicBezier turned the font stack into `cubic-bezier(Inter, system-ui, ...)` and
+   every shadow into `cubic-bezier([object Object])`. Dispatch on the shape. */
+function cssValue(v, dark = null, type = null) {
+  // A ref can resolve to a non-string: {easing.ease-out} is a cubicBezier ARRAY.
+  // Returning it raw left the brace in place and the whole token was dropped -
+  // which is why every --transition-* was missing. Flatten through cssValue.
+  const sub = (x) => typeof x === 'string'
+    ? x.replace(/\{([^}]+)\}/g, (_, ref) => {
+        const out = res(`{${ref}}`, 0, dark);
+        const flat = typeof out === 'string' ? out : cssValue(out, dark);
+        return typeof flat === 'string' ? flat : `{${ref}}`;
+      })
+    : x;
+  const shadowPart = (o) => [o.inset ? 'inset' : null, sub(o.offsetX), sub(o.offsetY),
+    sub(o.blur), sub(o.spread), sub(o.color)].filter(Boolean).join(' ');
+
+  if (Array.isArray(v)) {
+    if (v.every(x => typeof x === 'number')) return `cubic-bezier(${v.join(', ')})`;
+    if (v.every(x => typeof x === 'string')) {                            // fontFamily stack
+      return v.map(f => (/\s/.test(f) ? `"${f}"` : f)).join(', ');
+    }
+    if (v.every(x => x && typeof x === 'object')) return v.map(shadowPart).join(', ');
+    return null;
+  }
+  if (v && typeof v === 'object') {
+    if (type === 'transition' || ('duration' in v && 'timingFunction' in v)) {
+      const delay = sub(v.delay);
+      return [sub(v.duration), sub(v.timingFunction), delay && delay !== '0ms' ? delay : null]
+        .filter(Boolean).join(' ');
+    }
+    if ('offsetX' in v || 'blur' in v) return shadowPart(v);              // single shadow
+    return null;
+  }
   if (typeof v === 'number') return String(v);
   if (typeof v !== 'string') return null;
-  // a shadow or gradient can carry {refs} inside a longer string
-  return v.replace(/\{([^}]+)\}/g, (_, ref) => {
-    const out = res(`{${ref}}`, 0, dark);
-    return typeof out === 'string' ? out : `{${ref}}`;
-  });
+  return sub(v);
 }
 
 function emitGroup(node, prefix, bucket, dark = null) {
   for (const [k, v] of Object.entries(node || {})) {
     if (k.startsWith('$')) continue;
     if (v && typeof v === 'object' && '$value' in v) {
-      const out = cssValue(v.$value, dark);
-      if (out !== null && !/\{[^}]+\}/.test(String(out))) lines[bucket].push(`  --${prefix}${k}: ${out};`);
+      const out = cssValue(v.$value, dark, v.$type);
+      const name = k.startsWith(prefix) ? k : `${prefix}${k}`;   // "ease-" + "ease-out" is one name, not two
+      if (out !== null && !/\{[^}]+\}/.test(String(out))) lines[bucket].push(`  --${name}: ${out};`);
     } else if (v && typeof v === 'object') {
       emitGroup(v, `${prefix}${k}-`, bucket, dark);
     }
   }
 }
 
-for (const [path, prefix] of GROUPS) {
-  const node = at(path);
-  if (node) emitGroup(node, prefix, 'light');
+function emitLeafOrGroup(node, prefix, bucket, dark = null) {
+  if (!node) return;
+  if ('$value' in node) {
+    const out = cssValue(node.$value, dark, node.$type);
+    if (out !== null && !/\{[^}]+\}/.test(String(out))) lines[bucket].push(`  --${prefix.replace(/-$/, '')}: ${out};`);
+  } else emitGroup(node, prefix, bucket, dark);
 }
+
+for (const [paths, prefix] of GROUPS) emitLeafOrGroup(at(paths), prefix, 'light');
+
 // a shadow that references a surface (the focus ring's gap colour) has to follow dark
-if (colors.dark && at('shadow')) emitGroup(at('shadow'), 'shadow-', 'dark', flattenDark(colors.dark));
+if (colors.dark) {
+  const darkMap = flattenDark(colors.dark);
+  emitLeafOrGroup(at(['shadow', 'shadows.elevation']), 'shadow-', 'dark', darkMap);
+  emitLeafOrGroup(at(['shadows.focus-ring']), 'shadow-focus-ring', 'dark', darkMap);
+}
 
 const css = `/* Generated by scripts/build_tokens.mjs from ${SINGLE ? arg('in') : 'tokens/*.json'} — do not edit by hand. */
 :root {

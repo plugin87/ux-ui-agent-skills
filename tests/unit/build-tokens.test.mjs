@@ -43,3 +43,38 @@ test('an unresolvable alias is dropped, not emitted as a broken var', () => {
   assert.doesNotMatch(css, /\{primitive\.blue\.500\}/, 'a raw alias leaked into the CSS');
   assert.doesNotMatch(css, /--color-action-primary:/, 'an unresolvable token should not be emitted');
 });
+
+test('a DIRECTORY build emits the whole system, not only colour', () => {
+  // The bug this catches shipped: GROUPS were looked up inside colors.json only,
+  // so a multi-file tokens/ dir (space in spacing.json, radius in borders.json)
+  // emitted 85 colour vars and left every var(--space-*) undefined - the exact
+  // failure the generator's own comment says it exists to prevent.
+  const out = join(mkdtempSync(join(tmpdir(), 'ds-theme-')), 'theme.css');
+  const r = run('node', ['scripts/build_tokens.mjs', '--out', out]);
+  assert.equal(r.status, 0, r.stderr);
+  const css = readFileSync(out, 'utf8');
+
+  for (const v of ['--space-4', '--text-sm', '--font-sans', '--leading-tight',
+                   '--radius-button', '--shadow-md', '--shadow-focus-ring',
+                   '--duration-fast', '--ease-out', '--transition-micro',
+                   '--size-control-md', '--opacity-disabled', '--z-modal', '--bp-sm']) {
+    assert.match(css, new RegExp(`${v}:`), `the built theme defines no ${v}`);
+  }
+  assert.ok(css.split('\n').filter(l => l.includes('--')).length > 150,
+    'a full build is not 85 colour vars');
+});
+
+test('no composite token reaches the CSS as [object Object] or a stray brace', () => {
+  // Every array was treated as a cubicBezier: the font stack came out as
+  // `cubic-bezier(Inter, system-ui, ...)` and every shadow as
+  // `cubic-bezier([object Object])`. A ref resolving to an array (easing) left
+  // its brace behind and the token was dropped instead.
+  const out = join(mkdtempSync(join(tmpdir(), 'ds-theme-')), 'theme.css');
+  assert.equal(run('node', ['scripts/build_tokens.mjs', '--out', out]).status, 0);
+  const css = readFileSync(out, 'utf8');
+  assert.doesNotMatch(css, /\[object Object\]/, 'a composite token was stringified');
+  assert.doesNotMatch(css, /cubic-bezier\([^)]*[A-Za-z]/, 'a non-bezier was emitted as a bezier');
+  for (const line of css.split('\n').filter(l => l.trim().startsWith('--'))) {
+    assert.doesNotMatch(line, /\{[^}]+\}/, `an unresolved reference shipped: ${line.trim()}`);
+  }
+});

@@ -64,8 +64,11 @@ directory exists to prevent.
   instead, which the gate does detect.
 - **`build_tokens.mjs` has no failure mode.** It is a generator: it never exits
   non-zero and silently drops a reference it cannot resolve. `unit/` asserts its
-  output instead — specifically that a broken alias is dropped rather than
-  emitted as a literal `{…}`.
+  output instead — a broken alias is dropped rather than emitted as a literal
+  `{…}`; a directory build emits the whole system rather than colour alone; and
+  no composite token reaches the CSS as `[object Object]` or a stray brace. Those
+  last two exist because the bugs shipped: the colour-only directory build stood
+  for four releases while CI ran the command and checked only its exit status.
 - **Taste is still not covered.** `slop_tells` and `taste_audit` only fail on
   HIGH findings under `--strict`; MED and LOW never fail anything, by design.
   These tests confirm the HIGH signals fire. They say nothing about whether the
