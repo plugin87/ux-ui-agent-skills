@@ -1,0 +1,35 @@
+{
+  "name": "ux-ui-agent-skills",
+  "version": "2.6.0",
+  "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 37 objective quality gates that fail the build instead of claiming success.",
+  "author": {
+    "name": "Thientan Soparat",
+    "url": "https://github.com/plugin87"
+  },
+  "repository": "https://github.com/plugin87/ux-ui-agent-skills",
+  "homepage": "https://github.com/plugin87/ux-ui-agent-skills#readme",
+  "license": "MIT",
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "ui",
+    "ux",
+    "accessibility",
+    "wcag",
+    "figma",
+    "react",
+    "tailwindcss",
+    "frontend"
+  ],
+  "commands": [
+    "./.claude/commands/gate.md",
+    "./.claude/commands/critique.md",
+    "./.claude/commands/grill-me.md",
+    "./.claude/commands/ship.md",
+    "./.claude/commands/scaffold-project.md"
+  ],
+  "agents": [
+    "./.claude/agents/design-critic.md"
+  ],
+  "skills": "./.claude/skills"
+}

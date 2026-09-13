@@ -9,6 +9,11 @@ both:
      never read it (the emoji ban and the gate protocol must never move).
   2. A rule file becomes an orphan: it exists, nothing routes to it, so it is dead
      weight that never loads. Or the router points at a file that is gone.
+  3. Installed as a Claude Code plugin, CLAUDE.md is NOT loaded as context - the
+     doctrine travels in .claude/skills/design-doctrine/SKILL.md instead. If that
+     skill stops stating an always-on rule, plugin users silently lose it.
+  4. The plugin manifests and package.json disagree on the version, so an install
+     ships a number the release never had.
 
 It also holds the line on size: the whole point of the split is that the always-on
 brief stays short.
@@ -17,6 +22,7 @@ Usage:
   python3 scripts/validate_instruction_surface.py
 Exit 0 = surface intact, 1 = a rule was demoted, orphaned, or the brief regrew.
 """
+import json
 import re
 import sys
 from pathlib import Path
@@ -25,6 +31,21 @@ ROOT = Path(__file__).resolve().parent.parent
 BRIEF = ROOT / "CLAUDE.md"
 RULES = ROOT / ".claude" / "rules"
 MAX_LINES = 320
+DOCTRINE = ROOT / ".claude" / "skills" / "design-doctrine" / "SKILL.md"
+PLUGIN = ROOT / ".claude-plugin" / "plugin.json"
+MARKET = ROOT / ".claude-plugin" / "marketplace.json"
+PKG = ROOT / "package.json"
+
+# The plugin has no always-on brief, so these must survive in the doctrine skill.
+PLUGIN_ALWAYS_ON = [
+    ("emoji ban, stated as absolute", r"ABSOLUTE: zero emoji"),
+    ("one-command gate named",        r"accuracy_report\.mjs"),
+    ("never claim an unmeasured number", r"[Nn]ever state a number you did not measure"),
+    ("token by intent",               r"[Tt]oken by intent"),
+    ("single shared theme",           r"[Oo]ne theme, one source of truth"),
+    ("the 8 states",                  r"eight states"),
+    ("output completeness",           r"partial output is a broken output"),
+]
 
 # (label, regex) - must be present in CLAUDE.md itself, not only in a rule file.
 ALWAYS_ON = [
@@ -61,8 +82,39 @@ def main():
     for missing in sorted(routed - on_disk):
         issues.append(f"dangling: CLAUDE.md routes to .claude/rules/{missing}, which does not exist")
 
+    # The plugin surface: no CLAUDE.md, so the doctrine skill carries the rules.
+    if not DOCTRINE.is_file():
+        issues.append("plugin: .claude/skills/design-doctrine/SKILL.md is missing - "
+                      "a plugin install would ship no doctrine at all")
+    else:
+        doctrine = DOCTRINE.read_text(encoding="utf-8")
+        for label, pattern in PLUGIN_ALWAYS_ON:
+            if not re.search(pattern, doctrine):
+                issues.append(f"plugin: design-doctrine no longer states the {label}")
+
+    # A version the install ships must be a version the release actually cut.
+    versions = {}
+    for label, path, key in (("package.json", PKG, "version"),
+                             ("plugin.json", PLUGIN, "version")):
+        if path.is_file():
+            versions[label] = json.loads(path.read_text(encoding="utf-8")).get(key)
+        else:
+            issues.append(f"plugin: {label} is missing")
+    if MARKET.is_file():
+        entries = json.loads(MARKET.read_text(encoding="utf-8")).get("plugins", [])
+        if entries:
+            versions["marketplace.json"] = entries[0].get("version")
+    else:
+        issues.append("plugin: .claude-plugin/marketplace.json is missing - "
+                      "nobody can add this repo as a marketplace")
+    if len(set(versions.values())) > 1:
+        issues.append("plugin: version mismatch - " +
+                      ", ".join(f"{k}={v}" for k, v in sorted(versions.items())))
+
     print(f"CLAUDE.md: {n_lines}/{MAX_LINES} lines, {len(ALWAYS_ON)} always-on rules checked, "
           f"{len(on_disk)} rule file(s), {len(routed)} routed.")
+    print(f"Plugin surface: {len(PLUGIN_ALWAYS_ON)} rules checked in design-doctrine, "
+          f"version {sorted(set(versions.values()))[0] if len(set(versions.values()))==1 else 'MISMATCH'}.")
     if issues:
         print(f"\nFAIL: {len(issues)} problem(s) on the instruction surface:")
         for i in issues:
