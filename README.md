@@ -288,7 +288,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ├── CLAUDE.md                  # Agent persona, gates, router — the always-on brief (~270 lines)
 ├── CONTEXT.md                 # Ubiquitous language — shared domain vocabulary
 ├── CLAUDE.local.md            # Personal prefs (gitignored, per-machine)
-├── .mcp.json                  # Project MCP servers (Figma) — no secrets, env-expanded
+├── .mcp.example.json          # Optional Figma MCP for THIS repo — copy to .mcp.json to use
 │
 ├── .claude/rules/             # Depth split out of CLAUDE.md, loaded only when relevant
 │   └── tokens-and-color · typography-and-spacing · components · accessibility
@@ -575,7 +575,7 @@ The release where the kit stopped taking its own word for anything. Enforcement 
 - **`CONTEXT.md` — ubiquitous language.** A shared domain glossary (3-tier tokens, the 8 states, POUR, gate, token-by-intent, anti-slop, RENDER-AND-LOOK) so the agent names the problem precisely and spends fewer tokens doing it.
 - **Custom slash commands** under `.claude/commands/` — `/gate` (run the one-command gate, report the real N/N), `/ship` (pre-release gate + README/changelog checklist), `/scaffold-project` (generate a new design-product skeleton in the reference layout).
 - **`.claude/settings.json`** — shared permissions (the scripts allowlist), checked into git so the team gates without per-call prompts.
-- **`.mcp.json`** — project-scoped Figma MCP connection, secret-free (`${FIGMA_API_KEY}` env expansion).
+- **`.mcp.example.json`** — an optional Figma MCP connection for working on this repo, secret-free (`${FIGMA_API_KEY}` env expansion). Copy it to `.mcp.json` if you want it. It ships as an example on purpose: a plugin root `.mcp.json` is picked up by the plugin, and installing a design kit must not silently register a third-party MCP server on someone's machine.
 - **`CLAUDE.local.md`** (gitignored) for personal preferences, and **`reference/`** for real screens the agent studies before an `image-to-code` / `redesign` / `design-review` pass.
 
 ### `v2.3.1`
