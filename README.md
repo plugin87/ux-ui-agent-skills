@@ -8,8 +8,8 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.5.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
-[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#-license)
+[![Version](https://img.shields.io/badge/version-2.6.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
 <br>
@@ -17,7 +17,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
-![Skills](https://img.shields.io/badge/runnable_skills-17-14b8a6?style=flat-square)
+![Skills](https://img.shields.io/badge/runnable_skills-18-14b8a6?style=flat-square)
 ![Gates](https://img.shields.io/badge/objective_gates-37-16a34a?style=flat-square)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
@@ -33,7 +33,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Version
 
-**Current release: `v2.5.1`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
+**Current release: `v2.6.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
 
@@ -47,7 +47,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 | **Component Design** | Designs components from Atoms to Templates following Atomic Design, with anatomy, variants, states, token mapping, and accessibility specs |
 | **Code Generation (any framework)** | Adapter Protocol targets **any** stack — React+Tailwind, Next.js, SwiftUI, Vue, Svelte, Angular, Solid, Web Components/Lit, React Native, Flutter, Jetpack Compose, vanilla CSS, CSS-in-JS — or generates a new adapter on demand |
 | **Design-System Interop** | Maps to/from **any** design system (Material 3, Apple HIG, Fluent, Carbon, shadcn/ui, Radix…) via a role-based crosswalk |
-| **Runnable Skills** | 17 invocable `/skills` (each declaring `invocation: user|model`) + 4 slash commands + real scripts: token and contrast validators, real-render and state-aware WCAG gates, axe-core a11y, focus-trap, RTL, target size, keyboard, reduced motion, overflow, token-by-intent, taste and slop audits, token build |
+| **Runnable Skills** | 18 invocable `/skills` (each declaring `invocation: user|model`) + 5 slash commands + real scripts: token and contrast validators, real-render and state-aware WCAG gates, axe-core a11y, focus-trap, RTL, target size, keyboard, reduced motion, overflow, token-by-intent, taste and slop audits, token build |
 | **Accessibility Auditing** | Evaluates against WCAG 2.2 AA/AAA with prioritized findings (P0/P1/P2) |
 | **Design Review** | Scores designs across 6 dimensions with Nielsen's 10 Heuristics and a structured findings table |
 | **Prototyping & Research** | Guides through a 5-level fidelity ladder, user journey mapping, and usability testing scripts |
@@ -59,7 +59,23 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 ## Quick Start
 
-### Option A — Install with `npx` (recommended)
+### Option A — Install as a Claude Code plugin (recommended)
+
+Two lines in Claude Code, and every skill, command, and agent is available in any
+project you open — no files copied into your repo:
+
+```
+/plugin marketplace add plugin87/ux-ui-agent-skills
+/plugin install ux-ui-agent-skills@ux-ui-agent-skills
+```
+
+You get 18 skills (`/design-component`, `/brandkit`, `/a11y-audit`, …), 5 commands
+(`/gate`, `/critique`, `/grill-me`, `/ship`, `/scaffold-project`), and the
+`design-critic` agent. The `design-doctrine` skill carries the house rules that
+`CLAUDE.md` carries in the repo, because a plugin root `CLAUDE.md` is not loaded
+as project context.
+
+### Option B — Install with `npx`
 
 Drop the kit into any project, no clone needed:
 
@@ -71,7 +87,7 @@ npx ux-ui-agent-skills list          # see all areas
 
 Flags: `--force` (overwrite existing files) · `--dry` (preview, change nothing).
 
-### Option B — Clone
+### Option C — Clone
 
 ```bash
 git clone https://github.com/plugin87/ux-ui-agent-skills.git
@@ -187,7 +203,7 @@ Each `SKILL.md` carries an `invocation` field, so it is clear which ones you dri
 | `/figma-integration` | Token to Figma Variable sync and component parity |
 | `/performance` | Core Web Vitals, layout shift, animation cost |
 
-Three slash commands round it out: `/gate` runs the whole gate and reports the real N/N, `/ship` adds the release checklist, and `/scaffold-project` starts a new product repo from the template.
+Five slash commands round it out: `/grill-me` interrogates the brief before anything is built, `/gate` runs the whole gate and reports the real N/N, `/critique` hands the result to an adversarial reviewer, `/ship` adds the release checklist, and `/scaffold-project` starts a new product repo from the template.
 
 ```text
 /design-code  a pricing card in Vue, dark-mode aware
@@ -280,7 +296,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ├── .claude/skills/            # Runnable skills — invoke via /name
 │   └── design-tokens · design-component · design-code · design-review · a11y-audit
 │       apply-aesthetic · redesign · migrate-design-system · prototype · ux-writing
-├── .claude/commands/          # Custom slash commands — /gate · /ship · /scaffold-project
+├── .claude/commands/          # Slash commands — /grill-me · /gate · /critique · /ship · /scaffold-project
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
 ├── .claude/agents/            # design-critic — the adversarial reviewer behind /critique
 │
@@ -434,6 +450,73 @@ This is a **starter kit** — make it yours:
 ---
 
 ## Changelog
+
+### `v2.6.0`
+
+Installable as a Claude Code plugin, a command that interrogates the brief before
+anything is built, and a token build that was quietly shipping a theme no component
+could render against.
+
+**Installable as a plugin**
+
+- `.claude-plugin/plugin.json` + `.claude-plugin/marketplace.json`, both passing
+  `claude plugin validate`. Two lines in Claude Code and you get 18 skills, 5
+  commands, and the `design-critic` agent in any project:
+  `/plugin marketplace add plugin87/ux-ui-agent-skills`.
+- **A plugin root `CLAUDE.md` is not loaded as project context** - the validator
+  says so outright. So the doctrine travels as a skill: `design-doctrine` carries
+  the verification protocol, the absolute no-emoji rule, the five non-negotiables,
+  the decision framework, and the routing table. Without it a plugin install would
+  have shipped the files and none of the rules.
+- `validate_instruction_surface.py` now guards that second surface too: seven
+  always-on rules must survive in `design-doctrine`, and `package.json`,
+  `plugin.json` and `marketplace.json` must agree on the version. Both checks were
+  proven by mutation - deleting the emoji ban from the skill fails the gate, and
+  the version check caught a real 2.5.1/2.6.0 mismatch the moment it was written.
+
+**`/grill-me` - interrogate the brief, not the output**
+
+Four eval runs scored 14/14 on the gates and still came back from `/critique` as
+rework, every finding a decision no gate can see. `/critique` attacks the result;
+this attacks the brief: at most seven questions, asked in one round, only where
+different answers change the build - and everything unasked becomes a written
+assumption with its default and the cost if it is wrong. Output is a `BRIEF.md`
+that a later reviewer can argue against.
+
+**The token build was emitting colour and nothing else**
+
+- `build_tokens.mjs --out` against the kit's own `tokens/` directory produced **85
+  variables, all `--color-*`**. Every `--space-*`, `--text-*`, `--radius-*`,
+  `--shadow-*` and `--font-*` was undefined. The cause: the non-colour groups were
+  looked up inside `colors.json` only, which works for a single self-contained
+  `design-tokens.json` and silently returns nothing for a multi-file directory.
+  This is the exact failure the function's own comment says it exists to prevent,
+  and CI ran the command on every push while checking only that it exited 0.
+- Two more bugs surfaced once the groups resolved: every array was treated as a
+  cubicBezier, so the font stack emitted as `cubic-bezier(Inter, system-ui, ...)`
+  and every shadow as `cubic-bezier([object Object])`; and a reference resolving to
+  an array (`{easing.ease-out}`) left its brace behind, so **every `--transition-*`
+  was dropped**. `cssValue` now dispatches on the DTCG shape.
+- A directory build now emits **231 variables**, including the chart palette from
+  `data-viz.json`, which had never been emitted at all.
+- Two regression tests assert the output, and the directory test fails against the
+  old generator - checked by stashing the fix, not by assertion.
+- **Still open, stated rather than claimed fixed:** 11 names the kit's own harnesses
+  use do not exist in the token source under those names (`--color-action-danger`
+  vs `action.destructive`, `--color-text-error` vs `feedback.error-text`,
+  `--radius-pill`, `--duration-normal`, `--ease-emphasized`, and the inverse/brand
+  surfaces). That is a token-API decision with SemVer consequences - emitting both
+  names through a deprecation window, then removing the old ones in 3.0.0 - not a
+  mechanical fix, so it is not bundled here.
+
+**Housekeeping**
+
+- `LICENSE` added. The repo declared MIT in `package.json` and linked a badge to a
+  dead anchor for its whole life without ever shipping the licence text.
+- Author is now the real name, in `LICENSE`, `package.json` and the README.
+- Two scars from the v2.3.1 emoji purge repaired: a README line that ended
+  mid-sentence ("consider giving it a "), and a journey map whose emotions had been
+  replaced with redundant parentheticals and one mangled arrow.
 
 ### `v2.5.1`
 
@@ -595,12 +678,18 @@ The release where the kit stopped taking its own word for anything. Enforcement 
 
 ## License
 
-Released under the **[MIT License](https://opensource.org/licenses/MIT)**.
+Released under the **[MIT License](LICENSE)** - free to use, modify, and
+distribute, including commercially, as long as the copyright notice and the
+permission notice travel with the copy.
+
+Copyright (c) 2026 **Thientan Soparat** ([@plugin87](https://github.com/plugin87)).
 
 ---
 
 <div align="center">
 
-If this kit helps you, consider giving it a 
+Built by **Thientan Soparat** ([@plugin87](https://github.com/plugin87)).
+
+If this kit helps you, [star it on GitHub](https://github.com/plugin87/ux-ui-agent-skills) so others can find it.
 
 </div>

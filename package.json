@@ -1,7 +1,7 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "2.5.1",
-  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 15 runnable skills. Install into any project with npx.",
+  "version": "2.6.0",
+  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 18 runnable skills. Install as a Claude Code plugin or with npx.",
   "type": "commonjs",
   "bin": {
     "ux-ui-skills": "bin/cli.js",
@@ -80,7 +80,7 @@
   "bugs": {
     "url": "https://github.com/plugin87/ux-ui-agent-skills/issues"
   },
-  "author": "plugin87",
+  "author": "Thientan Soparat (plugin87)",
   "license": "MIT",
   "engines": {
     "node": ">=16"
