@@ -113,6 +113,25 @@ const COLLECT = () => {
 };
 
 const rgb = (s) => (String(s).match(/\d+(\.\d+)?/g) || []).slice(0, 3).map(Number);
+
+/* Hue and saturation, for the pages that define no action tokens at all.
+   A destructive control is allowed to be neutral (ghost, outline, grey). What it
+   may never be is a SATURATED colour that is not a danger colour. */
+const hs = (c) => {
+  const [r, g, b] = rgb(c).map(n => n / 255);
+  if ([r, g, b].some(n => n === undefined || Number.isNaN(n))) return null;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+  const l = (max + min) / 2;
+  const sat = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+  let h = 0;
+  if (d !== 0) {
+    if (max === r) h = 60 * (((g - b) / d) % 6);
+    else if (max === g) h = 60 * ((b - r) / d + 2);
+    else h = 60 * ((r - g) / d + 4);
+  }
+  return { h: (h + 360) % 360, s: sat, l };
+};
+const DANGER_HUE = (h) => h >= 335 || h <= 30;   // red through orange-red
 const dist = (a, b) => {
   const [x, y, z] = rgb(a), [p, q, r] = rgb(b);
   if ([x, y, z, p, q, r].some(n => n === undefined)) return Infinity;
@@ -132,18 +151,29 @@ for (const f of files) {
   const { theme, controls } = await page.evaluate(COLLECT);
   await page.close();
 
-  if (!theme.primary || !theme.danger) continue; // page has no themed action tokens
+  /* A page with no action tokens used to be skipped outright, and the gate then
+     reported "0 intent-bearing controls" and exited 0. That is how a blue Delete
+     Account on an untokenised page passed. No theme is not a reason to look away:
+     it is the case where intent is MOST likely to be chosen by convenience. */
+  const themed = Boolean(theme.primary && theme.danger);
   checked += controls.length;
 
   for (const c of controls) {
-    const toPrimary = dist(c.accent, theme.primary);
-    const toDanger = dist(c.accent, theme.danger);
+    const toPrimary = themed ? dist(c.accent, theme.primary) : Infinity;
+    const toDanger = themed ? dist(c.accent, theme.danger) : Infinity;
 
-    if (c.kind === 'destructive' && toPrimary <= TOL && toPrimary < toDanger) {
+    if (themed && c.kind === 'destructive' && toPrimary <= TOL && toPrimary < toDanger) {
       problems.push(`${name}  [1 wrong-intent]  "${c.name}" is destructive but painted with action.primary (${c.accent})`);
     }
-    if (c.kind === 'affirmative' && toDanger <= TOL && toDanger < toPrimary) {
+    if (themed && c.kind === 'affirmative' && toDanger <= TOL && toDanger < toPrimary) {
       problems.push(`${name}  [2 inverted]  "${c.name}" is affirmative but painted with action.danger (${c.accent})`);
+    }
+    if (!themed && c.kind === 'destructive' && c.filled) {
+      const t = hs(c.accent);
+      if (t && t.s >= 0.35 && t.l > 0.12 && t.l < 0.92 && !DANGER_HUE(t.h)) {
+        problems.push(`${name}  [1 wrong-intent]  "${c.name}" is destructive but filled with ${c.accent} ` +
+          `(hue ${Math.round(t.h)}deg, not a danger colour), and the page defines no action tokens to check against`);
+      }
     }
     if (c.kind === 'destructive') {
       const key = c.name.toLowerCase();

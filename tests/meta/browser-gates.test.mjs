@@ -130,4 +130,8 @@ test('the slop screen in the README is rejected by every gate the README claims'
   rejects(gate('slop_tells.mjs', ['--strict', SLOP]), /HIGH/);
   rejects(gate('taste_audit.mjs', ['--strict', SLOP]), /HIGH/);
   rejects(gate('axe_audit.mjs', [SLOP]), /violation/i);
+  // the hole this page exposed: intent was only checked against the page's own
+  // tokens, so a page with none passed. A saturated non-danger fill on a
+  // destructive label is now wrong-intent whether or not a theme exists.
+  rejects(gate('lint_intent.mjs', [SLOP]), /Delete Account.*not a danger colour/s);
 });

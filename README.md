@@ -97,17 +97,24 @@ left is `tests/fixtures/bad/slop-screen.html`; here is what the gates say about 
 | axe-core | `SERIOUS target-size` |
 | Slop tells | HIGH: hardcoded indigo-purple gradient, single radius, one flat shadow, `#000` on `#fff` |
 | Taste audit | HIGH: biggest heading 24px vs 14px body = 1.7x, not a display scale |
+| Token by intent | `x "Delete Account" is destructive but filled with rgb(99, 102, 241) (hue 239deg, not a danger colour)` |
 | No emoji | `x line 88: emoji/pictograph` |
 | No hardcoded values | `FAIL: 63 hardcoded value(s)` |
 
-Seven gates, eight findings, none of them a matter of taste. The right-hand page
+Eight gates, nine findings, none of them a matter of taste. The right-hand page
 passes all 38.
 
-One gate that should have caught something did not: `lint_intent` read the blue
-Delete Account as fine, because it resolves intent from the page's own theme and
-that page has no tokens at all. That is a real hole, it is written down here
-rather than quietly fixed in the screenshot, and
-`tests/meta/browser-gates.test.mjs` pins every claim in this table so it cannot
+The last row is there because building this comparison broke a gate open.
+`lint_intent` originally read that blue Delete Account as fine: it resolved
+"primary" and "danger" from the page's own CSS variables, and a page with no
+tokens resolved neither, so it skipped the page and reported zero intent-bearing
+controls. An untokenised page is precisely where intent gets picked by
+convenience, so the gate no longer looks away - a destructive label filled with a
+saturated colour outside the danger hue range is wrong-intent with or without a
+theme. Re-checked against every example in both themes afterwards: no false
+positives.
+
+`tests/meta/browser-gates.test.mjs` pins every claim in this table, so it cannot
 rot.
 
 ---
