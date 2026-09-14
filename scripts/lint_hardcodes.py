@@ -44,7 +44,9 @@ def iter_files(paths, exts):
         pp = Path(p)
         if pp.is_dir():
             for f in pp.rglob("*"):
-                if f.suffix in exts and "node_modules" not in f.parts:
+                # Directories can have code extensions. Keep vanished entries so
+                # the read loop reports them instead of silently dropping them.
+                if f.suffix in exts and "node_modules" not in f.parts and not f.is_dir():
                     yield f
         elif pp.is_file() and pp.suffix in exts:
             yield pp

@@ -1,7 +1,7 @@
 /** Candidate read failures must not turn an incomplete lint into a clean result. */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { run, ROOT } from '../helpers/run.mjs';
@@ -117,5 +117,60 @@ test('lint_hardcodes rejects real invalid UTF-8 after detecting the readable con
     assertIncomplete(result, paths, 0, 0);
     assert.ok(result.stderr.includes(paths[0]), result.stderr);
     assert.match(result.stderr, /decode/);
+  });
+});
+
+for (const [name, content, status] of [['clean', CLEAN, 0], ['violating', HARD, 1]]) {
+  test(`lint_hardcodes traverses code-suffixed directories containing ${name} files`, () => {
+    withFiles([], (_paths, dir) => {
+      const nested = join(dir, 'components.css', 'nested.tsx');
+      mkdirSync(nested, { recursive: true });
+      const file = join(nested, 'card.css');
+      writeFileSync(file, content);
+      const result = run('python3', ['-X', 'utf8', SCRIPT, dir]);
+      assert.equal(result.status, status, result.out);
+      assert.equal(result.stderr, '');
+      assert.match(result.stdout, /Scanned 1 file\(s\)\./);
+      if (status === 0) assert.match(result.stdout, /OK: no hardcoded values found/);
+      else assert.ok(result.stdout.includes(`${file}:1: hardcoded hex '#ff0000'`), result.stdout);
+    });
+  });
+}
+
+test('lint_hardcodes rejects a tree containing only empty code-suffixed directories', () => {
+  withFiles([], (_paths, dir) => {
+    mkdirSync(join(dir, 'components.css', 'nested.tsx'), { recursive: true });
+    const result = run('python3', ['-X', 'utf8', SCRIPT, dir]);
+    assert.equal(result.status, 1, result.out);
+    assert.match(result.stdout, /ERROR: no lintable file\(s\)/);
+    assert.equal(result.stderr, '');
+    assert.doesNotMatch(result.out, /OK:|could not read/);
+  });
+});
+
+test('lint_hardcodes reports a file that disappears during directory discovery', () => {
+  withFiles(['unreadable.css', 'clean.css'], paths => {
+    const disappear = String.raw`
+import runpy
+import sys
+from pathlib import Path
+from unittest.mock import patch
+
+script, missing, clean = sys.argv[1:]
+original = Path.rglob
+
+def rglob(path, *args, **kwargs):
+    for candidate in original(path, *args, **kwargs):
+        if candidate == Path(missing):
+            candidate.unlink()
+        yield candidate
+
+sys.argv = [script, str(Path(clean).parent)]
+with patch.object(Path, "rglob", new=rglob):
+    runpy.run_path(script, run_name="__main__")
+`;
+    const result = run('python3', ['-X', 'utf8', '-c', disappear, SCRIPT, ...paths]);
+    assertIncomplete(result, paths, 1, 0);
+    assert.ok(result.stderr.includes(paths[0]), result.stderr);
   });
 });

@@ -563,7 +563,8 @@ add a gate that can still say no, and the SemVer table.
 ## Changelog
 
 ### Unreleased
-- **Incomplete hardcode scans fail.** `lint_hardcodes.py` reports candidate read errors, counts only successfully read files as scanned, and exits non-zero if any candidate cannot be read. Readable files are still checked; regression tests cover decoding and I/O failures, mixed inputs, and deliberate exclusions.
+
+- **Incomplete hardcode scans fail.** `lint_hardcodes.py` reports candidate read errors, counts only successfully read files as scanned, and exits non-zero if any candidate cannot be read. Readable files are still checked. Directories with code extensions are excluded as candidates while their files remain checked; entries that disappear during discovery still produce read errors. Regression tests cover these cases, decoding and I/O failures, mixed inputs, and deliberate exclusions.
 
 ### `v2.6.0`
 
