@@ -54,6 +54,13 @@ test('every count claimed in prose matches the array it describes', () => {
   assert.ok(shipped, 'README no longer states how many gates ship');
   assert.equal(Number(shipped[1]), accuracy, 'README disagrees with accuracy_report.mjs');
 
+  // The same number is retyped in the command block under it, and drifted to 35
+  // while the array held 37 - nothing was checking that one.
+  const runLine = readme.match(/accuracy_report\.mjs\s+#\s*(\d+)\/(\d+) or it fails/);
+  assert.ok(runLine, 'README no longer shows the all-or-nothing run line');
+  assert.equal(Number(runLine[1]), accuracy, 'the README run line disagrees with accuracy_report.mjs');
+  assert.equal(Number(runLine[2]), accuracy, 'the README run line disagrees with itself');
+
   for (const line of readme.split('\n').filter(l => l.includes('evals/run.mjs'))) {
     const n = line.match(/(\d+) objective gates/);
     if (n) assert.equal(Number(n[1]), evals, `README line disagrees with evals/run.mjs: ${line.trim()}`);

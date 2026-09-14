@@ -331,7 +331,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 The kit ships **38 objective gates** behind one command:
 
 ```bash
-node scripts/accuracy_report.mjs     # 35/35 or it fails — no partial credit
+node scripts/accuracy_report.mjs     # 38/38 or it fails — no partial credit
 ```
 
 Token validity, WCAG contrast on a real headless render in light *and* dark, every
@@ -339,6 +339,19 @@ element in default/hover/focus, axe roles and names, focus traps, RTL, responsiv
 at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
+
+**What that number covers, stated exactly.** 28 of the 38 checks open a real
+browser, so what they measure is **rendered HTML**: the 23 component harnesses,
+the reference app, the live demo, the starter template. The other 10 read files —
+token JSON and alias resolution, contrast math on the token source, component
+specs, hardcoded values, theme references, emoji, the instruction surface.
+
+Framework source (`.tsx`, `.vue`, `.swift`) is therefore reached by the
+file-reading checks only: no emoji, no hardcoded values, every `var(--…)`
+resolving to the theme. A React component this kit generates is written to the
+token and accessibility rules in `.claude/rules/`, but it is **not** proven by
+this number until it is rendered and measured. Rendering framework components
+through the same gates is open work, named here rather than implied away.
 
 That is correctness. It is not quality, and the kit says so out loud:
 
