@@ -58,6 +58,11 @@ const THUMBS = [
   ['examples/apple-demo/index.html',   'apple-dark.png',      'dark',  [1100, 700]],
   ['examples/brandkit-demo/index.html','brandkit-light.png',  'light', [1100, 700]],
   ['examples/brandkit-demo/index.html','brandkit-dark.png',   'dark',  [1100, 700]],
+  ['examples/templates/checkout.html', 'tpl-checkout.png',    'light', [1200, 760]],
+  ['examples/templates/crm.html',      'tpl-crm.png',         'light', [1200, 760]],
+  ['examples/templates/emr.html',      'tpl-emr.png',         'light', [1200, 760]],
+  ['examples/templates/banking.html',  'tpl-banking.png',     'dark',  [1200, 760]],
+  ['examples/templates/logistics.html','tpl-logistics.png',   'light', [1200, 760]],
 ];
 const THUMB_DIR = join(ROOT, 'examples', 'thumbs');
 

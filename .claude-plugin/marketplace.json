@@ -9,9 +9,9 @@
     {
       "name": "ux-ui-agent-skills",
       "source": "./",
-      "version": "2.9.0",
+      "version": "2.10.0",
       "category": "design",
-      "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 40 objective quality gates that fail the build instead of claiming success.",
+      "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 41 objective quality gates that fail the build instead of claiming success.",
       "tags": ["design-system", "design-tokens", "accessibility", "wcag", "ui", "figma", "react", "tailwindcss"]
     }
   ]

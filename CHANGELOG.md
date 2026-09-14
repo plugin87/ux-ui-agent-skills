@@ -10,6 +10,39 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.10.0`
+
+**Five industries, built with the kit, to find out whether the kit can build
+them.** `examples/templates/` adds a checkout, a sales pipeline, a patient
+chart, a retail banking screen and a freight control room. Whole screens, one
+shared `shell.css`, every value from the token theme, and each one clears the
+fourteen render checks that apply to it in both themes. That is **gate 41**.
+
+They earned their keep immediately: building them exposed **three real gate
+bugs**, each one a case of a gate refusing correct work.
+
+- **`verify_keyboard` did not understand native radio groups.** A group puts one
+  radio in the tab order and moves between them with arrows - that is the
+  correct pattern - and the gate counted the other two as unreachable. It now
+  skips the non-tab-stop radios and lets the composite pass check the arrow model.
+- **`verify_overflow` read a wrapped inline link as a 100% overlap.** An inline
+  element that breaks across lines has a bounding box spanning every line, so
+  the next link sits geometrically inside it. It now compares per-line boxes,
+  which is what a reader actually sees.
+- **`verify_focustrap` refused a native `<dialog>` twice over.** It only looked
+  for `[role="dialog"]`, missing the implicit role, and then read the one frame
+  where a native modal parks focus on `<body>` while wrapping as a trap leak.
+  Both fixed, and the leaky fixture still fails, so the gate did not get softer.
+
+The templates also failed honestly before they passed: a chart palette behind
+12px initials, a sidebar scroller that widened the page because a grid item
+defaults to min-content, a 3rem balance whose min-content width dragged the
+layout past 280px, and two screens with no display type at all - 20px over 14px
+is not a hierarchy. All measured, all fixed.
+
+The demo front door gains a band showing the five, and the harness count on the
+page goes from 26 rendered pages to 31.
+
 ### `v2.9.0`
 
 **Ten chart types on one screen, and the skill that builds them.**

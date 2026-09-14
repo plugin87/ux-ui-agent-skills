@@ -111,15 +111,28 @@ const AUDIT = () => {
       && small.r.top >= big.r.top - 1 && small.r.bottom <= big.r.bottom + 1;
     return inside && small.positioned;
   };
+  /* An inline link that wraps across lines has a bounding box spanning every
+     line it touches, so a second link on the next line sits geometrically
+     "inside" it and read as a 100% overlap. Compare the per-line boxes instead:
+     that is what the reader actually sees. */
+  const boxes = (c) => {
+    const rects = [...c.el.getClientRects()].filter(r => r.width > 1 && r.height > 1);
+    return rects.length ? rects : [c.r];
+  };
+  const hit = (ra, rb) => {
+    const w = Math.min(ra.right, rb.right) - Math.max(ra.left, rb.left);
+    const h = Math.min(ra.bottom, rb.bottom) - Math.max(ra.top, rb.top);
+    return w > 1 && h > 1 ? w * h : 0;
+  };
+
   for (let i = 0; i < controls.length; i++) {
     for (let j = i + 1; j < controls.length; j++) {
       const a = controls[i], b = controls[j];
       if (a.el.contains(b.el) || b.el.contains(a.el)) continue;   // nesting is not overlap
       if (layeredAffordance(a, b)) continue;
-      const w = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left);
-      const h = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
-      if (w <= 1 || h <= 1) continue;
-      const area = w * h;
+      let area = 0;
+      for (const ra of boxes(a)) for (const rb of boxes(b)) area = Math.max(area, hit(ra, rb));
+      if (area <= 1) continue;
       const smaller = Math.min(a.r.width * a.r.height, b.r.width * b.r.height);
       if (smaller > 0 && area / smaller > 0.25) {
         overlaps.push(`${name(a.el)} overlaps ${name(b.el)} by ${Math.round((area / smaller) * 100)}%`);

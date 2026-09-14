@@ -1,0 +1,133 @@
+/* shell.css — the chrome every industry template shares: app shell, panels,
+ * tables, badges, buttons. Each template adds only what its domain needs, so a
+ * fix here is a fix everywhere and no screen invents its own button.
+ * Values come from brandkit-demo/theme.css; nothing is typed in. */
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+  line-height:var(--leading-normal);-webkit-font-smoothing:antialiased}
+img{max-inline-size:100%;block-size:auto;display:block}
+a{color:inherit}
+.ico{inline-size:1.125rem;block-size:1.125rem;flex:none;stroke-width:1.75}
+.sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.up{color:var(--color-feedback-success)} .dn{color:var(--color-text-error)}
+
+/* shell */
+.shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100dvh}
+@media (max-width:64rem){.shell{grid-template-columns:minmax(0,1fr)}}
+.side{display:flex;flex-direction:column;gap:var(--space-6);padding:var(--space-5) var(--space-4);
+  background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default)}
+/* Collapsed to a row the nav scrolls sideways - but a grid item defaults to
+   min-content width, so without min-inline-size:0 the scroller widens the whole
+   page instead of scrolling. Cause 2 in the narrow-width rules. */
+@media (max-width:64rem){.side{flex-direction:row;align-items:center;gap:var(--space-4);overflow-x:auto;
+  min-inline-size:0;border-inline-end:0;border-block-end:1px solid var(--color-border-default)}}
+.side,main{min-inline-size:0}
+.brand{display:flex;align-items:center;gap:var(--space-3);font-weight:700;font-size:var(--text-lg);letter-spacing:-0.02em}
+.brand .mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;flex:none;
+  border-radius:var(--radius-sm);background:var(--color-action-primary);color:var(--color-text-on-action)}
+.brand .mark .ico{inline-size:1rem;block-size:1rem}
+nav.menu{display:flex;flex-direction:column;gap:var(--space-1)}
+@media (max-width:64rem){nav.menu{flex-direction:row;gap:var(--space-2)}}
+nav.menu a{display:flex;align-items:center;gap:var(--space-3);min-block-size:2.5rem;padding-inline:var(--space-3);
+  border-radius:var(--radius-button);color:var(--color-text-secondary);text-decoration:none;
+  font-size:var(--text-sm);font-weight:500;white-space:nowrap;transition:background var(--transition-micro)}
+nav.menu a:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
+nav.menu a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+nav.menu a[aria-current="page"]{background:var(--color-surface-brand);color:var(--color-text-primary);font-weight:600}
+.side .grow{flex:1}
+@media (max-width:64rem){.side .grow{display:none}}
+
+main{display:flex;flex-direction:column;min-inline-size:0}
+.topbar{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;min-inline-size:0;
+  padding:var(--space-4) var(--space-6);background:var(--color-surface-card);
+  border-block-end:1px solid var(--color-border-default)}
+@media (max-width:40rem){.topbar{padding:var(--space-3) var(--space-4)}}
+.topbar h1{font-size:var(--text-xl);letter-spacing:-0.02em}
+.topbar .sub{color:var(--color-text-secondary);font-size:var(--text-sm)}
+.spacer{flex:1}
+.page{padding:var(--space-6);display:grid;gap:var(--space-5);align-content:start}
+@media (max-width:40rem){.page{padding:var(--space-4)}}
+
+/* surfaces */
+.panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);
+  border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0;display:grid;gap:var(--space-4);
+  align-content:start}
+.panel > header{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-3);
+  flex-wrap:wrap;min-inline-size:0}
+.panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
+/* On a genuinely narrow viewport a title and its aside cannot share a line.
+   Stack them and give the panel back some width rather than letting the row
+   push the page sideways. */
+@media (max-width:30rem){
+  .panel{padding:var(--space-4)}
+  .panel > header{flex-direction:column;align-items:flex-start;gap:var(--space-1)}
+}
+.panel h2{font-size:var(--text-lg);letter-spacing:-0.01em}
+.eyebrow{font-size:var(--text-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--color-text-secondary)}
+.note{font-size:var(--text-sm);color:var(--color-text-secondary)}
+.figure{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.035em;line-height:1}
+.rule{block-size:1px;background:var(--color-border-default)}
+
+/* controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  min-block-size:var(--size-control-md);padding-inline:var(--space-5);border:0;border-radius:var(--radius-button);
+  font:600 var(--text-sm)/1 var(--font-sans);cursor:pointer;text-decoration:none;
+  transition:background var(--transition-micro)}
+.btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.btn-primary{background:var(--color-action-primary);color:var(--color-text-on-action)}
+.btn-primary:hover{background:var(--color-action-primary-hover)}
+.btn-secondary{background:transparent;color:var(--color-text-primary);border:1px solid var(--color-border-strong)}
+.btn-secondary:hover{background:var(--color-surface-raised)}
+.btn-danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
+.btn-danger:hover{background:var(--color-action-danger-hover)}
+.btn-block{inline-size:100%}
+.iconbtn{display:grid;place-items:center;inline-size:var(--size-control-md);block-size:var(--size-control-md);
+  border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:transparent;
+  color:var(--color-text-primary);cursor:pointer}
+.iconbtn:hover{background:var(--color-surface-raised)}
+.iconbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.field{display:grid;gap:var(--space-2);min-inline-size:0}
+.field label{font-size:var(--text-sm);font-weight:500}
+.field input,.field select,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
+  padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
+  background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--text-sm)/1.4 var(--font-sans)}
+.field textarea{padding-block:var(--space-2);min-block-size:5rem;resize:vertical}
+.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.field .hint{font-size:var(--text-xs);color:var(--color-text-secondary)}
+
+/* badges: a dot is a pair for the word, never the only signal */
+.badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
+  border-radius:var(--radius-pill);background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:600}
+.badge .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot);flex:none}
+.b-ok{--dot:var(--color-feedback-success)} .b-warn{--dot:var(--color-feedback-warning)}
+.b-bad{--dot:var(--color-text-error)} .b-info{--dot:var(--color-text-link)}
+.b-mute{--dot:var(--color-text-secondary)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--color-border-default);border-radius:var(--radius-card);
+  background:var(--color-surface-card)}
+table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm)}
+caption{text-align:start;padding:var(--space-4) var(--space-5) var(--space-2);font-weight:600}
+th,td{padding:var(--space-3) var(--space-4);text-align:start;border-block-start:1px solid var(--color-border-default)}
+thead th{border-block-start:0;color:var(--color-text-secondary);font-size:var(--text-xs);font-weight:600;
+  letter-spacing:.06em;text-transform:uppercase}
+tbody tr:hover{background:var(--color-surface-raised)}
+td.end,th.end{text-align:end}
+
+/* progress + meters */
+.track{block-size:.5rem;border-radius:var(--radius-full);background:var(--color-chart-track);overflow:hidden}
+.track i{display:block;block-size:100%;border-radius:var(--radius-full);background:var(--color-action-primary)}
+
+/* footer */
+.credit{padding:var(--space-5) var(--space-6);border-block-start:1px solid var(--color-border-default);
+  color:var(--color-text-secondary);font-size:var(--text-sm);display:flex;justify-content:space-between;
+  gap:var(--space-4);flex-wrap:wrap}
+.credit a{color:var(--color-text-link)}
+.credit span{min-inline-size:0;overflow-wrap:anywhere;display:block}
+/* the links inside a credit line must sit on the normal flow, not collapse onto
+   each other when the row wraps */
+.credit a{display:inline}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}

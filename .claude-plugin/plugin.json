@@ -1,7 +1,7 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "2.9.0",
-  "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 40 objective quality gates that fail the build instead of claiming success.",
+  "version": "2.10.0",
+  "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 41 objective quality gates that fail the build instead of claiming success.",
   "author": {
     "name": "Thientan Soparat",
     "url": "https://github.com/plugin87"

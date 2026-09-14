@@ -102,7 +102,24 @@ const MARK = () => {
   const STATE = ['aria-checked', 'aria-selected', 'aria-expanded', 'aria-pressed'];
   const controls = [];
   let n = 0;
+  /* A native radio group puts exactly ONE radio in the tab order - the checked
+     one, or the first when none is checked - and the arrow keys move between
+     them. The browser reports every radio as tabbable, so counting them all as
+     "Tab never reaches this" flagged a correctly built group as broken. Skip the
+     radios that are not the group's tab stop; the arrow-key model is checked by
+     the composite pass. */
+  const radioSkip = new Set();
+  for (const r of root.querySelectorAll('input[type="radio"][name]')) {
+    if (radioSkip.has(r)) continue;
+    const group = [...root.querySelectorAll(`input[type="radio"][name="${CSS.escape(r.name)}"]`)]
+      .filter(el => vis(el) && !el.disabled);
+    if (group.length < 2) continue;
+    const stop = group.find(el => el.checked) || group[0];
+    for (const el of group) if (el !== stop) radioSkip.add(el);
+  }
+
   for (const el of root.querySelectorAll(CONTROL_SEL)) {
+    if (radioSkip.has(el)) continue;
     if (!vis(el) || !operable(el) || !tabbable(el)) continue;
     el.setAttribute('data-kbd-idx', String(n));
     const stateAttr = STATE.find(a => el.hasAttribute(a)) || null;

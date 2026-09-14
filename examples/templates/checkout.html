@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Checkout - Northfield Supply</title>
+<meta name="description" content="E-commerce checkout template: cart review, shipping, payment and an order summary that stays honest about totals." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./shell.css" />
+<style>
+  .co{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:var(--space-6);
+    max-inline-size:72rem;margin-inline:auto;padding:var(--space-8) var(--space-6) var(--space-12)}
+  @media (max-width:64rem){.co{grid-template-columns:minmax(0,1fr);padding:var(--space-5) var(--space-4) var(--space-10)}}
+  .steps{display:flex;gap:var(--space-2);flex-wrap:wrap;list-style:none;padding:0;margin-block-end:var(--space-6);
+    font-size:var(--text-sm)}
+  .steps li{display:flex;align-items:center;gap:var(--space-2);color:var(--color-text-secondary)}
+  .steps li[aria-current="step"]{color:var(--color-text-primary);font-weight:600}
+  .steps .n{display:grid;place-items:center;inline-size:1.5rem;block-size:1.5rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:700}
+  .steps li[aria-current="step"] .n{background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .steps .done .n{background:var(--color-feedback-success);color:var(--color-text-on-action)}
+  .line{display:grid;grid-template-columns:4.5rem minmax(0,1fr) auto;gap:var(--space-4);align-items:start;
+    min-inline-size:0;
+    padding-block:var(--space-4);border-block-start:1px solid var(--color-border-default)}
+  .line:first-of-type{border-block-start:0}
+  .thumb{aspect-ratio:1;border-radius:var(--radius-sm);background:var(--color-surface-raised);
+    display:grid;place-items:center;color:var(--color-text-secondary)}
+  .thumb .ico{inline-size:1.5rem;block-size:1.5rem}
+  .line h3{font-size:var(--text-base);font-weight:600}
+  .line .meta{font-size:var(--text-sm);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+  .qty{display:inline-flex;align-items:center;gap:var(--space-2);margin-block-start:var(--space-3);
+    flex-wrap:wrap;max-inline-size:100%}
+  .qty button{inline-size:2rem;block-size:2rem;border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-sm);background:transparent;color:var(--color-text-primary);cursor:pointer;
+    display:grid;place-items:center}
+  .qty button:hover{background:var(--color-surface-raised)}
+  .qty button:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .qty output{min-inline-size:2ch;text-align:center;font-variant-numeric:tabular-nums;font-weight:600}
+  .pay{display:grid;gap:var(--space-3)}
+  .pay label{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-4);
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);cursor:pointer}
+  .pay label:hover{background:var(--color-surface-raised)}
+  .pay input{inline-size:1.125rem;block-size:1.125rem;accent-color:var(--color-action-primary)}
+  .pay input:focus-visible{outline:2px solid var(--color-action-primary);outline-offset:2px}
+  .pay .cardline{margin-inline-start:auto;color:var(--color-text-secondary);font-size:var(--text-sm)}
+  .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,12rem),1fr));gap:var(--space-4)}
+  .summary{position:sticky;inset-block-start:var(--space-6);align-self:start}
+  @media (max-width:64rem){.summary{position:static}}
+  .sum-row{display:flex;justify-content:space-between;gap:var(--space-4);font-size:var(--text-sm)}
+  .sum-total{display:flex;justify-content:space-between;gap:var(--space-4);align-items:baseline;
+    font-size:var(--text-2xl);font-weight:700;letter-spacing:-0.02em}
+  .trust{display:grid;gap:var(--space-2);font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .trust div{display:flex;gap:var(--space-2);align-items:flex-start}
+  .trust .ico{inline-size:.875rem;block-size:.875rem;margin-block-start:.15rem;color:var(--color-feedback-success)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M4 7h16l-1.5 11H5.5z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg></span>Northfield Supply</span>
+  <span class="spacer"></span>
+  <span class="note">Need help? <a href="#main" style="color:var(--color-text-link)">Call 1-800-555-0110</a></span>
+</div>
+
+<div class="co" id="main">
+  <div>
+    <ol class="steps">
+      <li class="done"><span class="n" aria-hidden="true"><svg class="ico" style="inline-size:.75rem;block-size:.75rem"><use href="#i-check"/></svg></span>Cart</li>
+      <li class="done"><span class="n" aria-hidden="true"><svg class="ico" style="inline-size:.75rem;block-size:.75rem"><use href="#i-check"/></svg></span>Delivery</li>
+      <li aria-current="step"><span class="n" aria-hidden="true">3</span>Payment</li>
+      <li><span class="n" aria-hidden="true">4</span>Confirm</li>
+    </ol>
+
+    <section class="panel" aria-labelledby="bag">
+      <header><h2 id="bag">Your bag</h2><span class="note">3 items, ships from Portland</span></header>
+
+      <div class="line">
+        <div class="thumb" aria-hidden="true"><svg class="ico"><use href="#i-archive"/></svg></div>
+        <div>
+          <h3>Fieldbook Notebook, A5 dot grid</h3>
+          <p class="meta">Charcoal, 192 pages. SKU FB-A5-CH</p>
+          <div class="qty">
+            <button type="button" aria-label="Decrease quantity of Fieldbook Notebook"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-minus"/></svg></button>
+            <output aria-live="polite">2</output>
+            <button type="button" aria-label="Increase quantity of Fieldbook Notebook"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+        <p class="num" style="font-weight:600">$38.00</p>
+      </div>
+
+      <div class="line">
+        <div class="thumb" aria-hidden="true"><svg class="ico"><use href="#i-pencil"/></svg></div>
+        <div>
+          <h3>Machined Pen, brass</h3>
+          <p class="meta">Fine nib. Engraving: <span style="color:var(--color-text-primary)">"T.S."</span></p>
+          <div class="qty">
+            <button type="button" aria-label="Decrease quantity of Machined Pen"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-minus"/></svg></button>
+            <output aria-live="polite">1</output>
+            <button type="button" aria-label="Increase quantity of Machined Pen"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+        <p class="num" style="font-weight:600">$74.00</p>
+      </div>
+
+      <div class="line">
+        <div class="thumb" aria-hidden="true"><svg class="ico"><use href="#i-folder"/></svg></div>
+        <div>
+          <h3>Document Sleeve, waxed canvas</h3>
+          <p class="meta">Olive. <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Low stock, 2 left</span></p>
+          <div class="qty">
+            <button type="button" aria-label="Decrease quantity of Document Sleeve"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-minus"/></svg></button>
+            <output aria-live="polite">1</output>
+            <button type="button" aria-label="Increase quantity of Document Sleeve"><svg class="ico" style="inline-size:.875rem;block-size:.875rem" aria-hidden="true"><use href="#i-plus"/></svg></button>
+          </div>
+        </div>
+        <p class="num" style="font-weight:600">$62.00</p>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="payh" style="margin-block-start:var(--space-5)">
+      <header><h2 id="payh">Payment</h2><span class="note">All prices in USD</span></header>
+      <div class="pay" role="radiogroup" aria-labelledby="payh">
+        <label><input type="radio" name="method" checked /> Card ending 4242
+          <span class="cardline">Expires 04/29</span></label>
+        <label><input type="radio" name="method" /> Bank transfer
+          <span class="cardline">2 to 3 business days</span></label>
+        <label><input type="radio" name="method" /> Invoice, net 30
+          <span class="cardline">Approved accounts only</span></label>
+      </div>
+      <div class="grid2">
+        <div class="field"><label for="cvc">Security code</label>
+          <input id="cvc" inputmode="numeric" placeholder="123" />
+          <span class="hint">Three digits on the back of the card</span></div>
+        <div class="field"><label for="po">Purchase order (optional)</label>
+          <input id="po" placeholder="PO-00421" /></div>
+      </div>
+    </section>
+  </div>
+
+  <aside class="panel summary" aria-labelledby="sum">
+    <header><h2 id="sum">Order summary</h2></header>
+    <p class="sum-row"><span>Subtotal</span><span class="num">$174.00</span></p>
+    <p class="sum-row"><span>Shipping, ground</span><span class="num">$9.50</span></p>
+    <p class="sum-row"><span>Estimated tax</span><span class="num">$14.72</span></p>
+    <p class="sum-row"><span>Returning customer credit</span><span class="num up">-$20.00</span></p>
+    <div class="rule"></div>
+    <p class="sum-total"><span>Total</span><span class="num">$178.22</span></p>
+    <p class="note">Charged when the order ships, not now.</p>
+    <button class="btn btn-primary btn-block" type="button">Place order</button>
+    <button class="btn btn-secondary btn-block" type="button">Back to delivery</button>
+    <div class="rule"></div>
+    <div class="trust">
+      <div><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Free returns within 60 days, label included</span></div>
+      <div><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Arrives Tue 22 Sep if ordered today</span></div>
+      <div><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg><span>Card details are never stored on our servers</span></div>
+    </div>
+  </aside>
+</div>
+
+<div class="credit">
+  <span>Checkout template. Prices and stock are fictional.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</div>
+
+<script src="../component-states/icons.js"></script>
+<script>
+  /* quantity steppers really change the number they announce */
+  document.querySelectorAll('.qty').forEach((q) => {
+    const out = q.querySelector('output');
+    const [dec, inc] = q.querySelectorAll('button');
+    const set = (n) => { out.textContent = String(Math.max(1, n)); };
+    dec.addEventListener('click', () => set(Number(out.textContent) - 1));
+    inc.addEventListener('click', () => set(Number(out.textContent) + 1));
+  });
+</script>
+</body>
+</html>
