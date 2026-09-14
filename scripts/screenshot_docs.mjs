@@ -63,6 +63,7 @@ const THUMBS = [
   ['examples/templates/emr.html',      'tpl-emr.png',         'light', [1200, 760]],
   ['examples/templates/banking.html',  'tpl-banking.png',     'dark',  [1200, 760]],
   ['examples/templates/logistics.html','tpl-logistics.png',   'light', [1200, 760]],
+  ['examples/templates/orbital.html',  'tpl-orbital.png',     'dark',  [1200, 760]],
 ];
 const THUMB_DIR = join(ROOT, 'examples', 'thumbs');
 
