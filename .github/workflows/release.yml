@@ -27,7 +27,7 @@ jobs:
         id: tag
         run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
 
-      - name: Extract changelog section from README
+      - name: Extract the tag's section from CHANGELOG.md
         run: |
           TAG='${{ steps.tag.outputs.name }}'
           VER="${TAG#v}"
@@ -35,7 +35,7 @@ jobs:
             $0 ~ ("^### `v" ver "`") { flag=1; next }
             flag && /^### `v/ { flag=0 }
             flag { print }
-          ' README.md > RELEASE_NOTES.md
+          ' CHANGELOG.md > RELEASE_NOTES.md
           echo "----- release notes -----"
           cat RELEASE_NOTES.md
 

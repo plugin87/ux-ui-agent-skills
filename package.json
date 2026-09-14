@@ -8,7 +8,7 @@
     "ux-ui-agent-skills": "bin/cli.js"
   },
   "scripts": {
-    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py",
+    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py && python3 scripts/check_links.py",
     "test:unit": "node --test tests/unit/*.test.mjs tests/cli/*.test.mjs tests/meta/registry.test.mjs",
     "test:gates": "node --test tests/meta/*.test.mjs tests/unit/*.test.mjs tests/cli/*.test.mjs",
     "test:render": "node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html && node scripts/measure_render.mjs --dark examples/sample-app/preview.html",
@@ -40,6 +40,8 @@
     "bin/",
     "CLAUDE.md",
     "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
     "docs/",
     "examples/",
     "tokens/",
