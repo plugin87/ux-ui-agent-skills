@@ -1,0 +1,44 @@
+name: Gate gap - something passed that should have failed
+description: A gate said yes to broken work, or missed a defect it claims to cover.
+title: "[gate gap] "
+labels: ["gate-gap"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is the most valuable report this repo can get. A gate that says yes
+        to broken work is worse than a missing gate, because it converts a real
+        defect into a green tick.
+  - type: input
+    id: gate
+    attributes:
+      label: Which gate
+      description: The script that should have caught it.
+      placeholder: scripts/lint_intent.mjs
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Smallest input that reproduces it
+      description: >
+        Paste the minimal HTML, CSS, or token JSON. Smaller is better than
+        realistic - the fixtures in tests/fixtures/bad are usually under 20 lines.
+      render: html
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: What the gate printed
+      description: The real output and the exit status, not a summary.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should have said
+      description: Which rule was broken, and where that rule is written down.
+    validations:
+      required: true

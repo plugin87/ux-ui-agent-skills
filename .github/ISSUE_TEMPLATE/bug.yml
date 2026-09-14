@@ -1,0 +1,43 @@
+name: Bug
+description: Something in the kit does not work - a script, the CLI, the plugin, the template.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Observed behaviour against what you expected. Exact error text if it is short.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The commands you ran, in order.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: gate
+    attributes:
+      label: Gate output
+      description: >
+        Output of `node scripts/accuracy_report.mjs`, or of the single gate
+        involved. Paste it rather than describing it. If it could not run, say so.
+      render: shell
+  - type: input
+    id: install
+    attributes:
+      label: How the kit is installed
+      placeholder: Claude Code plugin / npx init / cloned repo
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Kit version, Node, Python, OS, and whether real Chrome is installed.
+      placeholder: v2.6.0, node 22.3, python 3.12, macOS 15, Chrome yes
+    validations:
+      required: true

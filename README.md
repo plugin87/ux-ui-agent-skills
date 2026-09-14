@@ -542,6 +542,24 @@ This is a **starter kit** — make it yours:
 
 ---
 
+## Contributing
+
+Two commands are the whole bar: `node scripts/accuracy_report.mjs` (38/38, no
+partial credit) and `npm run test:gates` (every gate must still reject its
+broken fixture). Paste the real output in the pull request rather than
+describing it.
+
+The most valuable issue this repo can receive is a **gate gap** - a case where a
+gate said yes to work it should have caught. There is a template for exactly
+that, because a gate that passes broken work is worse than a missing one: it
+turns a real defect into a green tick.
+
+[CONTRIBUTING.md](CONTRIBUTING.md) covers setup, the non-negotiable rules, how to
+add a gate that can still say no, and the SemVer table.
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) applies to every space in the project.
+
+---
+
 ## Changelog
 
 ### `v2.6.0`
