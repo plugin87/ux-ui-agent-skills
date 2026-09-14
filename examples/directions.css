@@ -31,6 +31,11 @@
   --lin-glow-a:rgba(94,106,210,0.55);
   --lin-glow-b:rgba(113,112,255,0.28);
 
+  /* two values the shared theme has no token for */
+  --ring-w:2px;              /* focus outline width */
+  --blur-sm:8px;             /* glass blur */
+  --marquee-dur:120s;        /* one full pass of the library marquee */
+
   /* apple: absolute black, one product, nothing else */
   --apl-canvas:#000000;
   --apl-ink:#f5f5f7;
