@@ -72,6 +72,46 @@ instead of borrowing the disabled dimming. Every one of those is a rule in
 
 ---
 
+## What the gates actually catch
+
+Left: the same dashboard written the way a model writes it when nothing stops it -
+the indigo-to-purple gradient, four equal cards with no focal point, emoji as
+icons, one radius and one shadow everywhere, grey-on-white body text, and a blue
+Delete Account. Right: the reference app in this repo.
+
+<table>
+<tr>
+<td width="50%"><img src=".github/images/before-slop.png" alt="A generated-looking analytics dashboard: purple gradient header with emoji, four identical stat cards, grey low-contrast labels, tiny icon buttons, and a blue Delete Account button" /><br><b>Statistical defaults</b></td>
+<td width="50%"><img src=".github/images/reference-app-light.png" alt="The same dashboard built to the kit's rules: one hero revenue metric leading, three smaller stats, a settings panel, and a red Delete account action" /><br><b>Built to the rules</b></td>
+</tr>
+</table>
+
+The difference is not a matter of opinion, and that is the point. The page on the
+left is `tests/fixtures/bad/slop-screen.html`; here is what the gates say about it:
+
+| Gate | Verdict on the left-hand page |
+|---|---|
+| REAL-render WCAG | `x <h1> "Analytics Dashboard" 1.00:1 (need 3)` - white text on a gradient has no measurable background |
+| Target size (2.5.8) | `x button.icon-btn is 15.3x16 (min 24x24)` |
+| Responsive | `x @280px overflow +820px (widest: div.card)` |
+| axe-core | `SERIOUS target-size` |
+| Slop tells | HIGH: hardcoded indigo-purple gradient, single radius, one flat shadow, `#000` on `#fff` |
+| Taste audit | HIGH: biggest heading 24px vs 14px body = 1.7x, not a display scale |
+| No emoji | `x line 88: emoji/pictograph` |
+| No hardcoded values | `FAIL: 63 hardcoded value(s)` |
+
+Seven gates, eight findings, none of them a matter of taste. The right-hand page
+passes all 38.
+
+One gate that should have caught something did not: `lint_intent` read the blue
+Delete Account as fine, because it resolves intent from the page's own theme and
+that page has no tokens at all. That is a real hole, it is written down here
+rather than quietly fixed in the screenshot, and
+`tests/meta/browser-gates.test.mjs` pins every claim in this table so it cannot
+rot.
+
+---
+
 ## What It Does
 
 | Capability | Description |

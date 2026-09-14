@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Analytics Dashboard</title>
+<style>
+  /* The statistical defaults, written out. Every line here is a tell from
+     taste/design-taste.md - this file exists to be REJECTED, and the meta-test
+     in tests/meta/ holds the gates to rejecting it. Do not "fix" it. */
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: -apple-system, sans-serif; background: #ffffff; color: #000000; }
+  .container { width: 1100px; margin: 0 auto; padding: 24px; }
+  .header {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: #ffffff; padding: 24px; border-radius: 8px; margin-bottom: 24px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .header h1 { font-size: 24px; font-weight: 700; }
+  .header p { font-size: 14px; opacity: 0.9; margin-top: 8px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+  .card {
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .card .label { font-size: 14px; color: #9ca3af; margin-bottom: 8px; }
+  .card .value { font-size: 24px; font-weight: 700; color: #000000; }
+  .card .delta { font-size: 12px; color: #9ca3af; margin-top: 8px; }
+  .panel {
+    background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .panel h2 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .panel p { font-size: 14px; color: #9ca3af; margin-bottom: 16px; }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+  .icon-btn {
+    width: 16px; height: 16px; border: none; background: transparent;
+    padding: 0; cursor: pointer; font-size: 12px; line-height: 1;
+  }
+  input[type=text] {
+    width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px;
+  }
+  .btn {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: #ffffff; border: none; border-radius: 8px; padding: 8px 16px;
+    font-size: 14px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  }
+  .btn-secondary { background: #6366f1; color: #ffffff; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>📊 Analytics Dashboard</h1>
+    <p>Track your key metrics — updated in real-time 🚀</p>
+  </div>
+
+  <div class="stats">
+    <div class="card">
+      <div class="label">💰 Revenue</div>
+      <div class="value">$48.2k</div>
+      <div class="delta">↑ 12% from last month</div>
+    </div>
+    <div class="card">
+      <div class="label">👥 Active Users</div>
+      <div class="value">3,910</div>
+      <div class="delta">↑ 4% from last month</div>
+    </div>
+    <div class="card">
+      <div class="label">📉 Churn</div>
+      <div class="value">1.8%</div>
+      <div class="delta">↓ 2% from last month</div>
+    </div>
+    <div class="card">
+      <div class="label">⭐ NPS</div>
+      <div class="value">62</div>
+      <div class="delta">↑ 7% from last month</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Settings</h2>
+    <p>Manage your account preferences — changes are saved automatically</p>
+    <div class="row">
+      <input type="text" value="user@example.com" />
+      <button class="icon-btn">✏️</button>
+      <button class="icon-btn">🗑️</button>
+    </div>
+    <button class="btn">Save Changes</button>
+    <button class="btn-secondary">Delete Account</button>
+  </div>
+
+</div>
+</body>
+</html>

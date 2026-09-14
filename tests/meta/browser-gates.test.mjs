@@ -115,3 +115,19 @@ test('verify_focustrap accepts a dialog that traps Tab, closes on Escape and ret
 test('verify_focustrap accepts the same dialog in dark mode', () => {
   accepts(gate('verify_focustrap.mjs', [F('good/trapped-modal.html'), '--open=#openBtn', '--dark']));
 });
+
+// ------------------------------------------------- the README's before/after
+
+test('the slop screen in the README is rejected by every gate the README claims', () => {
+  // .github/images/before-slop.png is a screenshot of this file, and the README
+  // prints what the gates say about it. If a gate ever stops catching one of
+  // these, the README becomes a lie - so the claims are asserted here.
+  const SLOP = F('bad/slop-screen.html');
+
+  rejects(gate('measure_render.mjs', [SLOP]), /1\.00:1|need/);
+  rejects(gate('verify_target_size.mjs', [SLOP]), /min 24x24/);
+  rejects(gate('verify_responsive.mjs', [SLOP]), /@280px overflow/);
+  rejects(gate('slop_tells.mjs', ['--strict', SLOP]), /HIGH/);
+  rejects(gate('taste_audit.mjs', ['--strict', SLOP]), /HIGH/);
+  rejects(gate('axe_audit.mjs', [SLOP]), /violation/i);
+});
