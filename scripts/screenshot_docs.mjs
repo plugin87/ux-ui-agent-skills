@@ -34,7 +34,13 @@ const SHOTS = [
   ['examples/sample-app/preview.html',        'reference-app-dark.png',   'dark',  [1280, 1000], true],
   ['examples/component-states/button.html',   'button-states-light.png',  'light', [1280, 520],  false],
   ['examples/component-states/button.html',   'button-states-dark.png',   'dark',  [1280, 520],  false],
+  // GitHub's social preview: 1280x640, uploaded by hand in Settings -> General.
+  // It is never shown inline in the README, so --check exempts it below.
+  ['cover.html',                              'social-preview.png',       'light', [1280, 640],  false],
 ];
+
+/** Images that exist for somewhere other than the README body. */
+const NOT_INLINE = new Set(['social-preview.png']);
 
 function check() {
   const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
@@ -50,10 +56,11 @@ function check() {
     if (!onDisk.has(name)) issues.push(`dangling: README shows ${name}, which does not exist`);
   }
   for (const name of onDisk) {
+    if (NOT_INLINE.has(name)) continue;
     if (!referenced.has(name)) issues.push(`orphan: .github/images/${name} is in the repo but no README line shows it`);
   }
 
-  console.log(`screenshot_docs --check: ${declared.size} declared, ${onDisk.size} on disk, ${referenced.size} referenced by README.`);
+  console.log(`screenshot_docs --check: ${declared.size} declared (${NOT_INLINE.size} not inline), ${onDisk.size} on disk, ${referenced.size} referenced by README.`);
   if (issues.length) {
     console.log(`\nFAIL: ${issues.length} problem(s):`);
     for (const i of issues) console.log('  x ' + i);
