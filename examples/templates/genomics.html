@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BRCA2 variants - Helix Clinical Genomics</title>
+<meta name="description" content="Genomics template: an exon track, a variant lollipop plot, a coverage histogram and a classification table." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<link rel="stylesheet" href="./_console.css" />
+<style>
+  .track-bg{fill:var(--lin-raised)}
+  .exon{fill:var(--lin-accent)}
+  .ruler-l{stroke:var(--lin-hairline)}
+  .axis-t{fill:var(--lin-ink-3);font-family:var(--font-mono);font-size:9px} /* ds-allow-hardcode: SVG label size is geometry */
+  .v line{stroke:var(--lin-ink-3);stroke-width:1}
+  .v.path circle{fill:var(--color-text-error)} .v.path line{stroke:var(--color-text-error)}
+  .v.vus circle{fill:var(--color-feedback-warning)}
+  .v.ben circle{fill:var(--trm-accent)}
+  .cov rect{fill:var(--color-chart-1);opacity:.65}
+  .legend{display:flex;gap:var(--space-4);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-xs);
+    color:var(--lin-ink-3)}
+  .legend span{display:inline-flex;align-items:center;gap:var(--space-2)}
+  .sw{inline-size:.625rem;block-size:.625rem;border-radius:var(--radius-full)}
+  /* a letter-spaced sequence has a very wide min-content: it must be allowed to
+     break anywhere, and on a phone the tracking comes down */
+  .seq{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.24em;color:var(--lin-ink-2);
+    overflow-wrap:anywhere;word-break:break-all;line-height:1.9;min-inline-size:0}
+  @media (max-width:46rem){.seq{letter-spacing:.08em}}
+  .seq b{color:var(--color-text-error);font-weight:700}
+  /* a 3rem figure carries its own min-content width: on a phone it would widen
+     the panel and push the page sideways */
+  .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
+    font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-inline-size:0}
+  @media (max-width:46rem){.big{font-size:var(--text-3xl)}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><h1>BRCA2</h1><p class="sub">CHR13:32,315,474-32,400,266 · GRCH38 · SAMPLE HX-4471</p></div>
+  <span class="badge b-bad"><span class="dot" aria-hidden="true"></span>1 pathogenic</span>
+  <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>4 uncertain</span>
+</div>
+
+<div class="grid">
+  <section class="panel s12">
+    <header><h2>Variant map</h2><span class="note">lollipop height is -log10 p, colour is classification</span></header>
+    <svg class="plot" viewBox="0 0 980 150" role="img" aria-labelledby="vT vD">
+      <title id="vT">Variant lollipop plot across BRCA2 with the exon structure beneath</title>
+      <desc id="vD">Twenty-six variants. One pathogenic frameshift sits in exon 11, four are of uncertain significance, the rest are benign. Coverage is even across the gene.</desc>
+      <line class="ruler-l" x1="0" y1="100" x2="980" y2="100"/>
+      <g class="v vus"><line x1="340.9" y1="100" x2="340.9" y2="55.9"/><circle cx="340.9" cy="55.9" r="3"/></g>
+        <g class="v vus"><line x1="441.7" y1="100" x2="441.7" y2="39"/><circle cx="441.7" cy="39" r="3"/></g>
+        <g class="v ben"><line x1="441.8" y1="100" x2="441.8" y2="80.1"/><circle cx="441.8" cy="80.1" r="3"/></g>
+        <g class="v vus"><line x1="901.8" y1="100" x2="901.8" y2="61.2"/><circle cx="901.8" cy="61.2" r="3"/></g>
+        <g class="v vus"><line x1="127.8" y1="100" x2="127.8" y2="48.1"/><circle cx="127.8" cy="48.1" r="3"/></g>
+        <g class="v ben"><line x1="213.9" y1="100" x2="213.9" y2="98.7"/><circle cx="213.9" cy="98.7" r="3"/></g>
+        <g class="v path"><line x1="367.3" y1="100" x2="367.3" y2="30.2"/><circle cx="367.3" cy="30.2" r="5.5"/></g>
+        <g class="v ben"><line x1="328.9" y1="100" x2="328.9" y2="82.8"/><circle cx="328.9" cy="82.8" r="3"/></g>
+        <g class="v path"><line x1="888.5" y1="100" x2="888.5" y2="13.2"/><circle cx="888.5" cy="13.2" r="5.5"/></g>
+        <g class="v ben"><line x1="758" y1="100" x2="758" y2="99.6"/><circle cx="758" cy="99.6" r="3"/></g>
+        <g class="v ben"><line x1="638.5" y1="100" x2="638.5" y2="83.4"/><circle cx="638.5" cy="83.4" r="3"/></g>
+        <g class="v path"><line x1="265.1" y1="100" x2="265.1" y2="35.4"/><circle cx="265.1" cy="35.4" r="5.5"/></g>
+        <g class="v ben"><line x1="842" y1="100" x2="842" y2="83.9"/><circle cx="842" cy="83.9" r="3"/></g>
+        <g class="v ben"><line x1="316.9" y1="100" x2="316.9" y2="71.8"/><circle cx="316.9" cy="71.8" r="3"/></g>
+        <g class="v ben"><line x1="421.3" y1="100" x2="421.3" y2="74.7"/><circle cx="421.3" cy="74.7" r="3"/></g>
+        <g class="v vus"><line x1="539.5" y1="100" x2="539.5" y2="40.7"/><circle cx="539.5" cy="40.7" r="3"/></g>
+        <g class="v ben"><line x1="853.2" y1="100" x2="853.2" y2="73.6"/><circle cx="853.2" cy="73.6" r="3"/></g>
+        <g class="v ben"><line x1="397.2" y1="100" x2="397.2" y2="91.5"/><circle cx="397.2" cy="91.5" r="3"/></g>
+        <g class="v ben"><line x1="836.4" y1="100" x2="836.4" y2="75.8"/><circle cx="836.4" cy="75.8" r="3"/></g>
+        <g class="v ben"><line x1="94.2" y1="100" x2="94.2" y2="72.5"/><circle cx="94.2" cy="72.5" r="3"/></g>
+        <g class="v vus"><line x1="338.4" y1="100" x2="338.4" y2="66.5"/><circle cx="338.4" cy="66.5" r="3"/></g>
+        <g class="v path"><line x1="394.1" y1="100" x2="394.1" y2="32.1"/><circle cx="394.1" cy="32.1" r="5.5"/></g>
+        <g class="v ben"><line x1="817.9" y1="100" x2="817.9" y2="88"/><circle cx="817.9" cy="88" r="3"/></g>
+        <g class="v ben"><line x1="695.4" y1="100" x2="695.4" y2="94.5"/><circle cx="695.4" cy="94.5" r="3"/></g>
+        <g class="v ben"><line x1="431.9" y1="100" x2="431.9" y2="82.4"/><circle cx="431.9" cy="82.4" r="3"/></g>
+        <g class="v vus"><line x1="552.3" y1="100" x2="552.3" y2="69.9"/><circle cx="552.3" cy="69.9" r="3"/></g>
+      <rect class="track-bg" x="0" y="112" width="980" height="20" rx="3"/>
+      <g class="exon"><rect x="40" y="14" width="120" height="16" rx="2"/><rect x="210" y="14" width="90" height="16" rx="2"/><rect x="360" y="14" width="60" height="16" rx="2"/><rect x="470" y="14" width="140" height="16" rx="2"/><rect x="680" y="14" width="80" height="16" rx="2"/><rect x="820" y="14" width="110" height="16" rx="2"/></g>
+      <text class="axis-t" x="0" y="146">32,315,474</text>
+      <text class="axis-t" x="880" y="146">32,400,266</text>
+    </svg>
+    <p class="legend">
+      <span><i class="sw" style="background:var(--color-text-error)"></i>Pathogenic</span>
+      <span><i class="sw" style="background:var(--color-feedback-warning)"></i>Uncertain</span>
+      <span><i class="sw" style="background:var(--trm-accent)"></i>Benign</span>
+      <span><i class="sw" style="background:var(--lin-accent);border-radius:2px"></i>Exon</span>
+    </p>
+  </section>
+
+  <section class="panel s8">
+    <header><h2>Read coverage</h2><span class="note">mean 96x, minimum 41x</span></header>
+    <svg class="plot cov" viewBox="0 0 960 100" role="img" aria-label="Coverage histogram: even across the gene, dipping to 41x in the fifth exon">
+      <rect x="0.0" y="29.7" width="8" height="70.3"/><rect x="10.0" y="26.7" width="8" height="73.3"/><rect x="20.0" y="22.0" width="8" height="78.0"/><rect x="30.0" y="34.0" width="8" height="66.0"/><rect x="40.0" y="23.6" width="8" height="76.4"/><rect x="50.0" y="13.3" width="8" height="86.7"/><rect x="60.0" y="10.5" width="8" height="89.5"/><rect x="70.0" y="21.4" width="8" height="78.6"/><rect x="80.0" y="11.6" width="8" height="88.4"/><rect x="90.0" y="19.0" width="8" height="81.0"/><rect x="100.0" y="7.4" width="8" height="92.6"/><rect x="110.0" y="7.5" width="8" height="92.5"/><rect x="120.0" y="-0.9" width="8" height="100.9"/><rect x="130.0" y="6.4" width="8" height="93.6"/><rect x="140.0" y="8.8" width="8" height="91.2"/><rect x="150.0" y="5.1" width="8" height="94.9"/><rect x="160.0" y="8.9" width="8" height="91.1"/><rect x="170.0" y="13.4" width="8" height="86.6"/><rect x="180.0" y="9.0" width="8" height="91.0"/><rect x="190.0" y="7.4" width="8" height="92.6"/><rect x="200.0" y="4.4" width="8" height="95.6"/><rect x="210.0" y="4.1" width="8" height="95.9"/><rect x="220.0" y="9.7" width="8" height="90.3"/><rect x="230.0" y="27.8" width="8" height="72.2"/><rect x="240.0" y="12.9" width="8" height="87.1"/><rect x="250.0" y="28.0" width="8" height="72.0"/><rect x="260.0" y="35.8" width="8" height="64.2"/><rect x="270.0" y="39.2" width="8" height="60.8"/><rect x="280.0" y="35.8" width="8" height="64.2"/><rect x="290.0" y="43.5" width="8" height="56.5"/><rect x="300.0" y="40.9" width="8" height="59.1"/><rect x="310.0" y="50.8" width="8" height="49.2"/><rect x="320.0" y="52.3" width="8" height="47.7"/><rect x="330.0" y="45.0" width="8" height="55.0"/><rect x="340.0" y="46.5" width="8" height="53.5"/><rect x="350.0" y="61.9" width="8" height="38.1"/><rect x="360.0" y="55.5" width="8" height="44.5"/><rect x="370.0" y="64.5" width="8" height="35.5"/><rect x="380.0" y="56.0" width="8" height="44.0"/><rect x="390.0" y="65.1" width="8" height="34.9"/><rect x="400.0" y="63.4" width="8" height="36.6"/><rect x="410.0" y="64.4" width="8" height="35.6"/><rect x="420.0" y="67.2" width="8" height="32.8"/><rect x="430.0" y="74.4" width="8" height="25.6"/><rect x="440.0" y="62.7" width="8" height="37.3"/><rect x="450.0" y="60.9" width="8" height="39.1"/><rect x="460.0" y="74.0" width="8" height="26.0"/><rect x="470.0" y="64.3" width="8" height="35.7"/><rect x="480.0" y="52.6" width="8" height="47.4"/><rect x="490.0" y="65.0" width="8" height="35.0"/><rect x="500.0" y="56.6" width="8" height="43.4"/><rect x="510.0" y="48.9" width="8" height="51.1"/><rect x="520.0" y="59.6" width="8" height="40.4"/><rect x="530.0" y="38.2" width="8" height="61.8"/><rect x="540.0" y="40.9" width="8" height="59.1"/><rect x="550.0" y="38.3" width="8" height="61.7"/><rect x="560.0" y="36.5" width="8" height="63.5"/><rect x="570.0" y="31.5" width="8" height="68.5"/><rect x="580.0" y="36.9" width="8" height="63.1"/><rect x="590.0" y="27.8" width="8" height="72.2"/><rect x="600.0" y="17.1" width="8" height="82.9"/><rect x="610.0" y="13.4" width="8" height="86.6"/><rect x="620.0" y="20.2" width="8" height="79.8"/><rect x="630.0" y="23.0" width="8" height="77.0"/><rect x="640.0" y="5.6" width="8" height="94.4"/><rect x="650.0" y="4.7" width="8" height="95.3"/><rect x="660.0" y="2.3" width="8" height="97.7"/><rect x="670.0" y="1.4" width="8" height="98.6"/><rect x="680.0" y="14.9" width="8" height="85.1"/><rect x="690.0" y="10.7" width="8" height="89.3"/><rect x="700.0" y="5.6" width="8" height="94.4"/><rect x="710.0" y="0.3" width="8" height="99.7"/><rect x="720.0" y="0.4" width="8" height="99.6"/><rect x="730.0" y="12.8" width="8" height="87.2"/><rect x="740.0" y="-2.1" width="8" height="102.1"/><rect x="750.0" y="16.0" width="8" height="84.0"/><rect x="760.0" y="9.1" width="8" height="90.9"/><rect x="770.0" y="8.1" width="8" height="91.9"/><rect x="780.0" y="16.8" width="8" height="83.2"/><rect x="790.0" y="9.2" width="8" height="90.8"/><rect x="800.0" y="14.3" width="8" height="85.7"/><rect x="810.0" y="23.1" width="8" height="76.9"/><rect x="820.0" y="20.8" width="8" height="79.2"/><rect x="830.0" y="34.9" width="8" height="65.1"/><rect x="840.0" y="28.1" width="8" height="71.9"/><rect x="850.0" y="46.6" width="8" height="53.4"/><rect x="860.0" y="36.6" width="8" height="63.4"/><rect x="870.0" y="44.9" width="8" height="55.1"/><rect x="880.0" y="47.5" width="8" height="52.5"/><rect x="890.0" y="46.8" width="8" height="53.2"/><rect x="900.0" y="47.8" width="8" height="52.2"/><rect x="910.0" y="46.4" width="8" height="53.6"/><rect x="920.0" y="48.4" width="8" height="51.6"/><rect x="930.0" y="63.0" width="8" height="37.0"/><rect x="940.0" y="71.5" width="8" height="28.5"/><rect x="950.0" y="54.5" width="8" height="45.5"/>
+    </svg>
+  </section>
+
+  <section class="panel s4">
+    <header><h2>Called variant</h2></header>
+    <p class="big">c.5946delT</p>
+    <dl class="kv">
+      <dt>Protein</dt><dd>p.Ser1982fs</dd>
+      <dt>Consequence</dt><dd>Frameshift</dd>
+      <dt>Zygosity</dt><dd>Heterozygous</dd>
+      <dt>Depth</dt><dd>112x</dd>
+      <dt>Allele fraction</dt><dd>0.49</dd>
+      <dt>gnomAD</dt><dd>0.0004%</dd>
+      <dt>ACMG</dt><dd>PVS1, PM2, PP5</dd>
+    </dl>
+  </section>
+
+  <section class="panel s6">
+    <header><h2>Sequence context</h2><span class="note">reference versus sample</span></header>
+    <p class="seq">... G A T C A A C T G <b>T</b> G A C T T C A G G ...</p>
+    <p class="seq">... G A T C A A C T G <b>-</b> G A C T T C A G G ...</p>
+    <p class="note">Single base deletion at position 32,340,301 shifts the reading frame and
+      introduces a premature stop 12 codons downstream.</p>
+  </section>
+
+  <section class="panel s6">
+    <header><h2>Classification</h2><span class="note">26 called, 5 reportable</span></header>
+    <div class="tblwrap">
+      <table>
+        <caption class="sr-only">Called variants with consequence and classification</caption>
+        <thead><tr><th scope="col">Variant</th><th scope="col">Consequence</th><th scope="col" class="end">AF</th><th scope="col">Class</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">c.5946delT</th><td>Frameshift</td><td class="end num">0.49</td>
+            <td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Pathogenic</span></td></tr>
+          <tr><th scope="row">c.7522G&gt;A</th><td>Missense</td><td class="end num">0.51</td>
+            <td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Uncertain</span></td></tr>
+          <tr><th scope="row">c.865A&gt;C</th><td>Missense</td><td class="end num">0.47</td>
+            <td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Uncertain</span></td></tr>
+          <tr><th scope="row">c.1114C&gt;A</th><td>Missense</td><td class="end num">0.52</td>
+            <td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Benign</span></td></tr>
+          <tr><th scope="row">c.3396A&gt;G</th><td>Synonymous</td><td class="end num">0.99</td>
+            <td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Benign</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span>Genomics template. Sample, variants and coverage are simulated and must not be used for diagnosis.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>

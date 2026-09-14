@@ -88,8 +88,12 @@ main{display:flex;flex-direction:column;min-inline-size:0}
   color:var(--color-text-primary);cursor:pointer}
 .iconbtn:hover{background:var(--color-surface-raised)}
 .iconbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
-.field{display:grid;gap:var(--space-2);min-inline-size:0}
+/* A field beside a field with a hint must not grow to match it: grid stretches
+   items by default, so the control without a hint ended up taller than the one
+   with it. Align to the start and give the control a fixed height. */
+.field{display:grid;gap:var(--space-2);min-inline-size:0;align-content:start}
 .field label{font-size:var(--text-sm);font-weight:500}
+.field input,.field select{block-size:var(--size-control-md)}
 .field input,.field select,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
   padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
   background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--text-sm)/1.4 var(--font-sans)}
@@ -106,8 +110,8 @@ main{display:flex;flex-direction:column;min-inline-size:0}
 .b-mute{--dot:var(--color-text-secondary)}
 
 /* tables */
-.tablewrap{overflow-x:auto;border:1px solid var(--color-border-default);border-radius:var(--radius-card);
-  background:var(--color-surface-card)}
+.tablewrap{overflow-x:auto;position:relative;border:1px solid var(--color-border-default);
+  border-radius:var(--radius-card);background:var(--color-surface-card)}
 table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm)}
 caption{text-align:start;padding:var(--space-4) var(--space-5) var(--space-2);font-weight:600}
 th,td{padding:var(--space-3) var(--space-4);text-align:start;border-block-start:1px solid var(--color-border-default)}

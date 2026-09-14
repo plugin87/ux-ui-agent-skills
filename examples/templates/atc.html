@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sector 4 approach - Nordvik Control</title>
+<meta name="description" content="Air traffic control template: a radar scope with range rings, aircraft vectors, conflict pairs and flight progress strips." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html{color-scheme:dark}
+  body{font-family:var(--font-sans);background:var(--lin-canvas);color:var(--lin-ink);font-size:var(--text-sm);
+    line-height:var(--leading-snug);-webkit-font-smoothing:antialiased}
+  a{color:inherit} .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .top{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;overflow-wrap:anywhere;
+    padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--lin-hairline);background:var(--lin-panel)}
+  h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
+  @media (max-width:46rem){h1{font-size:var(--text-2xl)}}
+  .sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
+  .clock{margin-inline-start:auto;font-family:var(--font-mono);font-size:var(--text-2xl);color:var(--trm-accent);
+    font-variant-numeric:tabular-nums}
+  @media (max-width:46rem){.clock{margin-inline-start:0;font-size:var(--text-lg)}}
+  .grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--space-4);padding:var(--space-4)}
+  @media (max-width:64rem){.grid{grid-template-columns:minmax(0,1fr)}}
+  .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
+    padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
+  .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;
+    min-inline-size:0}
+  .panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
+  h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--lin-ink-3)}
+  .note{color:var(--lin-ink-3);font-size:var(--text-xs);min-inline-size:0;overflow-wrap:anywhere}
+  .top > *{min-inline-size:0}
+
+  .scope{background:var(--lin-canvas);border-radius:var(--radius-sm);overflow:hidden}
+  .scope svg{inline-size:100%;block-size:auto;display:block}
+  .rings circle{fill:none;stroke:var(--lin-hairline);stroke-width:1}
+  .spokes line{stroke:var(--lin-hairline-soft);stroke-width:1}
+  .ac line{stroke:var(--trm-accent);stroke-width:1.5}
+  .ac rect{fill:var(--trm-accent)}
+  .ac text{fill:var(--trm-accent);font-family:var(--font-mono);font-size:9px;letter-spacing:.04em} /* ds-allow-hardcode: SVG label size is geometry */
+  .ac text.d{fill:var(--lin-ink-3)}
+  .ac.conflict line,.ac.conflict rect{stroke:var(--color-text-error);fill:var(--color-text-error)}
+  .ac.conflict text{fill:var(--color-text-error)}
+  @media (prefers-reduced-motion:no-preference){
+    .sweep{transform-origin:center;animation:spin var(--sweep-dur) linear infinite}
+    @keyframes spin{to{rotate:360deg}}
+  }
+
+  .tblwrap{overflow-x:auto;min-inline-size:0}
+  table{inline-size:100%;border-collapse:collapse;font-size:var(--text-xs);min-inline-size:18rem}
+  th,td{padding:var(--space-2) var(--space-2);text-align:start;border-block-start:1px solid var(--lin-hairline-soft)}
+  thead th{border-block-start:0;color:var(--lin-ink-3);font-family:var(--font-mono);letter-spacing:.08em;
+    text-transform:uppercase}
+  tbody th{font-family:var(--font-mono);color:var(--lin-ink)}
+  .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.0625rem var(--space-2);
+    border-radius:var(--radius-pill);background:var(--lin-raised);font-size:.625rem;font-weight:600}
+  .badge .dot{inline-size:.375rem;block-size:.375rem;border-radius:var(--radius-full);background:var(--dot)}
+  .b-ok{--dot:var(--trm-accent)} .b-bad{--dot:var(--color-text-error)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-family:var(--font-mono);
+    font-size:var(--text-xs)}
+  .kv dt{color:var(--lin-ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .kv dd{margin:0;text-align:end;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .alert{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3);padding:var(--space-3);
+    border-radius:var(--radius-sm);background:color-mix(in oklab,var(--color-text-error) 14%,var(--lin-panel));
+    border:1px solid color-mix(in oklab,var(--color-text-error) 40%,transparent)}
+  .alert .ico{inline-size:1rem;block-size:1rem;color:var(--color-text-error)}
+  footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--lin-hairline);
+    color:var(--lin-ink-3);font-size:var(--text-xs);display:flex;justify-content:space-between;gap:var(--space-4);
+    flex-wrap:wrap}
+  footer a{color:var(--lin-accent-hover)} footer span{min-inline-size:0;overflow-wrap:anywhere}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><h1>Sector 4 approach</h1><p class="sub">NORDVIK CONTROL · 8 TRACKED · QNH 1013</p></div>
+  <span class="clock num">14:08:22Z</span>
+</div>
+
+<div class="grid">
+  <section class="panel">
+    <header><h2>Radar scope</h2><span class="note">80 NM range, 20 NM rings</span></header>
+    <div class="scope">
+      <svg viewBox="0 0 480 480" role="img" aria-labelledby="scT scD">
+        <title id="scT">Radar scope with eight tracked aircraft</title>
+        <desc id="scD">Eight aircraft within 80 nautical miles. DLH9K and UAE7 are in conflict, converging at flight level 360 and 380.</desc>
+        <g class="rings"><circle cx="240" cy="240" r="52.5"/><circle cx="240" cy="240" r="105.0"/><circle cx="240" cy="240" r="157.5"/><circle cx="240" cy="240" r="210.0"/></g>
+        <g class="spokes"><line x1="240" y1="240" x2="450.0" y2="240.0"/><line x1="240" y1="240" x2="421.9" y2="345.0"/><line x1="240" y1="240" x2="345.0" y2="421.9"/><line x1="240" y1="240" x2="240.0" y2="450.0"/><line x1="240" y1="240" x2="135.0" y2="421.9"/><line x1="240" y1="240" x2="58.1" y2="345.0"/><line x1="240" y1="240" x2="30.0" y2="240.0"/><line x1="240" y1="240" x2="58.1" y2="135.0"/><line x1="240" y1="240" x2="135.0" y2="58.1"/><line x1="240" y1="240" x2="240.0" y2="30.0"/><line x1="240" y1="240" x2="345.0" y2="58.1"/><line x1="240" y1="240" x2="421.9" y2="135.0"/></g>
+        <g class="sweep"><path d="M 240,240 L 240,30 A 210,210 0 0,1 345,58 Z" fill="var(--trm-accent)" opacity=".16"/></g>
+        <g class="ac"><line x1="238" y1="324.1" x2="263.9" y2="325.4"/><rect x="235" y="321.1" width="6" height="6"/><text x="249" y="322.1" text-anchor="start">SAS441</text><text x="249" y="333.1" text-anchor="start" class="d">FL340 448</text></g>
+        <g class="ac"><line x1="321.4" y1="236.1" x2="295.4" y2="235.6"/><rect x="318.4" y="233.1" width="6" height="6"/><text x="310.4" y="234.1" text-anchor="end">BAW17</text><text x="310.4" y="245.1" text-anchor="end" class="d">FL280 392</text></g>
+        <g class="ac conflict"><line x1="171.3" y1="83.6" x2="194.3" y2="95.8"/><rect x="168.3" y="80.6" width="6" height="6"/><text x="182.3" y="81.6" text-anchor="start">DLH9K</text><text x="182.3" y="92.6" text-anchor="start" class="d">FL360 471</text></g>
+        <g class="ac"><line x1="80.7" y1="319.2" x2="69.7" y2="342.8"/><rect x="77.7" y="316.2" width="6" height="6"/><text x="91.7" y="317.2" text-anchor="start">AFR22</text><text x="91.7" y="328.2" text-anchor="start" class="d">FL320 436</text></g>
+        <g class="ac"><line x1="164.7" y1="257.5" x2="155" y2="233.4"/><rect x="161.7" y="254.5" width="6" height="6"/><text x="175.7" y="255.5" text-anchor="start">KLM61</text><text x="175.7" y="266.5" text-anchor="start" class="d">FL240 361</text></g>
+        <g class="ac conflict"><line x1="341.3" y1="123.6" x2="364.3" y2="111.4"/><rect x="338.3" y="120.6" width="6" height="6"/><text x="330.3" y="121.6" text-anchor="end">UAE7</text><text x="330.3" y="132.6" text-anchor="end" class="d">FL380 502</text></g>
+        <g class="ac"><line x1="239.4" y1="162.4" x2="250.8" y2="185.7"/><rect x="236.4" y="159.4" width="6" height="6"/><text x="250.4" y="160.4" text-anchor="start">RYR88</text><text x="250.4" y="171.4" text-anchor="start" class="d">FL180 318</text></g>
+        <g class="ac"><line x1="365.3" y1="363.1" x2="346.6" y2="381.2"/><rect x="362.3" y="360.1" width="6" height="6"/><text x="354.3" y="361.1" text-anchor="end">THY3</text><text x="354.3" y="372.1" text-anchor="end" class="d">FL300 420</text></g>
+      </svg>
+    </div>
+  </section>
+
+  <div style="display:grid;gap:var(--space-4);align-content:start">
+    <section class="panel">
+      <header><h2>Conflict alert</h2><span class="note">predicted 04:12</span></header>
+      <div class="alert">
+        <svg class="ico" aria-hidden="true"><use href="#i-alert-triangle"/></svg>
+        <p>DLH9K and UAE7 converging. Lateral separation 3.1 NM and closing, vertical 2000 ft.
+          Suggested: turn UAE7 right heading 090, or descend DLH9K to FL340.</p>
+      </div>
+      <dl class="kv">
+        <dt>Closure</dt><dd>842 kt</dd>
+        <dt>Min sep</dt><dd>2.4 NM</dd>
+        <dt>Time to CPA</dt><dd>04:12</dd>
+      </dl>
+    </section>
+
+    <section class="panel">
+      <header><h2>Flight progress</h2><span class="note">sector inbound</span></header>
+      <div class="tblwrap">
+      <table>
+        <caption class="sr-only">Tracked aircraft with level, ground speed and heading</caption>
+        <thead><tr><th scope="col">Callsign</th><th scope="col">Level</th><th scope="col">GS</th><th scope="col">HDG</th><th scope="col">State</th></tr></thead>
+        <tbody>
+            <tr><th scope="row">SAS441</th><td class="num">FL340</td><td class="num">448 kt</td><td class="num">093</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+            <tr><th scope="row">BAW17</th><td class="num">FL280</td><td class="num">392 kt</td><td class="num">271</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+            <tr><th scope="row">DLH9K</th><td class="num">FL360</td><td class="num">471 kt</td><td class="num">118</td><td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Conflict</span></td></tr>
+            <tr><th scope="row">AFR22</th><td class="num">FL320</td><td class="num">436 kt</td><td class="num">205</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+            <tr><th scope="row">KLM61</th><td class="num">FL240</td><td class="num">361 kt</td><td class="num">338</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+            <tr><th scope="row">UAE7</th><td class="num">FL380</td><td class="num">502 kt</td><td class="num">062</td><td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Conflict</span></td></tr>
+            <tr><th scope="row">RYR88</th><td class="num">FL180</td><td class="num">318 kt</td><td class="num">154</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+            <tr><th scope="row">THY3</th><td class="num">FL300</td><td class="num">420 kt</td><td class="num">226</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Cleared</span></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<footer>
+  <span>Air traffic template. Tracks, levels and alerts are simulated and must not be used for control.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>

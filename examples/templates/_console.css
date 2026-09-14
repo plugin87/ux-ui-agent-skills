@@ -1,0 +1,77 @@
+/* _console.css — the chrome the dark operator consoles share. Extracted after the
+ * same five defects appeared in three of them: a missing .sr-only rule, headers
+ * that could not shrink, tables with no scroller, secondary text with no
+ * min-inline-size, and hidden labels without a positioned ancestor. */
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--font-sans);background:var(--lin-canvas);color:var(--lin-ink);font-size:var(--text-sm);
+  line-height:var(--leading-snug);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+img{max-inline-size:100%;block-size:auto;display:block}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.ico{inline-size:1rem;block-size:1rem;flex:none;stroke-width:1.75}
+.sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap}
+
+.top{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;overflow-wrap:anywhere;
+  padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--lin-hairline);background:var(--lin-panel)}
+.top > *{min-inline-size:0}
+h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
+@media (max-width:46rem){h1{font-size:var(--text-2xl)}}
+.sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
+.clock{margin-inline-start:auto;font-family:var(--font-mono);font-size:var(--text-2xl);color:var(--trm-accent);
+  font-variant-numeric:tabular-nums}
+@media (max-width:46rem){.clock{margin-inline-start:0;font-size:var(--text-lg)}}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
+@media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+@media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+.s12{grid-column:span 12} .s8{grid-column:span 8} .s6{grid-column:span 6}
+.s4{grid-column:span 4} .s3{grid-column:span 3}
+@media (max-width:72rem){.s12,.s8,.s6{grid-column:span 6} .s4,.s3{grid-column:span 3}}
+@media (max-width:46rem){.s12,.s8,.s6,.s4,.s3{grid-column:span 1}}
+
+.panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
+  padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start;position:relative}
+.panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;
+  min-inline-size:0}
+.panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
+h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
+  color:var(--lin-ink-3)}
+.note{color:var(--lin-ink-3);font-size:var(--text-xs);min-inline-size:0;overflow-wrap:anywhere}
+/* On a genuinely narrow viewport a panel title and its aside cannot share a row:
+   stacking them is what keeps the page from being pushed sideways. */
+@media (max-width:30rem){
+  .panel{padding:var(--space-3)}
+  .panel > header{flex-direction:column;align-items:flex-start;gap:var(--space-1)}
+}
+
+/* the scroller is the positioned ancestor its hidden caption needs; without one
+   an absolutely positioned .sr-only escapes to the initial containing block */
+.tblwrap{overflow-x:auto;min-inline-size:0;position:relative}
+table{inline-size:100%;border-collapse:collapse;font-size:var(--text-xs);min-inline-size:18rem}
+th,td{padding:var(--space-2);text-align:start;border-block-start:1px solid var(--lin-hairline-soft)}
+thead th{border-block-start:0;color:var(--lin-ink-3);font-family:var(--font-mono);letter-spacing:.08em;
+  text-transform:uppercase}
+tbody th{font-family:var(--font-mono);color:var(--lin-ink);font-weight:600}
+td.end,th.end{text-align:end}
+
+.badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.0625rem var(--space-2);
+  border-radius:var(--radius-pill);background:var(--lin-raised);font-size:.625rem;font-weight:600}
+.badge .dot{inline-size:.375rem;block-size:.375rem;border-radius:var(--radius-full);background:var(--dot)}
+.b-ok{--dot:var(--trm-accent)} .b-warn{--dot:var(--color-feedback-warning)}
+.b-bad{--dot:var(--color-text-error)} .b-info{--dot:var(--lin-accent)}
+
+.kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-family:var(--font-mono);
+  font-size:var(--text-xs)}
+.kv dt{color:var(--lin-ink-3);letter-spacing:.08em;text-transform:uppercase}
+.kv dd{margin:0;text-align:end;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+svg.plot{inline-size:100%;block-size:auto;display:block}
+.rule{block-size:1px;background:var(--lin-hairline)}
+
+footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--lin-hairline);
+  color:var(--lin-ink-3);font-size:var(--text-xs);display:flex;justify-content:space-between;gap:var(--space-4);
+  flex-wrap:wrap}
+footer a{color:var(--lin-accent-hover)}
+footer span{min-inline-size:0;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}

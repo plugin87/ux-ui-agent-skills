@@ -108,6 +108,18 @@ Every one of these was found by a gate on a screen that looked finished:
   not shrink type below the scale.
 - **Stagger comes from a token:** `calc(var(--duration-fast) * 0.6 * n)`, never a
   typed millisecond.
+- **A grid row stretches its items.** Two fields side by side where only one has
+  a hint: the hint-less control grows to match the taller column and the two
+  inputs end up different heights. Set `align-content: start` on the field and an
+  explicit `block-size` on the control. Measure the heights in the render - the
+  difference is obvious in a screenshot and invisible in the markup.
+- **An `.sr-only` needs a positioned ancestor.** Inside a scroller it otherwise
+  resolves against the initial containing block, lands outside the viewport, and
+  inflates the document's scroll width by hundreds of pixels.
+- **A zero-area element that only has area while it animates** reads as content
+  lost under `prefers-reduced-motion`. Give a radar sweep a wedge, not a 1px line.
+- **Never reuse a class name across layout and colour.** `.c4` as both a
+  four-column span and the fourth chart colour painted an entire panel pink.
 
 ## 7. The loop
 

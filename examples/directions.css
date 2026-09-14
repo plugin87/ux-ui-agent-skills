@@ -35,6 +35,7 @@
   --ring-w:2px;              /* focus outline width */
   --blur-sm:8px;             /* glass blur */
   --marquee-dur:120s;        /* one full pass of the library marquee */
+  --sweep-dur:4s;            /* one radar revolution */
 
   /* apple: absolute black, one product, nothing else */
   --apl-canvas:#000000;
