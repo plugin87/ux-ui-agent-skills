@@ -86,3 +86,39 @@ test('a scaffolded CLAUDE.md keeps the always-on rules', () => {
     assert.match(brief, /emoji/i, 'the emoji ban did not reach the scaffolded brief');
   });
 });
+
+test('demo copies the rendered examples and never launches a browser under --no-open', () => {
+  // The first 60 seconds decide whether anyone keeps reading, so `demo` has to
+  // put real rendered pages in front of someone without installing anything.
+  tmp((dir) => {
+    const dest = join(dir, 'shown');
+    const r = cli('demo', dest, '--no-open');
+    assert.equal(r.status, 0, r.stderr);
+    const out = stripAnsi(r.stdout);
+
+    assert.ok(existsSync(join(dest, 'index.html')), 'demo produced no front door');
+    assert.ok(existsSync(join(dest, 'sample-app', 'preview.html')), 'the reference app is missing');
+    const harnesses = readdirSync(join(dest, 'component-states')).filter(f => f.endsWith('.html'));
+    assert.ok(harnesses.length >= 20, `only ${harnesses.length} component harnesses were copied`);
+
+    assert.match(out, /Not opening a browser/, '--no-open must suppress the launch');
+    assert.doesNotMatch(out, /Opening it in your browser/);
+  });
+});
+
+test('demo --dry writes nothing', () => {
+  tmp((dir) => {
+    const dest = join(dir, 'nothing-here');
+    const r = cli('demo', dest, '--dry');
+    assert.equal(r.status, 0, r.stderr);
+    assert.ok(!existsSync(join(dest, 'index.html')), '--dry created files');
+  });
+});
+
+test('a mistyped flag is refused, not read as a destination path', () => {
+  // --forse used to fall through into the positional args and become a folder.
+  const r = cli('init', '--forse');
+  assert.equal(r.status, 1, 'an unknown flag must fail');
+  assert.match(stripAnsi(r.stderr + r.stdout), /unknown flag: --forse/);
+  assert.ok(!existsSync(join(ROOT, '--forse')), 'a flag became a directory');
+});

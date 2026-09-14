@@ -192,6 +192,16 @@ You get 18 skills (`/design-component`, `/brandkit`, `/a11y-audit`, …), 5 comm
 `CLAUDE.md` carries in the repo, because a plugin root `CLAUDE.md` is not loaded
 as project context.
 
+### See it first, install nothing
+
+```bash
+npx ux-ui-agent-skills demo        # copies the rendered examples and opens them
+```
+
+Every page it opens is a page the gates measure. Delete the folder afterwards;
+nothing was installed. Or skip the copy entirely and use the
+[live demo](https://plugin87.github.io/ux-ui-agent-skills/).
+
 ### Option B — Install with `npx`
 
 Drop the kit into any project, no clone needed:

@@ -16,6 +16,7 @@ is the short version.
 - [Accessibility Standards](#accessibility-standards)
 - [Design Review Output](#design-review-output)
 - [Customization](#customization)
+- [Look before installing](#look-before-installing)
 - [Install from a clone](#install-from-a-clone)
 - [Requirements](#requirements)
 
@@ -337,6 +338,20 @@ This is a **starter kit** — make it yours:
 - **Workflows** — adapt review rubrics and checklists in `workflows/` to your team's process
 
 ---
+
+---
+
+## Look before installing
+
+```bash
+npx ux-ui-agent-skills demo [dest]     # default: ./ux-ui-demo
+```
+
+Copies the bundled `examples/` - the reference app, 23 component harnesses, two
+aesthetic demos, all rendering from one token theme - and opens the index in a
+browser. `--no-open` copies without launching anything, `--dry` reports what it
+would copy and writes nothing. The folder is a throwaway: nothing is installed
+into your project.
 
 ---
 

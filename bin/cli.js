@@ -57,11 +57,20 @@ const C = {
 };
 
 function parseFlags(argv) {
-  const flags = { force: false, dry: false };
+  const flags = { force: false, dry: false, noOpen: false };
   const rest = [];
   for (const a of argv) {
     if (a === '--force' || a === '-f') flags.force = true;
     else if (a === '--dry' || a === '--dry-run') flags.dry = true;
+    else if (a === '--no-open') flags.noOpen = true;
+    /* An unrecognised flag used to fall through into `rest` and be read as a
+       destination path, so a typo like --forse silently created a directory
+       called "--forse". Say so instead. */
+    else if (a.startsWith('-')) {
+      console.error(`${C.red}unknown flag:${C.reset} ${a}\n`);
+      help();
+      process.exit(1);
+    }
     else rest.push(a);
   }
   return { flags, rest };
@@ -137,6 +146,41 @@ function cmdNew(destRoot, flags) {
   console.log(`  5. Run ${C.cyan}/gate${C.reset} in Claude Code before calling anything done.`);
 }
 
+/* `demo` answers the question an install cannot: what does this actually produce?
+   It copies the bundled examples - 23 component harnesses, the reference app,
+   two aesthetic demos, all rendering from one token theme - and opens the index.
+   Every page it opens is a page the gates measure, so a first-time reader is
+   looking at verified output, not a marketing shot. */
+function cmdDemo(destRoot, flags) {
+  const src = path.join(ROOT, 'examples');
+  if (!fs.existsSync(src)) {
+    console.error(`${C.red}error:${C.reset} this install has no examples/ directory to show.`);
+    process.exit(1);
+  }
+  console.log(`\n${C.bold}Copying the rendered examples${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
+  copyRecursive(src, destRoot, flags);
+
+  const index = path.join(destRoot, 'index.html');
+  console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset}`);
+  console.log(`\n${C.bold}Start here${C.reset}`);
+  console.log(`  ${C.cyan}${index}${C.reset}`);
+  console.log(`  ${C.dim}the reference app, 23 component harnesses, light and dark, every page gate-verified${C.reset}`);
+
+  if (flags.dry || flags.noOpen) {
+    console.log(`\n${C.dim}Not opening a browser. Open the file above yourself.${C.reset}\n`);
+    return;
+  }
+  const opener = process.platform === 'darwin' ? 'open'
+    : process.platform === 'win32' ? 'start'
+    : 'xdg-open';
+  try {
+    require('child_process').spawn(opener, [index], { stdio: 'ignore', detached: true, shell: process.platform === 'win32' }).unref();
+    console.log(`\n${C.dim}Opening it in your browser. Nothing was installed into your project - this is a copy you can delete.${C.reset}\n`);
+  } catch {
+    console.log(`\n${C.dim}Could not open a browser here. Open the file above yourself.${C.reset}\n`);
+  }
+}
+
 function cmdList() {
   console.log(`\n${C.bold}Available areas${C.reset}\n`);
   for (const key of Object.keys(AREAS)) {
@@ -154,14 +198,17 @@ ${C.bold}Usage${C.reset}
   npx ux-ui-skills ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
   npx ux-ui-skills ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
   npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
+  npx ux-ui-skills ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
   npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
   npx ux-ui-skills ${C.cyan}help${C.reset}
 
 ${C.bold}Flags${C.reset}
   --force, -f     Overwrite existing files
   --dry           Show what would be copied, change nothing
+  --no-open       demo only: copy the examples but do not launch a browser
 
 ${C.bold}Examples${C.reset}
+  npx ux-ui-skills demo
   npx ux-ui-skills init
   npx ux-ui-skills init ./my-app
   npx ux-ui-skills new ./my-product
@@ -195,6 +242,12 @@ function main() {
     if (!flags.dry) fs.mkdirSync(destRoot, { recursive: true });
     cmdNew(destRoot, flags);
     return summary(destRoot);
+  }
+
+  if (cmd === 'demo') {
+    const destRoot = path.resolve(rest[0] || path.join(process.cwd(), 'ux-ui-demo'));
+    if (!flags.dry) fs.mkdirSync(destRoot, { recursive: true });
+    return cmdDemo(destRoot, flags);
   }
 
   if (cmd === 'add') {
