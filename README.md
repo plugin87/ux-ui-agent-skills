@@ -544,6 +544,9 @@ This is a **starter kit** — make it yours:
 
 ## Changelog
 
+### Unreleased
+- **Incomplete hardcode scans fail.** `lint_hardcodes.py` reports candidate read errors, counts only successfully read files as scanned, and exits non-zero if any candidate cannot be read. Readable files are still checked; regression tests cover decoding and I/O failures, mixed inputs, and deliberate exclusions.
+
 ### `v2.6.0`
 
 Installable as a Claude Code plugin, a command that interrogates the brief before

@@ -13,7 +13,7 @@ Flags a line with a raw hex color, px length, or ms/s duration UNLESS it:
   - is inside a CSS var / token reference (var(--…), {token…}, theme(…)),
   - is a token-definition file (tokens/*.json),
   - carries an inline allow comment containing 'ds-allow-hardcode'.
-Exit 0 = clean, 1 = violations found.
+Exit 0 = clean (or usage help), 1 = violations or input/read errors.
 """
 import re
 import sys
@@ -106,11 +106,16 @@ def main(argv):
         print(f"ERROR: no lintable file(s) under {', '.join(args)}")
         return 1
     violations = 0
+    scanned = 0
+    read_errors = 0
     for f in files:
         try:
             text = f.read_text()
-        except (UnicodeDecodeError, OSError):
+        except (UnicodeDecodeError, OSError) as exc:
+            read_errors += 1
+            print(f"ERROR: could not read {f}: {exc}", file=sys.stderr)
             continue
+        scanned += 1
         in_allow = False
         for n, line in enumerate(text.splitlines(), 1):
             if "ds-allow-hardcode:start" in line:
@@ -125,7 +130,11 @@ def main(argv):
                 print(f"{f}:{n}: hardcoded {kind} '{val}' — use a token")
                 violations += 1
 
-    print(f"\nScanned {len(files)} file(s).")
+    print(f"\nScanned {scanned} file(s).")
+    if read_errors:
+        print(f"FAIL: {read_errors} of {len(files)} candidate file(s) could not be read; "
+              f"{violations} hardcoded value(s) found.")
+        return 1
     if violations:
         print(f"FAIL: {violations} hardcoded value(s). Map each to a token, "
               f"or add a '{ALLOW}' comment for a justified exception.")
