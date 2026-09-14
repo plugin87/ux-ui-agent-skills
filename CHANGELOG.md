@@ -10,6 +10,27 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.7.1`
+
+**The published package carried two files that were never in the repo.**
+`scripts/__pycache__/contrast.cpython-312.pyc` and its sibling shipped in 2.7.0:
+`.gitignore` keeps compiled Python bytecode out of git, and npm does not read
+`.gitignore` when `files` is present - `files` is an allowlist of paths, and
+everything sitting under an allowed directory travels with it, including
+whatever the working tree happens to be carrying. Publishing the same commit
+from a different machine would have produced a different tarball, silently.
+
+- `files` now ends with `!**/__pycache__/**`, `!**/*.pyc`, `!**/.DS_Store`. The
+  negations have to come **last** in the array; placed first, npm ignored them
+  and the pyc files still packed - checked, not assumed.
+- `tests/unit/package-contents.test.mjs` asserts the published set from
+  `npm pack --dry-run --json`, the same command the registry sees: no bytecode,
+  no `.DS_Store`, no `node_modules`, no nested tarballs, no README screenshots;
+  every file a consumer needs present by name; and a file count inside a sane
+  band so anything binary creeping in fails the build.
+
+327 files to 325. Nothing else changed.
+
 ### `v2.7.0`
 
 The release that stopped asking people to take its word for it. A design kit with
