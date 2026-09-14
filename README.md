@@ -12,7 +12,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.7.1-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.8.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -22,7 +22,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-18-14b8a6?style=flat-square)
-![Gates](https://img.shields.io/badge/objective_gates-38-16a34a?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-39-16a34a?style=flat-square)
 [![Live demo](https://img.shields.io/badge/live_demo-open-0ea5e9?style=flat-square)](https://plugin87.github.io/ux-ui-agent-skills/)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
@@ -34,7 +34,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 </div>
 
-**Current release [`v2.7.1`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime — a pure instruction and knowledge layer for AI agents.
+**Current release [`v2.8.0`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime — a pure instruction and knowledge layer for AI agents.
 
 ---
 
@@ -42,12 +42,22 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 
 Not a mockup. These are screenshots of the files in `examples/`, taken by
-`node scripts/screenshot_docs.mjs` from the same HTML the 38 gates measure — so
+`node scripts/screenshot_docs.mjs` from the same HTML the 39 gates measure — so
 what you see below is what the gate run passed, in both themes.
 
 **Click through them yourself: [plugin87.github.io/ux-ui-agent-skills](https://plugin87.github.io/ux-ui-agent-skills/)**
  — 26 live pages, every component harness and both reference screens, with a
 theme toggle. No install, no clone.
+
+<img src=".github/images/dashboard-light.png" alt="Atlas revenue console in light theme: sidebar navigation, a hero net-recurring-revenue figure at 2.48 million with a weekly bar chart, retention and churn cards, a donut of revenue by plan, an account ranking, regional sparklines, a sortable renewals table and an activity feed" />
+
+<img src=".github/images/dashboard-dark.png" alt="The same Atlas console in dark theme, rendered from the same token theme with no per-page palette" />
+
+**Atlas** is one HTML file in `examples/showcase/`, built only from the kit's
+tokens and rules: the hero figure leads at 3x the body size, the three
+breakdowns are deliberately three different shapes rather than three identical
+cards, the range tabs move the numbers, and the table headers really sort.
+[Open it live.](https://plugin87.github.io/ux-ui-agent-skills/showcase/)
 
 <table>
 <tr>
@@ -98,7 +108,7 @@ left is `tests/fixtures/bad/slop-screen.html`; here is what the gates say about 
 | No hardcoded values | `FAIL: 63 hardcoded value(s)` |
 
 Eight gates, nine findings, none of them a matter of taste. The right-hand page
-passes all 38.
+passes all 39.
 
 The last row is there because building this comparison broke a gate open.
 `lint_intent` originally read that blue Delete Account as fine: it resolved
@@ -260,10 +270,10 @@ Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#i
 ## Proving It, and Admitting What Cannot Be Proven
 
 
-The kit ships **38 objective gates** behind one command:
+The kit ships **39 objective gates** behind one command:
 
 ```bash
-node scripts/accuracy_report.mjs     # 38/38 or it fails — no partial credit
+node scripts/accuracy_report.mjs     # 39/39 or it fails — no partial credit
 ```
 
 Token validity, WCAG contrast on a real headless render in light *and* dark, every
@@ -272,7 +282,7 @@ at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
 
-**What that number covers, stated exactly.** 28 of the 38 checks open a real
+**What that number covers, stated exactly.** 29 of the 39 checks open a real
 browser, so what they measure is **rendered HTML**: the 23 component harnesses,
 the reference app, the live demo, the starter template. The other 10 read files —
 token JSON and alias resolution, contrast math on the token source, component

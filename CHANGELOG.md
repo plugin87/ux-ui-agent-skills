@@ -10,6 +10,42 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.8.0`
+
+**A whole product screen, not another component sheet.** The demo could show 23
+harnesses and two thin reference pages, which proves the parts work and shows
+nobody what the kit actually builds.
+
+`examples/showcase/index.html` is **Atlas**, a revenue console: sidebar shell,
+a hero figure at 3x the body size leading the page, a weekly bar chart, NRR and
+churn stacked beside it, then three deliberately different shapes - a donut, a
+ranked bar list, regional sparklines - rather than three identical cards. Below
+that a renewals table whose headers really sort, and an activity feed. Range
+tabs move the numbers, the theme toggle flips `data-theme`, its own
+`aria-pressed`, the icon and the label.
+
+Every value comes from the token theme, including the chart stagger, which is
+`calc(var(--duration-fast) * 0.6 * n)` rather than a typed millisecond. It is
+**gate 39**: render, states, axe, keyboard, target size, interactive, reduced
+motion, overflow, intent, slop and taste, in both themes, plus 280px at a 1.25x
+root font. The footer credits the kit and its author, because a screen this
+size is the argument.
+
+Building it found one real contrast bug and one real gate bug:
+
+- The avatar used a chart colour behind white initials - fine as a large filled
+  shape, **2.65:1** at 12px in dark. Chart palettes are not text palettes.
+- **`axe_audit.mjs` was racing the page.** It flipped `data-theme` and ran axe
+  immediately, so axe sampled colours mid-transition and reported contrast
+  failures that do not exist at rest. The sample app failed roughly one run in
+  six - measured by running the old gate six times and watching one fail, then
+  the fixed one six times clean. `measure_render` and `verify_states` already
+  disabled transitions before measuring; axe was the last render gate still
+  trusting timing.
+
+A flaky gate is worse than a missing one: it teaches everyone to re-run until
+green.
+
 ### `v2.7.1`
 
 **The published package carried two files that were never in the repo.**

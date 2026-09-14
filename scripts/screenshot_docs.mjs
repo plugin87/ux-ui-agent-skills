@@ -30,6 +30,8 @@ const OUT = join(ROOT, '.github', 'images');
 /** [source html, output name, theme, viewport, fullPage] */
 const SHOTS = [
   ['cover.html',                              'hero.png',                 'light', [1280, 630],  false],
+  ['examples/showcase/index.html',            'dashboard-light.png',      'light', [1440, 1400], false],
+  ['examples/showcase/index.html',            'dashboard-dark.png',       'dark',  [1440, 1400], false],
   ['examples/sample-app/preview.html',        'reference-app-light.png',  'light', [1280, 1000], true],
   ['examples/sample-app/preview.html',        'reference-app-dark.png',   'dark',  [1280, 1000], true],
   ['examples/component-states/button.html',   'button-states-light.png',  'light', [1280, 520],  false],
