@@ -29,7 +29,9 @@
     "test:axe": "node scripts/axe_audit.mjs",
     "test:focustrap": "node scripts/verify_focustrap.mjs",
     "test:rtl": "node scripts/verify_rtl.mjs",
-    "build:tokens": "node scripts/build_tokens.mjs --out dist/tokens.css"
+    "build:tokens": "node scripts/build_tokens.mjs --out dist/tokens.css",
+    "docs:shots": "node scripts/screenshot_docs.mjs",
+    "docs:shots:check": "node scripts/screenshot_docs.mjs --check"
   },
   "devDependencies": {
     "playwright": "^1.40.0"

@@ -78,6 +78,12 @@ jobs:
       - name: Unit + CLI tests (no browser needed)
         run: npm run test:unit
 
+      # The README's screenshots are the first thing a visitor judges the kit by.
+      # This does not diff pixels (Chrome versions make that noise); it holds the
+      # set complete: nothing the README shows is missing, nothing sits unused.
+      - name: README screenshots resolve (no missing, no orphans)
+        run: npm run docs:shots:check
+
   render:
     # Real-render WCAG gate — opens the example HTML in headless Chromium and
     # measures the actual computed-style contrast of every text element (light + dark).

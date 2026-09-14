@@ -8,6 +8,10 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
+<img src=".github/images/hero.png" alt="UX/UI Agent Skills — a CLAUDE.md brief beside the capabilities it turns on: design tokens, component specs, WCAG 2.2 and ARIA, code generation, design review, workflows" width="900">
+
+<br>
+
 [![Version](https://img.shields.io/badge/version-2.6.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
@@ -36,6 +40,30 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 **Current release: `v2.6.0`** · See the [Changelog](#-changelog) · [All releases](https://github.com/plugin87/ux-ui-agent-skills/releases)
 
 > No build tools, dependencies, or runtime required — this is a pure instruction & knowledge layer for AI agents.
+
+---
+
+## The output, rendered
+
+Not a mockup. These are screenshots of the files in `examples/`, taken by
+`node scripts/screenshot_docs.mjs` from the same HTML the 37 gates measure — so
+what you see below is what the gate run passed, in both themes.
+
+<table>
+<tr>
+<td width="50%"><img src=".github/images/reference-app-light.png" alt="Reference app in light theme: an Analytics screen led by one hero revenue metric, three smaller stats beneath it, a settings form, and a red Delete account action" /></td>
+<td width="50%"><img src=".github/images/reference-app-dark.png" alt="The same Analytics screen in dark theme, rendered from the same token theme with no per-page palette" /></td>
+</tr>
+<tr>
+<td><img src=".github/images/button-states-light.png" alt="Button harness in light theme showing primary, disabled, loading, secondary, danger and toggle states side by side" /></td>
+<td><img src=".github/images/button-states-dark.png" alt="The same button states in dark theme, with the destructive action still wearing the danger variant" /></td>
+</tr>
+</table>
+
+One theme, two modes, no per-page palette. The destructive action wears the
+danger variant in both. Loading keeps full strength and swaps in a spinner
+instead of borrowing the disabled dimming. Every one of those is a rule in
+`CLAUDE.md` that a gate or a critic enforces.
 
 ---
 
