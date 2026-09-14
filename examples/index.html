@@ -26,10 +26,18 @@
   .toggle:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   .toggle svg{inline-size:1rem;block-size:1rem;flex:none}
 
-  .lead{display:block;padding:var(--space-6);border-radius:var(--radius-card);
+  .lead{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:var(--space-6);
+    align-items:center;padding:var(--space-6);border-radius:var(--radius-card);
     background:var(--color-surface-card);border:1px solid var(--color-border-default);
     box-shadow:var(--shadow-md);text-decoration:none;color:inherit;
     transition:box-shadow var(--transition-micro)}
+  @media (max-width:46rem){.lead{grid-template-columns:minmax(0,1fr)}}
+  /* the shot IS the pitch: a card of text beside empty space reads as unfinished */
+  .lead .shot{display:block;inline-size:100%;block-size:auto;border-radius:var(--radius-sm);
+    border:1px solid var(--color-border-default);box-shadow:var(--shadow-sm)}
+  .lead .shot.dark{display:none}
+  :root[data-theme="dark"] .lead .shot.light{display:none}
+  :root[data-theme="dark"] .lead .shot.dark{display:block}
   .lead:hover{box-shadow:var(--shadow-lg)}
   .lead:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   .lead h2{font-size:var(--text-3xl);line-height:var(--leading-tight);letter-spacing:-0.02em}
@@ -55,7 +63,8 @@
     border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm)}
   footer a{color:var(--color-text-link)}
   /* an unbreakable token (a command, a URL) sets min-content width and takes the page
-     with it at 280px under a larger root font - anywhere shrinks min-content, break-word does not */
+     with it at a 280 pixel viewport under a larger root font - anywhere shrinks
+     min-content, break-word does not */
   code{font-family:var(--font-mono);font-size:var(--text-sm);overflow-wrap:anywhere}
   footer a{overflow-wrap:anywhere}
   @media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation-duration:1ms !important}} /* ds-allow-hardcode: the reduced-motion reset IS the near-zero duration */
@@ -78,20 +87,32 @@
 </header>
 
 <a class="lead" href="./showcase/index.html">
+  <div>
   <h2>Atlas, a full product screen</h2>
   <p>A revenue console built end to end from the kit: app shell, a hero metric
     that leads the page, four chart shapes, a table that really sorts, a live
     activity feed. One token theme, light and dark, every gate green.</p>
   <span class="go">Open the dashboard</span>
+  </div>
+  <img class="shot light" src="./thumbs/atlas-light.png" width="1200" height="720" loading="lazy" decoding="async"
+    alt="Atlas in light theme: sidebar, a hero revenue figure of 2.48 million with a weekly bar chart, retention and churn cards" />
+  <img class="shot dark" src="./thumbs/atlas-dark.png" width="1200" height="720" loading="lazy" decoding="async"
+    alt="The same Atlas screen in dark theme" />
 </a>
 
 <a class="lead" href="./terminal/index.html" style="margin-block-start:var(--space-5)">
+  <div>
   <h2>Meridian Terminal, ten chart types</h2>
   <p>A trading desk on one screen: candlesticks with volume and a moving average,
     an order book with depth bars, a cumulative depth curve, the tape, sparklines,
     stacked area, a waterfall, a bubble chart, a correlation matrix and a gauge.
     Every chart is inline SVG drawn from the same tokens.</p>
   <span class="go">Open the terminal</span>
+  </div>
+  <img class="shot light" src="./thumbs/terminal-light.png" width="1200" height="720" loading="lazy" decoding="async"
+    alt="Meridian Terminal in light theme: ticker, candlestick chart with volume, order book with depth bars" />
+  <img class="shot dark" src="./thumbs/terminal-thumb.png" width="1200" height="720" loading="lazy" decoding="async"
+    alt="The same trading terminal in dark theme" />
 </a>
 
 <a class="card" href="./sample-app/preview.html" style="margin-block-start:var(--space-5)">

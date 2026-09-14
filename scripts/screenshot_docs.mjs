@@ -44,6 +44,17 @@ const SHOTS = [
   ['cover.html',                              'social-preview.png',       'light', [1280, 640],  false],
 ];
 
+/* Thumbnails for the demo's own front door. They live under examples/ because
+   GitHub Pages publishes that directory, and they are cropped to the top of each
+   page rather than full-page so a card shows the screen, not a postage stamp. */
+const THUMBS = [
+  ['examples/showcase/index.html', 'atlas-light.png',    'light', [1200, 720]],
+  ['examples/showcase/index.html', 'atlas-dark.png',     'dark',  [1200, 720]],
+  ['examples/terminal/index.html', 'terminal-light.png', 'light', [1200, 720]],
+  ['examples/terminal/index.html', 'terminal-thumb.png', 'dark',  [1200, 720]],
+];
+const THUMB_DIR = join(ROOT, 'examples', 'thumbs');
+
 /** Images that exist for somewhere other than the README body. */
 const NOT_INLINE = new Set(['social-preview.png']);
 
@@ -94,8 +105,21 @@ async function shoot() {
     await page.close();
     console.log(`  ${name}  <- ${src} (${theme})`);
   }
+  mkdirSync(THUMB_DIR, { recursive: true });
+  for (const [src, name, theme, [width, height]] of THUMBS) {
+    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('file://' + join(ROOT, src));
+    await page.evaluate(t => document.documentElement.setAttribute('data-theme', t), theme);
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: join(THUMB_DIR, name), fullPage: false });
+    await page.close();
+    console.log(`  thumbs/${name}  <- ${src} (${theme})`);
+  }
   await browser.close();
-  console.log(`\nWrote ${SHOTS.length} image(s) to .github/images/. Now LOOK at them before committing.`);
+  console.log(`\nWrote ${SHOTS.length} image(s) to .github/images/ and ${THUMBS.length} to examples/thumbs/.`);
+  console.log('Now LOOK at them before committing.');
 }
 
 if (process.argv.includes('--check')) check();
