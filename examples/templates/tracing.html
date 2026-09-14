@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Trace 4f91c2 - Lumen Observability</title>
+<meta name="description" content="Observability template: a span waterfall, a p95 latency heatmap, a service dependency graph and an error budget burn-down." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html{color-scheme:dark}
+  body{font-family:var(--font-sans);background:var(--lin-canvas);color:var(--lin-ink);font-size:var(--text-sm);
+    line-height:var(--leading-snug);-webkit-font-smoothing:antialiased}
+  a{color:inherit} .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .ico{inline-size:1rem;block-size:1rem;flex:none;stroke-width:1.75}
+  .bar-top{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;overflow-wrap:anywhere;
+    padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--lin-hairline);background:var(--lin-panel)}
+  h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
+  @media (max-width:46rem){h1{font-size:var(--text-2xl)}}
+  .sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
+  .chip{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
+    border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);font-family:var(--font-mono);
+    font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
+  .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
+  .c-bad{--dot:var(--color-text-error)} .c-ok{--dot:var(--trm-accent)}
+  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
+  @media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+  @media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+  .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
+    padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
+  .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;
+    min-inline-size:0}
+  .panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
+  h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--lin-ink-3)}
+  .note{color:var(--lin-ink-3);font-size:var(--text-xs)}
+  .c8{grid-column:span 8} .c4{grid-column:span 4} .c6{grid-column:span 6}
+  @media (max-width:72rem){.c8,.c6{grid-column:span 6} .c4{grid-column:span 3}}
+  @media (max-width:46rem){.c8,.c6,.c4{grid-column:span 1}}
+
+  /* waterfall */
+  .span{display:grid;grid-template-columns:minmax(6rem,12rem) 5.5rem minmax(0,1fr) 4.5rem;gap:var(--space-3);
+    align-items:center;padding-block:var(--space-1);min-inline-size:0}
+  @media (max-width:52rem){.span{grid-template-columns:minmax(0,1fr) 4.5rem;grid-template-areas:"nm ms" "tr tr";
+    row-gap:var(--space-1)}
+    .span .nm{grid-area:nm} .span .ms{grid-area:ms} .span .track{grid-area:tr} .span .svc{display:none}}
+  .span .nm{padding-inline-start:calc(var(--d) * var(--space-4));font-size:var(--text-xs);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--lin-ink-2)}
+  .span .svc{font-family:var(--font-mono);font-size:.625rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--lin-ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .span .track{position:relative;block-size:.875rem;border-radius:var(--radius-sm);background:var(--lin-raised);
+    min-inline-size:0}
+  .span .bar{position:absolute;inset-block:2px;inset-inline-start:var(--l);inline-size:var(--w);
+    border-radius:var(--radius-sm)}
+  .span .ms{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);text-align:end}
+  /* bar colours live in their own namespace: .c4 is already a column span, and
+     sharing the name painted an entire panel pink */
+  .b1{background:var(--color-chart-1)} .b2{background:var(--color-chart-2)} .b3{background:var(--color-chart-3)}
+  .b4{background:var(--color-chart-4)} .b5{background:var(--color-chart-5)} .b6{background:var(--color-chart-6)}
+  .bar.err{background:var(--color-text-error)}
+  .s1{color:var(--color-chart-1)} .s2{color:var(--color-chart-2)} .s3{color:var(--color-chart-3)}
+  .s4{color:var(--color-chart-4)} .s5{color:var(--color-chart-5)} .s6{color:var(--color-chart-6)}
+
+  /* heatmap */
+  .heat{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px} /* ds-allow-hardcode: a 2px gutter is the grid line itself */
+  .heat .cell{aspect-ratio:1;border-radius:1px;
+    background:color-mix(in oklab, var(--color-chart-1) var(--i), var(--lin-raised))}
+  .scale{display:flex;align-items:center;gap:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);
+    color:var(--lin-ink-3)}
+  .scale i{display:block;block-size:.5rem;inline-size:6rem;border-radius:var(--radius-full);
+    background:linear-gradient(90deg,var(--lin-raised),var(--color-chart-1))}
+
+  /* graph */
+  .graph svg{inline-size:100%;block-size:auto;display:block}
+  .graph line{stroke:var(--lin-hairline);stroke-linecap:round}
+  .graph .nd circle{fill:var(--lin-accent)}
+  .graph .nd text{fill:var(--lin-ink-2);font-family:var(--font-mono);font-size:9px;letter-spacing:.06em} /* ds-allow-hardcode: SVG label size is geometry */
+
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-family:var(--font-mono);
+    font-size:var(--text-xs)}
+  .kv dt{color:var(--lin-ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .kv dd{margin:0;text-align:end;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--lin-hairline);
+    color:var(--lin-ink-3);font-size:var(--text-xs);display:flex;justify-content:space-between;gap:var(--space-4);
+    flex-wrap:wrap}
+  footer a{color:var(--lin-accent-hover)} footer span{min-inline-size:0;overflow-wrap:anywhere}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="bar-top">
+  <div><h1>POST /checkout</h1><p class="sub">TRACE 4F91C2A0 · 842 MS · 13 SPANS</p></div>
+  <span class="chip c-bad"><span class="dot" aria-hidden="true"></span>1 error span</span>
+  <span class="chip c-ok"><span class="dot" aria-hidden="true"></span>p95 within budget</span>
+</div>
+
+<div class="grid">
+  <section class="panel c8">
+    <header><h2>Span waterfall</h2><span class="note">wall clock, 0 to 842 ms</span></header>
+    <div>
+        <div class="span" style="--d:0"><span class="nm">POST /checkout</span><span class="svc s1">gateway</span><span class="track"><span class="bar b1" style="--l:0.00%;--w:100.00%" role="img" aria-label="POST /checkout, 842 milliseconds"></span></span><span class="ms num">842 ms</span></div>
+        <div class="span" style="--d:1"><span class="nm">verify session</span><span class="svc s2">auth</span><span class="track"><span class="bar b2" style="--l:0.95%;--w:7.60%" role="img" aria-label="verify session, 64 milliseconds"></span></span><span class="ms num">64 ms</span></div>
+        <div class="span" style="--d:1"><span class="nm">load cart</span><span class="svc s3">catalog</span><span class="track"><span class="bar b3" style="--l:9.26%;--w:11.40%" role="img" aria-label="load cart, 96 milliseconds"></span></span><span class="ms num">96 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">fetch items</span><span class="svc s3">catalog</span><span class="track"><span class="bar b3" style="--l:9.98%;--w:7.24%" role="img" aria-label="fetch items, 61 milliseconds"></span></span><span class="ms num">61 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">price lookup</span><span class="svc s5">pricing</span><span class="track"><span class="bar b5" style="--l:17.81%;--w:2.61%" role="img" aria-label="price lookup, 22 milliseconds"></span></span><span class="ms num">22 ms</span></div>
+        <div class="span" style="--d:1"><span class="nm">reserve stock</span><span class="svc s6">inventory</span><span class="track"><span class="bar b6" style="--l:21.62%;--w:25.42%" role="img" aria-label="reserve stock, 214 milliseconds"></span></span><span class="ms num">214 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">lock rows</span><span class="svc s6">inventory</span><span class="track"><span class="bar b6" style="--l:22.57%;--w:6.89%" role="img" aria-label="lock rows, 58 milliseconds"></span></span><span class="ms num">58 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">write journal</span><span class="svc s2">ledger</span><span class="track"><span class="bar b2 err" style="--l:29.93%;--w:16.75%" role="img" aria-label="write journal, 141 milliseconds"></span></span><span class="ms num">141 ms</span></div>
+        <div class="span" style="--d:1"><span class="nm">authorise card</span><span class="svc s4">payments</span><span class="track"><span class="bar b4" style="--l:47.74%;--w:37.77%" role="img" aria-label="authorise card, 318 milliseconds"></span></span><span class="ms num">318 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">3DS challenge</span><span class="svc s4">payments</span><span class="track"><span class="bar b4" style="--l:49.64%;--w:28.50%" role="img" aria-label="3DS challenge, 240 milliseconds"></span></span><span class="ms num">240 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">settle</span><span class="svc s2">ledger</span><span class="track"><span class="bar b2" style="--l:78.86%;--w:6.18%" role="img" aria-label="settle, 52 milliseconds"></span></span><span class="ms num">52 ms</span></div>
+        <div class="span" style="--d:1"><span class="nm">emit receipt</span><span class="svc s1">gateway</span><span class="track"><span class="bar b1" style="--l:86.22%;--w:11.40%" role="img" aria-label="emit receipt, 96 milliseconds"></span></span><span class="ms num">96 ms</span></div>
+        <div class="span" style="--d:2"><span class="nm">index order</span><span class="svc s3">search</span><span class="track"><span class="bar b3" style="--l:88.12%;--w:8.43%" role="img" aria-label="index order, 71 milliseconds"></span></span><span class="ms num">71 ms</span></div>
+    </div>
+  </section>
+
+  <section class="panel c4">
+    <header><h2>Slowest contributors</h2></header>
+    <dl class="kv">
+      <dt>3DS challenge</dt><dd>240 ms · 28.5%</dd>
+      <dt>reserve stock</dt><dd>214 ms · 25.4%</dd>
+      <dt>write journal</dt><dd>141 ms · 16.7%</dd>
+      <dt>emit receipt</dt><dd>96 ms · 11.4%</dd>
+      <dt>load cart</dt><dd>96 ms · 11.4%</dd>
+    </dl>
+    <div class="rule" style="block-size:1px;background:var(--lin-hairline)"></div>
+    <dl class="kv">
+      <dt>Error</dt><dd>ledger.write_journal</dd>
+      <dt>Code</dt><dd>DEADLOCK_RETRY</dd>
+      <dt>Retries</dt><dd>2</dd>
+    </dl>
+  </section>
+
+  <section class="panel c6">
+    <header><h2>p95 latency, 7 days by hour</h2><span class="note">darker is faster</span></header>
+    <div class="heat"><span class="cell" style="--i:31%" role="img" aria-label="day 1 hour 0, p95 165 milliseconds"></span><span class="cell" style="--i:24%" role="img" aria-label="day 1 hour 1, p95 128 milliseconds"></span><span class="cell" style="--i:16%" role="img" aria-label="day 1 hour 2, p95 84 milliseconds"></span><span class="cell" style="--i:13%" role="img" aria-label="day 1 hour 3, p95 72 milliseconds"></span><span class="cell" style="--i:26%" role="img" aria-label="day 1 hour 4, p95 136 milliseconds"></span><span class="cell" style="--i:30%" role="img" aria-label="day 1 hour 5, p95 160 milliseconds"></span><span class="cell" style="--i:26%" role="img" aria-label="day 1 hour 6, p95 137 milliseconds"></span><span class="cell" style="--i:36%" role="img" aria-label="day 1 hour 7, p95 192 milliseconds"></span><span class="cell" style="--i:43%" role="img" aria-label="day 1 hour 8, p95 226 milliseconds"></span><span class="cell" style="--i:46%" role="img" aria-label="day 1 hour 9, p95 241 milliseconds"></span><span class="cell" style="--i:54%" role="img" aria-label="day 1 hour 10, p95 285 milliseconds"></span><span class="cell" style="--i:51%" role="img" aria-label="day 1 hour 11, p95 270 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 1 hour 12, p95 367 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 1 hour 13, p95 366 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 1 hour 14, p95 316 milliseconds"></span><span class="cell" style="--i:69%" role="img" aria-label="day 1 hour 15, p95 362 milliseconds"></span><span class="cell" style="--i:65%" role="img" aria-label="day 1 hour 16, p95 342 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 1 hour 17, p95 314 milliseconds"></span><span class="cell" style="--i:46%" role="img" aria-label="day 1 hour 18, p95 243 milliseconds"></span><span class="cell" style="--i:48%" role="img" aria-label="day 1 hour 19, p95 254 milliseconds"></span><span class="cell" style="--i:46%" role="img" aria-label="day 1 hour 20, p95 244 milliseconds"></span><span class="cell" style="--i:43%" role="img" aria-label="day 1 hour 21, p95 225 milliseconds"></span><span class="cell" style="--i:29%" role="img" aria-label="day 1 hour 22, p95 154 milliseconds"></span><span class="cell" style="--i:29%" role="img" aria-label="day 1 hour 23, p95 152 milliseconds"></span><span class="cell" style="--i:20%" role="img" aria-label="day 2 hour 0, p95 107 milliseconds"></span><span class="cell" style="--i:21%" role="img" aria-label="day 2 hour 1, p95 114 milliseconds"></span><span class="cell" style="--i:12%" role="img" aria-label="day 2 hour 2, p95 66 milliseconds"></span><span class="cell" style="--i:27%" role="img" aria-label="day 2 hour 3, p95 141 milliseconds"></span><span class="cell" style="--i:15%" role="img" aria-label="day 2 hour 4, p95 80 milliseconds"></span><span class="cell" style="--i:32%" role="img" aria-label="day 2 hour 5, p95 167 milliseconds"></span><span class="cell" style="--i:24%" role="img" aria-label="day 2 hour 6, p95 129 milliseconds"></span><span class="cell" style="--i:45%" role="img" aria-label="day 2 hour 7, p95 236 milliseconds"></span><span class="cell" style="--i:38%" role="img" aria-label="day 2 hour 8, p95 202 milliseconds"></span><span class="cell" style="--i:41%" role="img" aria-label="day 2 hour 9, p95 217 milliseconds"></span><span class="cell" style="--i:61%" role="img" aria-label="day 2 hour 10, p95 323 milliseconds"></span><span class="cell" style="--i:54%" role="img" aria-label="day 2 hour 11, p95 282 milliseconds"></span><span class="cell" style="--i:64%" role="img" aria-label="day 2 hour 12, p95 335 milliseconds"></span><span class="cell" style="--i:63%" role="img" aria-label="day 2 hour 13, p95 333 milliseconds"></span><span class="cell" style="--i:59%" role="img" aria-label="day 2 hour 14, p95 311 milliseconds"></span><span class="cell" style="--i:58%" role="img" aria-label="day 2 hour 15, p95 304 milliseconds"></span><span class="cell" style="--i:55%" role="img" aria-label="day 2 hour 16, p95 288 milliseconds"></span><span class="cell" style="--i:59%" role="img" aria-label="day 2 hour 17, p95 309 milliseconds"></span><span class="cell" style="--i:54%" role="img" aria-label="day 2 hour 18, p95 283 milliseconds"></span><span class="cell" style="--i:43%" role="img" aria-label="day 2 hour 19, p95 227 milliseconds"></span><span class="cell" style="--i:39%" role="img" aria-label="day 2 hour 20, p95 208 milliseconds"></span><span class="cell" style="--i:38%" role="img" aria-label="day 2 hour 21, p95 198 milliseconds"></span><span class="cell" style="--i:23%" role="img" aria-label="day 2 hour 22, p95 122 milliseconds"></span><span class="cell" style="--i:22%" role="img" aria-label="day 2 hour 23, p95 116 milliseconds"></span><span class="cell" style="--i:23%" role="img" aria-label="day 3 hour 0, p95 124 milliseconds"></span><span class="cell" style="--i:18%" role="img" aria-label="day 3 hour 1, p95 96 milliseconds"></span><span class="cell" style="--i:17%" role="img" aria-label="day 3 hour 2, p95 91 milliseconds"></span><span class="cell" style="--i:15%" role="img" aria-label="day 3 hour 3, p95 80 milliseconds"></span><span class="cell" style="--i:28%" role="img" aria-label="day 3 hour 4, p95 148 milliseconds"></span><span class="cell" style="--i:32%" role="img" aria-label="day 3 hour 5, p95 169 milliseconds"></span><span class="cell" style="--i:25%" role="img" aria-label="day 3 hour 6, p95 132 milliseconds"></span><span class="cell" style="--i:33%" role="img" aria-label="day 3 hour 7, p95 177 milliseconds"></span><span class="cell" style="--i:50%" role="img" aria-label="day 3 hour 8, p95 263 milliseconds"></span><span class="cell" style="--i:54%" role="img" aria-label="day 3 hour 9, p95 286 milliseconds"></span><span class="cell" style="--i:61%" role="img" aria-label="day 3 hour 10, p95 322 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 3 hour 11, p95 316 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 3 hour 12, p95 316 milliseconds"></span><span class="cell" style="--i:67%" role="img" aria-label="day 3 hour 13, p95 351 milliseconds"></span><span class="cell" style="--i:64%" role="img" aria-label="day 3 hour 14, p95 337 milliseconds"></span><span class="cell" style="--i:58%" role="img" aria-label="day 3 hour 15, p95 306 milliseconds"></span><span class="cell" style="--i:57%" role="img" aria-label="day 3 hour 16, p95 297 milliseconds"></span><span class="cell" style="--i:62%" role="img" aria-label="day 3 hour 17, p95 328 milliseconds"></span><span class="cell" style="--i:51%" role="img" aria-label="day 3 hour 18, p95 266 milliseconds"></span><span class="cell" style="--i:56%" role="img" aria-label="day 3 hour 19, p95 295 milliseconds"></span><span class="cell" style="--i:48%" role="img" aria-label="day 3 hour 20, p95 251 milliseconds"></span><span class="cell" style="--i:44%" role="img" aria-label="day 3 hour 21, p95 233 milliseconds"></span><span class="cell" style="--i:36%" role="img" aria-label="day 3 hour 22, p95 191 milliseconds"></span><span class="cell" style="--i:29%" role="img" aria-label="day 3 hour 23, p95 154 milliseconds"></span><span class="cell" style="--i:14%" role="img" aria-label="day 4 hour 0, p95 77 milliseconds"></span><span class="cell" style="--i:25%" role="img" aria-label="day 4 hour 1, p95 133 milliseconds"></span><span class="cell" style="--i:24%" role="img" aria-label="day 4 hour 2, p95 128 milliseconds"></span><span class="cell" style="--i:22%" role="img" aria-label="day 4 hour 3, p95 117 milliseconds"></span><span class="cell" style="--i:31%" role="img" aria-label="day 4 hour 4, p95 163 milliseconds"></span><span class="cell" style="--i:33%" role="img" aria-label="day 4 hour 5, p95 174 milliseconds"></span><span class="cell" style="--i:36%" role="img" aria-label="day 4 hour 6, p95 188 milliseconds"></span><span class="cell" style="--i:28%" role="img" aria-label="day 4 hour 7, p95 149 milliseconds"></span><span class="cell" style="--i:51%" role="img" aria-label="day 4 hour 8, p95 266 milliseconds"></span><span class="cell" style="--i:53%" role="img" aria-label="day 4 hour 9, p95 277 milliseconds"></span><span class="cell" style="--i:49%" role="img" aria-label="day 4 hour 10, p95 256 milliseconds"></span><span class="cell" style="--i:51%" role="img" aria-label="day 4 hour 11, p95 267 milliseconds"></span><span class="cell" style="--i:61%" role="img" aria-label="day 4 hour 12, p95 319 milliseconds"></span><span class="cell" style="--i:69%" role="img" aria-label="day 4 hour 13, p95 362 milliseconds"></span><span class="cell" style="--i:62%" role="img" aria-label="day 4 hour 14, p95 324 milliseconds"></span><span class="cell" style="--i:57%" role="img" aria-label="day 4 hour 15, p95 301 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 4 hour 16, p95 367 milliseconds"></span><span class="cell" style="--i:66%" role="img" aria-label="day 4 hour 17, p95 347 milliseconds"></span><span class="cell" style="--i:59%" role="img" aria-label="day 4 hour 18, p95 309 milliseconds"></span><span class="cell" style="--i:43%" role="img" aria-label="day 4 hour 19, p95 229 milliseconds"></span><span class="cell" style="--i:35%" role="img" aria-label="day 4 hour 20, p95 187 milliseconds"></span><span class="cell" style="--i:36%" role="img" aria-label="day 4 hour 21, p95 189 milliseconds"></span><span class="cell" style="--i:24%" role="img" aria-label="day 4 hour 22, p95 128 milliseconds"></span><span class="cell" style="--i:25%" role="img" aria-label="day 4 hour 23, p95 131 milliseconds"></span><span class="cell" style="--i:50%" role="img" aria-label="day 5 hour 0, p95 261 milliseconds"></span><span class="cell" style="--i:52%" role="img" aria-label="day 5 hour 1, p95 274 milliseconds"></span><span class="cell" style="--i:59%" role="img" aria-label="day 5 hour 2, p95 310 milliseconds"></span><span class="cell" style="--i:56%" role="img" aria-label="day 5 hour 3, p95 296 milliseconds"></span><span class="cell" style="--i:54%" role="img" aria-label="day 5 hour 4, p95 283 milliseconds"></span><span class="cell" style="--i:63%" role="img" aria-label="day 5 hour 5, p95 333 milliseconds"></span><span class="cell" style="--i:59%" role="img" aria-label="day 5 hour 6, p95 311 milliseconds"></span><span class="cell" style="--i:61%" role="img" aria-label="day 5 hour 7, p95 323 milliseconds"></span><span class="cell" style="--i:77%" role="img" aria-label="day 5 hour 8, p95 405 milliseconds"></span><span class="cell" style="--i:81%" role="img" aria-label="day 5 hour 9, p95 426 milliseconds"></span><span class="cell" style="--i:77%" role="img" aria-label="day 5 hour 10, p95 402 milliseconds"></span><span class="cell" style="--i:92%" role="img" aria-label="day 5 hour 11, p95 481 milliseconds"></span><span class="cell" style="--i:97%" role="img" aria-label="day 5 hour 12, p95 509 milliseconds"></span><span class="cell" style="--i:97%" role="img" aria-label="day 5 hour 13, p95 510 milliseconds"></span><span class="cell" style="--i:100%" role="img" aria-label="day 5 hour 14, p95 521 milliseconds"></span><span class="cell" style="--i:92%" role="img" aria-label="day 5 hour 15, p95 481 milliseconds"></span><span class="cell" style="--i:93%" role="img" aria-label="day 5 hour 16, p95 489 milliseconds"></span><span class="cell" style="--i:90%" role="img" aria-label="day 5 hour 17, p95 471 milliseconds"></span><span class="cell" style="--i:89%" role="img" aria-label="day 5 hour 18, p95 464 milliseconds"></span><span class="cell" style="--i:80%" role="img" aria-label="day 5 hour 19, p95 422 milliseconds"></span><span class="cell" style="--i:73%" role="img" aria-label="day 5 hour 20, p95 385 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 5 hour 21, p95 368 milliseconds"></span><span class="cell" style="--i:66%" role="img" aria-label="day 5 hour 22, p95 345 milliseconds"></span><span class="cell" style="--i:58%" role="img" aria-label="day 5 hour 23, p95 307 milliseconds"></span><span class="cell" style="--i:26%" role="img" aria-label="day 6 hour 0, p95 137 milliseconds"></span><span class="cell" style="--i:22%" role="img" aria-label="day 6 hour 1, p95 118 milliseconds"></span><span class="cell" style="--i:27%" role="img" aria-label="day 6 hour 2, p95 141 milliseconds"></span><span class="cell" style="--i:26%" role="img" aria-label="day 6 hour 3, p95 137 milliseconds"></span><span class="cell" style="--i:19%" role="img" aria-label="day 6 hour 4, p95 99 milliseconds"></span><span class="cell" style="--i:35%" role="img" aria-label="day 6 hour 5, p95 183 milliseconds"></span><span class="cell" style="--i:32%" role="img" aria-label="day 6 hour 6, p95 167 milliseconds"></span><span class="cell" style="--i:44%" role="img" aria-label="day 6 hour 7, p95 231 milliseconds"></span><span class="cell" style="--i:44%" role="img" aria-label="day 6 hour 8, p95 230 milliseconds"></span><span class="cell" style="--i:43%" role="img" aria-label="day 6 hour 9, p95 228 milliseconds"></span><span class="cell" style="--i:63%" role="img" aria-label="day 6 hour 10, p95 329 milliseconds"></span><span class="cell" style="--i:61%" role="img" aria-label="day 6 hour 11, p95 321 milliseconds"></span><span class="cell" style="--i:67%" role="img" aria-label="day 6 hour 12, p95 353 milliseconds"></span><span class="cell" style="--i:68%" role="img" aria-label="day 6 hour 13, p95 356 milliseconds"></span><span class="cell" style="--i:62%" role="img" aria-label="day 6 hour 14, p95 324 milliseconds"></span><span class="cell" style="--i:68%" role="img" aria-label="day 6 hour 15, p95 359 milliseconds"></span><span class="cell" style="--i:57%" role="img" aria-label="day 6 hour 16, p95 302 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 6 hour 17, p95 315 milliseconds"></span><span class="cell" style="--i:56%" role="img" aria-label="day 6 hour 18, p95 296 milliseconds"></span><span class="cell" style="--i:45%" role="img" aria-label="day 6 hour 19, p95 236 milliseconds"></span><span class="cell" style="--i:41%" role="img" aria-label="day 6 hour 20, p95 215 milliseconds"></span><span class="cell" style="--i:31%" role="img" aria-label="day 6 hour 21, p95 166 milliseconds"></span><span class="cell" style="--i:31%" role="img" aria-label="day 6 hour 22, p95 166 milliseconds"></span><span class="cell" style="--i:34%" role="img" aria-label="day 6 hour 23, p95 181 milliseconds"></span><span class="cell" style="--i:26%" role="img" aria-label="day 7 hour 0, p95 136 milliseconds"></span><span class="cell" style="--i:27%" role="img" aria-label="day 7 hour 1, p95 143 milliseconds"></span><span class="cell" style="--i:18%" role="img" aria-label="day 7 hour 2, p95 94 milliseconds"></span><span class="cell" style="--i:18%" role="img" aria-label="day 7 hour 3, p95 94 milliseconds"></span><span class="cell" style="--i:29%" role="img" aria-label="day 7 hour 4, p95 155 milliseconds"></span><span class="cell" style="--i:20%" role="img" aria-label="day 7 hour 5, p95 109 milliseconds"></span><span class="cell" style="--i:27%" role="img" aria-label="day 7 hour 6, p95 144 milliseconds"></span><span class="cell" style="--i:30%" role="img" aria-label="day 7 hour 7, p95 158 milliseconds"></span><span class="cell" style="--i:34%" role="img" aria-label="day 7 hour 8, p95 182 milliseconds"></span><span class="cell" style="--i:41%" role="img" aria-label="day 7 hour 9, p95 215 milliseconds"></span><span class="cell" style="--i:60%" role="img" aria-label="day 7 hour 10, p95 316 milliseconds"></span><span class="cell" style="--i:63%" role="img" aria-label="day 7 hour 11, p95 333 milliseconds"></span><span class="cell" style="--i:58%" role="img" aria-label="day 7 hour 12, p95 303 milliseconds"></span><span class="cell" style="--i:73%" role="img" aria-label="day 7 hour 13, p95 382 milliseconds"></span><span class="cell" style="--i:67%" role="img" aria-label="day 7 hour 14, p95 351 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 7 hour 15, p95 365 milliseconds"></span><span class="cell" style="--i:70%" role="img" aria-label="day 7 hour 16, p95 365 milliseconds"></span><span class="cell" style="--i:64%" role="img" aria-label="day 7 hour 17, p95 335 milliseconds"></span><span class="cell" style="--i:46%" role="img" aria-label="day 7 hour 18, p95 244 milliseconds"></span><span class="cell" style="--i:57%" role="img" aria-label="day 7 hour 19, p95 299 milliseconds"></span><span class="cell" style="--i:46%" role="img" aria-label="day 7 hour 20, p95 241 milliseconds"></span><span class="cell" style="--i:29%" role="img" aria-label="day 7 hour 21, p95 154 milliseconds"></span><span class="cell" style="--i:34%" role="img" aria-label="day 7 hour 22, p95 178 milliseconds"></span><span class="cell" style="--i:21%" role="img" aria-label="day 7 hour 23, p95 110 milliseconds"></span></div>
+    <p class="scale"><span>60 ms</span><i aria-hidden="true"></i><span>521 ms</span></p>
+  </section>
+
+  <section class="panel c6">
+    <header><h2>Service dependencies</h2><span class="note">edge weight is calls per second</span></header>
+    <div class="graph">
+      <svg viewBox="0 0 680 340" role="img" aria-label="Dependency graph: gateway calls auth, catalog and payments; catalog calls pricing, inventory and search; payments and inventory both write to ledger.">
+                <line x1="90" y1="150" x2="260" y2="60" stroke-width="1.77"/>
+        <line x1="90" y1="150" x2="260" y2="150" stroke-width="2.60"/>
+        <line x1="260" y1="150" x2="430" y2="110" stroke-width="2.29"/>
+        <line x1="260" y1="150" x2="430" y2="205" stroke-width="1.94"/>
+        <line x1="90" y1="150" x2="260" y2="250" stroke-width="1.69"/>
+        <line x1="260" y1="250" x2="430" y2="295" stroke-width="1.60"/>
+        <line x1="430" y1="205" x2="430" y2="295" stroke-width="1.20"/>
+        <line x1="260" y1="150" x2="600" y2="205" stroke-width="0.97"/>
+                <g class="nd"><circle cx="90" cy="150" r="7"/><text x="90" y="136" text-anchor="middle">gateway</text></g>
+        <g class="nd"><circle cx="260" cy="60" r="7"/><text x="260" y="46" text-anchor="middle">auth</text></g>
+        <g class="nd"><circle cx="260" cy="150" r="7"/><text x="260" y="136" text-anchor="middle">catalog</text></g>
+        <g class="nd"><circle cx="430" cy="110" r="7"/><text x="430" y="96" text-anchor="middle">pricing</text></g>
+        <g class="nd"><circle cx="430" cy="205" r="7"/><text x="430" y="191" text-anchor="middle">inventory</text></g>
+        <g class="nd"><circle cx="260" cy="250" r="7"/><text x="260" y="236" text-anchor="middle">payments</text></g>
+        <g class="nd"><circle cx="430" cy="295" r="7"/><text x="430" y="281" text-anchor="middle">ledger</text></g>
+        <g class="nd"><circle cx="600" cy="205" r="7"/><text x="600" y="191" text-anchor="middle">search</text></g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="panel c6">
+    <header><h2>Error budget</h2><span class="note">30 days, 99.9% target</span></header>
+    <svg viewBox="0 0 300 100" role="img" aria-label="Error budget burn-down: steady consumption until day 19, then a sharp drop leaving 12 percent" style="inline-size:100%;block-size:auto;display:block">
+      <line x1="0" y1="90" x2="300" y2="90" stroke="var(--lin-hairline)"/>
+      <polyline points="0.0,10.8 10.3,12.9 20.7,14.0 31.0,16.4 41.4,18.1 51.7,20.7 62.1,21.8 72.4,24.3 82.8,25.9 93.1,27.5 103.4,30.2 113.8,31.8 124.1,33.5 134.5,35.4 144.8,37.8 155.2,39.2 165.5,41.3 175.9,43.1 186.2,45.7 196.6,49.0 206.9,54.4 217.2,57.9 227.6,63.0 237.9,66.6 248.3,71.2 258.6,76.5 269.0,80.3 279.3,85.2 289.7,89.7 300.0,93.6" fill="none" stroke="var(--color-text-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <dl class="kv">
+      <dt>Remaining</dt><dd>12%</dd>
+      <dt>Burn rate</dt><dd>3.4x</dd>
+      <dt>Exhausts in</dt><dd>2d 06h</dd>
+    </dl>
+  </section>
+
+  <section class="panel c6">
+    <header><h2>Recent traces</h2></header>
+    <dl class="kv">
+      <dt>4f91c2a0</dt><dd>842 ms · error</dd>
+      <dt>4f91b7e3</dt><dd>612 ms · ok</dd>
+      <dt>4f91a044</dt><dd>598 ms · ok</dd>
+      <dt>4f919cd1</dt><dd>1,204 ms · ok</dd>
+      <dt>4f9188af</dt><dd>571 ms · ok</dd>
+    </dl>
+  </section>
+</div>
+
+<footer>
+  <span>Observability template. Traces, latencies and services are simulated.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>
