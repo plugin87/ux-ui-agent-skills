@@ -115,6 +115,45 @@ rot.
 
 ---
 
+## It was run blind, and it came back as rework
+
+Two subagents were handed a brief and a project scaffolded by `ux-ui-skills new`
+— which installs the kit and ships **no example screens** — and nothing else. No
+hints, no warning that anything would be scored, no access to the conversation
+that built the kit. They met `CLAUDE.md` and `.claude/rules/` the way a new
+user's agent does.
+
+**Both scored 14/14** on an independent run of `evals/run.mjs`, scored here
+rather than self-reported. The rules transfer across a cold start.
+
+**And the two runs cost the kit seven defects that four in-session runs never
+hit**, because a familiar run keeps reaching for a finished demo theme instead of
+the template a real user gets: a secondary button at **1.13:1** dark-on-dark
+because the component tier never followed the dark map; a reduced-motion policy
+in an external stylesheet read as "no policy" (Chromium treats a `file://` linked
+sheet as cross-origin, so the gate was blind exactly where every real project
+lives); a missing scrim token; a theme that emitted colours and no spacing; an
+intent gate that did not know "cancel subscription" is destructive.
+
+Then the outputs went to `/critique`, which renders the work and argues for
+rejection. Verdict on two pages that pass all fourteen gates: **rework**, eight
+findings, five Major, and not one of them measurable — an empty state that reads
+as a page that failed to load, a theme toggle that communicates nothing about its
+own state, a toast claiming "Draft project created" over a list that never
+changed, and a loading state wearing the disabled dimming so it reads as "you
+cannot do this".
+
+**The blind outputs were never edited.** They are in `evals/out/` as the record
+of what a cold-start agent produced; patching them would be editing the
+experiment. The findings were spent on the kit instead — one of them became a
+gate, `verify_interactive.mjs`, which fails any control that declares a state
+contract and changes nothing when clicked.
+
+The whole log, including what is still unproven, is in
+[evals/RESULTS.md](evals/RESULTS.md).
+
+---
+
 ## What It Does
 
 
