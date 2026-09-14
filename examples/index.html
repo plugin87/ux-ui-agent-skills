@@ -1,244 +1,304 @@
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>UX/UI Agent Skills - every screen the kit produces</title>
-<meta name="description" content="A trading terminal, a revenue console and 23 component harnesses, all rendered from one token theme and all passing the same 40 objective gates in light and dark." />
+<meta name="description" content="A trading terminal, a revenue console and 23 component harnesses, rendered from one token system, shown in four aesthetic directions, all passing the same 40 objective gates." />
 <link rel="stylesheet" href="./brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./directions.css" />
 <style>
   *{box-sizing:border-box;margin:0}
-  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+  html{color-scheme:dark;scroll-behavior:smooth}
+  body{font-family:var(--font-sans);background:var(--lin-canvas);color:var(--lin-ink);
     line-height:var(--leading-normal);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{max-inline-size:100%;block-size:auto;display:block}
   a{color:inherit}
-  img{max-inline-size:100%;block-size:auto}
   .ico{inline-size:1.125rem;block-size:1.125rem;flex:none;stroke-width:1.75}
   .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .wrap{max-inline-size:78rem;margin-inline:auto;padding-inline:var(--space-6)}
+  .wrap{max-inline-size:80rem;margin-inline:auto;padding-inline:var(--space-6)}
   @media (max-width:40rem){.wrap{padding-inline:var(--space-4)}}
-  .eyebrow{font-size:var(--text-xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;
-    color:var(--color-text-secondary)}
+  .eyebrow{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.18em;text-transform:uppercase}
 
-  /* ---------------- hero ---------------- */
-  .hero{position:relative;background:var(--color-surface-inverse);color:var(--color-text-inverse);
-    padding-block:var(--space-16) var(--space-20);overflow:hidden}
-  @media (max-width:60rem){.hero{padding-block:var(--space-10) var(--space-12)}}
-  .hero .eyebrow{color:var(--color-text-inverse);opacity:.72}
-  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--space-10);align-items:center}
-  @media (max-width:60rem){.hero-grid{grid-template-columns:minmax(0,1fr);gap:var(--space-8)}}
-  .hero h1{font-size:var(--text-6xl);line-height:1.02;letter-spacing:-0.04em;margin-block:var(--space-4) var(--space-5);
-    max-inline-size:14ch}
-  @media (max-width:60rem){.hero h1{font-size:var(--text-5xl)}}
-  @media (max-width:26rem){.hero h1{font-size:var(--text-4xl)}}
-  .hero p.lede{font-size:var(--text-lg);max-inline-size:44ch;opacity:.82}
+  /* ============ scroll choreography ============
+     Content is visible by default. Only when the visitor has NOT asked for
+     reduced motion does it start offset and animate in, so nothing is ever
+     revealed by an animation that may never run. */
+  @media (prefers-reduced-motion:no-preference){
+    .rise{opacity:0;transform:translateY(var(--space-8));
+      transition:opacity var(--duration-slow) var(--ease-out),transform var(--duration-slow) var(--ease-out)}
+    .rise.in{opacity:1;transform:none}
+    .rise.d1{transition-delay:80ms} .rise.d2{transition-delay:160ms} .rise.d3{transition-delay:240ms} /* ds-allow-hardcode: stagger steps, see --step below */
+  }
+
+  /* Reduce means reduce: no transforms, no transitions, content already visible. */
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+    .btn:hover,.tile:hover{transform:none}
+  }
+
+  /* ============ BAND 1 - linear-app direction ============ */
+  .hero{position:relative;padding-block:var(--space-24) var(--space-20);overflow:hidden;
+    border-block-end:1px solid var(--lin-hairline)}
+  @media (max-width:60rem){.hero{padding-block:var(--space-16) var(--space-12)}}
+  /* the glow: two soft radial washes, the only chromatic thing on the canvas */
+  .hero::before{content:"";position:absolute;inset-block-start:-30%;inset-inline-start:50%;
+    inline-size:min(90rem,180%);block-size:60rem;transform:translateX(-50%);pointer-events:none;
+    background:radial-gradient(closest-side,var(--lin-glow-a),transparent 70%);opacity:.5;filter:blur(40px)}
+  .hero::after{content:"";position:absolute;inset-block-start:20%;inset-inline-end:-10%;
+    inline-size:44rem;block-size:44rem;pointer-events:none;
+    background:radial-gradient(closest-side,var(--lin-glow-b),transparent 70%);filter:blur(30px)}
+  .hero > *{position:relative}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:var(--space-12);align-items:center}
+  @media (max-width:64rem){.hero-grid{grid-template-columns:minmax(0,1fr);gap:var(--space-8)}}
+  .hero .eyebrow{color:var(--lin-accent)}
+  .hero h1{font-size:clamp(2.75rem,7vw,4.75rem);line-height:.98;letter-spacing:-0.045em;font-weight:600;
+    margin-block:var(--space-5) var(--space-5);max-inline-size:15ch}
+  .hero p{font-size:var(--text-lg);color:var(--lin-ink-2);max-inline-size:46ch}
   .cta{display:flex;gap:var(--space-3);flex-wrap:wrap;margin-block-start:var(--space-8)}
   .btn{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:var(--size-control-lg);
-    padding-inline:var(--space-6);border-radius:var(--radius-pill);text-decoration:none;
-    font:600 var(--text-base)/1 var(--font-sans);transition:transform var(--transition-micro),box-shadow var(--transition-micro)}
-  .btn-primary{background:var(--color-action-primary);color:var(--color-text-on-action);box-shadow:var(--shadow-lg)}
-  .btn-primary:hover{transform:translateY(-1px)}
-  .btn-ghost{border:1px solid var(--color-text-inverse);color:var(--color-text-inverse)}
-  .btn-ghost:hover{background:var(--color-surface-raised);border-color:var(--color-surface-raised);color:var(--color-text-primary)}
-  .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
-  /* the shot breaks the band on purpose: a bled edge reads as depth, a centred one as a slide */
-  .hero-shot{position:relative;border-radius:var(--radius-card);overflow:hidden;
-    border:1px solid var(--color-border-strong);box-shadow:var(--shadow-lg);
-    inline-size:min(100%, 58rem);justify-self:end}
-  @media (min-width:60rem){.hero-shot{margin-inline-end:calc(var(--space-16) * -1)}}
-  .hero-shot img{display:block;inline-size:100%}
+    padding-inline:var(--space-6);border-radius:var(--radius-button);text-decoration:none;
+    font:600 var(--text-base)/1 var(--font-sans);
+    transition:transform var(--transition-micro),background var(--transition-micro)}
+  .btn:hover{transform:translateY(-1px)}
+  .btn:focus-visible{outline:2px solid var(--lin-accent);outline-offset:3px}
+  .btn-primary{background:var(--lin-accent-bg);color:var(--lin-ink)}
+  .btn-primary:hover{background:var(--lin-accent-hover);color:var(--lin-canvas)}
+  /* a solid surface, not a 3% white wash: an almost-transparent fill is
+     unmeasurable, and a contrast gate that cannot resolve the backdrop is right
+     to refuse it */
+  .btn-quiet{border:1px solid var(--lin-hairline);background:var(--lin-raised);color:var(--lin-ink)}
+  .btn-quiet:hover{background:var(--lin-raised-2)}
+  .glass{border-radius:var(--radius-card);overflow:hidden;border:1px solid var(--lin-hairline);
+    background:var(--lin-panel);box-shadow:0 40px 80px -20px rgba(0,0,0,.8),0 0 0 1px rgba(255,255,255,.04) inset} /* ds-allow-hardcode: elevation on a near-black canvas needs its own alpha ramp */
+  @media (min-width:64rem){.glass{margin-inline-end:calc(var(--space-20) * -1)}}
   .themed .dark{display:none}
   :root[data-theme="dark"] .themed .light{display:none}
   :root[data-theme="dark"] .themed .dark{display:block}
 
-  .toggle{position:absolute;inset-block-start:var(--space-5);inset-inline-end:var(--space-6);z-index:1;
-    display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:2.5rem;padding-inline:var(--space-4);
-    border-radius:var(--radius-pill);border:1px solid var(--color-text-inverse);background:transparent;
-    color:var(--color-text-inverse);font:600 var(--text-sm)/1 var(--font-sans);cursor:pointer}
-  .toggle:hover{background:var(--color-surface-raised);color:var(--color-text-primary);border-color:var(--color-surface-raised)}
-  .toggle:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  /* ============ BAND 2 - terminal direction ============ */
+  .proof{background:var(--trm-canvas);border-block-end:1px solid var(--trm-line);
+    font-family:var(--font-mono);color:var(--trm-ink)}
+  .proof .wrap{padding-block:var(--space-10)}
+  .proof .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));
+    border-block-start:1px solid var(--trm-line);border-inline-start:1px solid var(--trm-line)}
+  .proof .cell{padding:var(--space-5);border-block-end:1px solid var(--trm-line);
+    border-inline-end:1px solid var(--trm-line)}
+  .proof b{display:block;font-size:var(--text-5xl);line-height:1;font-weight:400;letter-spacing:-0.03em;
+    color:var(--trm-accent);font-variant-numeric:tabular-nums}
+  .proof span{display:block;margin-block-start:var(--space-3);font-size:var(--text-xs);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--trm-ink-2)}
 
-  /* ---------------- proof strip ---------------- */
-  .proof{border-block-end:1px solid var(--color-border-default);background:var(--color-surface-card)}
-  .proof ul{display:flex;flex-wrap:wrap;gap:var(--space-8);list-style:none;padding:var(--space-6) 0;margin:0}
-  .proof li{display:grid;gap:var(--space-1)}
-  .proof b{font-size:var(--text-3xl);font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;line-height:1}
-  .proof span{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  /* ============ BAND 3 - editorial direction ============ */
+  .editorial{background:var(--edi-paper);color:var(--edi-ink);padding-block:var(--space-20)}
+  @media (max-width:60rem){.editorial{padding-block:var(--space-12)}}
+  .editorial .eyebrow{color:var(--edi-accent)}
+  .editorial .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:var(--space-10);
+    align-items:start;margin-block-start:var(--space-6)}
+  @media (max-width:60rem){.editorial .split{grid-template-columns:minmax(0,1fr)}}
+  .editorial h2{font-family:var(--font-serif);font-size:clamp(2.5rem,5.5vw,4rem);line-height:1.02;
+    letter-spacing:-0.02em;font-weight:400;margin-block:var(--space-4) var(--space-5)}
+  .editorial p.stand{font-family:var(--font-serif);font-size:var(--text-xl);line-height:var(--leading-snug);
+    color:var(--edi-ink-2);max-inline-size:38ch}
+  .editorial dl{margin-block-start:var(--space-8);display:grid;gap:0}
+  .editorial dt{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.12em;text-transform:uppercase;
+    color:var(--edi-accent);padding-block-start:var(--space-4);border-block-start:1px solid var(--edi-rule)}
+  .editorial dd{margin:0;padding-block:var(--space-1) var(--space-4);font-size:var(--text-sm);color:var(--edi-ink-2)}
+  .plate{border:1px solid var(--edi-rule);background:#fff;box-shadow:0 30px 60px -30px rgba(26,23,20,.35)} /* ds-allow-hardcode: a printed plate sits on white, not on the paper tone */
+  .plate figcaption{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;text-transform:uppercase;
+    color:var(--edi-ink-2);padding:var(--space-3) var(--space-4);border-block-start:1px solid var(--edi-rule)}
 
-  /* ---------------- feature bands ---------------- */
-  .feature{padding-block:var(--space-20)}
-  @media (max-width:60rem){.feature{padding-block:var(--space-12)}}
-  .feature + .feature{border-block-start:1px solid var(--color-border-default)}
-  .fgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:var(--space-10);align-items:center}
-  @media (max-width:60rem){.fgrid{grid-template-columns:minmax(0,1fr);gap:var(--space-6)}}
-  .feature.flip .fgrid > .copy{order:2}
-  @media (max-width:60rem){.feature.flip .fgrid > .copy{order:0}}
-  .feature h2{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.03em;
-    margin-block:var(--space-3) var(--space-4)}
-  @media (max-width:40rem){.feature h2{font-size:var(--text-3xl)}}
-  .feature p{color:var(--color-text-secondary);max-inline-size:46ch}
-  .feature ul.facts{list-style:none;padding:0;margin-block-start:var(--space-5);display:grid;gap:var(--space-2)}
-  .feature ul.facts li{display:flex;gap:var(--space-3);font-size:var(--text-sm)}
-  .feature ul.facts .ico{color:var(--color-action-primary);inline-size:1rem;block-size:1rem;margin-block-start:.15rem}
-  .go{display:inline-flex;align-items:center;gap:var(--space-2);margin-block-start:var(--space-6);
-    min-block-size:2.5rem;font-weight:600;color:var(--color-text-link);text-decoration:none}
-  .go:hover{text-decoration:underline}
-  .go:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-radius:var(--radius-sm)}
-  .frame{border-radius:var(--radius-card);overflow:hidden;border:1px solid var(--color-border-default);
-    box-shadow:var(--shadow-lg);background:var(--color-surface-card)}
-  .frame img{display:block;inline-size:100%}
+  /* ============ BAND 4 - apple keynote direction ============ */
+  .keynote{background:var(--apl-canvas);color:var(--apl-ink);padding-block:var(--space-24);text-align:center;
+    overflow:hidden}
+  @media (max-width:60rem){.keynote{padding-block:var(--space-16)}}
+  .keynote h2{font-size:clamp(2.5rem,8vw,5.5rem);line-height:1.03;letter-spacing:-0.035em;font-weight:600;
+    max-inline-size:18ch;margin-inline:auto}
+  .keynote p{color:var(--apl-ink-2);font-size:var(--text-xl);max-inline-size:44ch;margin:var(--space-5) auto 0}
+  .keynote .link{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:2.75rem;
+    margin-block-start:var(--space-6);color:var(--apl-accent);text-decoration:none;font-size:var(--text-lg)}
+  .keynote .link:hover{text-decoration:underline}
+  .keynote .shot{margin-block-start:var(--space-12);border-radius:var(--radius-lg);overflow:hidden;
+    border:1px solid rgba(255,255,255,.12)} /* ds-allow-hardcode: hairline on absolute black */
 
-  /* ---------------- gallery ---------------- */
-  .band{padding-block:var(--space-16);border-block-start:1px solid var(--color-border-default)}
-  .band h2{font-size:var(--text-3xl);letter-spacing:-0.02em;line-height:var(--leading-tight);
-    margin-block:var(--space-3) var(--space-2)}
-  .band > .wrap > p{color:var(--color-text-secondary);max-inline-size:56ch}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:var(--space-5);
+  /* ============ BAND 5 - gallery, back on the kit's own theme ============ */
+  .gallery{background:var(--color-surface-page);color:var(--color-text-primary);padding-block:var(--space-20)}
+  @media (max-width:60rem){.gallery{padding-block:var(--space-12)}}
+  .gallery .eyebrow{color:var(--color-text-secondary)}
+  .gallery h2{font-size:var(--text-4xl);letter-spacing:-0.03em;line-height:var(--leading-tight);
+    margin-block:var(--space-3) var(--space-3)}
+  .gallery > .wrap > p{color:var(--color-text-secondary);max-inline-size:56ch}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:var(--space-5);
     margin-block-start:var(--space-8)}
-  .tile{display:grid;gap:0;border-radius:var(--radius-card);overflow:hidden;text-decoration:none;color:inherit;
+  .tile{border-radius:var(--radius-card);overflow:hidden;text-decoration:none;color:inherit;
     border:1px solid var(--color-border-default);background:var(--color-surface-card);
-    transition:box-shadow var(--transition-micro),transform var(--transition-micro)}
-  .tile:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+    transition:transform var(--transition-micro),box-shadow var(--transition-micro)}
+  .tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
   .tile:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
-  .tile img{display:block;inline-size:100%;border-block-end:1px solid var(--color-border-default)}
   .tile .body{padding:var(--space-4) var(--space-5) var(--space-5)}
-  .tile strong{display:block;font-size:var(--text-lg);letter-spacing:-0.01em}
+  .tile strong{display:block;font-size:var(--text-lg)}
   .tile span{display:block;color:var(--color-text-secondary);font-size:var(--text-sm);margin-block-start:var(--space-1)}
 
-  /* ---------------- harness index: quiet, dense, not 23 equal cards ---------------- */
-  .index{padding-block:var(--space-16) var(--space-20);border-block-start:1px solid var(--color-border-default);
-    background:var(--color-surface-card)}
-  .cols{columns:3 14rem;column-gap:var(--space-8);margin-block-start:var(--space-6)}
-  @media (max-width:40rem){.cols{columns:1}}
-  .cols a{display:block;break-inside:avoid;padding-block:var(--space-2);min-block-size:2.5rem;
-    border-block-end:1px solid var(--color-border-default);text-decoration:none;
-    display:flex;justify-content:space-between;gap:var(--space-3);align-items:baseline}
-  .cols a:hover{color:var(--color-text-link)}
-  .cols a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring);border-radius:var(--radius-sm)}
-  .cols a em{font-style:normal;font-weight:500}
-  .cols a small{color:var(--color-text-secondary);font-size:var(--text-xs);text-align:end;overflow-wrap:anywhere}
+  /* ============ BAND 6 - the library, terminal chips ============ */
+  .library{background:var(--trm-canvas);color:var(--trm-ink);padding-block:var(--space-20);
+    border-block-start:1px solid var(--trm-line)}
+  @media (max-width:60rem){.library{padding-block:var(--space-12)}}
+  .library .eyebrow{color:var(--trm-accent)}
+  .library h2{font-size:var(--text-4xl);letter-spacing:-0.03em;line-height:var(--leading-tight);
+    margin-block:var(--space-3) var(--space-3);color:var(--trm-ink)}
+  .library > .wrap > p{color:var(--trm-ink-2);max-inline-size:58ch}
+  .chips{display:flex;flex-wrap:wrap;gap:var(--space-2);list-style:none;padding:0;margin-block-start:var(--space-8)}
+  .chips li{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--trm-ink-2);
+    padding:var(--space-2) var(--space-3);border:1px solid var(--trm-line);border-radius:var(--radius-pill);
+    overflow-wrap:anywhere}
 
-  footer{padding-block:var(--space-10);border-block-start:1px solid var(--color-border-default);
-    color:var(--color-text-secondary);font-size:var(--text-sm)}
+  /* ============ BAND 7 - harness index ============ */
+  .index{background:var(--lin-panel);color:var(--lin-ink);padding-block:var(--space-16) var(--space-20);
+    border-block-start:1px solid var(--lin-hairline)}
+  .index .eyebrow{color:var(--lin-ink-3)}
+  .index h2{font-size:var(--text-3xl);letter-spacing:-0.03em;margin-block:var(--space-3) var(--space-6)}
+  .cols{columns:3 15rem;column-gap:var(--space-8)}
+  @media (max-width:40rem){.cols{columns:1}}
+  .cols a{display:flex;justify-content:space-between;gap:var(--space-3);align-items:baseline;
+    break-inside:avoid;min-block-size:2.75rem;padding-block:var(--space-2);text-decoration:none;
+    border-block-end:1px solid var(--lin-hairline-soft);color:var(--lin-ink-2)}
+  .cols a:hover{color:var(--lin-accent)}
+  .cols a:focus-visible{outline:2px solid var(--lin-accent);outline-offset:2px}
+  .cols small{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);text-align:end;
+    overflow-wrap:anywhere}
+
+  footer{background:var(--lin-canvas);color:var(--lin-ink-3);padding-block:var(--space-10);
+    border-block-start:1px solid var(--lin-hairline);font-size:var(--text-sm)}
   footer .row{display:flex;justify-content:space-between;gap:var(--space-5);flex-wrap:wrap}
-  footer a{color:var(--color-text-link)}
-  /* an unbreakable command sets min-content width and drags the page with it at a
-     larger root font: anywhere shrinks min-content, break-word does not */
+  footer a{color:var(--lin-ink-2)}
   footer code{font-family:var(--font-mono);font-size:var(--text-xs);overflow-wrap:anywhere}
   footer .row > span{min-inline-size:0;overflow-wrap:anywhere}
-  @media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation-duration:1ms !important}} /* ds-allow-hardcode: the reduced-motion reset IS the near-zero duration */
+
+  .toggle{position:fixed;inset-block-start:var(--space-4);inset-inline-end:var(--space-4);z-index:10;
+    display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:2.5rem;padding-inline:var(--space-4);
+    border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);background:var(--lin-raised);
+    color:var(--lin-ink);font:600 var(--text-sm)/1 var(--font-sans);cursor:pointer}
+  .toggle:hover{background:var(--lin-accent-bg)}
+  .toggle:focus-visible{outline:2px solid var(--lin-accent);outline-offset:2px}
 </style>
 </head>
 <body>
 
+<button class="toggle" type="button" id="themeBtn" aria-pressed="true">
+  <svg class="ico" aria-hidden="true"><use href="#i-sun" id="themeUse"/></svg>
+  <span id="themeLabel">Light</span>
+</button>
+
+<!-- ============ 1. linear-app ============ -->
 <header class="hero">
-  <button class="toggle" type="button" id="themeBtn" aria-pressed="false">
-    <svg class="ico" aria-hidden="true"><use href="#i-moon" id="themeUse"/></svg>
-    <span id="themeLabel">Dark</span>
-  </button>
   <div class="wrap hero-grid">
-    <div>
-      <p class="eyebrow">UX/UI Agent Skills</p>
-      <h1>Screens an agent built, and a gate signed off.</h1>
-      <p class="lede">A trading terminal with ten chart types, a revenue console, and
-        23 component harnesses. One token theme, light and dark, every page passing
-        the same 40 objective checks.</p>
+    <div class="rise">
+      <p class="eyebrow">ux-ui-agent-skills</p>
+      <h1>Screens an agent built. Gates that signed them off.</h1>
+      <p>A trading terminal with ten chart types, a revenue console, and 23 component
+        harnesses. One token system, four aesthetic directions, forty objective checks
+        that all have to pass before any of it ships.</p>
       <div class="cta">
         <a class="btn btn-primary" href="./terminal/index.html">Open the terminal
           <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-        <a class="btn btn-ghost" href="https://github.com/plugin87/ux-ui-agent-skills">Get the kit</a>
+        <a class="btn btn-quiet" href="https://github.com/plugin87/ux-ui-agent-skills">Get the kit</a>
       </div>
     </div>
-    <div class="hero-shot themed">
+    <figure class="glass themed rise d1" id="heroShot" style="margin:0">
       <img class="light" src="./thumbs/terminal-light.png" width="1200" height="720" decoding="async"
-        alt="Meridian Terminal in light theme: market ticker, candlestick chart with volume and a moving average, order book with depth bars, market depth curve, time and sales, watchlist" />
+        alt="Meridian Terminal: market ticker, candlestick chart with volume and a moving average, order book with depth bars, depth curve, time and sales, watchlist" />
       <img class="dark" src="./thumbs/terminal-thumb.png" width="1200" height="720" decoding="async"
         alt="The same trading terminal in dark theme" />
-    </div>
+    </figure>
   </div>
 </header>
 
+<!-- ============ 2. terminal ============ -->
 <section class="proof" aria-label="What is in the kit">
   <div class="wrap">
-    <ul>
-      <li><b>40</b><span>objective gates, all green</span></li>
-      <li><b>26</b><span>rendered pages here</span></li>
-      <li><b>19</b><span>runnable skills</span></li>
-      <li><b>138</b><span>design systems</span></li>
-      <li><b>0</b><span>chart libraries used</span></li>
-    </ul>
-  </div>
-</section>
-
-<section class="feature">
-  <div class="wrap fgrid">
-    <div class="copy">
-      <p class="eyebrow">Density test</p>
-      <h2>Meridian Terminal</h2>
-      <p>A trading desk on one screen. Every chart is inline SVG drawn from the same
-        tokens as every button in the kit.</p>
-      <ul class="facts">
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Candlesticks, volume and a 7-period moving average</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Order book with depth bars, and a cumulative depth curve</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Stacked area, waterfall, bubble chart, correlation matrix, gauge</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Holds together in a 280 pixel viewport at a 1.25x root font</li>
-      </ul>
-      <a class="go" href="./terminal/index.html">Open the terminal
-        <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
-    </div>
-    <div class="frame themed">
-      <img class="light" src="./thumbs/terminal-light.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
-      <img class="dark" src="./thumbs/terminal-thumb.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
+    <p class="eyebrow" style="color:var(--trm-ink-2)">// measured, not claimed</p>
+    <div class="grid" style="margin-block-start:var(--space-5)">
+      <div class="cell rise"><b data-count="40">40</b><span>objective gates</span></div>
+      <div class="cell rise d1"><b data-count="26">26</b><span>rendered pages</span></div>
+      <div class="cell rise d2"><b data-count="19">19</b><span>runnable skills</span></div>
+      <div class="cell rise d3"><b data-count="138">138</b><span>design systems</span></div>
+      <div class="cell rise d3"><b data-count="0">0</b><span>chart libraries</span></div>
     </div>
   </div>
 </section>
 
-<section class="feature flip">
-  <div class="wrap fgrid">
-    <div class="copy">
-      <p class="eyebrow">Product screen</p>
-      <h2>Atlas revenue console</h2>
-      <p>What a real application screen looks like when the composition rules are
-        followed rather than described.</p>
-      <ul class="facts">
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>One hero figure leads at three times the body size</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Three different shapes, not three identical cards</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Range tabs move the numbers; the table really sorts</li>
-        <li><svg class="ico" aria-hidden="true"><use href="#i-check"/></svg>Destructive actions wear the danger variant everywhere</li>
-      </ul>
-      <a class="go" href="./showcase/index.html">Open the dashboard
-        <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+<!-- ============ 3. editorial ============ -->
+<section class="editorial">
+  <div class="wrap">
+    <p class="eyebrow rise">Density test</p>
+    <h2 class="rise">Ten chart types, no chart library.</h2>
+    <div class="split">
+      <div class="rise">
+        <p class="stand">A trading desk is the hardest screen there is: dense,
+          mostly non-text, and unforgiving. Every mark on it is inline SVG drawn
+          from the same tokens as every button in the kit.</p>
+        <dl>
+          <dt>Price</dt><dd>Candlesticks with wicks, volume, a 7-period moving average</dd>
+          <dt>Book</dt><dd>Level 2 with depth bars, and a cumulative depth curve</dd>
+          <dt>Portfolio</dt><dd>Stacked area, waterfall with connectors, bubble chart</dd>
+          <dt>Risk</dt><dd>A correlation matrix that is actually symmetric, and a gauge</dd>
+        </dl>
+        <a class="btn btn-primary" style="margin-block-start:var(--space-6);background:var(--edi-accent);color:var(--edi-paper)" href="./terminal/index.html">Open the terminal
+          <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+      </div>
+      <figure class="plate themed rise d1" style="margin:0">
+        <img class="light" src="./thumbs/terminal-light.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
+        <img class="dark" src="./thumbs/terminal-thumb.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
+        <figcaption>Meridian Terminal, 1-hour interval</figcaption>
+      </figure>
     </div>
-    <div class="frame themed">
-      <img class="light" src="./thumbs/atlas-light.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
+  </div>
+</section>
+
+<!-- ============ 4. apple keynote ============ -->
+<section class="keynote">
+  <div class="wrap">
+    <p class="eyebrow rise" style="color:var(--apl-ink-2)">Product screen</p>
+    <h2 class="rise">One number leads. Everything else gets out of its way.</h2>
+    <p class="rise d1">Atlas is a revenue console where the composition rules were
+      followed instead of described: one hero figure at three times the body size,
+      three different shapes instead of three identical cards, and a table whose
+      headers really sort.</p>
+    <a class="link rise d1" href="./showcase/index.html">Open the dashboard
+      <svg class="ico" aria-hidden="true"><use href="#i-chevron-right"/></svg></a>
+    <div class="shot themed rise d2">
+      <img class="light" src="./thumbs/atlas-light.png" width="1200" height="720" loading="lazy" decoding="async"
+        alt="Atlas revenue console: sidebar, a hero net-recurring-revenue figure with a weekly bar chart, retention and churn cards" />
       <img class="dark" src="./thumbs/atlas-dark.png" width="1200" height="720" loading="lazy" decoding="async" alt="" />
     </div>
   </div>
 </section>
 
-<section class="band">
+<!-- ============ 5. gallery ============ -->
+<section class="gallery">
   <div class="wrap">
-    <p class="eyebrow">Same rules, different directions</p>
-    <h2>One engine, three looks</h2>
-    <p>The tokens change; the rules do not. Each of these renders from its own theme
-      file and passes the same checks.</p>
-    <div class="cards">
-      <a class="tile" href="./sample-app/preview.html">
+    <p class="eyebrow rise">Same rules, different directions</p>
+    <h2 class="rise">One engine, three more looks</h2>
+    <p class="rise">The tokens change; the rules do not. Each renders from its own
+      theme file and clears the same checks.</p>
+    <div class="tiles">
+      <a class="tile rise" href="./sample-app/preview.html">
         <span class="themed">
-          <img class="light" src="./thumbs/reference-light.png" width="1100" height="700" loading="lazy" decoding="async" alt="Reference app: an analytics screen with one hero metric and a settings page" />
+          <img class="light" src="./thumbs/reference-light.png" width="1100" height="700" loading="lazy" decoding="async" alt="Reference app: analytics screen with one hero metric and a settings page" />
           <img class="dark" src="./thumbs/reference-dark.png" width="1100" height="700" loading="lazy" decoding="async" alt="" />
         </span>
         <span class="body"><strong>Reference app</strong>
-          <span>Two pages, one theme, and a Delete flow that traps focus and returns it</span></span>
+          <span>Two pages, one theme, a Delete flow that traps focus and returns it</span></span>
       </a>
-      <a class="tile" href="./apple-demo/index.html">
+      <a class="tile rise d1" href="./apple-demo/index.html">
         <span class="themed">
-          <img class="light" src="./thumbs/apple-light.png" width="1100" height="700" loading="lazy" decoding="async" alt="Apple-direction demo: restrained type and generous space" />
+          <img class="light" src="./thumbs/apple-light.png" width="1100" height="700" loading="lazy" decoding="async" alt="Apple-direction demo: restrained type, generous space" />
           <img class="dark" src="./thumbs/apple-dark.png" width="1100" height="700" loading="lazy" decoding="async" alt="" />
         </span>
         <span class="body"><strong>Apple direction</strong>
           <span>Restrained type, generous space, almost no colour</span></span>
       </a>
-      <a class="tile" href="./brandkit-demo/index.html">
+      <a class="tile rise d2" href="./brandkit-demo/index.html">
         <span class="themed">
           <img class="light" src="./thumbs/brandkit-light.png" width="1100" height="700" loading="lazy" decoding="async" alt="Brandkit foundation generated from an OKLCH brand hue" />
           <img class="dark" src="./thumbs/brandkit-dark.png" width="1100" height="700" loading="lazy" decoding="async" alt="" />
@@ -250,35 +310,186 @@
   </div>
 </section>
 
+<!-- ============ 6. the library ============ -->
+<section class="library">
+  <div class="wrap">
+    <p class="eyebrow rise">// design-systems/library</p>
+    <h2 class="rise">138 systems, each one a full spec</h2>
+    <p class="rise">Not colour swatches. Each of these is a written specification -
+      surfaces, type ramp, motion, component behaviour - that the agent resolves into
+      this kit's three-tier tokens, then re-verifies for contrast.</p>
+    <ul class="chips rise d1">
+        <li>agentic</li>
+        <li>airbnb</li>
+        <li>airtable</li>
+        <li>ant</li>
+        <li>apple</li>
+        <li>application</li>
+        <li>arc</li>
+        <li>artistic</li>
+        <li>atelier zero</li>
+        <li>bento</li>
+        <li>binance</li>
+        <li>bmw</li>
+        <li>bold</li>
+        <li>brutalism</li>
+        <li>bugatti</li>
+        <li>cafe</li>
+        <li>cal</li>
+        <li>canva</li>
+        <li>claude</li>
+        <li>clay</li>
+        <li>claymorphism</li>
+        <li>clean</li>
+        <li>clickhouse</li>
+        <li>cohere</li>
+        <li>coinbase</li>
+        <li>colorful</li>
+        <li>composio</li>
+        <li>contemporary</li>
+        <li>corporate</li>
+        <li>cosmic</li>
+        <li>creative</li>
+        <li>cursor</li>
+        <li>dashboard</li>
+        <li>default</li>
+        <li>discord</li>
+        <li>dithered</li>
+        <li>doodle</li>
+        <li>dramatic</li>
+        <li>duolingo</li>
+        <li>editorial</li>
+        <li>elegant</li>
+        <li>elevenlabs</li>
+        <li>energetic</li>
+        <li>enterprise</li>
+        <li>expo</li>
+        <li>expressive</li>
+        <li>fantasy</li>
+        <li>ferrari</li>
+        <li>figma</li>
+        <li>flat</li>
+        <li>framer</li>
+        <li>friendly</li>
+        <li>futuristic</li>
+        <li>github</li>
+        <li>glassmorphism</li>
+        <li>gradient</li>
+        <li>hashicorp</li>
+        <li>huggingface</li>
+        <li>ibm</li>
+        <li>intercom</li>
+        <li>kami</li>
+        <li>kraken</li>
+        <li>lamborghini</li>
+        <li>levels</li>
+        <li>linear app</li>
+        <li>lingo</li>
+        <li>lovable</li>
+        <li>luxury</li>
+        <li>mastercard</li>
+        <li>material</li>
+        <li>meta</li>
+        <li>minimal</li>
+        <li>minimax</li>
+        <li>mintlify</li>
+        <li>miro</li>
+        <li>mistral ai</li>
+        <li>modern</li>
+        <li>mongodb</li>
+        <li>mono</li>
+        <li>neobrutalism</li>
+        <li>neon</li>
+        <li>neumorphism</li>
+        <li>nike</li>
+        <li>notion</li>
+        <li>nvidia</li>
+        <li>ollama</li>
+        <li>openai</li>
+        <li>opencode ai</li>
+        <li>pacman</li>
+        <li>paper</li>
+        <li>perspective</li>
+        <li>pinterest</li>
+        <li>playstation</li>
+        <li>posthog</li>
+        <li>premium</li>
+        <li>professional</li>
+        <li>publication</li>
+        <li>raycast</li>
+        <li>refined</li>
+        <li>renault</li>
+        <li>replicate</li>
+        <li>resend</li>
+        <li>retro</li>
+        <li>revolut</li>
+        <li>runwayml</li>
+        <li>sanity</li>
+        <li>sentry</li>
+        <li>shadcn</li>
+        <li>shopify</li>
+        <li>simple</li>
+        <li>skeumorphism</li>
+        <li>sleek</li>
+        <li>spacex</li>
+        <li>spacious</li>
+        <li>spotify</li>
+        <li>starbucks</li>
+        <li>storytelling</li>
+        <li>stripe</li>
+        <li>supabase</li>
+        <li>superhuman</li>
+        <li>tesla</li>
+        <li>tetris</li>
+        <li>theverge</li>
+        <li>together ai</li>
+        <li>uber</li>
+        <li>vercel</li>
+        <li>vibrant</li>
+        <li>vintage</li>
+        <li>vodafone</li>
+        <li>voltagent</li>
+        <li>warm editorial</li>
+        <li>warp</li>
+        <li>webflow</li>
+        <li>wired</li>
+        <li>wise</li>
+        <li>x ai</li>
+        <li>xiaohongshu</li>
+        <li>zapier</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 7. harness index ============ -->
 <section class="index">
   <div class="wrap">
-    <p class="eyebrow">23 files</p>
-    <h2 style="font-size:var(--text-3xl);letter-spacing:-0.02em;margin-block:var(--space-3) var(--space-2)">Component harnesses</h2>
-    <p style="color:var(--color-text-secondary);max-inline-size:56ch">Every variant and every state of each component, rendered so the gates can measure them.</p>
-    <nav class="cols" aria-label="Component harnesses">
-      <a href="./component-states/button.html"><em>Button</em><small>6 states</small></a>
-      <a href="./component-states/input.html"><em>Input</em><small>error, loading</small></a>
-      <a href="./component-states/form-controls.html"><em>Checkbox, radio, switch</em><small>keyboard model</small></a>
-      <a href="./component-states/select.html"><em>Select</em><small>listbox</small></a>
-      <a href="./component-states/search.html"><em>Search field</em><small>empty result</small></a>
-      <a href="./component-states/datepicker.html"><em>Date picker</em><small>grid roles</small></a>
-      <a href="./component-states/fileupload.html"><em>File upload</em><small>progress</small></a>
-      <a href="./component-states/modal.html"><em>Modal</em><small>focus trap</small></a>
-      <a href="./component-states/drawer.html"><em>Drawer</em><small>scrim</small></a>
-      <a href="./component-states/command-palette.html"><em>Command palette</em><small>combobox</small></a>
-      <a href="./component-states/context-menu.html"><em>Context menu</em><small>submenu</small></a>
-      <a href="./component-states/overlays.html"><em>Popover, tooltip</em><small>placement</small></a>
-      <a href="./component-states/tabs.html"><em>Tabs</em><small>roving tabindex</small></a>
-      <a href="./component-states/navigation.html"><em>Navigation</em><small>stepper</small></a>
-      <a href="./component-states/app-shell.html"><em>App shell</em><small>sidebar</small></a>
-      <a href="./component-states/card.html"><em>Card</em><small>whole-card link</small></a>
-      <a href="./component-states/data-table.html"><em>Data table</em><small>real sorting</small></a>
-      <a href="./component-states/data-display.html"><em>Tree, carousel</em><small>roving focus</small></a>
-      <a href="./component-states/charts.html"><em>Charts</em><small>bar, line, donut</small></a>
-      <a href="./component-states/feedback.html"><em>Feedback</em><small>empty state</small></a>
-      <a href="./component-states/toast.html"><em>Toast</em><small>live region</small></a>
-      <a href="./component-states/misc.html"><em>Badge, avatar, slider</em><small>paired dot</small></a>
-      <a href="./component-states/edge-cases.html"><em>Hostile content</em><small>extremes</small></a>
+    <p class="eyebrow rise">23 files</p>
+    <h2 class="rise">Component harnesses</h2>
+    <nav class="cols rise" aria-label="Component harnesses">
+      <a href="./component-states/button.html"><span>Button</span><small>6 states</small></a>
+      <a href="./component-states/input.html"><span>Input</span><small>error, loading</small></a>
+      <a href="./component-states/form-controls.html"><span>Checkbox, radio, switch</span><small>keyboard</small></a>
+      <a href="./component-states/select.html"><span>Select</span><small>listbox</small></a>
+      <a href="./component-states/search.html"><span>Search field</span><small>empty result</small></a>
+      <a href="./component-states/datepicker.html"><span>Date picker</span><small>grid roles</small></a>
+      <a href="./component-states/fileupload.html"><span>File upload</span><small>progress</small></a>
+      <a href="./component-states/modal.html"><span>Modal</span><small>focus trap</small></a>
+      <a href="./component-states/drawer.html"><span>Drawer</span><small>scrim</small></a>
+      <a href="./component-states/command-palette.html"><span>Command palette</span><small>combobox</small></a>
+      <a href="./component-states/context-menu.html"><span>Context menu</span><small>submenu</small></a>
+      <a href="./component-states/overlays.html"><span>Popover, tooltip</span><small>placement</small></a>
+      <a href="./component-states/tabs.html"><span>Tabs</span><small>roving tabindex</small></a>
+      <a href="./component-states/navigation.html"><span>Navigation</span><small>stepper</small></a>
+      <a href="./component-states/app-shell.html"><span>App shell</span><small>sidebar</small></a>
+      <a href="./component-states/card.html"><span>Card</span><small>whole-card link</small></a>
+      <a href="./component-states/data-table.html"><span>Data table</span><small>real sorting</small></a>
+      <a href="./component-states/data-display.html"><span>Tree, carousel</span><small>roving focus</small></a>
+      <a href="./component-states/charts.html"><span>Charts</span><small>bar, line, donut</small></a>
+      <a href="./component-states/feedback.html"><span>Feedback</span><small>empty state</small></a>
+      <a href="./component-states/toast.html"><span>Toast</span><small>live region</small></a>
+      <a href="./component-states/misc.html"><span>Badge, avatar, slider</span><small>paired dot</small></a>
+      <a href="./component-states/edge-cases.html"><span>Hostile content</span><small>extremes</small></a>
     </nav>
   </div>
 </section>
@@ -294,16 +505,64 @@
 
 <script src="./component-states/icons.js"></script>
 <script>
+  /* theme toggle: flips data-theme, its own aria-pressed, the icon and the label */
   const btn = document.getElementById('themeBtn');
   const use = document.getElementById('themeUse');
   const label = document.getElementById('themeLabel');
   btn.addEventListener('click', () => {
-    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const dark = document.documentElement.getAttribute('data-theme') !== 'light';
     document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
     btn.setAttribute('aria-pressed', String(!dark));
     use.setAttribute('href', dark ? '#i-moon' : '#i-sun');
     label.textContent = dark ? 'Dark' : 'Light';
   });
+
+  /* Scroll choreography. Everything below is an ENHANCEMENT: the .rise class only
+     hides anything when the visitor has not asked for reduced motion, so a reader
+     who has never sees a blank page. */
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!still && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.05 });
+    document.querySelectorAll('.rise').forEach(el => io.observe(el));
+    /* Safety net: if anything goes wrong with the observer - a print stylesheet,
+       a programmatic scroll, an old engine - nothing may stay invisible. */
+    setTimeout(() => document.querySelectorAll('.rise').forEach(el => el.classList.add('in')), 4000); /* ds-allow-hardcode: a failsafe delay, deliberately not a motion token */
+
+    /* count the proof numbers up once, when they arrive */
+    const nums = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        const el = e.target, to = Number(el.dataset.count);
+        nums.unobserve(el);
+        if (!to) continue;
+        const started = performance.now(), ms = 900;
+        const step = (t) => {
+          const p = Math.min(1, (t - started) / ms);
+          el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }, { threshold: 0.6 });
+    document.querySelectorAll('[data-count]').forEach(el => nums.observe(el));
+
+    /* hero parallax, transform only, capped so it can never push content off */
+    const shot = document.getElementById('heroShot');
+    let ticking = false;
+    addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = Math.min(60, scrollY * 0.08);
+        shot.style.transform = `translate3d(0, ${-y}px, 0)`;
+        ticking = false;
+      });
+    }, { passive: true });
+  } else {
+    document.querySelectorAll('.rise').forEach(el => el.classList.add('in'));
+  }
 </script>
 </body>
 </html>

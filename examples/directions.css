@@ -1,0 +1,53 @@
+/* directions.css — four aesthetic directions from design-systems/library/, resolved
+ * into scoped custom properties. Each band of the landing page renders in one of
+ * them, which is the kit's central claim made visible: same rules, same gates,
+ * different look. Values are token DEFINITIONS, not values typed into components.
+ *
+ *   linear-app  → design-systems/library/linear-app/DESIGN.md
+ *   apple       → design-systems/library/apple/DESIGN.md
+ *   editorial   → taste/aesthetic-systems.md, editorial archetype
+ *   terminal    → taste/aesthetic-systems.md, brutalist archetype
+ */
+:root{
+  /* type stacks the shared theme does not carry */
+  --font-serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+
+  /* linear-app: darkness as the native medium, one chromatic accent */
+  --lin-canvas:#08090a;
+  --lin-panel:#0f1011;
+  --lin-raised:#191a1b;
+  --lin-raised-2:#28282c;
+  --lin-hairline:rgba(255,255,255,0.08);
+  --lin-hairline-soft:rgba(255,255,255,0.05);
+  --lin-ink:#f7f8f8;
+  --lin-ink-2:#d0d6e0;
+  --lin-ink-3:#8a8f98;
+  --lin-accent:#7170ff;
+  /* Linear ships #5e6ad2 behind near-white text, which measures 4.42:1 - AA by
+     a rounding error. One step deeper clears it at 5.20:1 and keeps the hue. */
+  --lin-accent-bg:#535ec7;
+  --lin-accent-hover:#828fff;
+  --lin-glow-a:rgba(94,106,210,0.55);
+  --lin-glow-b:rgba(113,112,255,0.28);
+
+  /* apple: absolute black, one product, nothing else */
+  --apl-canvas:#000000;
+  --apl-ink:#f5f5f7;
+  --apl-ink-2:#a1a1a6;
+  --apl-accent:#2997ff;
+
+  /* editorial: warm paper, ink, a single rule weight */
+  --edi-paper:#f7f4ee;
+  --edi-ink:#1a1714;
+  --edi-ink-2:#5c544a;
+  --edi-rule:#ded5c7;
+  --edi-accent:#9a3b2f;
+
+  /* terminal: no radius, hard borders, phosphor accent */
+  --trm-canvas:#0b0d0c;
+  --trm-ink:#d7e0d8;
+  --trm-ink-2:#7d8a80;
+  --trm-line:#233028;
+  --trm-accent:#5ef2a0;
+}
