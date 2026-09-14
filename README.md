@@ -192,6 +192,26 @@ You get 18 skills (`/design-component`, `/brandkit`, `/a11y-audit`, …), 5 comm
 `CLAUDE.md` carries in the repo, because a plugin root `CLAUDE.md` is not loaded
 as project context.
 
+**Then just work.** Ask for the thing you want and the right skill loads itself:
+
+```text
+"Design a notification component with all states and accessibility"
+"Build the billing settings screen, one shared theme, light and dark"
+"/grill-me"      interrogate the brief before anything is built
+"/gate"          run all 38 checks and report the real N/N
+"/critique"      hand the result to a critic that argues for rejection
+```
+
+If the skills do not show up straight away, start a new session. To check what
+is loaded, update, or remove it:
+
+```bash
+claude plugin details ux-ui-agent-skills    # inventory + token cost per skill
+claude plugin update  ux-ui-agent-skills
+claude plugin uninstall ux-ui-agent-skills
+claude plugin marketplace remove ux-ui-agent-skills
+```
+
 ### See it first, install nothing
 
 ```bash
@@ -291,7 +311,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | Where | What is in it |
 |---|---|
 | **[Live demo](https://plugin87.github.io/ux-ui-agent-skills/)** | 26 rendered pages: every component harness, both reference screens, a theme toggle |
-| [docs/GUIDE.md](docs/GUIDE.md) | How the skills compose, the repo map, token architecture, frameworks, interop, a11y standards, starting a new product project |
+| [docs/GUIDE.md](docs/GUIDE.md) | Using it as a plugin (inventory, management, token cost), how the skills compose, the repo map, token architecture, frameworks, interop, a11y standards, starting a new product project |
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | The bar for a pull request, and how to add a gate that can still say no |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |

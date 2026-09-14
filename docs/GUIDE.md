@@ -16,6 +16,7 @@ is the short version.
 - [Accessibility Standards](#accessibility-standards)
 - [Design Review Output](#design-review-output)
 - [Customization](#customization)
+- [Using it as a Claude Code plugin](#using-it-as-a-claude-code-plugin)
 - [Look before installing](#look-before-installing)
 - [Install from a clone](#install-from-a-clone)
 - [Requirements](#requirements)
@@ -338,6 +339,53 @@ This is a **starter kit** — make it yours:
 - **Workflows** — adapt review rubrics and checklists in `workflows/` to your team's process
 
 ---
+
+---
+
+## Using it as a Claude Code plugin
+
+```
+/plugin marketplace add plugin87/ux-ui-agent-skills
+/plugin install ux-ui-agent-skills@ux-ui-agent-skills
+```
+
+The marketplace is this repository: `add` clones it and validates
+`.claude-plugin/marketplace.json`, `install` registers the plugin from it. In the
+Claude Code UI, `/plugin` then **Discover** browses the same thing.
+
+**What lands in your session**
+
+| Kind | What |
+|---|---|
+| Skills (18) | `design-doctrine` plus every runnable skill: tokens, component, code, review, a11y-audit, aesthetic, brandkit, image-to-code, redesign, interop, prototype, ux-writing, governance, token-build, figma, qa, performance |
+| Commands (5) | `/grill-me`, `/gate`, `/critique`, `/ship`, `/scaffold-project` |
+| Agent | `design-critic`, the adversarial reviewer behind `/critique` |
+| MCP servers | none - deliberately. The repo's own `.mcp.json` ships as `.mcp.example.json` so installing a design kit never registers a third-party server on your machine |
+
+`design-doctrine` exists because a plugin's root `CLAUDE.md` is **not** loaded as
+project context - `claude plugin validate` says so outright. Without it an
+install would ship every file and none of the rules, so the verification
+protocol, the no-emoji rule, the five non-negotiables and the routing table
+travel as a skill instead.
+
+**Managing it**
+
+```bash
+claude plugin details ux-ui-agent-skills     # component inventory + projected token cost
+claude plugin list                           # everything installed
+claude plugin update ux-ui-agent-skills      # pull a newer version (restart to apply)
+claude plugin uninstall ux-ui-agent-skills
+claude plugin marketplace list | update <name> | remove <name>
+claude plugin validate .                     # validate a manifest before committing it
+```
+
+Skills and commands appear in a fresh session. If `/gate` or `/design-component`
+is not offered right after installing, start a new session and check
+`claude plugin details`.
+
+**Token cost.** `claude plugin details` prints it: the always-on cost is the
+description line of every skill, and each skill's body is only paid when it
+fires. Budget the always-on number, not the sum.
 
 ---
 
