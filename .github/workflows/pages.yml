@@ -1,0 +1,50 @@
+# Publish examples/ as the live demo.
+#
+# The kit's examples ARE the demo: static HTML on one shared token theme, the same
+# files scripts/accuracy_report.mjs measures. Nothing is built or transformed here,
+# so what a visitor clicks is what the gate run passed.
+name: Pages — live demo
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'examples/**'
+      - '.github/workflows/pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time; let a newer push finish rather than queueing behind an old one.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Refuse to publish a demo with a dangling link
+        run: |
+          cd examples
+          fail=0
+          # every relative href in the index must resolve to a file that exists
+          for href in $(grep -o 'href="\./[^"]*"' index.html | sed 's/href="\.\///;s/"//'); do
+            if [ ! -f "$href" ]; then echo "dangling: index.html links to $href, which does not exist"; fail=1; fi
+          done
+          exit $fail
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./examples
+      - id: deploy
+        uses: actions/deploy-pages@v4

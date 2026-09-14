@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UX/UI Agent Skills - live demo</title>
+<meta name="description" content="Every screen and component harness in the kit, rendered. All of them pass the same 37 objective gates in light and dark." />
+<link rel="stylesheet" href="./brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    padding:var(--space-6) var(--space-5) var(--space-10);line-height:1.5}
+  .wrap{max-inline-size:64rem;margin-inline:auto}
+
+  /* one thing leads: the title, then the reference app, then everything else is quiet */
+  header{display:flex;gap:var(--space-4);align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+    margin-block-end:var(--space-8)}
+  h1{font-size:var(--text-5xl);line-height:var(--leading-tight);letter-spacing:-0.03em;max-inline-size:18ch}
+  .lede{color:var(--color-text-secondary);margin-block-start:var(--space-3);max-inline-size:58ch}
+
+  .toggle{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:2.5rem;
+    padding-inline:var(--space-4);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
+    background:transparent;color:var(--color-text-primary);font:500 var(--text-sm)/1 var(--font-sans);cursor:pointer;
+    transition:background var(--transition-micro)}
+  .toggle:hover{background:var(--color-surface-raised)}
+  .toggle:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .toggle svg{inline-size:1rem;block-size:1rem;flex:none}
+
+  .lead{display:block;padding:var(--space-6);border-radius:var(--radius-card);
+    background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    box-shadow:var(--shadow-md);text-decoration:none;color:inherit;
+    transition:box-shadow var(--transition-micro)}
+  .lead:hover{box-shadow:var(--shadow-lg)}
+  .lead:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .lead h2{font-size:var(--text-3xl);line-height:var(--leading-tight);letter-spacing:-0.02em}
+  .lead p{color:var(--color-text-secondary);margin-block-start:var(--space-2);max-inline-size:52ch}
+  .lead .go{display:inline-block;margin-block-start:var(--space-4);color:var(--color-text-link);font-weight:500}
+
+  h3{font-size:var(--text-xl);letter-spacing:-0.01em;margin-block:var(--space-8) var(--space-3)}
+  .count{color:var(--color-text-secondary);font-size:var(--text-sm);font-weight:400}
+
+  .grid{display:grid;gap:var(--space-3);
+    grid-template-columns:repeat(auto-fill,minmax(min(100%,13rem),1fr))}
+  .card{display:block;padding:var(--space-4);border-radius:var(--radius-card);
+    background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    text-decoration:none;color:inherit;min-block-size:2.75rem;
+    transition:border-color var(--transition-micro),background var(--transition-micro)}
+  .card:hover{background:var(--color-surface-raised);border-color:var(--color-border-strong)}
+  .card:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .card strong{display:block;font-size:var(--text-base);font-weight:600}
+  .card span{display:block;color:var(--color-text-secondary);font-size:var(--text-sm);margin-block-start:var(--space-1);
+    overflow-wrap:anywhere}
+
+  footer{margin-block-start:var(--space-12);padding-block-start:var(--space-6);
+    border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm)}
+  footer a{color:var(--color-text-link)}
+  /* an unbreakable token (a command, a URL) sets min-content width and takes the page
+     with it at 280px under a larger root font - anywhere shrinks min-content, break-word does not */
+  code{font-family:var(--font-mono);font-size:var(--text-sm);overflow-wrap:anywhere}
+  footer a{overflow-wrap:anywhere}
+  @media (prefers-reduced-motion:reduce){*{transition-duration:1ms !important;animation-duration:1ms !important}} /* ds-allow-hardcode: the reduced-motion reset IS the near-zero duration */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Every screen the kit produces, rendered</h1>
+    <p class="lede">Not a gallery of mockups. Each page below is the exact file the
+      gates measure: real contrast in light and dark, keyboard model, target size,
+      no overflow down to a 280 pixel viewport. Open any of them and click around.</p>
+  </div>
+  <button class="toggle" id="themeBtn" type="button" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+    <span id="themeLabel">Dark</span>
+  </button>
+</header>
+
+<a class="lead" href="./sample-app/preview.html">
+  <h2>Reference app</h2>
+  <p>Two pages on one shared token theme: an analytics dashboard led by a single
+    hero metric, and a settings page whose Delete account flow opens a confirm
+    dialog that traps focus and returns it.</p>
+  <span class="go">Open the reference app</span>
+</a>
+
+<h3>Component harnesses <span class="count">23 files, every variant and state</span></h3>
+<div class="grid">
+  <a class="card" href="./component-states/button.html"><strong>Button</strong><span>primary, secondary, danger, loading, toggle</span></a>
+  <a class="card" href="./component-states/input.html"><strong>Input</strong><span>error, disabled, loading, helper text</span></a>
+  <a class="card" href="./component-states/form-controls.html"><strong>Checkbox, radio, switch</strong><span>indeterminate, group, keyboard model</span></a>
+  <a class="card" href="./component-states/select.html"><strong>Select</strong><span>listbox, typeahead, disabled options</span></a>
+  <a class="card" href="./component-states/search.html"><strong>Search field</strong><span>clear, suggestions, empty result</span></a>
+  <a class="card" href="./component-states/datepicker.html"><strong>Date picker</strong><span>grid roles, arrow keys, selected day</span></a>
+  <a class="card" href="./component-states/fileupload.html"><strong>File upload</strong><span>drop zone, progress, rejected file</span></a>
+  <a class="card" href="./component-states/modal.html"><strong>Modal</strong><span>focus trap, Escape, return focus</span></a>
+  <a class="card" href="./component-states/drawer.html"><strong>Drawer</strong><span>side panel, scrim, focus trap</span></a>
+  <a class="card" href="./component-states/command-palette.html"><strong>Command palette</strong><span>combobox, listbox, filtering</span></a>
+  <a class="card" href="./component-states/context-menu.html"><strong>Context menu</strong><span>menu roles, submenu, keyboard</span></a>
+  <a class="card" href="./component-states/overlays.html"><strong>Popover and tooltip</strong><span>placement, dismiss, divider</span></a>
+  <a class="card" href="./component-states/tabs.html"><strong>Tabs</strong><span>roving tabindex, selected panel</span></a>
+  <a class="card" href="./component-states/navigation.html"><strong>Navigation</strong><span>breadcrumb, pagination, stepper</span></a>
+  <a class="card" href="./component-states/app-shell.html"><strong>App shell</strong><span>header, sidebar, content region</span></a>
+  <a class="card" href="./component-states/card.html"><strong>Card</strong><span>media, actions, whole-card link</span></a>
+  <a class="card" href="./component-states/data-table.html"><strong>Data table</strong><span>sortable headers that actually sort</span></a>
+  <a class="card" href="./component-states/data-display.html"><strong>Tree, carousel, gallery</strong><span>expand, roving focus, captions</span></a>
+  <a class="card" href="./component-states/charts.html"><strong>Charts</strong><span>bar, line, donut, sparkline</span></a>
+  <a class="card" href="./component-states/feedback.html"><strong>Feedback</strong><span>toast, banner, skeleton, empty state</span></a>
+  <a class="card" href="./component-states/toast.html"><strong>Toast</strong><span>live region, stacking, dismiss</span></a>
+  <a class="card" href="./component-states/misc.html"><strong>Badge, avatar, slider</strong><span>paired dot, initials, range</span></a>
+  <a class="card" href="./component-states/edge-cases.html"><strong>Hostile content</strong><span>unbroken strings, empty, extremes</span></a>
+</div>
+
+<h3>Aesthetic range <span class="count">same rules, different direction</span></h3>
+<div class="grid">
+  <a class="card" href="./apple-demo/index.html"><strong>Apple direction</strong><span>restrained type, generous space</span></a>
+  <a class="card" href="./brandkit-demo/index.html"><strong>Brandkit foundation</strong><span>generated from an OKLCH brand hue</span></a>
+</div>
+
+<footer>
+  <p>Every page here passes the same gate run as the repo: <code>node scripts/accuracy_report.mjs</code>,
+  37 checks, light and dark. A passing gate proves correctness, never taste -
+  for that the kit runs an adversarial critic and a human look.</p>
+  <p style="margin-block-start:var(--space-3)"><a href="https://github.com/plugin87/ux-ui-agent-skills">github.com/plugin87/ux-ui-agent-skills</a></p>
+</footer>
+
+</div>
+<script>
+  const btn = document.getElementById('themeBtn');
+  const label = document.getElementById('themeLabel');
+  btn.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.setAttribute('aria-pressed', String(!dark));
+    label.textContent = dark ? 'Dark' : 'Light';
+  });
+</script>
+</body>
+</html>
