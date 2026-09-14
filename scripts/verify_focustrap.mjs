@@ -24,7 +24,11 @@ catch {
 const argv = process.argv.slice(2);
 const file = argv.find(a => !a.startsWith('--'));
 const open = (argv.find(a => a.startsWith('--open=')) || '').split('=')[1];
-const dialogSel = (argv.find(a => a.startsWith('--dialog=')) || '').split('=')[1] || '[role="dialog"]';
+/* A native <dialog> opened with showModal() IS a modal dialog: the role and the
+   modal semantics are implicit, and the browser traps focus itself. Looking only
+   for [role="dialog"] made the gate refuse the better implementation. */
+const dialogSel = (argv.find(a => a.startsWith('--dialog=')) || '').split('=')[1]
+  || '[role="dialog"],dialog[open]';
 const dark = argv.includes('--dark');
 if (!file || !open) { console.log('usage: node scripts/verify_focustrap.mjs <file.html> --open=<trigger> [--dialog=<sel>] [--dark]'); process.exit(0); }
 
@@ -42,7 +46,11 @@ const sem = await page.evaluate(sel => {
   const d = [...document.querySelectorAll(sel)].find(el => { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && (el.offsetParent !== null || cs.position === 'fixed'); });
   if (!d) return { open: false };
   const focusables = [...d.querySelectorAll('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(e => e.offsetParent !== null);
-  return { open: true, role: d.getAttribute('role'), modal: d.getAttribute('aria-modal'),
+  const native = d.tagName === 'DIALOG' && d.hasAttribute('open');
+  return { open: true,
+    role: d.getAttribute('role') || (native ? 'dialog' : null),
+    modal: d.getAttribute('aria-modal') || (native && typeof d.showModal === 'function' ? 'true' : null),
+    native,
     named: !!(d.getAttribute('aria-label') || d.getAttribute('aria-labelledby')), count: focusables.length };
 }, dialogSel);
 
@@ -61,7 +69,14 @@ for (let i = 0; i < steps; i++) {
   await page.keyboard.press('Tab');
   const inside = await page.evaluate(sel => {
     const d = [...document.querySelectorAll(sel)].find(el => { const cs = getComputedStyle(el); return cs.display !== 'none' && cs.visibility !== 'hidden' && (el.offsetParent !== null || cs.position === 'fixed'); });
-    return d ? d.contains(document.activeElement) : false;
+    if (!d) return false;
+    const a = document.activeElement;
+    /* A native modal <dialog> parks focus on <body> for one step as it wraps from
+       the last control back to the first. Focus is still inside the trap - it has
+       not reached anything behind the dialog - and WCAG 2.4.3 is about reaching
+       the page underneath. A leak is an INTERACTIVE element outside the dialog. */
+    if (a === document.body || a === document.documentElement) return true;
+    return d.contains(a);
   }, dialogSel);
   if (!inside) { leaked = true; leakWhere = `after ${i + 1} Tab(s)`; break; }
 }

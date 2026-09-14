@@ -30,16 +30,48 @@ const OUT = join(ROOT, '.github', 'images');
 /** [source html, output name, theme, viewport, fullPage] */
 const SHOTS = [
   ['cover.html',                              'hero.png',                 'light', [1280, 630],  false],
+  ['examples/showcase/index.html',            'dashboard-light.png',      'light', [1440, 1400], false],
+  ['examples/showcase/index.html',            'dashboard-dark.png',       'dark',  [1440, 1400], false],
   ['examples/sample-app/preview.html',        'reference-app-light.png',  'light', [1280, 1000], true],
   ['examples/sample-app/preview.html',        'reference-app-dark.png',   'dark',  [1280, 1000], true],
   ['examples/component-states/button.html',   'button-states-light.png',  'light', [1280, 520],  false],
   ['examples/component-states/button.html',   'button-states-dark.png',   'dark',  [1280, 520],  false],
   // the before/after pair: the statistical defaults, and the same screen built to the rules
   ['tests/fixtures/bad/slop-screen.html',     'before-slop.png',          'light', [1280, 760],  false],
+  ['examples/terminal/index.html',            'terminal-dark.png',        'dark',  [1600, 1750], false],
   // GitHub's social preview: 1280x640, uploaded by hand in Settings -> General.
   // It is never shown inline in the README, so --check exempts it below.
   ['cover.html',                              'social-preview.png',       'light', [1280, 640],  false],
 ];
+
+/* Thumbnails for the demo's own front door. They live under examples/ because
+   GitHub Pages publishes that directory, and they are cropped to the top of each
+   page rather than full-page so a card shows the screen, not a postage stamp. */
+const THUMBS = [
+  ['examples/showcase/index.html', 'atlas-light.png',    'light', [1200, 720]],
+  ['examples/showcase/index.html', 'atlas-dark.png',     'dark',  [1200, 720]],
+  ['examples/terminal/index.html', 'terminal-light.png', 'light', [1200, 720]],
+  ['examples/terminal/index.html', 'terminal-thumb.png', 'dark',  [1200, 720]],
+  ['examples/sample-app/preview.html', 'reference-light.png', 'light', [1100, 700]],
+  ['examples/sample-app/preview.html', 'reference-dark.png',  'dark',  [1100, 700]],
+  ['examples/apple-demo/index.html',   'apple-light.png',     'light', [1100, 700]],
+  ['examples/apple-demo/index.html',   'apple-dark.png',      'dark',  [1100, 700]],
+  ['examples/brandkit-demo/index.html','brandkit-light.png',  'light', [1100, 700]],
+  ['examples/brandkit-demo/index.html','brandkit-dark.png',   'dark',  [1100, 700]],
+  ['examples/templates/checkout.html', 'tpl-checkout.png',    'light', [1200, 760]],
+  ['examples/templates/crm.html',      'tpl-crm.png',         'light', [1200, 760]],
+  ['examples/templates/emr.html',      'tpl-emr.png',         'light', [1200, 760]],
+  ['examples/templates/banking.html',  'tpl-banking.png',     'dark',  [1200, 760]],
+  ['examples/templates/logistics.html','tpl-logistics.png',   'light', [1200, 760]],
+  ['examples/templates/orbital.html',  'tpl-orbital.png',     'dark',  [1200, 760]],
+  ['examples/templates/tracing.html',  'tpl-tracing.png',     'dark',  [1200, 760]],
+  ['examples/templates/daw.html',      'tpl-daw.png',         'dark',  [1200, 760]],
+  ['examples/templates/atc.html',      'tpl-atc.png',         'dark',  [1200, 760]],
+  ['examples/templates/grid.html',     'tpl-grid.png',        'dark',  [1200, 760]],
+  ['examples/templates/genomics.html', 'tpl-genomics.png',    'dark',  [1200, 760]],
+  ['examples/templates/editor.html',   'tpl-editor.png',      'dark',  [1200, 760]],
+];
+const THUMB_DIR = join(ROOT, 'examples', 'thumbs');
 
 /** Images that exist for somewhere other than the README body. */
 const NOT_INLINE = new Set(['social-preview.png']);
@@ -91,8 +123,21 @@ async function shoot() {
     await page.close();
     console.log(`  ${name}  <- ${src} (${theme})`);
   }
+  mkdirSync(THUMB_DIR, { recursive: true });
+  for (const [src, name, theme, [width, height]] of THUMBS) {
+    const page = await browser.newPage({ viewport: { width, height }, deviceScaleFactor: 1 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('file://' + join(ROOT, src));
+    await page.evaluate(t => document.documentElement.setAttribute('data-theme', t), theme);
+    await page.mouse.move(2, 2);
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: join(THUMB_DIR, name), fullPage: false });
+    await page.close();
+    console.log(`  thumbs/${name}  <- ${src} (${theme})`);
+  }
   await browser.close();
-  console.log(`\nWrote ${SHOTS.length} image(s) to .github/images/. Now LOOK at them before committing.`);
+  console.log(`\nWrote ${SHOTS.length} image(s) to .github/images/ and ${THUMBS.length} to examples/thumbs/.`);
+  console.log('Now LOOK at them before committing.');
 }
 
 if (process.argv.includes('--check')) check();

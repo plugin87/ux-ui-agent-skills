@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meridian Terminal - trading desk</title>
+<meta name="description" content="Ten chart types on one dense trading screen - candlestick, volume, moving average, depth, order book, tape, sparklines, stacked area, waterfall, scatter and a correlation matrix - all token-driven and gate-verified." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html{color-scheme:dark}
+  :root[data-theme="light"]{color-scheme:light}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    line-height:var(--leading-snug);font-size:var(--text-sm);-webkit-font-smoothing:antialiased}
+  .ico{inline-size:1rem;block-size:1rem;flex:none;stroke-width:1.75}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .up{color:var(--color-feedback-success)} .dn{color:var(--color-text-error)}
+
+  /* ticker */
+  .ticker{display:flex;gap:var(--space-6);overflow-x:auto;padding:var(--space-2) var(--space-5);
+    background:var(--color-surface-card);border-block-end:1px solid var(--color-border-default);font-size:var(--text-xs)}
+  .ticker span{display:inline-flex;gap:var(--space-2);white-space:nowrap}
+  .ticker{scrollbar-width:thin}
+  .ticker b{font-weight:700;letter-spacing:.04em}
+
+  /* head */
+  .head{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;
+    padding:var(--space-4) var(--space-5);
+    background:var(--color-surface-card);border-block-end:1px solid var(--color-border-default)}
+  .sym-big{display:flex;align-items:baseline;gap:var(--space-3)}
+  .sym-big h1{font-size:var(--text-2xl);letter-spacing:-0.02em}
+  .sym-big .co{color:var(--color-text-secondary);font-size:var(--text-sm)}
+  .last{display:flex;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;min-inline-size:0}
+  .last .p{font-size:var(--text-4xl);font-weight:700;letter-spacing:-0.03em;line-height:1}
+  /* success green on the raised surface measured 4.43:1 - four hundredths short.
+     The chip text is neutral; the arrow and the sign carry the direction. */
+  .chip{display:inline-flex;align-items:center;gap:var(--space-1);padding:.125rem var(--space-2);
+    border-radius:var(--radius-pill);background:var(--color-surface-raised);font-weight:600;
+    font-size:var(--text-xs);color:var(--color-text-primary)}
+  .chip .ico{color:var(--color-feedback-success)}
+  .chip.dn .ico{color:var(--color-text-error)}
+  .spacer{flex:1}
+  .tf{display:flex;gap:var(--space-1);padding:var(--space-1);border-radius:var(--radius-button);background:var(--color-surface-raised)}
+  .tf button{min-block-size:1.75rem;min-inline-size:2.5rem;padding-inline:var(--space-2);border:0;border-radius:var(--radius-sm);
+    background:transparent;color:var(--color-text-secondary);font:600 var(--text-xs)/1 var(--font-sans);cursor:pointer}
+  .tf button[aria-pressed="true"]{background:var(--color-surface-card);color:var(--color-text-primary);box-shadow:var(--shadow-sm)}
+  .tf button:hover{color:var(--color-text-primary)}
+  .tf button:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .iconbtn{display:grid;place-items:center;inline-size:2rem;block-size:2rem;border:1px solid var(--color-border-strong);
+    border-radius:var(--radius-sm);background:transparent;color:var(--color-text-primary);cursor:pointer}
+  .iconbtn:hover{background:var(--color-surface-raised)}
+  .iconbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+
+  /* board */
+  .board{display:grid;gap:var(--space-4);padding:var(--space-4);
+    grid-template-columns:repeat(12,minmax(0,1fr))}
+  @media (max-width:70rem){.board{grid-template-columns:repeat(6,minmax(0,1fr))}}
+  @media (max-width:44rem){.board{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+  .panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card);padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
+  .panel > header{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-3);
+    flex-wrap:wrap;min-inline-size:0}
+  .panel h2{font-size:var(--text-xs);font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--color-text-secondary)}
+  .panel .note{font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .c8{grid-column:span 8} .c4{grid-column:span 4} .c6{grid-column:span 6} .c3{grid-column:span 3}
+  @media (max-width:70rem){.c8,.c6{grid-column:span 6} .c4,.c3{grid-column:span 3}}
+  @media (max-width:44rem){.c8,.c6,.c4,.c3{grid-column:span 1}}
+
+  svg.chart{inline-size:100%;block-size:auto;display:block;overflow:visible}
+  .gridline{stroke:var(--color-chart-grid);stroke-width:1}
+  .axis-t{fill:var(--color-text-secondary);font-size:.625rem;font-family:var(--font-sans)}
+
+  /* candles */
+  .candle.up,.wick.up,.vol.up{fill:var(--color-feedback-success);stroke:var(--color-feedback-success)}
+  .candle.dn,.wick.dn,.vol.dn{fill:var(--color-text-error);stroke:var(--color-text-error)}
+  .wick{stroke-width:1.25}
+  .vol{opacity:.45}
+  .ma{fill:none;stroke:var(--color-chart-2);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+
+  /* depth */
+  .dep-bid{fill:var(--color-feedback-success);opacity:.22;stroke:var(--color-feedback-success);stroke-width:1.5}
+  .dep-ask{fill:var(--color-text-error);opacity:.22;stroke:var(--color-text-error);stroke-width:1.5}
+
+  /* tables */
+  table{inline-size:100%;border-collapse:collapse;font-size:var(--text-xs)}
+  th,td{padding:.1875rem var(--space-2);text-align:end}
+  th:first-child,td:first-child{text-align:start}
+  thead th{color:var(--color-text-secondary);font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    border-block-end:1px solid var(--color-border-default);padding-block-end:var(--space-2)}
+  tbody tr:hover{background:var(--color-surface-raised)}
+  .book td.p{font-weight:600}
+  .book tr.ask td.p{color:var(--color-text-error)}
+  .book tr.bid td.p{color:var(--color-feedback-success)}
+  .book td.depth{inline-size:34%;padding-inline-end:0}
+  .book td.depth span{display:block;block-size:.625rem;border-radius:var(--radius-sm);
+    background:var(--color-surface-raised)}
+  .book tr.ask td.depth span{background:color-mix(in oklab, var(--color-text-error) 28%, var(--color-surface-card))}
+  .book tr.bid td.depth span{background:color-mix(in oklab, var(--color-feedback-success) 28%, var(--color-surface-card))}
+  .spread{display:flex;justify-content:space-between;padding:var(--space-2);border-radius:var(--radius-sm);
+    background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:600}
+  .side{font-weight:700;letter-spacing:.06em}
+  td.t{color:var(--color-text-secondary)}
+  .sym{display:block;font-weight:700;letter-spacing:.03em}
+  .co{display:block;color:var(--color-text-secondary);font-size:var(--text-xs);font-weight:400;overflow-wrap:anywhere}
+  td.spark{inline-size:6.5rem} td.spark svg{inline-size:100%;block-size:auto;display:block}
+  /* On a phone the watchlist cannot hold five columns: the sparkline is the one
+     that carries no number, and the change column says the same thing in words. */
+  @media (max-width:44rem){
+    .watch td.spark,.watch th:nth-child(2){display:none}
+    .book td.depth{inline-size:22%}
+    /* Value is price x size: the two columns that produce it are still there. */
+    .book th:nth-child(3),.book td:nth-child(3){display:none}
+    /* Tape keeps time, price and side; size is the one a phone can lose. */
+    .tape th:nth-child(3),.tape td:nth-child(3){display:none}
+    .panel{padding:var(--space-3)}
+    th,td{padding-inline:var(--space-1)}
+  }
+
+  /* stacked area */
+  .stk{opacity:.9}
+  .stk.s1{fill:var(--color-chart-1)} .stk.s2{fill:var(--color-chart-2)}
+  .stk.s3{fill:var(--color-chart-3)} .stk.s4{fill:var(--color-chart-5)}
+  .keys{display:flex;flex-wrap:wrap;gap:var(--space-3);font-size:var(--text-xs);color:var(--color-text-secondary)}
+  .keys span{display:inline-flex;align-items:center;gap:var(--space-1)}
+  .sw{inline-size:.625rem;block-size:.625rem;border-radius:var(--radius-sm);flex:none}
+
+  /* waterfall */
+  .wf.base{fill:var(--color-chart-1)} .wf.up{fill:var(--color-feedback-success)} .wf.dn{fill:var(--color-text-error)}
+  .wf-c{stroke:var(--color-border-strong);stroke-width:1;stroke-dasharray:3 3}
+  .wf-lab{fill:var(--color-text-secondary);font-size:.5625rem;font-family:var(--font-sans)}
+
+  /* scatter */
+  .pt{opacity:.75}
+  .pt.c1{fill:var(--color-chart-1)} .pt.c2{fill:var(--color-chart-2)} .pt.c3{fill:var(--color-chart-3)}
+  .pt.c4{fill:var(--color-chart-4)} .pt.c5{fill:var(--color-chart-6)}
+
+  /* correlation matrix */
+  .matrix{overflow-x:auto}
+  .matrix table{min-inline-size:26rem}
+  .matrix th{font-size:.625rem}
+  .matrix td.cell{position:relative;text-align:center;padding:var(--space-2) var(--space-1);font-variant-numeric:tabular-nums}
+  .matrix td.cell::before{content:"";position:absolute;inset:.125rem;border-radius:var(--radius-sm);
+    background:color-mix(in oklab, var(--tone) var(--w), transparent)}
+  .matrix td.pos{--tone:var(--color-chart-1)}
+  .matrix td.neg{--tone:var(--color-chart-2)}
+  .matrix td.cell span{position:relative}
+
+  /* gauge */
+  .gauge{display:grid;place-items:center;gap:var(--space-2)}
+  .gauge .val{font-size:var(--text-3xl);font-weight:700;letter-spacing:-0.02em}
+  .g-track{fill:none;stroke:var(--color-chart-track);stroke-width:10;stroke-linecap:round}
+  .g-fill{fill:none;stroke:var(--color-chart-1);stroke-width:10;stroke-linecap:round}
+
+  footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--color-border-default);
+    color:var(--color-text-secondary);font-size:var(--text-xs);display:flex;gap:var(--space-4);flex-wrap:wrap;
+    justify-content:space-between}
+  footer a{color:var(--color-text-link)}
+  @media (prefers-reduced-motion:reduce){*{animation-duration:1ms !important;transition-duration:1ms !important}} /* ds-allow-hardcode: the reduced-motion reset IS the near-zero duration */
+</style>
+</head>
+<body>
+
+<div class="ticker" aria-label="Market ticker">
+  <span><b>SPX</b><span class="num up">5,842.10 +0.62%</span></span>
+  <span><b>NDX</b><span class="num up">20,411.88 +0.91%</span></span>
+  <span><b>DJI</b><span class="num dn">42,118.04 -0.18%</span></span>
+  <span><b>VIX</b><span class="num dn">13.42 -3.10%</span></span>
+  <span><b>UST10Y</b><span class="num up">4.182% +2bp</span></span>
+  <span><b>BRENT</b><span class="num up">78.44 +1.24%</span></span>
+  <span><b>GOLD</b><span class="num dn">2,631.70 -0.42%</span></span>
+</div>
+
+<div class="head">
+  <div class="sym-big"><h1>MRDN</h1><span class="co">Meridian Data Corp</span></div>
+  <div class="last">
+    <span class="p num">187.84</span>
+    <span class="chip up"><svg class="ico" aria-hidden="true"><use href="#i-trending-up"/></svg>+4.41 (+2.41%)</span>
+    <span class="note">Volume 4.82M, 1.6x average</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="tf" role="group" aria-label="Chart interval">
+    <button type="button" aria-pressed="false">1m</button>
+    <button type="button" aria-pressed="false">5m</button>
+    <button type="button" aria-pressed="true">1h</button>
+    <button type="button" aria-pressed="false">1d</button>
+  </div>
+  <button class="iconbtn" type="button" id="themeBtn" aria-pressed="true">
+    <svg class="ico" aria-hidden="true"><use href="#i-sun" id="themeUse"/></svg>
+    <span class="sr-only" id="themeLabel">Switch to light theme</span>
+  </button>
+</div>
+
+<div class="board">
+
+  <!-- 1+2+3: candlestick, moving average, volume -->
+  <section class="panel c8">
+    <header><h2>MRDN - 1 hour</h2><span class="note">44 sessions, 7-period moving average</span></header>
+    <svg class="chart" viewBox="0 0 960 300" role="img" aria-labelledby="ohlcT ohlcD" preserveAspectRatio="none">
+      <title id="ohlcT">MRDN price, 44 one-hour candles</title>
+      <desc id="ohlcD">Range 182.06 to 200.10, closing at 187.84. The seven-period moving average crosses below price near the middle of the window and recovers at the right edge.</desc>
+      <line class="gridline" x1="0" y1="60" x2="960" y2="60"/>
+      <line class="gridline" x1="0" y1="150" x2="960" y2="150"/>
+      <line class="gridline" x1="0" y1="240" x2="960" y2="240"/>
+      <line class="wick up" x1="14.7" y1="255.6" x2="14.7" y2="290.0"/><rect class="candle up" x="8.0" y="269.9" width="13.3" height="14.8" rx="1"/>
+        <line class="wick up" x1="36.1" y1="247.7" x2="36.1" y2="273.6"/><rect class="candle up" x="29.5" y="262.1" width="13.3" height="7.8" rx="1"/>
+        <line class="wick up" x1="57.6" y1="250.1" x2="57.6" y2="272.2"/><rect class="candle up" x="50.9" y="256.8" width="13.3" height="5.4" rx="1"/>
+        <line class="wick up" x1="79.0" y1="222.2" x2="79.0" y2="260.5"/><rect class="candle up" x="72.4" y="237.9" width="13.3" height="18.9" rx="1"/>
+        <line class="wick up" x1="100.5" y1="214.3" x2="100.5" y2="238.5"/><rect class="candle up" x="93.8" y="225.3" width="13.3" height="12.6" rx="1"/>
+        <line class="wick up" x1="121.9" y1="192.1" x2="121.9" y2="233.0"/><rect class="candle up" x="115.3" y="209.2" width="13.3" height="16.1" rx="1"/>
+        <line class="wick up" x1="143.4" y1="190.8" x2="143.4" y2="210.5"/><rect class="candle up" x="136.7" y="201.9" width="13.3" height="7.3" rx="1"/>
+        <line class="wick dn" x1="164.8" y1="185.7" x2="164.8" y2="204.0"/><rect class="candle dn" x="158.2" y="201.9" width="13.3" height="1.5" rx="1"/>
+        <line class="wick up" x1="186.3" y1="194.0" x2="186.3" y2="220.5"/><rect class="candle up" x="179.6" y="195.3" width="13.3" height="6.7" rx="1"/>
+        <line class="wick up" x1="207.7" y1="170.6" x2="207.7" y2="197.6"/><rect class="candle up" x="201.1" y="178.9" width="13.3" height="16.3" rx="1"/>
+        <line class="wick up" x1="229.2" y1="167.0" x2="229.2" y2="188.6"/><rect class="candle up" x="222.5" y="176.8" width="13.3" height="2.1" rx="1"/>
+        <line class="wick up" x1="250.7" y1="156.2" x2="250.7" y2="177.2"/><rect class="candle up" x="244.0" y="167.1" width="13.3" height="9.7" rx="1"/>
+        <line class="wick up" x1="272.1" y1="144.4" x2="272.1" y2="174.2"/><rect class="candle up" x="265.5" y="151.4" width="13.3" height="15.7" rx="1"/>
+        <line class="wick up" x1="293.6" y1="112.1" x2="293.6" y2="154.1"/><rect class="candle up" x="286.9" y="128.5" width="13.3" height="22.9" rx="1"/>
+        <line class="wick up" x1="315.0" y1="86.3" x2="315.0" y2="146.9"/><rect class="candle up" x="308.4" y="103.0" width="13.3" height="25.5" rx="1"/>
+        <line class="wick up" x1="336.5" y1="82.0" x2="336.5" y2="111.4"/><rect class="candle up" x="329.8" y="94.2" width="13.3" height="8.8" rx="1"/>
+        <line class="wick up" x1="357.9" y1="78.2" x2="357.9" y2="99.9"/><rect class="candle up" x="351.3" y="92.3" width="13.3" height="1.9" rx="1"/>
+        <line class="wick up" x1="379.4" y1="55.2" x2="379.4" y2="108.3"/><rect class="candle up" x="372.7" y="73.9" width="13.3" height="18.4" rx="1"/>
+        <line class="wick dn" x1="400.8" y1="58.4" x2="400.8" y2="94.1"/><rect class="candle dn" x="394.2" y="73.9" width="13.3" height="4.9" rx="1"/>
+        <line class="wick up" x1="422.3" y1="41.4" x2="422.3" y2="94.0"/><rect class="candle up" x="415.6" y="59.0" width="13.3" height="19.8" rx="1"/>
+        <line class="wick up" x1="443.7" y1="26.7" x2="443.7" y2="62.6"/><rect class="candle up" x="437.1" y="41.4" width="13.3" height="17.7" rx="1"/>
+        <line class="wick up" x1="465.2" y1="26.5" x2="465.2" y2="46.7"/><rect class="candle up" x="458.5" y="41.4" width="13.3" height="1.5" rx="1"/>
+        <line class="wick up" x1="486.7" y1="10.0" x2="486.7" y2="56.9"/><rect class="candle up" x="480.0" y="28.5" width="13.3" height="12.9" rx="1"/>
+        <line class="wick dn" x1="508.1" y1="19.5" x2="508.1" y2="42.9"/><rect class="candle dn" x="501.5" y="28.5" width="13.3" height="12.6" rx="1"/>
+        <line class="wick dn" x1="529.6" y1="29.9" x2="529.6" y2="70.3"/><rect class="candle dn" x="522.9" y="41.1" width="13.3" height="9.2" rx="1"/>
+        <line class="wick dn" x1="551.0" y1="32.8" x2="551.0" y2="61.4"/><rect class="candle dn" x="544.4" y="50.2" width="13.3" height="4.2" rx="1"/>
+        <line class="wick dn" x1="572.5" y1="42.1" x2="572.5" y2="55.3"/><rect class="candle dn" x="565.8" y="54.5" width="13.3" height="1.5" rx="1"/>
+        <line class="wick dn" x1="593.9" y1="42.7" x2="593.9" y2="70.3"/><rect class="candle dn" x="587.3" y="54.8" width="13.3" height="1.9" rx="1"/>
+        <line class="wick dn" x1="615.4" y1="46.5" x2="615.4" y2="80.5"/><rect class="candle dn" x="608.7" y="56.7" width="13.3" height="9.4" rx="1"/>
+        <line class="wick dn" x1="636.8" y1="52.8" x2="636.8" y2="91.4"/><rect class="candle dn" x="630.2" y="66.2" width="13.3" height="10.7" rx="1"/>
+        <line class="wick dn" x1="658.3" y1="64.7" x2="658.3" y2="101.7"/><rect class="candle dn" x="651.6" y="76.8" width="13.3" height="6.7" rx="1"/>
+        <line class="wick dn" x1="679.7" y1="63.7" x2="679.7" y2="113.2"/><rect class="candle dn" x="673.1" y="83.5" width="13.3" height="19.3" rx="1"/>
+        <line class="wick dn" x1="701.2" y1="99.0" x2="701.2" y2="134.0"/><rect class="candle dn" x="694.5" y="102.8" width="13.3" height="11.2" rx="1"/>
+        <line class="wick dn" x1="722.7" y1="100.4" x2="722.7" y2="124.9"/><rect class="candle dn" x="716.0" y="114.0" width="13.3" height="5.4" rx="1"/>
+        <line class="wick dn" x1="744.1" y1="108.2" x2="744.1" y2="153.2"/><rect class="candle dn" x="737.5" y="119.4" width="13.3" height="21.2" rx="1"/>
+        <line class="wick dn" x1="765.6" y1="136.9" x2="765.6" y2="166.2"/><rect class="candle dn" x="758.9" y="140.6" width="13.3" height="15.3" rx="1"/>
+        <line class="wick dn" x1="787.0" y1="138.2" x2="787.0" y2="170.5"/><rect class="candle dn" x="780.4" y="155.9" width="13.3" height="6.9" rx="1"/>
+        <line class="wick dn" x1="808.5" y1="159.7" x2="808.5" y2="168.1"/><rect class="candle dn" x="801.8" y="162.8" width="13.3" height="1.5" rx="1"/>
+        <line class="wick dn" x1="829.9" y1="161.9" x2="829.9" y2="202.7"/><rect class="candle dn" x="823.3" y="162.8" width="13.3" height="22.8" rx="1"/>
+        <line class="wick dn" x1="851.4" y1="166.2" x2="851.4" y2="212.9"/><rect class="candle dn" x="844.7" y="185.6" width="13.3" height="16.0" rx="1"/>
+        <line class="wick up" x1="872.8" y1="180.9" x2="872.8" y2="202.4"/><rect class="candle up" x="866.2" y="196.7" width="13.3" height="4.9" rx="1"/>
+        <line class="wick up" x1="894.3" y1="195.3" x2="894.3" y2="209.6"/><rect class="candle up" x="887.6" y="196.3" width="13.3" height="1.5" rx="1"/>
+        <line class="wick up" x1="915.7" y1="178.4" x2="915.7" y2="199.5"/><rect class="candle up" x="909.1" y="195.1" width="13.3" height="1.5" rx="1"/>
+        <line class="wick dn" x1="937.2" y1="177.4" x2="937.2" y2="205.7"/><rect class="candle dn" x="930.5" y="195.1" width="13.3" height="5.1" rx="1"/>
+      <polyline class="ma" points="14.7,269.9 36.1,266.0 57.6,262.9 79.0,256.7 100.5,250.4 121.9,243.5 143.4,237.6 164.8,227.9 186.3,218.3 207.7,207.2 229.2,198.5 250.7,190.2 272.1,181.9 293.6,171.4 315.0,157.3 336.5,142.9 357.9,130.5 379.4,115.8 400.8,103.2 422.3,90.0 443.7,77.5 465.2,68.7 486.7,59.3 508.1,52.0 529.6,48.6 551.0,45.1 572.5,44.5 593.9,46.7 615.4,50.3 636.8,57.2 658.3,63.2 679.7,70.8 701.2,79.3 722.7,88.5 744.1,100.5 765.6,113.3 787.0,125.6 808.5,136.9 829.9,148.7 851.4,161.2 872.8,172.3 894.3,180.2 915.7,185.8 937.2,191.2"/>
+    </svg>
+    <svg class="chart" viewBox="0 0 960 70" role="img" aria-label="Volume per candle, green where the candle closed up" preserveAspectRatio="none" style="block-size:3.5rem">
+      <rect class="vol up" x="8.0" y="48.1" width="13.3" height="21.9" rx="1"/>
+        <rect class="vol up" x="29.5" y="34.4" width="13.3" height="35.6" rx="1"/>
+        <rect class="vol up" x="50.9" y="49.2" width="13.3" height="20.8" rx="1"/>
+        <rect class="vol up" x="72.4" y="25.8" width="13.3" height="44.2" rx="1"/>
+        <rect class="vol up" x="93.8" y="34.6" width="13.3" height="35.4" rx="1"/>
+        <rect class="vol up" x="115.3" y="29.2" width="13.3" height="40.8" rx="1"/>
+        <rect class="vol up" x="136.7" y="21.3" width="13.3" height="48.7" rx="1"/>
+        <rect class="vol dn" x="158.2" y="17.6" width="13.3" height="52.4" rx="1"/>
+        <rect class="vol up" x="179.6" y="44.5" width="13.3" height="25.5" rx="1"/>
+        <rect class="vol up" x="201.1" y="47.9" width="13.3" height="22.1" rx="1"/>
+        <rect class="vol up" x="222.5" y="45.2" width="13.3" height="24.8" rx="1"/>
+        <rect class="vol up" x="244.0" y="43.2" width="13.3" height="26.8" rx="1"/>
+        <rect class="vol up" x="265.5" y="45.1" width="13.3" height="24.9" rx="1"/>
+        <rect class="vol up" x="286.9" y="21.8" width="13.3" height="48.2" rx="1"/>
+        <rect class="vol up" x="308.4" y="12.7" width="13.3" height="57.3" rx="1"/>
+        <rect class="vol up" x="329.8" y="47.2" width="13.3" height="22.8" rx="1"/>
+        <rect class="vol up" x="351.3" y="18.6" width="13.3" height="51.4" rx="1"/>
+        <rect class="vol up" x="372.7" y="28.6" width="13.3" height="41.4" rx="1"/>
+        <rect class="vol dn" x="394.2" y="30.7" width="13.3" height="39.3" rx="1"/>
+        <rect class="vol up" x="415.6" y="51.0" width="13.3" height="19.0" rx="1"/>
+        <rect class="vol up" x="437.1" y="50.3" width="13.3" height="19.7" rx="1"/>
+        <rect class="vol up" x="458.5" y="49.4" width="13.3" height="20.6" rx="1"/>
+        <rect class="vol up" x="480.0" y="44.2" width="13.3" height="25.8" rx="1"/>
+        <rect class="vol dn" x="501.5" y="37.2" width="13.3" height="32.8" rx="1"/>
+        <rect class="vol dn" x="522.9" y="23.6" width="13.3" height="46.4" rx="1"/>
+        <rect class="vol dn" x="544.4" y="45.6" width="13.3" height="24.4" rx="1"/>
+        <rect class="vol dn" x="565.8" y="29.4" width="13.3" height="40.6" rx="1"/>
+        <rect class="vol dn" x="587.3" y="41.4" width="13.3" height="28.6" rx="1"/>
+        <rect class="vol dn" x="608.7" y="31.3" width="13.3" height="38.7" rx="1"/>
+        <rect class="vol dn" x="630.2" y="31.2" width="13.3" height="38.8" rx="1"/>
+        <rect class="vol dn" x="651.6" y="23.0" width="13.3" height="47.0" rx="1"/>
+        <rect class="vol dn" x="673.1" y="19.5" width="13.3" height="50.5" rx="1"/>
+        <rect class="vol dn" x="694.5" y="29.5" width="13.3" height="40.5" rx="1"/>
+        <rect class="vol dn" x="716.0" y="26.7" width="13.3" height="43.3" rx="1"/>
+        <rect class="vol dn" x="737.5" y="41.7" width="13.3" height="28.3" rx="1"/>
+        <rect class="vol dn" x="758.9" y="18.1" width="13.3" height="51.9" rx="1"/>
+        <rect class="vol dn" x="780.4" y="39.7" width="13.3" height="30.3" rx="1"/>
+        <rect class="vol dn" x="801.8" y="47.7" width="13.3" height="22.3" rx="1"/>
+        <rect class="vol dn" x="823.3" y="6.0" width="13.3" height="64.0" rx="1"/>
+        <rect class="vol dn" x="844.7" y="24.5" width="13.3" height="45.5" rx="1"/>
+        <rect class="vol up" x="866.2" y="17.3" width="13.3" height="52.7" rx="1"/>
+        <rect class="vol up" x="887.6" y="45.3" width="13.3" height="24.7" rx="1"/>
+        <rect class="vol up" x="909.1" y="31.7" width="13.3" height="38.3" rx="1"/>
+        <rect class="vol dn" x="930.5" y="27.3" width="13.3" height="42.7" rx="1"/>
+    </svg>
+  </section>
+
+  <!-- 4: order book with depth bars -->
+  <section class="panel c4">
+    <header><h2>Order book</h2><span class="note">Level 2, aggregated</span></header>
+    <table class="book">
+      <caption class="sr-only">Order book: seven asks above the spread, seven bids below</caption>
+      <thead><tr><th scope="col">Price</th><th scope="col">Size</th><th scope="col">Value</th><th scope="col">Depth</th></tr></thead>
+      <tbody>
+            <tr class="ask"><td class="num p">188.61</td><td class="num">675</td><td class="num">127.3k</td><td class="depth"><span style="inline-size:77%"></span></td></tr>
+            <tr class="ask"><td class="num p">188.50</td><td class="num">871</td><td class="num">164.2k</td><td class="depth"><span style="inline-size:49%"></span></td></tr>
+            <tr class="ask"><td class="num p">188.39</td><td class="num">968</td><td class="num">182.4k</td><td class="depth"><span style="inline-size:88%"></span></td></tr>
+            <tr class="ask"><td class="num p">188.28</td><td class="num">616</td><td class="num">116.0k</td><td class="depth"><span style="inline-size:37%"></span></td></tr>
+            <tr class="ask"><td class="num p">188.17</td><td class="num">284</td><td class="num">53.4k</td><td class="depth"><span style="inline-size:93%"></span></td></tr>
+            <tr class="ask"><td class="num p">188.06</td><td class="num">338</td><td class="num">63.6k</td><td class="depth"><span style="inline-size:83%"></span></td></tr>
+            <tr class="ask"><td class="num p">187.95</td><td class="num">552</td><td class="num">103.7k</td><td class="depth"><span style="inline-size:36%"></span></td></tr>
+            
+      </tbody>
+    </table>
+    <p class="spread"><span>Spread 0.02 (1.1 bp)</span><span class="num">187.84</span></p>
+    <table class="book">
+      <caption class="sr-only">Bid side</caption>
+      <tbody>
+            <tr class="bid"><td class="num p">187.73</td><td class="num">197</td><td class="num">37.0k</td><td class="depth"><span style="inline-size:46%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.62</td><td class="num">894</td><td class="num">167.7k</td><td class="depth"><span style="inline-size:93%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.51</td><td class="num">265</td><td class="num">49.7k</td><td class="depth"><span style="inline-size:77%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.40</td><td class="num">484</td><td class="num">90.7k</td><td class="depth"><span style="inline-size:40%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.29</td><td class="num">362</td><td class="num">67.8k</td><td class="depth"><span style="inline-size:78%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.18</td><td class="num">145</td><td class="num">27.1k</td><td class="depth"><span style="inline-size:73%"></span></td></tr>
+            <tr class="bid"><td class="num p">187.07</td><td class="num">1,003</td><td class="num">187.6k</td><td class="depth"><span style="inline-size:55%"></span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 5: depth chart -->
+  <section class="panel c4">
+    <header><h2>Market depth</h2><span class="note">cumulative, 26 levels</span></header>
+    <svg class="chart" viewBox="0 0 420 120" role="img" aria-label="Cumulative market depth: bid side rising to the left of the mid price, ask side to the right, asks slightly heavier">
+      <path class="dep-bid" d="M 201.9,120 L 201.9,116.3 L 193.8,113.8 L 185.8,108.1 L 177.7,103.4 L 169.6,100.0 L 161.5,96.5 L 153.5,90.9 L 145.4,87.8 L 137.3,83.7 L 129.2,80.1 L 121.2,73.8 L 113.1,72.1 L 105.0,66.2 L 96.9,63.9 L 88.8,58.9 L 80.8,57.0 L 72.7,54.2 L 64.6,47.9 L 56.5,43.9 L 48.5,37.9 L 40.4,31.4 L 32.3,27.3 L 24.2,20.9 L 16.2,16.6 L 8.1,10.6 L 0.0,8.0 L 0.0,120 Z"/>
+      <path class="dep-ask" d="M 218.1,120 L 218.1,116.9 L 226.2,111.1 L 234.2,104.9 L 242.3,100.1 L 250.4,96.6 L 258.5,93.7 L 266.5,87.4 L 274.6,81.0 L 282.7,78.9 L 290.8,75.1 L 298.8,70.5 L 306.9,64.3 L 315.0,62.6 L 323.1,58.4 L 331.2,55.2 L 339.2,50.8 L 347.3,48.9 L 355.4,43.7 L 363.5,37.4 L 371.5,34.7 L 379.6,30.4 L 387.7,28.6 L 395.8,24.0 L 403.8,20.6 L 411.9,18.3 L 420.0,14.8 L 420.0,120 Z"/>
+      <line class="gridline" x1="210" y1="0" x2="210" y2="120"/>
+    </svg>
+    <p class="keys"><span><i class="sw" style="background:var(--color-feedback-success)"></i>Bids 2.4M</span>
+      <span><i class="sw" style="background:var(--color-text-error)"></i>Asks 2.7M</span></p>
+  </section>
+
+  <!-- 6: time and sales -->
+  <section class="panel c4 tape">
+    <header><h2>Time and sales</h2><span class="note">last 8 prints</span></header>
+    <table>
+      <caption class="sr-only">Recent trades</caption>
+      <thead><tr><th scope="col">Time</th><th scope="col">Price</th><th scope="col">Size</th><th scope="col">Side</th></tr></thead>
+      <tbody>
+            <tr><td class="num t">14:32:18</td><td class="num up">187.84</td><td class="num">1,200</td><td class="side up">BUY</td></tr>
+            <tr><td class="num t">14:32:17</td><td class="num dn">187.82</td><td class="num">340</td><td class="side dn">SELL</td></tr>
+            <tr><td class="num t">14:32:15</td><td class="num up">187.85</td><td class="num">2,480</td><td class="side up">BUY</td></tr>
+            <tr><td class="num t">14:32:14</td><td class="num dn">187.79</td><td class="num">760</td><td class="side dn">SELL</td></tr>
+            <tr><td class="num t">14:32:12</td><td class="num up">187.80</td><td class="num">1,050</td><td class="side up">BUY</td></tr>
+            <tr><td class="num t">14:32:09</td><td class="num dn">187.76</td><td class="num">430</td><td class="side dn">SELL</td></tr>
+            <tr><td class="num t">14:32:04</td><td class="num up">187.78</td><td class="num">5,600</td><td class="side up">BUY</td></tr>
+            <tr><td class="num t">14:31:58</td><td class="num dn">187.71</td><td class="num">880</td><td class="side dn">SELL</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 7: watchlist sparklines -->
+  <section class="panel c4 watch">
+    <header><h2>Watchlist</h2><span class="note">7-session trend</span></header>
+    <table>
+      <caption class="sr-only">Watchlist with seven-session trend, last price and change</caption>
+      <thead><tr><th scope="col">Symbol</th><th scope="col">Trend</th><th scope="col">Last</th><th scope="col">Change</th></tr></thead>
+      <tbody>
+            <tr><th scope="row"><span class="sym">MRDN</span><span class="co">Meridian Data</span></th><td class="spark"><svg viewBox="0 0 144 32" role="img" aria-label="Meridian Data seven session trend, rising"><polyline fill="none" stroke="var(--color-feedback-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,26 24,22 48,25 72,16 96,18 120,9 144,6"/></svg></td><td class="num">187.84</td><td class="num up">+2.41%</td></tr>
+            <tr><th scope="row"><span class="sym">NRTH</span><span class="co">Northwind Log.</span></th><td class="spark"><svg viewBox="0 0 144 32" role="img" aria-label="Northwind Log. seven session trend, rising"><polyline fill="none" stroke="var(--color-feedback-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,24 24,26 48,20 72,22 96,15 120,14 144,10"/></svg></td><td class="num">94.12</td><td class="num up">+0.88%</td></tr>
+            <tr><th scope="row"><span class="sym">HLBT</span><span class="co">Helios Biotech</span></th><td class="spark"><svg viewBox="0 0 144 32" role="img" aria-label="Helios Biotech seven session trend, falling"><polyline fill="none" stroke="var(--color-text-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,10 24,12 48,9 72,16 96,14 120,20 144,23"/></svg></td><td class="num">312.55</td><td class="num dn">-1.32%</td></tr>
+            <tr><th scope="row"><span class="sym">KSTL</span><span class="co">Kestrel Fin.</span></th><td class="spark"><svg viewBox="0 0 144 32" role="img" aria-label="Kestrel Fin. seven session trend, rising"><polyline fill="none" stroke="var(--color-feedback-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,28 24,24 48,22 72,18 96,13 120,11 144,4"/></svg></td><td class="num">58.90</td><td class="num up">+3.04%</td></tr>
+            <tr><th scope="row"><span class="sym">TWRV</span><span class="co">Two Rivers</span></th><td class="spark"><svg viewBox="0 0 144 32" role="img" aria-label="Two Rivers seven session trend, falling"><polyline fill="none" stroke="var(--color-text-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,6 24,9 48,12 72,11 96,18 120,22 144,27"/></svg></td><td class="num">21.07</td><td class="num dn">-4.18%</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8: stacked area allocation -->
+  <section class="panel c6">
+    <header><h2>Allocation drift</h2><span class="note">24 rebalances, share of book</span></header>
+    <svg class="chart" viewBox="0 0 420 150" role="img" aria-label="Stacked area of portfolio allocation across four sleeves over 24 rebalances. Equities hold roughly half, credit grows, cash shrinks.">
+          <path class="stk s1" d="M 0.0,95.9 L 18.3,97.7 L 36.5,95.5 L 54.8,90.3 L 73.0,92.2 L 91.3,84.4 L 109.6,82.6 L 127.8,86.1 L 146.1,89.4 L 164.3,90.9 L 182.6,91.9 L 200.9,81.7 L 219.1,81.0 L 237.4,89.9 L 255.7,80.6 L 273.9,98.7 L 292.2,84.9 L 310.4,91.9 L 328.7,91.3 L 347.0,97.0 L 365.2,99.7 L 383.5,102.9 L 401.7,105.4 L 420.0,96.3 L 420.0,150.0 L 401.7,150.0 L 383.5,150.0 L 365.2,150.0 L 347.0,150.0 L 328.7,150.0 L 310.4,150.0 L 292.2,150.0 L 273.9,150.0 L 255.7,150.0 L 237.4,150.0 L 219.1,150.0 L 200.9,150.0 L 182.6,150.0 L 164.3,150.0 L 146.1,150.0 L 127.8,150.0 L 109.6,150.0 L 91.3,150.0 L 73.0,150.0 L 54.8,150.0 L 36.5,150.0 L 18.3,150.0 L 0.0,150.0 Z"/>
+          <path class="stk s2" d="M 0.0,56.2 L 18.3,52.6 L 36.5,53.2 L 54.8,56.0 L 73.0,50.7 L 91.3,46.8 L 109.6,44.4 L 127.8,48.5 L 146.1,45.8 L 164.3,47.2 L 182.6,51.7 L 200.9,43.2 L 219.1,45.2 L 237.4,44.4 L 255.7,38.9 L 273.9,47.3 L 292.2,47.7 L 310.4,49.2 L 328.7,36.8 L 347.0,45.5 L 365.2,47.9 L 383.5,51.3 L 401.7,52.3 L 420.0,44.8 L 420.0,96.3 L 401.7,105.4 L 383.5,102.9 L 365.2,99.7 L 347.0,97.0 L 328.7,91.3 L 310.4,91.9 L 292.2,84.9 L 273.9,98.7 L 255.7,80.6 L 237.4,89.9 L 219.1,81.0 L 200.9,81.7 L 182.6,91.9 L 164.3,90.9 L 146.1,89.4 L 127.8,86.1 L 109.6,82.6 L 91.3,84.4 L 73.0,92.2 L 54.8,90.3 L 36.5,95.5 L 18.3,97.7 L 0.0,95.9 Z"/>
+          <path class="stk s3" d="M 0.0,23.8 L 18.3,19.1 L 36.5,15.5 L 54.8,16.1 L 73.0,16.3 L 91.3,16.7 L 109.6,17.2 L 127.8,16.4 L 146.1,15.5 L 164.3,19.0 L 182.6,22.8 L 200.9,20.6 L 219.1,20.2 L 237.4,18.0 L 255.7,18.1 L 273.9,22.4 L 292.2,22.1 L 310.4,26.0 L 328.7,18.8 L 347.0,23.8 L 365.2,25.1 L 383.5,24.9 L 401.7,27.3 L 420.0,22.2 L 420.0,44.8 L 401.7,52.3 L 383.5,51.3 L 365.2,47.9 L 347.0,45.5 L 328.7,36.8 L 310.4,49.2 L 292.2,47.7 L 273.9,47.3 L 255.7,38.9 L 237.4,44.4 L 219.1,45.2 L 200.9,43.2 L 182.6,51.7 L 164.3,47.2 L 146.1,45.8 L 127.8,48.5 L 109.6,44.4 L 91.3,46.8 L 73.0,50.7 L 54.8,56.0 L 36.5,53.2 L 18.3,52.6 L 0.0,56.2 Z"/>
+          <path class="stk s4" d="M 0.0,0.0 L 18.3,-0.0 L 36.5,0.0 L 54.8,0.0 L 73.0,0.0 L 91.3,0.0 L 109.6,0.0 L 127.8,0.0 L 146.1,0.0 L 164.3,0.0 L 182.6,0.0 L 200.9,0.0 L 219.1,0.0 L 237.4,0.0 L 255.7,-0.0 L 273.9,0.0 L 292.2,0.0 L 310.4,0.0 L 328.7,0.0 L 347.0,0.0 L 365.2,0.0 L 383.5,0.0 L 401.7,0.0 L 420.0,0.0 L 420.0,22.2 L 401.7,27.3 L 383.5,24.9 L 365.2,25.1 L 347.0,23.8 L 328.7,18.8 L 310.4,26.0 L 292.2,22.1 L 273.9,22.4 L 255.7,18.1 L 237.4,18.0 L 219.1,20.2 L 200.9,20.6 L 182.6,22.8 L 164.3,19.0 L 146.1,15.5 L 127.8,16.4 L 109.6,17.2 L 91.3,16.7 L 73.0,16.3 L 54.8,16.1 L 36.5,15.5 L 18.3,19.1 L 0.0,23.8 Z"/>
+    </svg>
+    <p class="keys">
+      <span><i class="sw" style="background:var(--color-chart-1)"></i>Equities</span>
+      <span><i class="sw" style="background:var(--color-chart-2)"></i>Credit</span>
+      <span><i class="sw" style="background:var(--color-chart-3)"></i>Rates</span>
+      <span><i class="sw" style="background:var(--color-chart-5)"></i>Cash</span>
+    </p>
+  </section>
+
+  <!-- 9: waterfall -->
+  <section class="panel c6">
+    <header><h2>P and L attribution</h2><span class="note">quarter to date, millions</span></header>
+    <svg class="chart" viewBox="0 0 420 168" role="img" aria-label="Waterfall from 4.20 million opening to 5.83 million closing: new business adds 1.45, expansion 0.82, churn removes 0.55, discounting 0.21, foreign exchange adds 0.12">
+          <line class="wf-c" x1="46.8" y1="62.1" x2="73.2" y2="62.1"/>
+          <line class="wf-c" x1="106.8" y1="31.7" x2="133.2" y2="31.7"/>
+          <line class="wf-c" x1="166.8" y1="14.5" x2="193.2" y2="14.5"/>
+          <line class="wf-c" x1="226.8" y1="26.0" x2="253.2" y2="26.0"/>
+          <line class="wf-c" x1="286.8" y1="30.4" x2="313.2" y2="30.4"/>
+          <line class="wf-c" x1="346.8" y1="27.9" x2="373.2" y2="27.9"/>
+          <rect class="wf base" x="13.2" y="62.1" width="33.6" height="87.9" rx="1.5"/>
+          <rect class="wf up" x="73.2" y="31.7" width="33.6" height="30.4" rx="1.5"/>
+          <rect class="wf up" x="133.2" y="14.5" width="33.6" height="17.2" rx="1.5"/>
+          <rect class="wf dn" x="193.2" y="14.5" width="33.6" height="11.5" rx="1.5"/>
+          <rect class="wf dn" x="253.2" y="26.0" width="33.6" height="4.4" rx="1.5"/>
+          <rect class="wf up" x="313.2" y="27.9" width="33.6" height="2.5" rx="1.5"/>
+          <rect class="wf base" x="373.2" y="27.9" width="33.6" height="122.1" rx="1.5"/>
+          <text class="wf-lab" x="30.0" y="163.0" text-anchor="middle">Opening</text>
+          <text class="wf-lab" x="90.0" y="163.0" text-anchor="middle">New</text>
+          <text class="wf-lab" x="150.0" y="163.0" text-anchor="middle">Expansion</text>
+          <text class="wf-lab" x="210.0" y="163.0" text-anchor="middle">Churn</text>
+          <text class="wf-lab" x="270.0" y="163.0" text-anchor="middle">Discount</text>
+          <text class="wf-lab" x="330.0" y="163.0" text-anchor="middle">FX</text>
+          <text class="wf-lab" x="390.0" y="163.0" text-anchor="middle">Closing</text>
+    </svg>
+  </section>
+
+  <!-- 10: scatter / bubble -->
+  <section class="panel c6">
+    <header><h2>Risk and return</h2><span class="note">bubble size is position weight</span></header>
+    <svg class="chart" viewBox="0 0 420 190" role="img" aria-label="Bubble chart of ten positions plotted by realised volatility against return, sized by weight. The largest position sits mid-risk, mid-return.">
+      <line class="gridline" x1="0" y1="95" x2="420" y2="95"/>
+      <line class="gridline" x1="210" y1="0" x2="210" y2="190"/>
+          <circle class="pt c1" cx="378.6" cy="134.0" r="13.4"><title>MRDN</title></circle>
+          <circle class="pt c2" cx="325.9" cy="154.8" r="9.7"><title>NRTH</title></circle>
+          <circle class="pt c3" cx="161.3" cy="87.8" r="13.2"><title>HLBT</title></circle>
+          <circle class="pt c4" cx="113.8" cy="28.4" r="13.7"><title>KSTL</title></circle>
+          <circle class="pt c5" cx="222.5" cy="32.4" r="6.1"><title>TWRV</title></circle>
+          <circle class="pt c1" cx="232.8" cy="164.7" r="8.2"><title>ARCD</title></circle>
+          <circle class="pt c2" cx="376.4" cy="114.8" r="17.8"><title>VLTN</title></circle>
+          <circle class="pt c3" cx="347.3" cy="76.4" r="10.9"><title>QSTR</title></circle>
+          <circle class="pt c4" cx="254.4" cy="152.6" r="13.4"><title>PRSM</title></circle>
+          <circle class="pt c5" cx="336.8" cy="146.8" r="16.4"><title>LMND</title></circle>
+    </svg>
+    <p class="note">Horizontal: 30-day realised volatility. Vertical: quarter return.</p>
+  </section>
+
+  <!-- 11: correlation matrix -->
+  <section class="panel c6">
+    <header><h2>Correlation</h2><span class="note">90-day, daily returns</span></header>
+    <div class="matrix">
+      <table>
+        <caption class="sr-only">Correlation matrix across seven holdings</caption>
+        <thead><tr><td></td><th scope="col">MRDN</th><th scope="col">NRTH</th><th scope="col">HLBT</th><th scope="col">KSTL</th><th scope="col">TWRV</th><th scope="col">ARCD</th><th scope="col">VLTN</th></tr></thead>
+        <tbody>
+              <tr><th scope="row">MRDN</th><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell pos" style="--w:8%"><span>0.15</span></td><td class="cell neg" style="--w:34%"><span>-0.62</span></td><td class="cell pos" style="--w:50%"><span>0.92</span></td><td class="cell neg" style="--w:24%"><span>-0.44</span></td><td class="cell pos" style="--w:13%"><span>0.25</span></td><td class="cell pos" style="--w:5%"><span>0.10</span></td></tr>
+              <tr><th scope="row">NRTH</th><td class="cell pos" style="--w:8%"><span>0.15</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell neg" style="--w:35%"><span>-0.65</span></td><td class="cell neg" style="--w:22%"><span>-0.41</span></td><td class="cell neg" style="--w:31%"><span>-0.58</span></td><td class="cell neg" style="--w:27%"><span>-0.50</span></td><td class="cell pos" style="--w:13%"><span>0.25</span></td></tr>
+              <tr><th scope="row">HLBT</th><td class="cell neg" style="--w:34%"><span>-0.62</span></td><td class="cell neg" style="--w:35%"><span>-0.65</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell neg" style="--w:9%"><span>-0.18</span></td><td class="cell pos" style="--w:46%"><span>0.84</span></td><td class="cell neg" style="--w:21%"><span>-0.39</span></td><td class="cell pos" style="--w:6%"><span>0.11</span></td></tr>
+              <tr><th scope="row">KSTL</th><td class="cell pos" style="--w:50%"><span>0.92</span></td><td class="cell neg" style="--w:22%"><span>-0.41</span></td><td class="cell neg" style="--w:9%"><span>-0.18</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell pos" style="--w:48%"><span>0.89</span></td><td class="cell pos" style="--w:13%"><span>0.25</span></td><td class="cell neg" style="--w:35%"><span>-0.64</span></td></tr>
+              <tr><th scope="row">TWRV</th><td class="cell neg" style="--w:24%"><span>-0.44</span></td><td class="cell neg" style="--w:31%"><span>-0.58</span></td><td class="cell pos" style="--w:46%"><span>0.84</span></td><td class="cell pos" style="--w:48%"><span>0.89</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell pos" style="--w:49%"><span>0.90</span></td><td class="cell pos" style="--w:24%"><span>0.44</span></td></tr>
+              <tr><th scope="row">ARCD</th><td class="cell pos" style="--w:13%"><span>0.25</span></td><td class="cell neg" style="--w:27%"><span>-0.50</span></td><td class="cell neg" style="--w:21%"><span>-0.39</span></td><td class="cell pos" style="--w:13%"><span>0.25</span></td><td class="cell pos" style="--w:49%"><span>0.90</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td><td class="cell neg" style="--w:25%"><span>-0.46</span></td></tr>
+              <tr><th scope="row">VLTN</th><td class="cell pos" style="--w:5%"><span>0.10</span></td><td class="cell pos" style="--w:13%"><span>0.25</span></td><td class="cell pos" style="--w:6%"><span>0.11</span></td><td class="cell neg" style="--w:35%"><span>-0.64</span></td><td class="cell pos" style="--w:24%"><span>0.44</span></td><td class="cell neg" style="--w:25%"><span>-0.46</span></td><td class="cell pos" style="--w:55%"><span>1.00</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 12: radial gauge -->
+  <section class="panel c3">
+    <header><h2>Gross exposure</h2></header>
+    <div class="gauge">
+      <svg class="chart" viewBox="0 0 120 120" role="img" aria-label="Gross exposure at 78 percent of the mandate limit" style="max-inline-size:8rem">
+        <circle class="g-track" cx="60" cy="60" r="48" stroke-dasharray="226 302" transform="rotate(135 60 60)"/>
+        <circle class="g-fill" cx="60" cy="60" r="48" stroke-dasharray="176 302" transform="rotate(135 60 60)"/>
+      </svg>
+      <p class="val num">78%</p>
+      <p class="note">of the 1.5x mandate limit</p>
+    </div>
+  </section>
+
+  <section class="panel c3">
+    <header><h2>Session</h2></header>
+    <dl style="display:grid;grid-template-columns:auto auto;gap:var(--space-2) var(--space-4);font-size:var(--text-xs);margin:0">
+      <dt style="color:var(--color-text-secondary)">Open</dt><dd class="num" style="margin:0;text-align:end">183.41</dd>
+      <dt style="color:var(--color-text-secondary)">High</dt><dd class="num up" style="margin:0;text-align:end">200.10</dd>
+      <dt style="color:var(--color-text-secondary)">Low</dt><dd class="num dn" style="margin:0;text-align:end">182.06</dd>
+      <dt style="color:var(--color-text-secondary)">VWAP</dt><dd class="num" style="margin:0;text-align:end">188.22</dd>
+      <dt style="color:var(--color-text-secondary)">Beta</dt><dd class="num" style="margin:0;text-align:end">1.24</dd>
+      <dt style="color:var(--color-text-secondary)">Short int.</dt><dd class="num" style="margin:0;text-align:end">3.8%</dd>
+    </dl>
+  </section>
+</div>
+
+<footer>
+  <span>Prices are simulated. Nothing here is investment advice.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a>
+    by Thientan Soparat. Ten chart types, one token theme, every gate green.
+    <a href="../index.html">See every example</a></span>
+</footer>
+
+<script src="../component-states/icons.js"></script>
+<script>
+  const btn = document.getElementById('themeBtn');
+  const use = document.getElementById('themeUse');
+  const label = document.getElementById('themeLabel');
+  btn.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') !== 'light';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.setAttribute('aria-pressed', String(!dark));
+    use.setAttribute('href', dark ? '#i-moon' : '#i-sun');
+    label.textContent = dark ? 'Switch to dark theme' : 'Switch to light theme';
+  });
+  document.querySelectorAll('.tf button').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.tf button').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+    });
+  });
+</script>
+</body>
+</html>

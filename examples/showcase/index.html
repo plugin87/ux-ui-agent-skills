@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Atlas - revenue console</title>
+<meta name="description" content="A full product screen built from the kit: app shell, hero metric, charts, a table that really sorts. Passes every gate in light and dark." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html{color-scheme:light}
+  :root[data-theme="dark"]{color-scheme:dark}
+  body{font-family:var(--font-sans);background:var(--color-surface-page);color:var(--color-text-primary);
+    line-height:var(--leading-normal);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .ico{inline-size:1.125rem;block-size:1.125rem;flex:none;stroke-width:1.75}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+  /* ---------- shell: sidebar + main, collapses to a single column ---------- */
+  .shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100dvh}
+  @media (max-width:63rem){.shell{grid-template-columns:minmax(0,1fr)}}
+
+  .side{display:flex;flex-direction:column;gap:var(--space-6);padding:var(--space-5) var(--space-4);
+    background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default)}
+  @media (max-width:63rem){.side{border-inline-end:0;border-block-end:1px solid var(--color-border-default);
+    flex-direction:row;align-items:center;gap:var(--space-4);overflow-x:auto}}
+
+  .brand{display:flex;align-items:center;gap:var(--space-3);font-weight:700;font-size:var(--text-lg);letter-spacing:-0.02em}
+  .brand .mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;flex:none;border-radius:var(--radius-sm);
+    background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .brand .mark svg{inline-size:1rem;block-size:1rem}
+
+  .nav{display:flex;flex-direction:column;gap:var(--space-1)}
+  @media (max-width:63rem){.nav{flex-direction:row;gap:var(--space-2)}}
+  .nav a{display:flex;align-items:center;gap:var(--space-3);min-block-size:2.5rem;padding-inline:var(--space-3);
+    border-radius:var(--radius-button);color:var(--color-text-secondary);text-decoration:none;font-size:var(--text-sm);
+    font-weight:500;white-space:nowrap;transition:background var(--transition-micro),color var(--transition-micro)}
+  .nav a:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
+  .nav a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .nav a[aria-current="page"]{background:var(--color-surface-brand);color:var(--color-text-primary);font-weight:600}
+  .side .spacer{flex:1}
+  @media (max-width:63rem){.side .spacer{display:none}}
+  .plan{display:grid;gap:var(--space-2);padding:var(--space-4);border-radius:var(--radius-card);
+    background:var(--color-surface-raised);font-size:var(--text-xs);color:var(--color-text-secondary)}
+  @media (max-width:63rem){.plan{display:none}}
+  .plan strong{font-size:var(--text-sm);color:var(--color-text-primary)}
+  .meter{block-size:.375rem;border-radius:var(--radius-full);background:var(--color-chart-track);overflow:hidden}
+  .meter i{display:block;block-size:100%;inline-size:68%;background:var(--color-action-primary)}
+
+  /* ---------- top bar ---------- */
+  main{display:flex;flex-direction:column;min-inline-size:0}
+  .top{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;
+    padding:var(--space-4) var(--space-6);border-block-end:1px solid var(--color-border-default);
+    background:var(--color-surface-card)}
+  .searchbox{position:relative;flex:1 1 14rem;min-inline-size:0}
+  .searchbox svg{position:absolute;inset-inline-start:var(--space-3);inset-block-start:50%;transform:translateY(-50%);
+    color:var(--color-text-secondary)}
+  .searchbox input{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
+    padding-inline:var(--space-10) var(--space-3);border-radius:var(--radius-button);
+    border:1px solid var(--color-border-strong);background:var(--color-surface-page);color:var(--color-text-primary);
+    font:400 var(--text-sm)/1 var(--font-sans)}
+  .searchbox input:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .iconbtn{display:grid;place-items:center;inline-size:var(--size-control-md);block-size:var(--size-control-md);
+    border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:transparent;
+    color:var(--color-text-primary);cursor:pointer;transition:background var(--transition-micro)}
+  .iconbtn:hover{background:var(--color-surface-raised)}
+  .iconbtn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .who{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);font-weight:500;white-space:nowrap}
+  /* the chart palette is tuned for large filled shapes, not for 12px initials:
+     white on chart-4 measured 2.65:1 in dark. Initials sit on a surface token. */
+  .avatar{display:grid;place-items:center;inline-size:2rem;block-size:2rem;border-radius:var(--radius-full);
+    background:var(--color-surface-brand);color:var(--color-text-primary);font-size:var(--text-xs);font-weight:700}
+
+  /* ---------- page ---------- */
+  .page{padding:var(--space-6);display:grid;gap:var(--space-6);align-content:start}
+  @media (max-width:40rem){.page{padding:var(--space-4)}}
+  .head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap}
+  h1{font-size:var(--text-3xl);line-height:var(--leading-tight);letter-spacing:-0.03em}
+  .sub{color:var(--color-text-secondary);font-size:var(--text-sm);margin-block-start:var(--space-1)}
+
+  .tabs{display:flex;gap:var(--space-1);padding:var(--space-1);border-radius:var(--radius-button);
+    background:var(--color-surface-raised)}
+  .tabs button{min-block-size:2rem;padding-inline:var(--space-3);border:0;border-radius:var(--radius-sm);
+    background:transparent;color:var(--color-text-secondary);font:500 var(--text-sm)/1 var(--font-sans);cursor:pointer;
+    transition:background var(--transition-micro),color var(--transition-micro)}
+  .tabs button:hover{color:var(--color-text-primary)}
+  .tabs button:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .tabs button[aria-selected="true"]{background:var(--color-surface-card);color:var(--color-text-primary);
+    box-shadow:var(--shadow-sm)}
+
+  /* ---------- hero: one thing leads ---------- */
+  .hero{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5)}
+  @media (max-width:60rem){.hero{grid-template-columns:minmax(0,1fr)}}
+  .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0}
+  .card.lift{box-shadow:var(--shadow-md)}
+  .eyebrow{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--color-text-secondary)}
+  .figure{font-size:var(--text-6xl);line-height:1;letter-spacing:-0.04em;font-weight:700;margin-block:var(--space-2)}
+  @media (max-width:40rem){.figure{font-size:var(--text-5xl)}}
+  .delta{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-sm);font-weight:600}
+  .up{color:var(--color-feedback-success)} .down{color:var(--color-text-error)}
+  .muted{color:var(--color-text-secondary);font-size:var(--text-sm)}
+
+  .stack{display:grid;gap:var(--space-5);align-content:start}
+  .mini{display:grid;gap:var(--space-1)}
+  .mini .v{font-size:var(--text-2xl);font-weight:700;letter-spacing:-0.02em}
+  .rule{block-size:1px;background:var(--color-border-default);margin-block:var(--space-4)}
+
+  /* ---------- bento ---------- */
+  .bento{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:var(--space-5)}
+  .legend{display:grid;gap:var(--space-2);font-size:var(--text-sm)}
+  .legend li{display:flex;align-items:center;gap:var(--space-2);list-style:none}
+  .legend .sw{inline-size:.625rem;block-size:.625rem;border-radius:var(--radius-sm);flex:none}
+  .legend .n{margin-inline-start:auto;color:var(--color-text-secondary);font-variant-numeric:tabular-nums}
+  ol.rank{list-style:none;display:grid;gap:var(--space-3);padding:0}
+  ol.rank li{display:grid;gap:var(--space-2)}
+  .rank .row{display:flex;justify-content:space-between;gap:var(--space-3);font-size:var(--text-sm)}
+  .rank .name{font-weight:500;overflow-wrap:anywhere}
+  .rank .val{color:var(--color-text-secondary);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .track{block-size:.5rem;border-radius:var(--radius-full);background:var(--color-chart-track);overflow:hidden}
+  .track i{display:block;block-size:100%;border-radius:var(--radius-full)}
+
+  svg.chart{inline-size:100%;block-size:auto;display:block;overflow:visible}
+  .grid-line{stroke:var(--color-chart-grid);stroke-width:1}
+  .axis-txt{fill:var(--color-text-secondary);font-size:.6875rem;font-family:var(--font-sans)}
+
+  /* ---------- table ---------- */
+  .tablewrap{overflow-x:auto;border-radius:var(--radius-card);border:1px solid var(--color-border-default);
+    background:var(--color-surface-card)}
+  table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm);min-inline-size:34rem}
+  caption{text-align:start;padding:var(--space-5) var(--space-5) var(--space-3);font-weight:600;font-size:var(--text-lg)}
+  caption .hint{display:block;font-weight:400;font-size:var(--text-sm);color:var(--color-text-secondary);
+    margin-block-start:var(--space-1)}
+  th,td{padding:var(--space-3) var(--space-5);text-align:start;border-block-start:1px solid var(--color-border-default)}
+  th{color:var(--color-text-secondary);font-weight:600;font-size:var(--text-xs);letter-spacing:.06em;text-transform:uppercase}
+  th button{display:inline-flex;align-items:center;gap:var(--space-1);min-block-size:2rem;padding-inline:var(--space-2);
+    margin-inline-start:calc(var(--space-2) * -1);border:0;border-radius:var(--radius-sm);background:transparent;
+    color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+  th button:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
+  th button:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  th button .ico{inline-size:.875rem;block-size:.875rem;opacity:.55}
+  th[aria-sort="none"] button .ico{opacity:.25}
+  tbody tr:hover{background:var(--color-surface-raised)}
+  td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-2);
+    border-radius:var(--radius-pill);background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:600}
+  .badge .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot);flex:none}
+  .b-live{--dot:var(--color-feedback-success)}
+  .b-risk{--dot:var(--color-feedback-warning)}
+  .b-churn{--dot:var(--color-text-error)}
+  .acct{display:flex;align-items:center;gap:var(--space-3);min-inline-size:0}
+  .acct .mono{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-sm);
+    background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:700;flex:none}
+  .acct span{overflow-wrap:anywhere}
+
+  /* ---------- feed ---------- */
+  .split{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (max-width:60rem){.split{grid-template-columns:minmax(0,1fr)}}
+  .feed{display:grid;gap:var(--space-4);list-style:none;padding:0}
+  .feed li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3)}
+  .feed .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);color:var(--color-text-secondary);flex:none}
+  .feed .pip .ico{inline-size:.875rem;block-size:.875rem}
+  .feed p{font-size:var(--text-sm);overflow-wrap:anywhere}
+  .feed time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+
+  footer{padding:var(--space-5) var(--space-6);border-block-start:1px solid var(--color-border-default);
+    color:var(--color-text-secondary);font-size:var(--text-sm);display:flex;justify-content:space-between;
+    gap:var(--space-4);flex-wrap:wrap}
+  footer a{color:var(--color-text-link)}
+
+  /* entrance motion: decoration only, never the thing that reveals content */
+  @keyframes rise{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+  @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+  .bar{transform-box:fill-box;transform-origin:bottom;animation:rise var(--duration-slow) var(--ease-emphasized) both}
+  /* stagger derived from the motion token, never a typed-in millisecond */
+  .bar{--step:calc(var(--duration-fast) * 0.6)}
+  .bar:nth-of-type(2){animation-delay:var(--step)}
+  .bar:nth-of-type(3){animation-delay:calc(var(--step) * 2)}
+  .bar:nth-of-type(4){animation-delay:calc(var(--step) * 3)}
+  .bar:nth-of-type(5){animation-delay:calc(var(--step) * 4)}
+  .bar:nth-of-type(6){animation-delay:calc(var(--step) * 5)}
+  .bar:nth-of-type(7){animation-delay:calc(var(--step) * 6)}
+  .spark{stroke-dasharray:1;animation:draw calc(var(--duration-slow) * 2) var(--ease-out) both}
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:1ms !important;animation-delay:0ms !important;transition-duration:1ms !important} /* ds-allow-hardcode: the reduced-motion reset IS the near-zero duration */
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- sidebar -->
+  <aside class="side">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17 9 11l4 4 8-8"/><path d="M21 7v5h-5"/></svg></span>
+      Atlas
+    </div>
+    <nav class="nav" aria-label="Primary">
+      <a href="#main" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-dashboard"/></svg>Overview</a>
+      <a href="#accounts"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Accounts</a>
+      <a href="#activity"><svg class="ico" aria-hidden="true"><use href="#i-file-text"/></svg>Activity</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-sliders"/></svg>Segments</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="plan">
+      <strong>Growth plan</strong>
+      <div class="meter" role="img" aria-label="68 percent of the monthly event quota used"><i></i></div>
+      6.8M of 10M events this month
+    </div>
+  </aside>
+
+  <main id="main">
+    <!-- top bar -->
+    <div class="top">
+      <div class="searchbox">
+        <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+        <label class="sr-only" for="q">Search accounts</label>
+        <input id="q" type="text" placeholder="Search accounts, invoices, people" />
+      </div>
+      <button class="iconbtn" type="button" id="themeBtn" aria-pressed="false">
+        <svg class="ico" aria-hidden="true" id="themeIcon"><use href="#i-moon" id="themeUse"/></svg>
+        <span class="sr-only" id="themeLabel">Switch to dark theme</span>
+      </button>
+      <button class="iconbtn" type="button">
+        <svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>
+        <span class="sr-only">Notifications, 3 unread</span>
+      </button>
+      <span class="who"><span class="avatar" aria-hidden="true">TS</span>Thientan</span>
+    </div>
+
+    <div class="page">
+
+      <div class="head">
+        <div>
+          <h1>Revenue overview</h1>
+          <p class="sub">Recurring revenue only. Usage and one-off invoices are billed separately.</p>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Date range">
+          <button role="tab" id="tab-30" aria-selected="true" aria-controls="panel-range" type="button">30 days</button>
+          <button role="tab" id="tab-90" aria-selected="false" aria-controls="panel-range" tabindex="-1" type="button">90 days</button>
+          <button role="tab" id="tab-12" aria-selected="false" aria-controls="panel-range" tabindex="-1" type="button">12 months</button>
+        </div>
+      </div>
+
+      <!-- hero: one metric leads, the rest is quiet -->
+      <section class="hero" id="panel-range" role="tabpanel" aria-labelledby="tab-30" tabindex="0">
+        <div class="card lift">
+          <p class="eyebrow">Net recurring revenue</p>
+          <p class="figure" id="heroFigure">$2.48M</p>
+          <p><span class="delta up"><svg class="ico" aria-hidden="true"><use href="#i-trending-up"/></svg>18.2%</span>
+            <span class="muted" id="heroNote">against the previous 30 days</span></p>
+
+          <svg class="chart" viewBox="0 0 720 200" role="img" aria-labelledby="revTitle revDesc" preserveAspectRatio="none">
+            <title id="revTitle">Net recurring revenue by week</title>
+            <desc id="revDesc">Seven weeks, rising from 1.94 million to 2.48 million with one dip in week four.</desc>
+            <line class="grid-line" x1="0" y1="40" x2="720" y2="40"/>
+            <line class="grid-line" x1="0" y1="90" x2="720" y2="90"/>
+            <line class="grid-line" x1="0" y1="140" x2="720" y2="140"/>
+            <line class="grid-line" x1="0" y1="190" x2="720" y2="190"/>
+            <rect class="bar" x="14"  y="96"  width="76" height="94"  rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="114" y="84"  width="76" height="106" rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="214" y="66"  width="76" height="124" rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="314" y="78"  width="76" height="112" rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="414" y="52"  width="76" height="138" rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="514" y="34"  width="76" height="156" rx="6" fill="var(--color-chart-1)"/>
+            <rect class="bar" x="614" y="16"  width="76" height="174" rx="6" fill="var(--color-chart-2)"/>
+          </svg>
+          <p class="muted" style="margin-block-start:var(--space-3)">Week 27 is the current, partial week.</p>
+        </div>
+
+        <div class="stack">
+          <div class="card">
+            <p class="eyebrow">Net revenue retention</p>
+            <p class="v figure" style="font-size:var(--text-4xl)">118%</p>
+            <p class="muted"><span class="delta up">+4 pts</span> expansion outpaced churn in 5 of 6 segments.</p>
+          </div>
+          <div class="card">
+            <div class="mini">
+              <p class="eyebrow">Gross churn</p>
+              <p class="v">1.4%</p>
+              <p class="muted"><span class="delta down">+0.3 pts</span> two enterprise accounts downgraded.</p>
+            </div>
+            <div class="rule"></div>
+            <div class="mini">
+              <p class="eyebrow">Pipeline covered</p>
+              <p class="v">3.2x</p>
+              <p class="muted">Target is 3.0x for the quarter.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- bento: three different shapes, deliberately not three identical cards -->
+      <section class="bento" aria-label="Breakdowns">
+        <div class="card">
+          <p class="eyebrow">Revenue by plan</p>
+          <svg class="chart" viewBox="0 0 120 120" role="img" aria-labelledby="donutTitle" style="max-inline-size:11rem;margin:var(--space-4) auto">
+            <title id="donutTitle">Revenue by plan: Enterprise 46 percent, Growth 31, Team 15, Starter 8</title>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="var(--color-chart-track)" stroke-width="18"/>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="var(--color-chart-1)" stroke-width="18"
+              stroke-dasharray="133 156" transform="rotate(-90 60 60)"/>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="var(--color-chart-2)" stroke-width="18"
+              stroke-dasharray="90 199" transform="rotate(75 60 60)"/>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="var(--color-chart-3)" stroke-width="18"
+              stroke-dasharray="43 246" transform="rotate(187 60 60)"/>
+            <circle cx="60" cy="60" r="46" fill="none" stroke="var(--color-chart-4)" stroke-width="18"
+              stroke-dasharray="23 266" transform="rotate(241 60 60)"/>
+          </svg>
+          <ul class="legend">
+            <li><span class="sw" style="background:var(--color-chart-1)"></span>Enterprise<span class="n">46%</span></li>
+            <li><span class="sw" style="background:var(--color-chart-2)"></span>Growth<span class="n">31%</span></li>
+            <li><span class="sw" style="background:var(--color-chart-3)"></span>Team<span class="n">15%</span></li>
+            <li><span class="sw" style="background:var(--color-chart-4)"></span>Starter<span class="n">8%</span></li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <p class="eyebrow">Largest accounts</p>
+          <ol class="rank" style="margin-block-start:var(--space-4)">
+            <li><span class="row"><span class="name">Northwind Logistics</span><span class="val">$412k</span></span>
+              <span class="track"><i style="inline-size:100%;background:var(--color-chart-1)"></i></span></li>
+            <li><span class="row"><span class="name">Helios Biotech</span><span class="val">$338k</span></span>
+              <span class="track"><i style="inline-size:82%;background:var(--color-chart-1)"></i></span></li>
+            <li><span class="row"><span class="name">Kestrel Financial</span><span class="val">$291k</span></span>
+              <span class="track"><i style="inline-size:71%;background:var(--color-chart-1)"></i></span></li>
+            <li><span class="row"><span class="name">Meridian Health Network</span><span class="val">$204k</span></span>
+              <span class="track"><i style="inline-size:50%;background:var(--color-chart-1)"></i></span></li>
+            <li><span class="row"><span class="name">Two Rivers Retail</span><span class="val">$156k</span></span>
+              <span class="track"><i style="inline-size:38%;background:var(--color-chart-1)"></i></span></li>
+          </ol>
+        </div>
+
+        <div class="card">
+          <p class="eyebrow">Expansion by region</p>
+          <div style="display:grid;gap:var(--space-4);margin-block-start:var(--space-4)">
+            <div>
+              <p class="row" style="display:flex;justify-content:space-between;font-size:var(--text-sm)">
+                <span>North America</span><span class="delta up">+12.4%</span></p>
+              <svg class="chart" viewBox="0 0 200 40" role="img" aria-label="North America trend, rising"><polyline class="spark" pathLength="1" fill="none" stroke="var(--color-chart-1)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="0,32 28,28 56,30 84,20 112,22 140,12 168,10 200,4"/></svg>
+            </div>
+            <div>
+              <p class="row" style="display:flex;justify-content:space-between;font-size:var(--text-sm)">
+                <span>Europe</span><span class="delta up">+8.1%</span></p>
+              <svg class="chart" viewBox="0 0 200 40" role="img" aria-label="Europe trend, rising slowly"><polyline class="spark" pathLength="1" fill="none" stroke="var(--color-chart-2)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="0,30 28,31 56,26 84,27 112,22 140,20 168,18 200,14"/></svg>
+            </div>
+            <div>
+              <p class="row" style="display:flex;justify-content:space-between;font-size:var(--text-sm)">
+                <span>Asia Pacific</span><span class="delta down">-2.6%</span></p>
+              <svg class="chart" viewBox="0 0 200 40" role="img" aria-label="Asia Pacific trend, falling"><polyline class="spark" pathLength="1" fill="none" stroke="var(--color-chart-5)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="0,14 28,16 56,12 84,20 112,18 140,24 168,26 200,30"/></svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- table + feed -->
+      <section class="split">
+        <div class="tablewrap" id="accounts">
+          <table id="acctTable">
+            <caption>Accounts at renewal
+              <span class="hint">Click a column heading to sort. Sorting runs on the rendered rows.</span>
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col" aria-sort="none"><button type="button" data-col="0" data-type="text">Account<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+                <th scope="col" aria-sort="none"><button type="button" data-col="1" data-type="num">ARR<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+                <th scope="col" aria-sort="none"><button type="button" data-col="2" data-type="num">Seats<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+                <th scope="col" aria-sort="none"><button type="button" data-col="3" data-type="text">Health<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+                <th scope="col" aria-sort="none"><button type="button" data-col="4" data-type="date">Renews<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">NL</span><span>Northwind Logistics</span></span></td>
+                <td class="num" data-v="412000">$412,000</td><td class="num" data-v="1240">1,240</td>
+                <td><span class="badge b-live"><span class="dot" aria-hidden="true"></span>Healthy</span></td>
+                <td class="num" data-v="2026-10-01">1 Oct 2026</td></tr>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">HB</span><span>Helios Biotech</span></span></td>
+                <td class="num" data-v="338000">$338,000</td><td class="num" data-v="860">860</td>
+                <td><span class="badge b-risk"><span class="dot" aria-hidden="true"></span>At risk</span></td>
+                <td class="num" data-v="2026-09-28">28 Sep 2026</td></tr>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">KF</span><span>Kestrel Financial</span></span></td>
+                <td class="num" data-v="291000">$291,000</td><td class="num" data-v="640">640</td>
+                <td><span class="badge b-live"><span class="dot" aria-hidden="true"></span>Healthy</span></td>
+                <td class="num" data-v="2026-11-15">15 Nov 2026</td></tr>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">MH</span><span>Meridian Health Network</span></span></td>
+                <td class="num" data-v="204000">$204,000</td><td class="num" data-v="2310">2,310</td>
+                <td><span class="badge b-risk"><span class="dot" aria-hidden="true"></span>At risk</span></td>
+                <td class="num" data-v="2026-09-19">19 Sep 2026</td></tr>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">TR</span><span>Two Rivers Retail</span></span></td>
+                <td class="num" data-v="156000">$156,000</td><td class="num" data-v="410">410</td>
+                <td><span class="badge b-churn"><span class="dot" aria-hidden="true"></span>Churning</span></td>
+                <td class="num" data-v="2026-09-16">16 Sep 2026</td></tr>
+              <tr><td><span class="acct"><span class="mono" aria-hidden="true">AC</span><span>Arcadia Studios</span></span></td>
+                <td class="num" data-v="98000">$98,000</td><td class="num" data-v="120">120</td>
+                <td><span class="badge b-live"><span class="dot" aria-hidden="true"></span>Healthy</span></td>
+                <td class="num" data-v="2027-01-08">8 Jan 2027</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" id="activity">
+          <p class="eyebrow">Activity</p>
+          <ul class="feed" style="margin-block-start:var(--space-4)">
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-trending-up"/></svg></span>
+              <div><p><strong>Kestrel Financial</strong> upgraded to Enterprise, adding $84k ARR.</p><time datetime="2026-09-14T06:40">40 minutes ago</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-triangle"/></svg></span>
+              <div><p>Health score for <strong>Meridian Health Network</strong> fell below 60. Weekly logins down 34%.</p><time datetime="2026-09-14T04:10">3 hours ago</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-file-text"/></svg></span>
+              <div><p>Renewal quote sent to <strong>Two Rivers Retail</strong>, awaiting counter-signature.</p><time datetime="2026-09-13T16:20">Yesterday</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-users"/></svg></span>
+              <div><p><strong>Northwind Logistics</strong> added 140 seats across three regions.</p><time datetime="2026-09-12T09:05">2 days ago</time></div></li>
+          </ul>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>Figures refresh hourly. Last run 09:00 UTC from the revenue warehouse.</span>
+      <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a>
+        by Thientan Soparat. Every pixel here is token-driven and gate-verified.
+        <a href="../index.html">See every example</a></span>
+    </footer>
+  </main>
+</div>
+
+<script src="../component-states/icons.js"></script>
+<script>
+  /* Theme toggle: flips data-theme, its own aria-pressed, the icon and the label.
+     A control that declares a state contract has to honour it - verify_interactive
+     clicks this and checks something really changed. */
+  const btn = document.getElementById('themeBtn');
+  const use = document.getElementById('themeUse');
+  const label = document.getElementById('themeLabel');
+  btn.addEventListener('click', () => {
+    const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+    document.documentElement.setAttribute('data-theme', dark ? 'light' : 'dark');
+    btn.setAttribute('aria-pressed', String(!dark));
+    use.setAttribute('href', dark ? '#i-moon' : '#i-sun');
+    label.textContent = dark ? 'Switch to dark theme' : 'Switch to light theme';
+  });
+
+  /* Range tabs: roving tabindex + arrow keys, and the numbers actually change. */
+  const RANGES = {
+    'tab-30': ['$2.48M', 'against the previous 30 days'],
+    'tab-90': ['$7.12M', 'against the previous 90 days'],
+    'tab-12': ['$26.9M', 'against the previous 12 months'],
+  };
+  const tabs = [...document.querySelectorAll('[role="tab"]')];
+  const figure = document.getElementById('heroFigure');
+  const note = document.getElementById('heroNote');
+  const select = (tab) => {
+    for (const t of tabs) {
+      const on = t === tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    }
+    document.getElementById('panel-range').setAttribute('aria-labelledby', tab.id);
+    [figure.textContent, note.textContent] = RANGES[tab.id];
+    tab.focus();
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => select(tab));
+    tab.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') { e.preventDefault(); select(tabs[(i + 1) % tabs.length]); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); select(tabs[(i - 1 + tabs.length) % tabs.length]); }
+      if (e.key === 'Home')       { e.preventDefault(); select(tabs[0]); }
+      if (e.key === 'End')        { e.preventDefault(); select(tabs[tabs.length - 1]); }
+    });
+  });
+
+  /* Sortable table: aria-sort is a promise that the rows move. */
+  const table = document.getElementById('acctTable');
+  const tbody = table.tBodies[0];
+  table.querySelectorAll('th button').forEach((b) => {
+    b.addEventListener('click', () => {
+      const th = b.closest('th');
+      const col = Number(b.dataset.col);
+      const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+      table.querySelectorAll('th').forEach(h => h.setAttribute('aria-sort', 'none'));
+      th.setAttribute('aria-sort', dir);
+      const rows = [...tbody.rows];
+      rows.sort((x, y) => {
+        const cx = x.cells[col], cy = y.cells[col];
+        const a = cx.dataset.v ?? cx.textContent.trim();
+        const c = cy.dataset.v ?? cy.textContent.trim();
+        const cmp = b.dataset.type === 'num' ? Number(a) - Number(c) : String(a).localeCompare(String(c));
+        return dir === 'ascending' ? cmp : -cmp;
+      });
+      rows.forEach(r => tbody.appendChild(r));
+    });
+  });
+</script>
+</body>
+</html>

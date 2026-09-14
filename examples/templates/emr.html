@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Patient chart - Meridian Health</title>
+<meta name="description" content="Clinical template: a patient chart with vitals trends, allergy banner, active medications and an encounter timeline." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./shell.css" />
+<style>
+  .alertbar{display:flex;align-items:flex-start;gap:var(--space-3);padding:var(--space-4) var(--space-6);
+    background:var(--color-surface-raised);border-block-end:1px solid var(--color-border-default)}
+  .alertbar .ico{color:var(--color-text-error);margin-block-start:.1rem}
+  .alertbar strong{color:var(--color-text-error)}
+  .ident{display:flex;gap:var(--space-5);flex-wrap:wrap;align-items:center}
+  .ident .who{display:flex;align-items:center;gap:var(--space-3);min-inline-size:0}
+  /* the patient's name is what a clinician orients by: it leads the screen */
+  .ident h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.03em}
+  @media (max-width:40rem){.ident h1{font-size:var(--text-2xl)}}
+  .ident .pic{inline-size:3.5rem;block-size:3.5rem;font-size:var(--text-lg)}
+  .ident .pic{display:grid;place-items:center;inline-size:3rem;block-size:3rem;border-radius:var(--radius-full);
+    background:var(--color-surface-brand);font-weight:700}
+  .ident dl{display:flex;gap:var(--space-5);flex-wrap:wrap;margin:0;font-size:var(--text-sm)}
+  .ident dt{color:var(--color-text-secondary);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.06em}
+  .ident dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
+  .cols{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (max-width:64rem){.cols{grid-template-columns:minmax(0,1fr)}}
+  .vitals{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--space-4)}
+  .vital{display:grid;gap:var(--space-2);padding:var(--space-4);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-card)}
+  .vital .v{font-size:var(--text-2xl);font-weight:700;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+  .vital svg{inline-size:100%;block-size:auto;display:block}
+  .meds li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);padding-block:var(--space-3);
+    border-block-start:1px solid var(--color-border-default);font-size:var(--text-sm)}
+  .meds{list-style:none;padding:0;margin:0}
+  .meds li:first-child{border-block-start:0}
+  .meds .dose{color:var(--color-text-secondary)}
+  .enc{list-style:none;padding:0;margin:0;display:grid;gap:var(--space-4)}
+  .enc li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3)}
+  .enc .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);color:var(--color-text-secondary);flex:none}
+  .enc .pip .ico{inline-size:.875rem;block-size:.875rem}
+  .enc p{font-size:var(--text-sm);overflow-wrap:anywhere}
+  .enc time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg></span>Meridian</span>
+    <nav class="menu" aria-label="Primary">
+      <a href="#main" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-file-text"/></svg>Chart</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Schedule</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-archive"/></svg>Orders</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+    <div class="grow"></div>
+  </aside>
+
+  <main id="main">
+    <div class="alertbar" role="note">
+      <svg class="ico" aria-hidden="true"><use href="#i-alert-triangle"/></svg>
+      <p class="note" style="color:var(--color-text-primary)"><strong>Allergy: penicillin, anaphylaxis.</strong>
+        Documented 12 Mar 2024 by Dr. R. Okafor. Alternative antibiotics are listed in the care plan.</p>
+    </div>
+
+    <div class="topbar">
+      <div class="ident">
+        <span class="who"><span class="pic" aria-hidden="true">EM</span>
+          <span><h1>Elena Marquez</h1><p class="sub">MRN 884-2201 · 61 years · Female</p></span></span>
+        <dl>
+          <div><dt>Blood type</dt><dd>O+</dd></div>
+          <div><dt>Primary</dt><dd>Dr. Okafor</dd></div>
+          <div><dt>Admitted</dt><dd>12 Sep</dd></div>
+          <div><dt>Room</dt><dd>4B-12</dd></div>
+        </dl>
+      </div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" type="button">Print summary</button>
+      <button class="btn btn-primary" type="button">New order</button>
+    </div>
+
+    <div class="page cols">
+      <div style="display:grid;gap:var(--space-5)">
+        <section class="panel" aria-labelledby="vit">
+          <header><h2 id="vit">Vitals, last 24 hours</h2><span class="note">Recorded every 4 hours</span></header>
+          <div class="vitals">
+            <div class="vital"><p class="eyebrow">Heart rate</p><p class="v">88 <span class="note" style="font-size:var(--text-sm)">bpm</span></p>
+              <svg viewBox="0 0 120 32" role="img" aria-label="Heart rate trend, stable between 82 and 92"><polyline fill="none" stroke="var(--color-chart-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,20 20,18 40,22 60,16 80,19 100,15 120,17"/></svg></div>
+            <div class="vital"><p class="eyebrow">Blood pressure</p><p class="v">142/88</p>
+              <p class="note"><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Above target</span></p></div>
+            <div class="vital"><p class="eyebrow">Temperature</p><p class="v">37.4 <span class="note" style="font-size:var(--text-sm)">C</span></p>
+              <svg viewBox="0 0 120 32" role="img" aria-label="Temperature trend, falling slowly"><polyline fill="none" stroke="var(--color-chart-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="0,10 20,12 40,11 60,15 80,17 100,19 120,20"/></svg></div>
+            <div class="vital"><p class="eyebrow">SpO2</p><p class="v">96%</p>
+              <p class="note">Room air, no supplemental oxygen</p></div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="labs">
+          <header><h2 id="labs">Recent labs</h2><span class="note">Collected 14 Sep, 06:10</span></header>
+          <div class="tablewrap" style="border:0">
+            <table>
+              <caption class="sr-only">Recent laboratory results with reference ranges</caption>
+              <thead><tr><th scope="col">Test</th><th scope="col" class="end">Result</th><th scope="col" class="end">Reference</th><th scope="col">Flag</th></tr></thead>
+              <tbody>
+                <tr><th scope="row" style="font-weight:400">Haemoglobin</th><td class="end num">11.2 g/dL</td><td class="end num">12.0-15.5</td><td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Low</span></td></tr>
+                <tr><th scope="row" style="font-weight:400">White cell count</th><td class="end num">12.8 K/uL</td><td class="end num">4.5-11.0</td><td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>High</span></td></tr>
+                <tr><th scope="row" style="font-weight:400">Creatinine</th><td class="end num">0.9 mg/dL</td><td class="end num">0.6-1.1</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Normal</span></td></tr>
+                <tr><th scope="row" style="font-weight:400">Potassium</th><td class="end num">4.1 mmol/L</td><td class="end num">3.5-5.1</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Normal</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div style="display:grid;gap:var(--space-5)">
+        <section class="panel" aria-labelledby="meds">
+          <header><h2 id="meds">Active medications</h2></header>
+          <ul class="meds">
+            <li><span><strong>Amlodipine</strong><br><span class="dose">5 mg, once daily, oral</span></span><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Active</span></li>
+            <li><span><strong>Metformin</strong><br><span class="dose">500 mg, twice daily with food</span></span><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Active</span></li>
+            <li><span><strong>Enoxaparin</strong><br><span class="dose">40 mg, subcutaneous, nightly</span></span><span class="badge b-info"><span class="dot" aria-hidden="true"></span>New</span></li>
+            <li><span><strong>Ceftriaxone</strong><br><span class="dose">1 g IV, every 24 hours</span></span><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Review</span></li>
+          </ul>
+          <button class="btn btn-secondary btn-block" type="button">Reconcile medications</button>
+        </section>
+
+        <section class="panel" aria-labelledby="enc">
+          <header><h2 id="enc">Encounters</h2></header>
+          <ul class="enc">
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-file-text"/></svg></span>
+              <div><p>Ward round. Blood pressure still above target; amlodipine dose review scheduled.</p><time datetime="2026-09-14T07:20">Today, 07:20</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-circle"/></svg></span>
+              <div><p>White cell count rising. Cultures sent, empiric cover continued.</p><time datetime="2026-09-13T18:05">Yesterday, 18:05</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-users"/></svg></span>
+              <div><p>Admitted from emergency with community-acquired pneumonia.</p><time datetime="2026-09-12T22:40">12 Sep, 22:40</time></div></li>
+          </ul>
+        </section>
+      </div>
+    </div>
+
+    <div class="credit">
+      <span>Clinical template. Patient data is fictional and must not be used for care.</span>
+      <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+    </div>
+  </main>
+</div>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>

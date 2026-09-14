@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Accounts - Harbor Bank</title>
+<meta name="description" content="Retail banking template: balances, spending breakdown, a transaction ledger and a transfer form with a real confirmation step." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./shell.css" />
+<style>
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:var(--space-4)}
+  .acct{display:grid;gap:var(--space-2);padding:var(--space-5);border-radius:var(--radius-card);min-inline-size:0;
+    border:1px solid var(--color-border-default);background:var(--color-surface-card)}
+  .acct.lead{background:var(--color-surface-brand)}
+  .acct .n{font-size:var(--text-sm);color:var(--color-text-secondary)}
+  .acct .bal{font-size:var(--text-3xl);font-weight:700;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;
+    overflow-wrap:anywhere}
+  .acct.lead .bal{font-size:var(--text-5xl)}
+  /* a balance set at 3rem has a min-content width of its own; on a phone it
+     would widen the grid track and take the page with it */
+  @media (max-width:30rem){.acct.lead .bal{font-size:var(--text-3xl)}}
+  .split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (max-width:64rem){.split{grid-template-columns:minmax(0,1fr)}}
+  .spend{display:grid;gap:var(--space-3)}
+  .spend .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);font-size:var(--text-sm)}
+  .spend .bar{grid-column:1 / -1}
+  .mono{font-variant-numeric:tabular-nums}
+  .txn td:first-child{inline-size:2.5rem}
+  .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);color:var(--color-text-secondary)}
+  .pip .ico{inline-size:.875rem;block-size:.875rem}
+  dialog{border:1px solid var(--color-border-strong);border-radius:var(--radius-card);padding:var(--space-6);
+    background:var(--color-surface-card);color:var(--color-text-primary);max-inline-size:min(28rem,92vw)}
+  dialog::backdrop{background:var(--color-scrim)}
+  dialog h2{font-size:var(--text-xl);margin-block-end:var(--space-3)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M3 10 12 4l9 6"/><path d="M5 10v9h14v-9"/></svg></span>Harbor</span>
+    <nav class="menu" aria-label="Primary">
+      <a href="#main" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-dashboard"/></svg>Accounts</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-upload"/></svg>Payments</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-file-text"/></svg>Statements</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+    <div class="grow"></div>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <div><h1>Accounts</h1><p class="sub">Updated 2 minutes ago</p></div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" type="button">Statements</button>
+      <button class="btn btn-primary" type="button" id="openTransfer">Move money</button>
+    </div>
+
+    <div class="page">
+      <section class="cards" aria-label="Your accounts">
+        <div class="acct lead">
+          <p class="n">Everyday current · 04-21-88</p>
+          <p class="bal">GBP 14,208.55</p>
+          <p class="note"><span class="dn" style="font-weight:600">-GBP 842.10</span> this month, mostly the annual insurance renewal.</p>
+        </div>
+        <div class="acct"><p class="n">Savings · 04-21-90</p><p class="bal">GBP 61,400.00</p>
+          <p class="note">4.10% AER, fixed until Mar 2027</p></div>
+        <div class="acct"><p class="n">Credit card · ending 7741</p><p class="bal">GBP 1,204.36</p>
+          <p class="note">Statement due 28 Sep. Minimum GBP 36.13.</p></div>
+      </section>
+
+      <section class="split">
+        <div class="panel" style="padding:0">
+          <div class="tablewrap" style="border:0">
+            <table class="txn">
+              <caption>Recent transactions<span class="note" style="display:block;font-weight:400">Everyday current, last 7 days</span></caption>
+              <thead><tr><th scope="col"><span class="sr-only">Type</span></th><th scope="col">Description</th><th scope="col">Date</th><th scope="col" class="end">Amount</th><th scope="col" class="end">Balance</th></tr></thead>
+              <tbody>
+                <tr><td><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-upload"/></svg></span></td>
+                  <th scope="row" style="font-weight:600">Fairfield Energy<br><span class="note" style="font-weight:400">Direct debit</span></th>
+                  <td class="mono">14 Sep</td><td class="end mono dn">-142.80</td><td class="end mono">14,208.55</td></tr>
+                <tr><td><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-download"/></svg></span></td>
+                  <th scope="row" style="font-weight:600">Salary, Meridian Data<br><span class="note" style="font-weight:400">Faster payment</span></th>
+                  <td class="mono">13 Sep</td><td class="end mono up">+4,120.00</td><td class="end mono">14,351.35</td></tr>
+                <tr><td><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-archive"/></svg></span></td>
+                  <th scope="row" style="font-weight:600">Northfield Supply<br><span class="note" style="font-weight:400">Card, contactless</span></th>
+                  <td class="mono">13 Sep</td><td class="end mono dn">-178.22</td><td class="end mono">10,231.35</td></tr>
+                <tr><td><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-circle"/></svg></span></td>
+                  <th scope="row" style="font-weight:600">Unrecognised: QX*DIGITAL<br><span class="note" style="font-weight:400">Card, online</span></th>
+                  <td class="mono">12 Sep</td><td class="end mono dn">-59.99</td><td class="end mono">10,409.57</td></tr>
+                <tr><td><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-upload"/></svg></span></td>
+                  <th scope="row" style="font-weight:600">Transfer to Savings<br><span class="note" style="font-weight:400">Standing order</span></th>
+                  <td class="mono">11 Sep</td><td class="end mono dn">-1,000.00</td><td class="end mono">10,469.56</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:var(--space-5)">
+          <section class="panel" aria-labelledby="sp">
+            <header><h2 id="sp">Where it went</h2><span class="note">September</span></header>
+            <div class="spend">
+              <div class="row"><span>Housing</span><span class="mono">GBP 1,410</span></div>
+              <div class="bar track"><i style="inline-size:100%"></i></div>
+              <div class="row"><span>Groceries</span><span class="mono">GBP 612</span></div>
+              <div class="bar track"><i style="inline-size:43%;background:var(--color-chart-2)"></i></div>
+              <div class="row"><span>Transport</span><span class="mono">GBP 288</span></div>
+              <div class="bar track"><i style="inline-size:20%;background:var(--color-chart-3)"></i></div>
+              <div class="row"><span>Everything else</span><span class="mono">GBP 431</span></div>
+              <div class="bar track"><i style="inline-size:31%;background:var(--color-chart-5)"></i></div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="alert">
+            <header><h2 id="alert">Needs your attention</h2></header>
+            <p class="note">One card payment to <strong style="color:var(--color-text-primary)">QX*DIGITAL</strong> does not match your usual pattern.</p>
+            <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+              <button class="btn btn-secondary" type="button">This was me</button>
+              <button class="btn btn-danger" type="button">Report fraud</button>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+
+    <div class="credit">
+      <span>Banking template. Balances and transactions are fictional.</span>
+      <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+    </div>
+  </main>
+</div>
+
+<dialog id="transfer" aria-labelledby="tt">
+  <h2 id="tt">Move money</h2>
+  <div class="field" style="margin-block-end:var(--space-4)"><label for="from">From</label>
+    <select id="from"><option>Everyday current · GBP 14,208.55</option><option>Savings · GBP 61,400.00</option></select></div>
+  <div class="field" style="margin-block-end:var(--space-4)"><label for="to">To</label>
+    <select id="to"><option>Savings · 04-21-90</option><option>Credit card · 7741</option></select></div>
+  <div class="field" style="margin-block-end:var(--space-5)"><label for="amt">Amount</label>
+    <input id="amt" inputmode="decimal" value="500.00" />
+    <span class="hint">Arrives instantly between your own accounts.</span></div>
+  <div style="display:flex;gap:var(--space-3);justify-content:flex-end;flex-wrap:wrap">
+    <button class="btn btn-secondary" type="button" id="cancelTransfer">Cancel</button>
+    <button class="btn btn-primary" type="button">Review transfer</button>
+  </div>
+</dialog>
+
+<script src="../component-states/icons.js"></script>
+<script>
+  const dlg = document.getElementById('transfer');
+  document.getElementById('openTransfer').addEventListener('click', () => dlg.showModal());
+  document.getElementById('cancelTransfer').addEventListener('click', () => dlg.close());
+</script>
+</body>
+</html>

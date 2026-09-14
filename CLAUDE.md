@@ -65,6 +65,7 @@ Match the request to the files to load (and the runnable skill, invocable via `/
 | QA gates / CI / visual regression / prevent regressions | `design-qa` | `workflows/design-qa.md`; `scripts/validate_contrast.py`, `scripts/lint_hardcodes.py` |
 | Performance / Core Web Vitals / jank / layout shift | `performance` | `workflows/performance.md` |
 | Charts / data-viz / chart colors | `design-component` | `components/data-viz.md`, `tokens/data-viz.json` |
+| Dashboard / terminal / dense data screen | `data-dashboard` | `components/data-viz.md`, `examples/showcase/`, `examples/terminal/` |
 | Calendar / Carousel / Tree | `design-component` | `components/data-display.md` |
 | Icon system / icon sizing / icon a11y | `design-component` | `components/icon-system.md` |
 | Cognitive a11y / i18n-RTL / low-vision / WCAG AAA | `a11y-audit` | `accessibility/cognitive.md`, `accessibility/i18n-rtl.md`, `accessibility/vision.md`, `accessibility/wcag-aaa.md` |
@@ -244,7 +245,8 @@ templates/product-design/ ← Starter layout for a NEW product repo (CLAUDE.md b
 
 .claude/skills/           ← Runnable skills (invoke via /name): design-tokens, design-component,
                             design-code, design-review, a11y-audit, apply-aesthetic, redesign,
-                            migrate-design-system, prototype, ux-writing, governance, token-build,
+                            data-dashboard, migrate-design-system, prototype, ux-writing, governance,
+                            token-build,
                             figma-integration, design-qa, performance, image-to-code, brandkit
 scripts/                  ← validate_tokens.py [file|dir] · contrast.py · validate_contrast.py [file]
                             (batch WCAG, light+dark; both accept a product repo's design-tokens.json)

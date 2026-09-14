@@ -32,7 +32,16 @@ if (!file) { console.log('usage: node scripts/axe_audit.mjs <file.html> [--dark]
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await page.goto('file://' + resolve(file), { waitUntil: 'networkidle' }).catch(() => {});
-if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+/* Kill transitions BEFORE flipping the theme. Without this, axe samples colours
+   while they are still animating between light and dark and reports contrast
+   failures that do not exist at rest - the sample app failed here roughly one
+   run in two. measure_render and verify_states already do exactly this; axe was
+   the one render gate still racing the page. */
+await page.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });
+if (dark) {
+  await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
+  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
+}
 
 const localAxe = resolve('node_modules/axe-core/axe.min.js');
 try {

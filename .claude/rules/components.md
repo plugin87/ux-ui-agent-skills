@@ -79,6 +79,24 @@ decision no gate can see, so the decisions live here.
 
 ---
 
+## Form rows: equal controls, unequal content
+
+A grid or flex row stretches its items by default. Put two fields side by side
+where only one carries a hint, and the hint-less control grows taller to fill the
+row - two inputs that should be identical end up visibly different heights. It
+looks like a rendering bug and it ships constantly.
+
+- Give the row `align-items: start` (or the field `align-content: start`).
+- Give the control an explicit `block-size` from the size scale, not only a
+  `min-block-size`, so it cannot be stretched by a neighbour.
+- The same trap hits buttons in a toolbar, cards in a row where one has a badge,
+  and table cells where one column wraps to two lines.
+
+Check it by measuring, not by looking: every control in a row should report the
+same height in the rendered page.
+
+---
+
 ## Narrow-width defences (the four causes that actually bite)
 
 A layout that fits at 280px on one machine can overflow on another, because font

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Grid control - Nordkraft TSO</title>
+<meta name="description" content="Power grid template: network topology with line loading, system frequency, generation mix and a constraint list." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<link rel="stylesheet" href="./_console.css" />
+<style>
+  .topo svg{background:var(--lin-canvas);border-radius:var(--radius-sm)}
+  .ln{stroke:var(--trm-accent);opacity:.55;stroke-linecap:round}
+  .ln.warm{stroke:var(--color-feedback-warning);opacity:.8}
+  .ln.hot{stroke:var(--color-text-error);opacity:.95}
+  .lnl{fill:var(--lin-ink-3);font-family:var(--font-mono);font-size:9px} /* ds-allow-hardcode: SVG label size is geometry */
+  .nd circle{fill:var(--lin-raised);stroke:var(--lin-ink-3);stroke-width:1.5}
+  .nd.gen circle{fill:var(--trm-accent);stroke:none}
+  .nd.load circle{fill:var(--lin-accent);stroke:none}
+  .nd text{fill:var(--lin-ink-2);font-family:var(--font-mono);font-size:10px;letter-spacing:.04em} /* ds-allow-hardcode: SVG label size is geometry */
+  .mrow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2) var(--space-3);font-size:var(--text-xs)}
+  .mrow .track{grid-column:1 / -1;block-size:.4375rem;border-radius:var(--radius-full);
+    background:var(--lin-raised);overflow:hidden}
+  .mrow .track i{display:block;block-size:100%}
+  /* a 3rem figure carries its own min-content width: on a phone it would widen
+     the panel and push the page sideways */
+  .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
+    font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-inline-size:0}
+  @media (max-width:46rem){.big{font-size:var(--text-3xl)}}
+  .legend{display:flex;gap:var(--space-4);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-xs);
+    color:var(--lin-ink-3)}
+  .legend span{display:inline-flex;align-items:center;gap:var(--space-2)}
+  .sw{inline-size:.625rem;block-size:.625rem;border-radius:var(--radius-full)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><h1>Nordkraft grid</h1><p class="sub">TRANSMISSION CONTROL · 420 KV NETWORK</p></div>
+  <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>1 constraint</span>
+  <span class="clock num">50.012 Hz</span>
+</div>
+
+<div class="grid">
+  <section class="panel s8">
+    <header><h2>Network topology</h2><span class="note">line width and colour are loading</span></header>
+    <div class="topo">
+      <svg class="plot" viewBox="0 0 560 360" role="img" aria-labelledby="tpT tpD">
+        <title id="tpT">Transmission network with nine substations and ten lines</title>
+        <desc id="tpD">Aurland to Oslo Nord is the most heavily loaded line at 94 percent, followed by Fardal to Aurland at 88 percent and Rjukan to Skien at 83 percent. Generation sits at Kvinnherad, Aurland and Rjukan; load at Oslo Nord, Drammen and Skien.</desc>
+                <line class="ln warm" x1="60" y1="90" x2="200" y2="50" stroke-width="2.60"><title>Kvinnherad to Fardal, 72 percent loaded</title></line>
+        <line class="ln " x1="60" y1="90" x2="200" y2="150" stroke-width="2.22"><title>Kvinnherad to Sogndal, 55 percent loaded</title></line>
+        <line class="ln hot" x1="200" y1="50" x2="340" y2="90" stroke-width="2.96"><title>Fardal to Aurland, 88 percent loaded</title></line>
+        <line class="ln " x1="200" y1="150" x2="340" y2="200" stroke-width="2.36"><title>Sogndal to Hallingdal, 61 percent loaded</title></line>
+        <line class="ln hot" x1="340" y1="90" x2="480" y2="120" stroke-width="3.09"><title>Aurland to Oslo Nord, 94 percent loaded</title></line>
+        <line class="ln " x1="340" y1="200" x2="480" y2="120" stroke-width="2.04"><title>Hallingdal to Oslo Nord, 47 percent loaded</title></line>
+        <line class="ln warm" x1="340" y1="200" x2="480" y2="230" stroke-width="2.69"><title>Hallingdal to Drammen, 76 percent loaded</title></line>
+        <line class="ln " x1="340" y1="300" x2="480" y2="230" stroke-width="2.29"><title>Rjukan to Drammen, 58 percent loaded</title></line>
+        <line class="ln warm" x1="340" y1="300" x2="480" y2="320" stroke-width="2.84"><title>Rjukan to Skien, 83 percent loaded</title></line>
+        <line class="ln " x1="480" y1="230" x2="480" y2="320" stroke-width="1.76"><title>Drammen to Skien, 34 percent loaded</title></line>
+                <text class="lnl" x="130" y="65" text-anchor="middle">72%</text>
+        <text class="lnl" x="130" y="115" text-anchor="middle">55%</text>
+        <text class="lnl" x="270" y="65" text-anchor="middle">88%</text>
+        <text class="lnl" x="270" y="170" text-anchor="middle">61%</text>
+        <text class="lnl" x="410" y="100" text-anchor="middle">94%</text>
+        <text class="lnl" x="410" y="155" text-anchor="middle">47%</text>
+        <text class="lnl" x="410" y="210" text-anchor="middle">76%</text>
+        <text class="lnl" x="410" y="260" text-anchor="middle">58%</text>
+        <text class="lnl" x="410" y="305" text-anchor="middle">83%</text>
+        <text class="lnl" x="480" y="270" text-anchor="middle">34%</text>
+                <g class="nd gen"><circle cx="60" cy="90" r="9"/><text x="60" y="74" text-anchor="middle">Kvinnherad</text></g>
+        <g class="nd sub"><circle cx="200" cy="50" r="9"/><text x="200" y="34" text-anchor="middle">Fardal</text></g>
+        <g class="nd sub"><circle cx="200" cy="150" r="9"/><text x="200" y="134" text-anchor="middle">Sogndal</text></g>
+        <g class="nd gen"><circle cx="340" cy="90" r="9"/><text x="340" y="74" text-anchor="middle">Aurland</text></g>
+        <g class="nd sub"><circle cx="340" cy="200" r="9"/><text x="340" y="184" text-anchor="middle">Hallingdal</text></g>
+        <g class="nd load"><circle cx="480" cy="120" r="9"/><text x="480" y="104" text-anchor="middle">Oslo Nord</text></g>
+        <g class="nd load"><circle cx="480" cy="230" r="9"/><text x="480" y="214" text-anchor="middle">Drammen</text></g>
+        <g class="nd gen"><circle cx="340" cy="300" r="9"/><text x="340" y="284" text-anchor="middle">Rjukan</text></g>
+        <g class="nd load"><circle cx="480" cy="320" r="9"/><text x="480" y="304" text-anchor="middle">Skien</text></g>
+      </svg>
+    </div>
+    <p class="legend">
+      <span><i class="sw" style="background:var(--trm-accent)"></i>Generation</span>
+      <span><i class="sw" style="background:var(--lin-accent)"></i>Load</span>
+      <span><i class="sw" style="background:var(--lin-raised);border:1px solid var(--lin-ink-3)"></i>Substation</span>
+      <span><i class="sw" style="background:var(--color-text-error)"></i>Line above 85%</span>
+    </p>
+  </section>
+
+  <div class="s4" style="display:grid;gap:var(--space-4);align-content:start">
+    <section class="panel">
+      <header><h2>System frequency</h2><span class="note">60 seconds</span></header>
+      <p class="big">50.012 <span class="note" style="font-size:var(--text-base)">Hz</span></p>
+      <svg class="plot" viewBox="0 0 300 70" role="img" aria-label="System frequency holding between 49.99 and 50.03 hertz">
+        <line x1="0" y1="35" x2="300" y2="35" stroke="var(--lin-hairline)"/>
+        <polyline points="0.0,27.0 5.1,31.2 10.2,24.9 15.3,24.0 20.3,22.6 25.4,24.4 30.5,24.5 35.6,21.9 40.7,21.5 45.8,21.4 50.8,20.3 55.9,23.9 61.0,20.8 66.1,22.7 71.2,26.3 76.3,21.6 81.4,22.9 86.4,27.0 91.5,26.9 96.6,27.7 101.7,30.7 106.8,34.1 111.9,33.2 116.9,35.0 122.0,38.1 127.1,35.6 132.2,40.4 137.3,38.9 142.4,39.6 147.5,40.2 152.5,41.4 157.6,40.4 162.7,35.1 167.8,38.7 172.9,37.2 178.0,33.7 183.1,30.5 188.1,32.2 193.2,27.3 198.3,29.3 203.4,24.7 208.5,23.3 213.6,23.2 218.6,23.7 223.7,23.2 228.8,19.2 233.9,22.1 239.0,18.3 244.1,20.3 249.2,24.3 254.2,23.3 259.3,19.9 264.4,25.5 269.5,26.9 274.6,25.5 279.7,30.5 284.7,31.9 289.8,29.4 294.9,31.8 300.0,30.8" fill="none" stroke="var(--trm-accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <dl class="kv">
+        <dt>Deviation</dt><dd>+12 mHz</dd>
+        <dt>ROCOF</dt><dd>0.004 Hz/s</dd>
+        <dt>Reserve</dt><dd>1,240 MW</dd>
+      </dl>
+    </section>
+
+    <section class="panel">
+      <header><h2>Generation mix</h2><span class="note">now</span></header>
+      <div class="mrow"><span>Hydro</span><span class="num">62%</span><span class="track"><i style="inline-size:62%;background:var(--color-chart-1)"></i></span></div><div class="mrow"><span>Wind</span><span class="num">21%</span><span class="track"><i style="inline-size:21%;background:var(--color-chart-2)"></i></span></div><div class="mrow"><span>Thermal</span><span class="num">11%</span><span class="track"><i style="inline-size:11%;background:var(--color-chart-3)"></i></span></div><div class="mrow"><span>Import</span><span class="num">6%</span><span class="track"><i style="inline-size:6%;background:var(--color-chart-4)"></i></span></div>
+    </section>
+  </div>
+
+  <section class="panel s6">
+    <header><h2>Constraints</h2><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>1 active</span></header>
+    <div class="tblwrap">
+      <table>
+        <caption class="sr-only">Transmission constraints with loading and remedial action</caption>
+        <thead><tr><th scope="col">Line</th><th scope="col" class="end">Loading</th><th scope="col" class="end">Limit</th><th scope="col">Action</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Aurland - Oslo Nord</th><td class="end num">94%</td><td class="end num">1,380 MW</td>
+            <td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Redispatch</span></td></tr>
+          <tr><th scope="row">Fardal - Aurland</th><td class="end num">88%</td><td class="end num">1,180 MW</td>
+            <td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Watch</span></td></tr>
+          <tr><th scope="row">Rjukan - Skien</th><td class="end num">83%</td><td class="end num">960 MW</td>
+            <td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Watch</span></td></tr>
+          <tr><th scope="row">Hallingdal - Drammen</th><td class="end num">76%</td><td class="end num">1,040 MW</td>
+            <td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Normal</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel s6">
+    <header><h2>Balancing</h2><span class="note">next settlement period</span></header>
+    <dl class="kv">
+      <dt>Area price</dt><dd>41.20 EUR/MWh</dd>
+      <dt>Import</dt><dd>620 MW</dd>
+      <dt>Export</dt><dd>1,180 MW</dd>
+      <dt>Hydro reservoir</dt><dd>74.2%</dd>
+      <dt>Wind forecast 6h</dt><dd>2,410 MW</dd>
+      <dt>Demand forecast</dt><dd>18,900 MW</dd>
+    </dl>
+    <div class="rule"></div>
+    <p class="note">Redispatch of 180 MW from Rjukan to Kvinnherad clears the Aurland constraint
+      at a cost of 7,400 EUR for the period.</p>
+  </section>
+</div>
+
+<footer>
+  <span>Grid control template. Network, prices and constraints are simulated.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>

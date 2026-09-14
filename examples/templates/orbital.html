@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Orbital operations - Aurora Constellation</title>
+<meta name="description" content="Satellite mission control template: ground tracks on an equirectangular map, station pass schedule, telemetry and an alarm queue." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html{color-scheme:dark}
+  body{font-family:var(--font-sans);background:var(--lin-canvas);color:var(--lin-ink);
+    font-size:var(--text-sm);line-height:var(--leading-snug);-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .ico{inline-size:1rem;block-size:1rem;flex:none;stroke-width:1.75}
+  .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .num{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mono{font-family:var(--font-mono)}
+
+  .bar{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;
+    overflow-wrap:anywhere;
+    padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--lin-hairline);background:var(--lin-panel)}
+  .bar h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
+  @media (max-width:46rem){.bar h1{font-size:var(--text-2xl)}}
+  .bar .sub{color:var(--lin-ink-3);font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em}
+  .clock{margin-inline-start:auto;font-family:var(--font-mono);font-size:var(--text-2xl);letter-spacing:.04em;
+    color:var(--trm-accent);font-variant-numeric:tabular-nums}
+  .chip{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
+    border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);font-size:var(--text-xs);
+    font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
+  .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
+  .c-ok{--dot:var(--trm-accent)} .c-warn{--dot:var(--color-feedback-warning)} .c-bad{--dot:var(--color-text-error)}
+
+  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
+  @media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
+  @media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+  .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
+    padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
+  .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap}
+  .panel h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
+    color:var(--lin-ink-3)}
+  .note{color:var(--lin-ink-3);font-size:var(--text-xs)}
+  .c9{grid-column:span 9} .c3{grid-column:span 3} .c6{grid-column:span 6} .c4{grid-column:span 4}
+  @media (max-width:72rem){.c9,.c6{grid-column:span 6} .c3,.c4{grid-column:span 3}}
+  @media (max-width:46rem){.c9,.c6,.c3,.c4{grid-column:span 1}}
+
+  /* map */
+  .map{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--lin-canvas)}
+  .map svg{inline-size:100%;block-size:auto;display:block}
+  .land{fill:var(--lin-raised);stroke:var(--lin-hairline);stroke-width:1}
+  .grat line{stroke:var(--lin-hairline-soft);stroke-width:1}
+  .trk polyline{fill:none;stroke-width:1.75;stroke-linecap:round}
+  .trk.a polyline{stroke:var(--trm-accent)}
+  .trk.b polyline{stroke:var(--lin-accent)}
+  .gs circle{fill:var(--color-feedback-warning)}
+  .gs .halo{fill:none;stroke:var(--color-feedback-warning);stroke-width:1;opacity:.45}
+  .gs text{fill:var(--lin-ink-3);font-size:9px;font-family:var(--font-mono);letter-spacing:.06em} /* ds-allow-hardcode: SVG label sizing is geometry, scaled by the viewBox */
+  .sat{fill:var(--lin-ink)}
+  @media (prefers-reduced-motion:no-preference){
+    .gs .halo{animation:ping var(--duration-slow) var(--ease-out) infinite alternate}
+    @keyframes ping{from{opacity:.15;r:6}to{opacity:.5;r:11}}
+  }
+
+  /* pass schedule */
+  .lanes{display:grid;gap:var(--space-2)}
+  .lane{display:grid;grid-template-columns:7rem minmax(0,1fr);gap:var(--space-3);align-items:center;
+    min-inline-size:0}
+  .lane .bars{min-inline-size:0}
+  /* below this the station name and its lane cannot share a row */
+  @media (max-width:40rem){.lane{grid-template-columns:minmax(0,1fr);gap:var(--space-1)}
+    .ruler{margin-inline-start:0}}
+  .lane .nm{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .bars{position:relative;block-size:1.25rem;border-radius:var(--radius-sm);background:var(--lin-raised);
+    border:1px solid var(--lin-hairline-soft);overflow:hidden}
+  .pass{position:absolute;inset-block:2px;inset-inline-start:var(--l);inline-size:var(--w);
+    border-radius:var(--radius-sm);background:var(--trm-accent);opacity:.85}
+  .pass.warn{background:var(--color-feedback-warning)}
+  /* five nowrap labels in a row have a min-content width of their own; on a
+     phone they wrap instead of pushing the panel past the viewport */
+  .ruler{display:flex;justify-content:space-between;gap:var(--space-2);flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);margin-inline-start:7rem}
+  @media (max-width:40rem){.ruler{margin-inline-start:5rem}}
+
+  /* telemetry */
+  .tel{display:grid;gap:var(--space-3)}
+  .tel .row{display:grid;gap:var(--space-1)}
+  .tel .top{display:flex;justify-content:space-between;gap:var(--space-3);font-size:var(--text-xs);
+    color:var(--lin-ink-3);font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase}
+  .tel .v{color:var(--lin-ink);font-size:var(--text-base);font-weight:600}
+  .tel svg{inline-size:100%;block-size:auto;display:block}
+
+  /* alarms */
+  .alarms{display:grid;gap:var(--space-3);list-style:none;padding:0;margin:0}
+  .alarms li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3);
+    padding-block-end:var(--space-3);border-block-end:1px solid var(--lin-hairline-soft)}
+  .alarms li:last-child{border-block-end:0;padding-block-end:0}
+  .alarms .pip{display:grid;place-items:center;inline-size:1.5rem;block-size:1.5rem;border-radius:var(--radius-full);
+    background:var(--lin-raised);color:var(--color-feedback-warning)}
+  .alarms .pip .ico{inline-size:.75rem;block-size:.75rem}
+  .alarms p{overflow-wrap:anywhere}
+  .alarms time{display:block;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);
+    margin-block-start:var(--space-1)}
+
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-family:var(--font-mono);
+    font-size:var(--text-xs)}
+  .kv dt{color:var(--lin-ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .kv dd{margin:0;text-align:end;color:var(--lin-ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+
+  footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--lin-hairline);
+    color:var(--lin-ink-3);font-size:var(--text-xs);display:flex;justify-content:space-between;gap:var(--space-4);
+    flex-wrap:wrap}
+  footer a{color:var(--lin-accent-hover)} footer span{min-inline-size:0;overflow-wrap:anywhere}
+  @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div><h1>Aurora constellation</h1><p class="sub">MISSION OPS · CONSOLE 2</p></div>
+  <span class="chip c-ok"><span class="dot" aria-hidden="true"></span>Nominal</span>
+  <span class="chip c-warn"><span class="dot" aria-hidden="true"></span>2 advisories</span>
+  <span class="clock num">UTC 07:42:18</span>
+</div>
+
+<div class="grid">
+  <section class="panel c9">
+    <header><h2>Ground tracks, next two revolutions</h2>
+      <span class="note">AURORA-2 inclination 51.6, HELIOS-7 inclination 72.0</span></header>
+    <div class="map">
+      <svg viewBox="0 0 960 480" role="img" aria-labelledby="mapT mapD">
+        <title id="mapT">World map with two satellite ground tracks and six ground stations</title>
+        <desc id="mapD">AURORA-2 follows a 51.6 degree inclination track crossing Europe and southern Asia; HELIOS-7 follows a near-polar 72 degree track. Stations are marked at Svalbard, Kiruna, Wallops, Santiago, Perth and Hartebeesthoek.</desc>
+        <g class="grat">
+        <line x1="80.0" y1="0" x2="80.0" y2="480"/>
+        <line x1="160.0" y1="0" x2="160.0" y2="480"/>
+        <line x1="240.0" y1="0" x2="240.0" y2="480"/>
+        <line x1="320.0" y1="0" x2="320.0" y2="480"/>
+        <line x1="400.0" y1="0" x2="400.0" y2="480"/>
+        <line x1="480.0" y1="0" x2="480.0" y2="480"/>
+        <line x1="560.0" y1="0" x2="560.0" y2="480"/>
+        <line x1="640.0" y1="0" x2="640.0" y2="480"/>
+        <line x1="720.0" y1="0" x2="720.0" y2="480"/>
+        <line x1="800.0" y1="0" x2="800.0" y2="480"/>
+        <line x1="880.0" y1="0" x2="880.0" y2="480"/>
+        <line x1="0" y1="400.0" x2="960" y2="400.0"/>
+        <line x1="0" y1="320.0" x2="960" y2="320.0"/>
+        <line x1="0" y1="240.0" x2="960" y2="240.0"/>
+        <line x1="0" y1="160.0" x2="960" y2="160.0"/>
+        <line x1="0" y1="80.0" x2="960" y2="80.0"/>
+        </g>
+        <g class="land">
+        <path d="M 32.0,64.0 L 53.3,50.7 L 106.7,53.3 L 146.7,80.0 L 152.0,109.3 L 168.0,152.0 L 200.0,178.7 L 221.3,197.3 L 258.7,216.0 L 274.7,218.7 L 264.0,178.7 L 266.7,170.7 L 280.0,146.7 L 293.3,128.0 L 320.0,114.7 L 341.3,114.7 L 330.7,96.0 L 309.3,80.0 L 272.0,74.7 L 226.7,58.7 L 186.7,58.7 L 133.3,53.3 L 80.0,53.3 Z"/>
+        <path d="M 264.0,218.7 L 274.7,240.0 L 266.7,253.3 L 280.0,277.3 L 293.3,293.3 L 293.3,320.0 L 285.3,352.0 L 280.0,378.7 L 298.7,386.7 L 314.7,346.7 L 328.0,330.7 L 352.0,306.7 L 376.0,274.7 L 386.7,261.3 L 362.7,245.3 L 346.7,234.7 L 320.0,224.0 L 288.0,213.3 Z"/>
+        <path d="M 453.3,144.0 L 480.0,122.7 L 506.7,122.7 L 528.0,133.3 L 544.0,144.0 L 554.7,130.7 L 560.0,120.0 L 586.7,112.0 L 613.3,120.0 L 640.0,128.0 L 680.0,133.3 L 720.0,120.0 L 746.7,106.7 L 786.7,120.0 L 826.7,120.0 L 853.3,101.3 L 880.0,80.0 L 906.7,58.7 L 880.0,48.0 L 826.7,45.3 L 773.3,37.3 L 720.0,37.3 L 666.7,45.3 L 613.3,53.3 L 560.0,53.3 L 533.3,56.0 L 506.7,72.0 L 493.3,85.3 L 466.7,106.7 L 456.0,125.3 Z"/>
+        <path d="M 434.7,200.0 L 480.0,200.0 L 520.0,208.0 L 560.0,200.0 L 586.7,208.0 L 616.0,208.0 L 600.0,240.0 L 586.7,266.7 L 573.3,293.3 L 560.0,320.0 L 546.7,330.7 L 528.0,330.7 L 512.0,293.3 L 504.0,253.3 L 480.0,226.7 L 453.3,213.3 Z"/>
+        <path d="M 781.3,298.7 L 800.0,290.7 L 826.7,272.0 L 858.7,266.7 L 880.0,298.7 L 888.0,314.7 L 872.0,341.3 L 853.3,341.3 L 826.7,325.3 L 794.7,330.7 L 784.0,314.7 Z"/>
+        </g>
+        <g class="trk b"><polyline points="533.3,240.0 540.8,230.0 548.3,219.9 555.8,210.0 563.3,200.1 570.8,190.3 578.3,180.7 585.8,171.2 593.3,161.9 600.8,152.8 608.3,144.0 615.8,135.4 623.3,127.1 630.8,119.2 638.3,111.5 645.8,104.2 653.3,97.3 660.8,90.8 668.3,84.7 675.8,79.0 683.3,73.7 690.8,68.9 698.3,64.6 705.8,60.8 713.3,57.4 720.8,54.5 728.3,52.2 735.8,50.4 743.3,49.1 750.8,48.3 758.3,48.0 765.8,48.3 773.3,49.1 780.8,50.4 788.3,52.2 795.8,54.5 803.3,57.4 810.8,60.8 818.3,64.6 825.8,68.9 833.3,73.7 840.8,79.0 848.3,84.7 855.8,90.8 863.3,97.3 870.8,104.2 878.3,111.5 885.8,119.2 893.3,127.1 900.8,135.4 908.3,144.0 915.8,152.8 923.3,161.9 930.8,171.2 938.3,180.7 945.8,190.3 953.3,200.1"/><polyline points="0.8,210.0 8.3,219.9 15.8,230.0 23.3,240.0 30.8,250.0 38.3,260.1 45.8,270.0 53.3,279.9 60.8,289.7 68.3,299.3 75.8,308.8 83.3,318.1 90.8,327.2 98.3,336.0 105.8,344.6 113.3,352.9 120.8,360.8 128.3,368.5 135.8,375.8 143.3,382.7 150.8,389.2 158.3,395.3 165.8,401.0 173.3,406.3 180.8,411.1 188.3,415.4 195.8,419.2 203.3,422.6 210.8,425.5 218.3,427.8 225.8,429.6 233.3,430.9 240.8,431.7 248.3,432.0 255.8,431.7 263.3,430.9 270.8,429.6 278.3,427.8 285.8,425.5 293.3,422.6 300.8,419.2 308.3,415.4 315.8,411.1 323.3,406.3 330.8,401.0 338.3,395.3 345.8,389.2 353.3,382.7 360.8,375.8 368.3,368.5 375.8,360.8 383.3,352.9 390.8,344.6 398.3,336.0 405.8,327.2 413.3,318.1 420.8,308.8 428.3,299.3 435.8,289.7 443.3,279.9 450.8,270.0 458.3,260.1 465.8,250.0 473.3,240.0 480.8,230.0 488.3,219.9 495.8,210.0 503.3,200.1 510.8,190.3 518.3,180.7 525.8,171.2 533.3,161.9 540.8,152.8 548.3,144.0 555.8,135.4 563.3,127.1 570.8,119.2 578.3,111.5 585.8,104.2 593.3,97.3 600.8,90.8 608.3,84.7 615.8,79.0 623.3,73.7 630.8,68.9 638.3,64.6 645.8,60.8 653.3,57.4 660.8,54.5 668.3,52.2 675.8,50.4 683.3,49.1 690.8,48.3 698.3,48.0 705.8,48.3 713.3,49.1 720.8,50.4 728.3,52.2 735.8,54.5 743.3,57.4 750.8,60.8 758.3,64.6 765.8,68.9 773.3,73.7 780.8,79.0 788.3,84.7 795.8,90.8 803.3,97.3 810.8,104.2 818.3,111.5 825.8,119.2 833.3,127.1 840.8,135.4 848.3,144.0 855.8,152.8 863.3,161.9 870.8,171.2 878.3,180.7 885.8,190.3 893.3,200.1 900.8,210.0 908.3,219.9 915.8,230.0 923.3,240.0 930.8,250.0 938.3,260.1 945.8,270.0 953.3,279.9"/><polyline points="0.8,289.7 8.3,299.3 15.8,308.8 23.3,318.1 30.8,327.2 38.3,336.0 45.8,344.6 53.3,352.9 60.8,360.8 68.3,368.5 75.8,375.8 83.3,382.7 90.8,389.2 98.3,395.3 105.8,401.0 113.3,406.3 120.8,411.1 128.3,415.4 135.8,419.2 143.3,422.6 150.8,425.5 158.3,427.8 165.8,429.6 173.3,430.9 180.8,431.7 188.3,432.0 195.8,431.7 203.3,430.9 210.8,429.6 218.3,427.8 225.8,425.5 233.3,422.6 240.8,419.2 248.3,415.4 255.8,411.1 263.3,406.3 270.8,401.0 278.3,395.3 285.8,389.2 293.3,382.7 300.8,375.8 308.3,368.5 315.8,360.8 323.3,352.9 330.8,344.6 338.3,336.0 345.8,327.2 353.3,318.1 360.8,308.8 368.3,299.3 375.8,289.7 383.3,279.9 390.8,270.0 398.3,260.1 405.8,250.0 413.3,240.0"/></g>
+        <g class="trk a"><polyline points="53.3,240.0 60.8,232.8 68.3,225.6 75.8,218.5 83.3,211.4 90.8,204.4 98.3,197.5 105.8,190.7 113.3,184.0 120.8,177.5 128.3,171.2 135.8,165.1 143.3,159.1 150.8,153.4 158.3,147.9 165.8,142.7 173.3,137.7 180.8,133.1 188.3,128.7 195.8,124.6 203.3,120.8 210.8,117.4 218.3,114.3 225.8,111.5 233.3,109.1 240.8,107.1 248.3,105.4 255.8,104.1 263.3,103.2 270.8,102.6 278.3,102.4 285.8,102.6 293.3,103.2 300.8,104.1 308.3,105.4 315.8,107.1 323.3,109.1 330.8,111.5 338.3,114.3 345.8,117.4 353.3,120.8 360.8,124.6 368.3,128.7 375.8,133.1 383.3,137.7 390.8,142.7 398.3,147.9 405.8,153.4 413.3,159.1 420.8,165.1 428.3,171.2 435.8,177.5 443.3,184.0 450.8,190.7 458.3,197.5 465.8,204.4 473.3,211.4 480.8,218.5 488.3,225.6 495.8,232.8 503.3,240.0 510.8,247.2 518.3,254.4 525.8,261.5 533.3,268.6 540.8,275.6 548.3,282.5 555.8,289.3 563.3,296.0 570.8,302.5 578.3,308.8 585.8,314.9 593.3,320.9 600.8,326.6 608.3,332.1 615.8,337.3 623.3,342.3 630.8,346.9 638.3,351.3 645.8,355.4 653.3,359.2 660.8,362.6 668.3,365.7 675.8,368.5 683.3,370.9 690.8,372.9 698.3,374.6 705.8,375.9 713.3,376.8 720.8,377.4 728.3,377.6 735.8,377.4 743.3,376.8 750.8,375.9 758.3,374.6 765.8,372.9 773.3,370.9 780.8,368.5 788.3,365.7 795.8,362.6 803.3,359.2 810.8,355.4 818.3,351.3 825.8,346.9 833.3,342.3 840.8,337.3 848.3,332.1 855.8,326.6 863.3,320.9 870.8,314.9 878.3,308.8 885.8,302.5 893.3,296.0 900.8,289.3 908.3,282.5 915.8,275.6 923.3,268.6 930.8,261.5 938.3,254.4 945.8,247.2 953.3,240.0"/><polyline points="0.8,232.8 8.3,225.6 15.8,218.5 23.3,211.4 30.8,204.4 38.3,197.5 45.8,190.7 53.3,184.0 60.8,177.5 68.3,171.2 75.8,165.1 83.3,159.1 90.8,153.4 98.3,147.9 105.8,142.7 113.3,137.7 120.8,133.1 128.3,128.7 135.8,124.6 143.3,120.8 150.8,117.4 158.3,114.3 165.8,111.5 173.3,109.1 180.8,107.1 188.3,105.4 195.8,104.1 203.3,103.2 210.8,102.6 218.3,102.4 225.8,102.6 233.3,103.2 240.8,104.1 248.3,105.4 255.8,107.1 263.3,109.1 270.8,111.5 278.3,114.3 285.8,117.4 293.3,120.8 300.8,124.6 308.3,128.7 315.8,133.1 323.3,137.7 330.8,142.7 338.3,147.9 345.8,153.4 353.3,159.1 360.8,165.1 368.3,171.2 375.8,177.5 383.3,184.0 390.8,190.7 398.3,197.5 405.8,204.4 413.3,211.4 420.8,218.5 428.3,225.6 435.8,232.8 443.3,240.0 450.8,247.2 458.3,254.4 465.8,261.5 473.3,268.6 480.8,275.6 488.3,282.5 495.8,289.3 503.3,296.0 510.8,302.5 518.3,308.8 525.8,314.9 533.3,320.9 540.8,326.6 548.3,332.1 555.8,337.3 563.3,342.3 570.8,346.9 578.3,351.3 585.8,355.4 593.3,359.2 600.8,362.6 608.3,365.7 615.8,368.5 623.3,370.9 630.8,372.9 638.3,374.6 645.8,375.9 653.3,376.8 660.8,377.4 668.3,377.6 675.8,377.4 683.3,376.8 690.8,375.9 698.3,374.6 705.8,372.9 713.3,370.9 720.8,368.5 728.3,365.7 735.8,362.6 743.3,359.2 750.8,355.4 758.3,351.3 765.8,346.9 773.3,342.3 780.8,337.3 788.3,332.1 795.8,326.6 803.3,320.9 810.8,314.9 818.3,308.8 825.8,302.5 833.3,296.0 840.8,289.3 848.3,282.5 855.8,275.6 863.3,268.6 870.8,261.5 878.3,254.4 885.8,247.2 893.3,240.0 900.8,232.8 908.3,225.6 915.8,218.5 923.3,211.4 930.8,204.4 938.3,197.5 945.8,190.7 953.3,184.0"/><polyline points="0.8,177.5 8.3,171.2 15.8,165.1 23.3,159.1 30.8,153.4 38.3,147.9 45.8,142.7 53.3,137.7 60.8,133.1 68.3,128.7 75.8,124.6 83.3,120.8 90.8,117.4 98.3,114.3 105.8,111.5 113.3,109.1"/></g>
+        <g class="gs"><circle cx="521.1" cy="31.5" r="3.5"/><circle class="halo" cx="521.1" cy="31.5" r="9"/><text x="530.1" y="35.5">Svalbard</text></g>
+        <g class="gs"><circle cx="535.7" cy="59.2" r="3.5"/><circle class="halo" cx="535.7" cy="59.2" r="9"/><text x="544.7" y="63.2">Kiruna</text></g>
+        <g class="gs"><circle cx="278.7" cy="138.9" r="3.5"/><circle class="halo" cx="278.7" cy="138.9" r="9"/><text x="287.7" y="142.9">Wallops</text></g>
+        <g class="gs"><circle cx="291.5" cy="329.1" r="3.5"/><circle class="halo" cx="291.5" cy="329.1" r="9"/><text x="300.5" y="333.1">Santiago</text></g>
+        <g class="gs"><circle cx="789.1" cy="325.1" r="3.5"/><circle class="halo" cx="789.1" cy="325.1" r="9"/><text x="798.1" y="329.1">Perth</text></g>
+        <g class="gs"><circle cx="553.9" cy="309.1" r="3.5"/><circle class="halo" cx="553.9" cy="309.1" r="9"/><text x="562.9" y="313.1">Hartebeesthoek</text></g>
+        <circle class="sat" cx="612" cy="196" r="4"/>
+        <text class="mono" x="622" y="200" fill="var(--lin-ink)" font-size="10">AURORA-2</text>
+      </svg>
+    </div>
+  </section>
+
+  <section class="panel c3">
+    <header><h2>Spacecraft</h2></header>
+    <dl class="kv">
+      <dt>Vehicle</dt><dd>AURORA-2</dd>
+      <dt>Altitude</dt><dd>412.6 km</dd>
+      <dt>Velocity</dt><dd>7.66 km/s</dd>
+      <dt>Period</dt><dd>92.8 min</dd>
+      <dt>Beta angle</dt><dd>41.2 deg</dd>
+      <dt>Mode</dt><dd>NADIR POINT</dd>
+      <dt>Next pass</dt><dd>00:11:04</dd>
+    </dl>
+  </section>
+
+  <section class="panel c6">
+    <header><h2>Station pass schedule</h2><span class="note">next 8 hours</span></header>
+    <div class="lanes">
+        <div class="lane"><span class="nm">Svalbard</span><span class="bars"><span class="pass ok" style="--l:6.92%;--w:2.44%" role="img" aria-label="HELIOS-7 over Svalbard, 12 min"></span><span class="pass ok" style="--l:25.13%;--w:3.01%" role="img" aria-label="HELIOS-7 over Svalbard, 14 min"></span><span class="pass ok" style="--l:44.10%;--w:2.91%" role="img" aria-label="HELIOS-7 over Svalbard, 14 min"></span><span class="pass ok" style="--l:53.22%;--w:2.30%" role="img" aria-label="HELIOS-7 over Svalbard, 11 min"></span><span class="pass ok" style="--l:68.19%;--w:2.28%" role="img" aria-label="HELIOS-7 over Svalbard, 11 min"></span><span class="pass warn" style="--l:80.02%;--w:2.41%" role="img" aria-label="AURORA-2 over Svalbard, 12 min"></span></span></div>
+        <div class="lane"><span class="nm">Kiruna</span><span class="bars"><span class="pass ok" style="--l:0.29%;--w:2.70%" role="img" aria-label="HELIOS-7 over Kiruna, 13 min"></span><span class="pass ok" style="--l:11.25%;--w:1.54%" role="img" aria-label="HELIOS-7 over Kiruna, 7 min"></span><span class="pass ok" style="--l:18.92%;--w:2.51%" role="img" aria-label="AURORA-2 over Kiruna, 12 min"></span><span class="pass ok" style="--l:28.02%;--w:1.42%" role="img" aria-label="AURORA-2 over Kiruna, 7 min"></span><span class="pass ok" style="--l:42.76%;--w:2.31%" role="img" aria-label="HELIOS-7 over Kiruna, 11 min"></span><span class="pass ok" style="--l:61.07%;--w:2.83%" role="img" aria-label="HELIOS-7 over Kiruna, 14 min"></span><span class="pass ok" style="--l:76.96%;--w:2.24%" role="img" aria-label="AURORA-2 over Kiruna, 11 min"></span><span class="pass warn" style="--l:92.88%;--w:2.76%" role="img" aria-label="AURORA-2 over Kiruna, 13 min"></span></span></div>
+        <div class="lane"><span class="nm">Wallops</span><span class="bars"><span class="pass ok" style="--l:2.31%;--w:2.93%" role="img" aria-label="AURORA-2 over Wallops, 14 min"></span><span class="pass ok" style="--l:21.09%;--w:2.14%" role="img" aria-label="AURORA-2 over Wallops, 10 min"></span><span class="pass warn" style="--l:37.18%;--w:1.93%" role="img" aria-label="HELIOS-7 over Wallops, 9 min"></span><span class="pass ok" style="--l:53.26%;--w:3.12%" role="img" aria-label="AURORA-2 over Wallops, 15 min"></span><span class="pass ok" style="--l:62.78%;--w:2.00%" role="img" aria-label="AURORA-2 over Wallops, 10 min"></span><span class="pass warn" style="--l:73.59%;--w:1.96%" role="img" aria-label="HELIOS-7 over Wallops, 9 min"></span><span class="pass warn" style="--l:84.83%;--w:1.82%" role="img" aria-label="AURORA-2 over Wallops, 9 min"></span></span></div>
+        <div class="lane"><span class="nm">Santiago</span><span class="bars"><span class="pass ok" style="--l:8.30%;--w:1.57%" role="img" aria-label="AURORA-2 over Santiago, 8 min"></span><span class="pass ok" style="--l:23.38%;--w:2.14%" role="img" aria-label="HELIOS-7 over Santiago, 10 min"></span><span class="pass ok" style="--l:40.52%;--w:2.41%" role="img" aria-label="AURORA-2 over Santiago, 12 min"></span><span class="pass ok" style="--l:59.02%;--w:1.55%" role="img" aria-label="AURORA-2 over Santiago, 7 min"></span><span class="pass ok" style="--l:66.81%;--w:1.48%" role="img" aria-label="AURORA-2 over Santiago, 7 min"></span><span class="pass ok" style="--l:74.73%;--w:2.98%" role="img" aria-label="AURORA-2 over Santiago, 14 min"></span><span class="pass ok" style="--l:90.59%;--w:2.67%" role="img" aria-label="AURORA-2 over Santiago, 13 min"></span></span></div>
+        <div class="lane"><span class="nm">Perth</span><span class="bars"><span class="pass warn" style="--l:7.53%;--w:1.34%" role="img" aria-label="AURORA-2 over Perth, 6 min"></span><span class="pass warn" style="--l:24.44%;--w:2.70%" role="img" aria-label="AURORA-2 over Perth, 13 min"></span><span class="pass ok" style="--l:35.75%;--w:1.71%" role="img" aria-label="HELIOS-7 over Perth, 8 min"></span><span class="pass ok" style="--l:45.14%;--w:2.73%" role="img" aria-label="AURORA-2 over Perth, 13 min"></span><span class="pass ok" style="--l:59.92%;--w:2.11%" role="img" aria-label="AURORA-2 over Perth, 10 min"></span><span class="pass ok" style="--l:73.02%;--w:1.77%" role="img" aria-label="HELIOS-7 over Perth, 8 min"></span><span class="pass ok" style="--l:88.19%;--w:1.99%" role="img" aria-label="HELIOS-7 over Perth, 10 min"></span></span></div>
+        <div class="lane"><span class="nm">Hartebeesthoek</span><span class="bars"><span class="pass ok" style="--l:6.05%;--w:1.98%" role="img" aria-label="AURORA-2 over Hartebeesthoek, 9 min"></span><span class="pass ok" style="--l:14.91%;--w:2.42%" role="img" aria-label="HELIOS-7 over Hartebeesthoek, 12 min"></span><span class="pass warn" style="--l:26.76%;--w:3.09%" role="img" aria-label="AURORA-2 over Hartebeesthoek, 15 min"></span><span class="pass ok" style="--l:44.80%;--w:2.96%" role="img" aria-label="HELIOS-7 over Hartebeesthoek, 14 min"></span><span class="pass ok" style="--l:53.50%;--w:2.73%" role="img" aria-label="HELIOS-7 over Hartebeesthoek, 13 min"></span><span class="pass ok" style="--l:62.58%;--w:1.94%" role="img" aria-label="AURORA-2 over Hartebeesthoek, 9 min"></span><span class="pass ok" style="--l:73.09%;--w:2.53%" role="img" aria-label="AURORA-2 over Hartebeesthoek, 12 min"></span><span class="pass warn" style="--l:83.97%;--w:1.74%" role="img" aria-label="HELIOS-7 over Hartebeesthoek, 8 min"></span><span class="pass warn" style="--l:92.41%;--w:1.78%" role="img" aria-label="HELIOS-7 over Hartebeesthoek, 9 min"></span></span></div>
+    </div>
+    <p class="ruler"><span>07:00</span><span>09:00</span><span>11:00</span><span>13:00</span><span>15:00</span></p>
+  </section>
+
+  <section class="panel c3">
+    <header><h2>Telemetry</h2><span class="note">1 Hz</span></header>
+    <div class="tel">
+      <div class="row"><p class="top"><span>Bus power</span><span class="v num">1.48 kW</span></p>
+        <svg viewBox="0 0 200 26" role="img" aria-label="Bus power trending down as the vehicle enters eclipse"><polyline fill="none" stroke="var(--trm-accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,19.1 5.1,16.5 10.3,13.9 15.4,11.6 20.5,10.5 25.6,9.9 30.8,7.8 35.9,6.6 41.0,7.2 46.2,6.7 51.3,8.1 56.4,8.3 61.5,10.6 66.7,13.5 71.8,14.2 76.9,17.2 82.1,19.8 87.2,21.3 92.3,24.7 97.4,25.7 102.6,27.8 107.7,28.8 112.8,30.5 117.9,31.1 123.1,30.5 128.2,29.8 133.3,29.0 138.5,27.9 143.6,26.1 148.7,25.2 153.8,22.2 159.0,19.8 164.1,17.9 169.2,15.7 174.4,12.1 179.5,10.3 184.6,8.6 189.7,7.5 194.9,6.9 200.0,6.4"/></svg></div>
+      <div class="row"><p class="top"><span>Payload temp</span><span class="v num">-18.4 C</span></p>
+        <svg viewBox="0 0 200 26" role="img" aria-label="Payload temperature oscillating within limits"><polyline fill="none" stroke="var(--lin-accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,22.2 5.1,22.5 10.3,22.6 15.4,23.3 20.5,23.9 25.6,23.6 30.8,23.4 35.9,22.7 41.0,22.7 46.2,20.7 51.3,20.0 56.4,20.9 61.5,19.6 66.7,18.8 71.8,17.8 76.9,17.2 82.1,17.0 87.2,14.9 92.3,15.4 97.4,13.0 102.6,12.6 107.7,13.4 112.8,11.5 117.9,11.3 123.1,11.0 128.2,10.8 133.3,11.0 138.5,10.9 143.6,11.9 148.7,11.9 153.8,12.4 159.0,11.5 164.1,13.9 169.2,13.3 174.4,14.4 179.5,14.4 184.6,16.7 189.7,17.7 194.9,17.1 200.0,17.7"/></svg></div>
+      <div class="row"><p class="top"><span>Downlink margin</span><span class="v num">4.2 dB</span></p>
+        <svg viewBox="0 0 200 26" role="img" aria-label="Downlink margin falling as the pass reaches its horizon"><polyline fill="none" stroke="var(--color-feedback-warning)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,21.2 5.1,20.6 10.3,20.1 15.4,16.5 20.5,14.2 25.6,12.6 30.8,13.0 35.9,12.3 41.0,10.4 46.2,9.1 51.3,8.6 56.4,8.8 61.5,7.0 66.7,5.7 71.8,6.1 76.9,6.4 82.1,5.5 87.2,6.8 92.3,8.7 97.4,8.0 102.6,10.1 107.7,11.7 112.8,12.5 117.9,12.8 123.1,13.7 128.2,18.2 133.3,19.0 138.5,21.3 143.6,21.7 148.7,22.5 153.8,19.7 159.0,19.2 164.1,16.7 169.2,14.5 174.4,13.5 179.5,13.0 184.6,11.2 189.7,10.0 194.9,9.7 200.0,7.5"/></svg></div>
+    </div>
+  </section>
+
+  <section class="panel c4">
+    <header><h2>Advisories</h2><span class="chip c-warn"><span class="dot" aria-hidden="true"></span>2 open</span></header>
+    <ul class="alarms">
+      <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-triangle"/></svg></span>
+        <div><p>Downlink margin below 5 dB for the Perth pass. Reduced data rate applied automatically.</p><time datetime="2026-09-14T07:31">07:31:08 UTC</time></div></li>
+      <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-circle"/></svg></span>
+        <div><p>HELIOS-7 reaction wheel 3 momentum at 78 percent. Desaturation scheduled for revolution 14.</p><time datetime="2026-09-14T06:58">06:58:42 UTC</time></div></li>
+      <li><span class="pip" aria-hidden="true" style="color:var(--trm-accent)"><svg class="ico"><use href="#i-check"/></svg></span>
+        <div><p>Svalbard pass complete. 2.4 GB recovered, no frame loss.</p><time datetime="2026-09-14T06:12">06:12:55 UTC</time></div></li>
+    </ul>
+  </section>
+
+  <section class="panel c4">
+    <header><h2>Command queue</h2><span class="note">verified against the flight rules</span></header>
+    <dl class="kv">
+      <dt>CMD 4412</dt><dd>PAYLOAD ON · 07:53:00</dd>
+      <dt>CMD 4413</dt><dd>SLEW +Y 12.4 · 07:53:40</dd>
+      <dt>CMD 4414</dt><dd>DOWNLINK START · 07:55:10</dd>
+      <dt>CMD 4415</dt><dd>WHEEL DESAT · 09:21:00</dd>
+      <dt>CMD 4416</dt><dd>SAFE MODE EXIT · pending</dd>
+    </dl>
+  </section>
+
+  <section class="panel c4">
+    <header><h2>Link budget</h2><span class="note">S-band, Perth</span></header>
+    <dl class="kv">
+      <dt>EIRP</dt><dd>18.4 dBW</dd>
+      <dt>Path loss</dt><dd>-168.2 dB</dd>
+      <dt>G/T</dt><dd>21.6 dB/K</dd>
+      <dt>Eb/No</dt><dd>9.8 dB</dd>
+      <dt>Margin</dt><dd>4.2 dB</dd>
+      <dt>Rate</dt><dd>2.0 Mbps</dd>
+    </dl>
+  </section>
+</div>
+
+<footer>
+  <span>Mission control template. Orbits, telemetry and stations are simulated.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+</body>
+</html>

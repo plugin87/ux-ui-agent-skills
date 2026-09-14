@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pipeline - Cadence CRM</title>
+<meta name="description" content="CRM template: a deal pipeline with weighted forecast, stage columns, and a contact panel." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./shell.css" />
+<style>
+  .kpis{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(auto-fit,minmax(min(100%,10rem),1fr));
+    gap:var(--space-4)}
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:var(--space-4);
+    align-items:start}
+  .col{display:grid;gap:var(--space-3);align-content:start;background:var(--color-surface-raised);
+    border-radius:var(--radius-card);padding:var(--space-3)}
+  .col > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-2);
+    padding-inline:var(--space-1)}
+  .col h3{font-size:var(--text-sm);font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+    color:var(--color-text-secondary)}
+  .col .sum{font-size:var(--text-sm);font-weight:600;font-variant-numeric:tabular-nums}
+  .deal{display:grid;gap:var(--space-2);background:var(--color-surface-card);border:1px solid var(--color-border-default);
+    border-radius:var(--radius-sm);padding:var(--space-3);text-align:start;cursor:pointer;
+    font:inherit;color:inherit;transition:border-color var(--transition-micro),box-shadow var(--transition-micro)}
+  .deal:hover{border-color:var(--color-border-strong);box-shadow:var(--shadow-sm)}
+  .deal:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  .deal[aria-pressed="true"]{border-color:var(--color-action-primary);box-shadow:var(--shadow-sm)}
+  .deal .co{font-weight:600;font-size:var(--text-sm);overflow-wrap:anywhere}
+  .deal .val{display:flex;justify-content:space-between;gap:var(--space-2);font-size:var(--text-sm);
+    color:var(--color-text-secondary);font-variant-numeric:tabular-nums}
+  .deal .who{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);
+    color:var(--color-text-secondary)}
+  .av{display:grid;place-items:center;inline-size:1.25rem;block-size:1.25rem;border-radius:var(--radius-full);
+    background:var(--color-surface-brand);font-size:.5625rem;font-weight:700;flex:none}
+  .detail{display:grid;gap:var(--space-4)}
+  .kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-size:var(--text-sm)}
+  .kv dt{color:var(--color-text-secondary)}
+  .kv dd{margin:0;text-align:end;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .tl{display:grid;gap:var(--space-4);list-style:none;padding:0}
+  .tl li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3)}
+  .tl .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;flex:none;
+    border-radius:var(--radius-full);background:var(--color-surface-raised);color:var(--color-text-secondary)}
+  .tl .pip .ico{inline-size:.875rem;block-size:.875rem}
+  .tl p{font-size:var(--text-sm);overflow-wrap:anywhere}
+  .tl time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg></span>Cadence</span>
+    <nav class="menu" aria-label="Primary">
+      <a href="#main" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-dashboard"/></svg>Pipeline</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Contacts</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-file-text"/></svg>Quotes</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+    <div class="grow"></div>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <div><h1>Q3 pipeline</h1><p class="sub">18 open deals, 6 closing this month</p></div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" type="button">Import leads</button>
+      <button class="btn btn-primary" type="button">New deal</button>
+    </div>
+
+    <div class="page">
+      <section class="kpis">
+        <div class="panel">
+          <p class="eyebrow">Weighted forecast</p>
+          <p class="figure num">$1.94M</p>
+          <p class="note"><span class="up" style="font-weight:600">+11.4%</span> against the same point last quarter. Commit is $1.22M.</p>
+        </div>
+        <div class="panel"><p class="eyebrow">Win rate</p><p class="num" style="font-size:var(--text-2xl);font-weight:700">34%</p><p class="note">Last 90 days</p></div>
+        <div class="panel"><p class="eyebrow">Avg cycle</p><p class="num" style="font-size:var(--text-2xl);font-weight:700">46d</p><p class="note">Target 40d</p></div>
+        <div class="panel"><p class="eyebrow">Slipping</p><p class="num dn" style="font-size:var(--text-2xl);font-weight:700">5</p><p class="note">No activity in 14 days</p></div>
+      </section>
+
+      <section class="board" aria-label="Deal pipeline by stage">
+        <div class="col">
+          <header><h3>Qualifying</h3><span class="sum">$310k</span></header>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Northwind Logistics</span>
+            <span class="val"><span>$120,000</span><span>20%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">JM</span>Jordan M. · 3d</span></button>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Cedar Grove Dental</span>
+            <span class="val"><span>$54,000</span><span>20%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">AL</span>Ana L. · today</span></button>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Pike Manufacturing</span>
+            <span class="val"><span>$136,000</span><span>20%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">JM</span>Jordan M. · 8d</span></button>
+        </div>
+        <div class="col">
+          <header><h3>Proposal</h3><span class="sum">$688k</span></header>
+          <button class="deal" type="button" aria-pressed="true"><span class="co">Helios Biotech</span>
+            <span class="val"><span>$338,000</span><span>60%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">RK</span>Rae K. · 1d</span></button>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Two Rivers Retail</span>
+            <span class="val"><span>$156,000</span><span>60%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">AL</span>Ana L. · 5d</span></button>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Arcadia Studios</span>
+            <span class="val"><span>$194,000</span><span>60%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">RK</span>Rae K. · 2d</span></button>
+        </div>
+        <div class="col">
+          <header><h3>Negotiation</h3><span class="sum">$512k</span></header>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Kestrel Financial</span>
+            <span class="val"><span>$291,000</span><span>80%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">JM</span>Jordan M. · today</span></button>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Meridian Health Network</span>
+            <span class="val"><span>$221,000</span><span>80%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">RK</span>Rae K. · 11d</span></button>
+        </div>
+        <div class="col">
+          <header><h3>Closed won</h3><span class="sum">$430k</span></header>
+          <button class="deal" type="button" aria-pressed="false"><span class="co">Lumen Partners</span>
+            <span class="val"><span>$430,000</span><span>100%</span></span>
+            <span class="who"><span class="av" aria-hidden="true">AL</span>Ana L. · 14 Sep</span></button>
+        </div>
+      </section>
+
+      <section class="panel detail" aria-labelledby="deal">
+        <header><h2 id="deal">Helios Biotech</h2>
+          <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Renewal at risk</span></header>
+        <div class="kpis" style="grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr))">
+          <dl class="kv">
+            <dt>Value</dt><dd>$338,000</dd>
+            <dt>Stage</dt><dd>Proposal</dd>
+            <dt>Close date</dt><dd>28 Sep 2026</dd>
+            <dt>Owner</dt><dd>Rae Kimura</dd>
+            <dt>Source</dt><dd>Conference</dd>
+          </dl>
+          <div>
+            <p class="eyebrow">Health</p>
+            <p class="note" style="margin-block:var(--space-2)">Score 58 of 100. Logins fell 34% after the security review.</p>
+            <div class="track" role="img" aria-label="Deal health 58 out of 100"><i style="inline-size:58%;background:var(--color-feedback-warning)"></i></div>
+          </div>
+          <ul class="tl">
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-file-text"/></svg></span>
+              <div><p>Proposal v3 sent, pricing adjusted for a 24-month term.</p><time datetime="2026-09-13">Yesterday</time></div></li>
+            <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-users"/></svg></span>
+              <div><p>Security review call with their CISO and two engineers.</p><time datetime="2026-09-09">5 days ago</time></div></li>
+          </ul>
+        </div>
+        <div class="rule"></div>
+        <div style="display:flex;gap:var(--space-3);flex-wrap:wrap">
+          <button class="btn btn-primary" type="button">Log activity</button>
+          <button class="btn btn-secondary" type="button">Send quote</button>
+          <button class="btn btn-danger" type="button">Mark lost</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="credit">
+      <span>CRM template. Companies and figures are fictional.</span>
+      <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+    </div>
+  </main>
+</div>
+<script src="../component-states/icons.js"></script>
+<script>
+  /* selecting a deal really moves the selection */
+  const deals = [...document.querySelectorAll('.deal')];
+  deals.forEach((d) => d.addEventListener('click', () => {
+    deals.forEach(o => o.setAttribute('aria-pressed', String(o === d)));
+    document.getElementById('deal').textContent = d.querySelector('.co').textContent;
+  }));
+</script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Edit - Harbour Cut</title>
+<meta name="description" content="Video editor template: a multitrack timeline, an audio waveform, a keyframe curve editor and a render queue." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../directions.css" />
+<link rel="stylesheet" href="./_console.css" />
+<style>
+  .stage{aspect-ratio:16/9;border-radius:var(--radius-sm);background:var(--lin-canvas);
+    border:1px solid var(--lin-hairline);display:grid;place-items:center;position:relative;overflow:hidden}
+  .stage .frame{position:absolute;inset:0;
+    background:radial-gradient(120% 90% at 30% 20%,var(--lin-glow-b),transparent 60%),
+      linear-gradient(200deg,var(--lin-raised),var(--lin-canvas))}
+  .stage .tcbig{position:relative;font-family:var(--font-mono);font-size:var(--text-4xl);
+    color:var(--lin-ink);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+  .keys{display:flex;gap:var(--space-2);flex-wrap:wrap}
+  .key{display:grid;place-items:center;min-inline-size:2.75rem;min-block-size:2.75rem;border-radius:var(--radius-sm);
+    border:1px solid var(--lin-hairline);background:var(--lin-raised);color:var(--lin-ink);cursor:pointer;
+    position:relative;font-family:var(--font-mono);font-size:var(--text-xs)}
+  .key:hover{background:var(--lin-raised-2)}
+  .key:focus-visible{outline:var(--ring-w) solid var(--lin-accent);outline-offset:var(--space-1)}
+  .key[aria-pressed="true"]{background:var(--lin-accent-bg)}
+
+  .tl{display:grid;gap:var(--space-2);position:relative}
+  .lane{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:var(--space-3);align-items:center;
+    min-inline-size:0}
+  .lane .nm{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .strip{position:relative;block-size:2.5rem;border-radius:var(--radius-sm);background:var(--lin-raised);
+    min-inline-size:0;overflow:hidden}
+  .strip.audio{block-size:2rem}
+  .clip{position:absolute;inset-block:3px;inset-inline-start:var(--l);inline-size:var(--w);
+    border-radius:var(--radius-sm);display:grid;align-items:center;padding-inline:var(--space-2);overflow:hidden}
+  .clip .cn{font-size:.625rem;font-family:var(--font-mono);white-space:nowrap;overflow:hidden;
+    text-overflow:ellipsis;color:var(--lin-canvas);font-weight:700;letter-spacing:.04em}
+  .k1{background:var(--color-chart-1)} .k2{background:var(--color-chart-2)} .k3{background:var(--color-chart-3)}
+  .k4{background:var(--color-chart-4)} .k5{background:var(--color-chart-6)}
+  .wave{position:absolute;inset:0}
+  .wave rect{fill:var(--trm-accent);opacity:.5}
+  .play{position:absolute;inset-block:0;inset-inline-start:41%;inline-size:2px;background:var(--color-text-error)} /* ds-allow-hardcode: a playhead is a hairline */
+  .ticks{display:flex;justify-content:space-between;gap:var(--space-2);flex-wrap:wrap;
+    font-family:var(--font-mono);font-size:.625rem;color:var(--lin-ink-3);margin-inline-start:5.5rem}
+  @media (max-width:46rem){.lane{grid-template-columns:minmax(0,1fr);gap:var(--space-1)}
+    .ticks{margin-inline-start:0}}
+
+  .curve{background:var(--lin-canvas);border-radius:var(--radius-sm)}
+  .curve path{fill:none;stroke:var(--lin-accent);stroke-width:2}
+  .curve circle{fill:var(--lin-ink)}
+  .curve line{stroke:var(--lin-hairline-soft)}
+</style>
+</head>
+<body>
+
+<div class="top">
+  <div><h1>Harbour Cut</h1><p class="sub">EDIT 07 · 3840x2160 · 23.976 FPS · REC.709</p></div>
+  <div class="keys">
+    <button class="key" type="button" aria-label="Go to start">|&lt;</button>
+    <button class="key" type="button" aria-pressed="true">PLAY</button>
+    <button class="key" type="button" aria-pressed="false">LOOP</button>
+    <button class="key" type="button" aria-pressed="false">SNAP</button>
+  </div>
+  <span class="clock num">00:01:12:07</span>
+</div>
+
+<div class="grid">
+  <section class="panel s8">
+    <header><h2>Program</h2><span class="note">timeline 00:00 to 01:24</span></header>
+    <div class="stage"><span class="frame" aria-hidden="true"></span>
+      <span class="tcbig">00:01:12:07</span></div>
+  </section>
+
+  <section class="panel s4">
+    <header><h2>Clip</h2><span class="note">Interview B</span></header>
+    <dl class="kv">
+      <dt>Source</dt><dd>A003_C017.mov</dd>
+      <dt>In</dt><dd>00:41:08:12</dd>
+      <dt>Out</dt><dd>00:41:26:04</dd>
+      <dt>Speed</dt><dd>100%</dd>
+      <dt>LUT</dt><dd>Harbour_Warm_02</dd>
+      <dt>Exposure</dt><dd>+0.3 stop</dd>
+      <dt>Audio</dt><dd>-6.0 dB, ducked</dd>
+    </dl>
+    <div class="rule"></div>
+    <p class="note">Ripple edits are on. Trimming this clip moves everything after it.</p>
+  </section>
+
+  <section class="panel s12">
+    <header><h2>Timeline</h2><span class="note">5 video clips, 3 audio, ripple on</span></header>
+    <p class="ticks"><span>00:00</span><span>00:20</span><span>00:40</span><span>01:00</span><span>01:20</span></p>
+    <div class="tl">
+      <div class="lane"><span class="nm">V1</span><span class="strip"><span class="clip k1" style="--l:0.00%;--w:16.67%"><span class="cn">Cold open</span></span><span class="clip k2" style="--l:19.05%;--w:26.19%"><span class="cn">Interview A</span></span><span class="clip k3" style="--l:47.62%;--w:14.29%"><span class="cn">B-roll city</span></span><span class="clip k4" style="--l:64.29%;--w:21.43%"><span class="cn">Interview B</span></span><span class="clip k5" style="--l:88.10%;--w:11.90%"><span class="cn">Outro</span></span></span></div>
+      <div class="lane"><span class="nm">A1 dialogue</span><span class="strip audio">
+        <svg class="wave" viewBox="0 0 300 28" preserveAspectRatio="none" role="img" aria-label="Dialogue waveform, level rising through the interview"><rect x="0.0" y="10.5" width="1.6" height="6.9" rx="0.8"/><rect x="2.5" y="10.6" width="1.6" height="6.9" rx="0.8"/><rect x="5.0" y="10.4" width="1.6" height="7.2" rx="0.8"/><rect x="7.5" y="7.0" width="1.6" height="14.0" rx="0.8"/><rect x="10.0" y="8.2" width="1.6" height="11.5" rx="0.8"/><rect x="12.5" y="5.4" width="1.6" height="17.3" rx="0.8"/><rect x="15.0" y="7.2" width="1.6" height="13.6" rx="0.8"/><rect x="17.5" y="6.8" width="1.6" height="14.4" rx="0.8"/><rect x="20.0" y="4.4" width="1.6" height="19.3" rx="0.8"/><rect x="22.5" y="5.2" width="1.6" height="17.7" rx="0.8"/><rect x="25.0" y="4.2" width="1.6" height="19.7" rx="0.8"/><rect x="27.5" y="5.1" width="1.6" height="17.9" rx="0.8"/><rect x="30.0" y="5.9" width="1.6" height="16.3" rx="0.8"/><rect x="32.5" y="3.6" width="1.6" height="20.7" rx="0.8"/><rect x="35.0" y="4.2" width="1.6" height="19.5" rx="0.8"/><rect x="37.5" y="4.8" width="1.6" height="18.4" rx="0.8"/><rect x="40.0" y="7.4" width="1.6" height="13.2" rx="0.8"/><rect x="42.5" y="7.9" width="1.6" height="12.2" rx="0.8"/><rect x="45.0" y="8.7" width="1.6" height="10.7" rx="0.8"/><rect x="47.5" y="7.0" width="1.6" height="14.1" rx="0.8"/><rect x="50.0" y="9.4" width="1.6" height="9.2" rx="0.8"/><rect x="52.5" y="9.7" width="1.6" height="8.5" rx="0.8"/><rect x="55.0" y="10.5" width="1.6" height="7.0" rx="0.8"/><rect x="57.5" y="10.6" width="1.6" height="6.8" rx="0.8"/><rect x="60.0" y="10.2" width="1.6" height="7.5" rx="0.8"/><rect x="62.5" y="8.2" width="1.6" height="11.5" rx="0.8"/><rect x="65.0" y="7.1" width="1.6" height="13.7" rx="0.8"/><rect x="67.5" y="7.2" width="1.6" height="13.6" rx="0.8"/><rect x="70.0" y="6.0" width="1.6" height="16.0" rx="0.8"/><rect x="72.5" y="3.7" width="1.6" height="20.6" rx="0.8"/><rect x="75.0" y="2.8" width="1.6" height="22.4" rx="0.8"/><rect x="77.5" y="2.4" width="1.6" height="23.2" rx="0.8"/><rect x="80.0" y="6.1" width="1.6" height="15.8" rx="0.8"/><rect x="82.5" y="2.0" width="1.6" height="24.0" rx="0.8"/><rect x="85.0" y="5.8" width="1.6" height="16.4" rx="0.8"/><rect x="87.5" y="5.3" width="1.6" height="17.4" rx="0.8"/><rect x="90.0" y="5.7" width="1.6" height="16.7" rx="0.8"/><rect x="92.5" y="7.3" width="1.6" height="13.4" rx="0.8"/><rect x="95.0" y="8.0" width="1.6" height="12.0" rx="0.8"/><rect x="97.5" y="6.5" width="1.6" height="15.0" rx="0.8"/><rect x="100.0" y="8.4" width="1.6" height="11.2" rx="0.8"/><rect x="102.5" y="7.8" width="1.6" height="12.3" rx="0.8"/><rect x="105.0" y="8.5" width="1.6" height="10.9" rx="0.8"/><rect x="107.5" y="9.3" width="1.6" height="9.3" rx="0.8"/><rect x="110.0" y="10.8" width="1.6" height="6.4" rx="0.8"/><rect x="112.5" y="9.3" width="1.6" height="9.5" rx="0.8"/><rect x="115.0" y="8.5" width="1.6" height="10.9" rx="0.8"/><rect x="117.5" y="8.9" width="1.6" height="10.1" rx="0.8"/><rect x="120.0" y="8.1" width="1.6" height="11.7" rx="0.8"/><rect x="122.5" y="6.3" width="1.6" height="15.4" rx="0.8"/><rect x="125.0" y="4.8" width="1.6" height="18.4" rx="0.8"/><rect x="127.5" y="4.9" width="1.6" height="18.2" rx="0.8"/><rect x="130.0" y="3.8" width="1.6" height="20.3" rx="0.8"/><rect x="132.5" y="6.6" width="1.6" height="14.9" rx="0.8"/><rect x="135.0" y="6.3" width="1.6" height="15.5" rx="0.8"/><rect x="137.5" y="2.8" width="1.6" height="22.5" rx="0.8"/><rect x="140.0" y="5.9" width="1.6" height="16.2" rx="0.8"/><rect x="142.5" y="3.2" width="1.6" height="21.7" rx="0.8"/><rect x="145.0" y="7.1" width="1.6" height="13.8" rx="0.8"/><rect x="147.5" y="6.8" width="1.6" height="14.4" rx="0.8"/><rect x="150.0" y="5.1" width="1.6" height="17.8" rx="0.8"/><rect x="152.5" y="7.6" width="1.6" height="12.8" rx="0.8"/><rect x="155.0" y="6.0" width="1.6" height="15.9" rx="0.8"/><rect x="157.5" y="8.6" width="1.6" height="10.9" rx="0.8"/><rect x="160.0" y="10.4" width="1.6" height="7.3" rx="0.8"/><rect x="162.5" y="10.0" width="1.6" height="7.9" rx="0.8"/><rect x="165.0" y="10.9" width="1.6" height="6.2" rx="0.8"/><rect x="167.5" y="10.0" width="1.6" height="8.0" rx="0.8"/><rect x="170.0" y="10.4" width="1.6" height="7.3" rx="0.8"/><rect x="172.5" y="7.0" width="1.6" height="13.9" rx="0.8"/><rect x="175.0" y="6.7" width="1.6" height="14.7" rx="0.8"/><rect x="177.5" y="5.0" width="1.6" height="18.1" rx="0.8"/><rect x="180.0" y="4.1" width="1.6" height="19.8" rx="0.8"/><rect x="182.5" y="6.4" width="1.6" height="15.2" rx="0.8"/><rect x="185.0" y="5.3" width="1.6" height="17.3" rx="0.8"/><rect x="187.5" y="4.6" width="1.6" height="18.8" rx="0.8"/><rect x="190.0" y="4.3" width="1.6" height="19.5" rx="0.8"/><rect x="192.5" y="5.4" width="1.6" height="17.2" rx="0.8"/><rect x="195.0" y="2.6" width="1.6" height="22.9" rx="0.8"/><rect x="197.5" y="6.3" width="1.6" height="15.4" rx="0.8"/><rect x="200.0" y="4.2" width="1.6" height="19.7" rx="0.8"/><rect x="202.5" y="6.3" width="1.6" height="15.4" rx="0.8"/><rect x="205.0" y="5.0" width="1.6" height="17.9" rx="0.8"/><rect x="207.5" y="6.3" width="1.6" height="15.3" rx="0.8"/><rect x="210.0" y="7.9" width="1.6" height="12.2" rx="0.8"/><rect x="212.5" y="8.3" width="1.6" height="11.5" rx="0.8"/><rect x="215.0" y="10.2" width="1.6" height="7.6" rx="0.8"/><rect x="217.5" y="9.5" width="1.6" height="9.1" rx="0.8"/><rect x="220.0" y="11.1" width="1.6" height="5.8" rx="0.8"/><rect x="222.5" y="10.7" width="1.6" height="6.5" rx="0.8"/><rect x="225.0" y="10.2" width="1.6" height="7.6" rx="0.8"/><rect x="227.5" y="7.0" width="1.6" height="14.1" rx="0.8"/><rect x="230.0" y="8.0" width="1.6" height="12.0" rx="0.8"/><rect x="232.5" y="6.4" width="1.6" height="15.2" rx="0.8"/><rect x="235.0" y="4.9" width="1.6" height="18.2" rx="0.8"/><rect x="237.5" y="4.2" width="1.6" height="19.6" rx="0.8"/><rect x="240.0" y="3.9" width="1.6" height="20.3" rx="0.8"/><rect x="242.5" y="6.1" width="1.6" height="15.7" rx="0.8"/><rect x="245.0" y="5.4" width="1.6" height="17.2" rx="0.8"/><rect x="247.5" y="6.4" width="1.6" height="15.1" rx="0.8"/><rect x="250.0" y="4.8" width="1.6" height="18.4" rx="0.8"/><rect x="252.5" y="5.1" width="1.6" height="17.8" rx="0.8"/><rect x="255.0" y="3.1" width="1.6" height="21.9" rx="0.8"/><rect x="257.5" y="4.6" width="1.6" height="18.9" rx="0.8"/><rect x="260.0" y="4.9" width="1.6" height="18.1" rx="0.8"/><rect x="262.5" y="5.9" width="1.6" height="16.1" rx="0.8"/><rect x="265.0" y="6.9" width="1.6" height="14.2" rx="0.8"/><rect x="267.5" y="9.0" width="1.6" height="10.0" rx="0.8"/><rect x="270.0" y="10.1" width="1.6" height="7.7" rx="0.8"/><rect x="272.5" y="10.4" width="1.6" height="7.2" rx="0.8"/><rect x="275.0" y="11.5" width="1.6" height="4.9" rx="0.8"/><rect x="277.5" y="9.9" width="1.6" height="8.2" rx="0.8"/><rect x="280.0" y="9.7" width="1.6" height="8.6" rx="0.8"/><rect x="282.5" y="7.3" width="1.6" height="13.3" rx="0.8"/><rect x="285.0" y="8.4" width="1.6" height="11.1" rx="0.8"/><rect x="287.5" y="7.0" width="1.6" height="13.9" rx="0.8"/><rect x="290.0" y="6.9" width="1.6" height="14.2" rx="0.8"/><rect x="292.5" y="6.7" width="1.6" height="14.5" rx="0.8"/><rect x="295.0" y="5.6" width="1.6" height="16.8" rx="0.8"/><rect x="297.5" y="4.2" width="1.6" height="19.7" rx="0.8"/></svg>
+        <span class="clip k3" style="--l:0.00%;--w:100.00%"><span class="cn">Room tone</span></span><span class="clip k4" style="--l:11.90%;--w:73.81%"><span class="cn">Music bed</span></span><span class="clip k5" style="--l:21.43%;--w:47.62%"><span class="cn">VO</span></span></span></div>
+      <span class="play" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <section class="panel s6">
+    <header><h2>Keyframes</h2><span class="note">opacity, bezier</span></header>
+    <svg class="plot curve" viewBox="0 0 300 100" role="img" aria-label="Opacity keyframe curve with five control points, dipping at the third cut">
+      <line x1="0" y1="50" x2="300" y2="50"/>
+      <line x1="0" y1="25" x2="300" y2="25"/>
+      <line x1="0" y1="75" x2="300" y2="75"/>
+      <path d="M 0,80 C 30,80 30,26 60,26 C 100,26 100,58 140,58 C 180,58 180,14 220,14 C 260,14 260,44 300,44"/>
+      <circle cx="0" cy="80" r="4"/><circle cx="60" cy="26" r="4"/><circle cx="140" cy="58" r="4"/><circle cx="220" cy="14" r="4"/><circle cx="300" cy="44" r="4"/>
+    </svg>
+    <dl class="kv">
+      <dt>Selected</dt><dd>Key 3 · 00:00:48:02</dd>
+      <dt>Value</dt><dd>0.58</dd>
+      <dt>Interp</dt><dd>Ease in and out</dd>
+    </dl>
+  </section>
+
+  <section class="panel s6">
+    <header><h2>Render queue</h2><span class="note">2 running</span></header>
+    <div class="tblwrap">
+      <table>
+        <caption class="sr-only">Render jobs with format and progress</caption>
+        <thead><tr><th scope="col">Job</th><th scope="col">Format</th><th scope="col" class="end">Progress</th><th scope="col">State</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Master 4K</th><td>ProRes 422 HQ</td><td class="end num">62%</td>
+            <td><span class="badge b-info"><span class="dot" aria-hidden="true"></span>Rendering</span></td></tr>
+          <tr><th scope="row">Review H.264</th><td>1080p, 12 Mbps</td><td class="end num">91%</td>
+            <td><span class="badge b-info"><span class="dot" aria-hidden="true"></span>Rendering</span></td></tr>
+          <tr><th scope="row">Social 9:16</th><td>1080x1920</td><td class="end num">0%</td>
+            <td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Queued</span></td></tr>
+          <tr><th scope="row">Audio stems</th><td>WAV 48 kHz</td><td class="end num">100%</td>
+            <td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>Done</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <span>Video editor template. Footage, timecode and render jobs are simulated.</span>
+  <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+</footer>
+<script src="../component-states/icons.js"></script>
+<script>
+  document.querySelectorAll('[aria-pressed]').forEach((b) => b.addEventListener('click', () => {
+    b.setAttribute('aria-pressed', b.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+  }));
+</script>
+</body>
+</html>

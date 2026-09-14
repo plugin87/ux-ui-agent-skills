@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shipment control - Vantage Freight</title>
+<meta name="description" content="Logistics template: shipment timeline, exception queue, fleet utilisation and a sortable consignment table." />
+<link rel="stylesheet" href="../brandkit-demo/theme.css" />
+<link rel="stylesheet" href="./shell.css" />
+<style>
+  .topbar h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.03em}
+  @media (max-width:40rem){.topbar h1{font-size:var(--text-2xl)}}
+  .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (max-width:64rem){.grid{grid-template-columns:minmax(0,1fr)}}
+  .route{display:grid;gap:var(--space-4)}
+  .leg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--space-4);align-items:start}
+  .leg .mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);color:var(--color-text-secondary);flex:none}
+  .leg.done .mark{background:var(--color-feedback-success);color:var(--color-text-on-action)}
+  .leg.now .mark{background:var(--color-action-primary);color:var(--color-text-on-action)}
+  .leg .mark .ico{inline-size:1rem;block-size:1rem}
+  .leg h3{font-size:var(--text-base);font-weight:600}
+  .leg .where{font-size:var(--text-sm);color:var(--color-text-secondary);overflow-wrap:anywhere}
+  .leg .when{font-size:var(--text-sm);font-variant-numeric:tabular-nums;white-space:nowrap;
+    color:var(--color-text-secondary)}
+  .leg + .leg{border-block-start:1px solid var(--color-border-default);padding-block-start:var(--space-4)}
+  .fleet{display:grid;gap:var(--space-3)}
+  .fleet .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);font-size:var(--text-sm)}
+  .fleet .bar{grid-column:1 / -1}
+  .exc li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3);padding-block:var(--space-3);
+    border-block-start:1px solid var(--color-border-default)}
+  .exc{list-style:none;padding:0;margin:0}
+  .exc li:first-child{border-block-start:0}
+  .exc .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);
+    background:var(--color-surface-raised);color:var(--color-text-error);flex:none}
+  .exc .pip .ico{inline-size:.875rem;block-size:.875rem}
+  .exc p{font-size:var(--text-sm);overflow-wrap:anywhere}
+  .exc time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+  th button{display:inline-flex;align-items:center;gap:var(--space-1);min-block-size:2rem;padding-inline:var(--space-2);
+    margin-inline-start:calc(var(--space-2) * -1);border:0;border-radius:var(--radius-sm);background:transparent;
+    color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer}
+  th button:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
+  th button:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  th button .ico{inline-size:.875rem;block-size:.875rem;opacity:.5}
+</style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <span class="brand"><span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><path d="M3 16V7h11v9"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg></span>Vantage</span>
+    <nav class="menu" aria-label="Primary">
+      <a href="#main" aria-current="page"><svg class="ico" aria-hidden="true"><use href="#i-dashboard"/></svg>Control</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-archive"/></svg>Consignments</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-users"/></svg>Carriers</a>
+      <a href="#main"><svg class="ico" aria-hidden="true"><use href="#i-settings"/></svg>Settings</a>
+    </nav>
+    <div class="grow"></div>
+  </aside>
+
+  <main id="main">
+    <div class="topbar">
+      <div><h1>Shipment control</h1><p class="sub">412 active consignments · 6 exceptions</p></div>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" type="button">Export manifest</button>
+      <button class="btn btn-primary" type="button">Book shipment</button>
+    </div>
+
+    <div class="page">
+      <section class="grid">
+        <div class="panel">
+          <header><h2>VF-884120 · Rotterdam to Chicago</h2>
+            <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Delayed 6h</span></header>
+          <p class="note">40ft reefer, 21.4t, temperature held at -18C. Customer: Helios Biotech.</p>
+          <div class="route">
+            <div class="leg done"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span>
+              <div><h3>Collected, Rotterdam DC</h3><p class="where">Seal 448201 applied, temperature logger started</p></div>
+              <span class="when">09 Sep 14:20</span></div>
+            <div class="leg done"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-check"/></svg></span>
+              <div><h3>Departed port</h3><p class="where">MV Northern Star, voyage NS-441</p></div>
+              <span class="when">10 Sep 03:05</span></div>
+            <div class="leg now"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-chevron-right"/></svg></span>
+              <div><h3>In transit, Atlantic</h3><p class="where">Position 46.2N 32.8W. Weather routing added 6 hours.</p></div>
+              <span class="when">Now</span></div>
+            <div class="leg"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-minus"/></svg></span>
+              <div><h3>Customs clearance, Newark</h3><p class="where">Documents pre-filed, broker Kessler &amp; Co</p></div>
+              <span class="when">Est 19 Sep</span></div>
+            <div class="leg"><span class="mark" aria-hidden="true"><svg class="ico"><use href="#i-minus"/></svg></span>
+              <div><h3>Final delivery, Chicago</h3><p class="where">Appointment window 08:00 to 12:00</p></div>
+              <span class="when">Est 22 Sep</span></div>
+          </div>
+        </div>
+
+        <div style="display:grid;gap:var(--space-5)">
+          <section class="panel" aria-labelledby="exc">
+            <header><h2 id="exc">Exceptions</h2><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>6 open</span></header>
+            <ul class="exc">
+              <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-triangle"/></svg></span>
+                <div><p><strong>VF-884120</strong> weather routing, 6 hour delay. Customer notified.</p><time datetime="2026-09-14T05:10">2 hours ago</time></div></li>
+              <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-circle"/></svg></span>
+                <div><p><strong>VF-883907</strong> temperature excursion to -14C for 22 minutes.</p><time datetime="2026-09-13T21:40">Yesterday</time></div></li>
+              <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-file-text"/></svg></span>
+                <div><p><strong>VF-884002</strong> missing certificate of origin, clearance on hold.</p><time datetime="2026-09-13T11:15">Yesterday</time></div></li>
+            </ul>
+          </section>
+
+          <section class="panel" aria-labelledby="fl">
+            <header><h2 id="fl">Fleet utilisation</h2><span class="note">This week</span></header>
+            <div class="fleet">
+              <div class="row"><span>Reefer 40ft</span><span class="num">92%</span></div>
+              <div class="bar track"><i style="inline-size:92%"></i></div>
+              <div class="row"><span>Dry 40ft</span><span class="num">74%</span></div>
+              <div class="bar track"><i style="inline-size:74%;background:var(--color-chart-2)"></i></div>
+              <div class="row"><span>Flatbed</span><span class="num">41%</span></div>
+              <div class="bar track"><i style="inline-size:41%;background:var(--color-chart-3)"></i></div>
+            </div>
+            <p class="note">Reefer capacity is the constraint. Two units come off maintenance on Thursday.</p>
+          </section>
+        </div>
+      </section>
+
+      <section class="tablewrap">
+        <table id="cons">
+          <caption>Consignments at risk<span class="note" style="display:block;font-weight:400">Click a heading to sort. Sorting runs on the rendered rows.</span></caption>
+          <thead><tr>
+            <th scope="col" aria-sort="none"><button type="button" data-col="0" data-type="text">Reference<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+            <th scope="col">Lane</th>
+            <th scope="col" aria-sort="none"><button type="button" data-col="2" data-type="num">Weight<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+            <th scope="col" aria-sort="none"><button type="button" data-col="3" data-type="date">ETA<svg class="ico" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></th>
+            <th scope="col">Status</th>
+          </tr></thead>
+          <tbody>
+            <tr><th scope="row">VF-884120</th><td>Rotterdam to Chicago</td><td class="num" data-v="21400">21.4 t</td><td class="num" data-v="2026-09-22">22 Sep</td><td><span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Delayed</span></td></tr>
+            <tr><th scope="row">VF-883907</th><td>Valencia to Felixstowe</td><td class="num" data-v="18100">18.1 t</td><td class="num" data-v="2026-09-17">17 Sep</td><td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Excursion</span></td></tr>
+            <tr><th scope="row">VF-884002</th><td>Shenzhen to Hamburg</td><td class="num" data-v="26800">26.8 t</td><td class="num" data-v="2026-10-04">4 Oct</td><td><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>Held</span></td></tr>
+            <tr><th scope="row">VF-884311</th><td>Gdansk to Lyon</td><td class="num" data-v="9400">9.4 t</td><td class="num" data-v="2026-09-16">16 Sep</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>On time</span></td></tr>
+            <tr><th scope="row">VF-884450</th><td>Santos to Antwerp</td><td class="num" data-v="31200">31.2 t</td><td class="num" data-v="2026-09-29">29 Sep</td><td><span class="badge b-ok"><span class="dot" aria-hidden="true"></span>On time</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="credit">
+      <span>Logistics template. Vessels, lanes and references are fictional.</span>
+      <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat. <a href="../index.html">All examples</a></span>
+    </div>
+  </main>
+</div>
+<script src="../component-states/icons.js"></script>
+<script>
+  const table = document.getElementById('cons');
+  const tbody = table.tBodies[0];
+  table.querySelectorAll('th button').forEach((b) => b.addEventListener('click', () => {
+    const th = b.closest('th'), col = Number(b.dataset.col);
+    const dir = th.getAttribute('aria-sort') === 'ascending' ? 'descending' : 'ascending';
+    table.querySelectorAll('th').forEach(h => h.hasAttribute('aria-sort') && h.setAttribute('aria-sort', 'none'));
+    th.setAttribute('aria-sort', dir);
+    [...tbody.rows].sort((x, y) => {
+      const a = x.cells[col].dataset.v ?? x.cells[col].textContent.trim();
+      const c = y.cells[col].dataset.v ?? y.cells[col].textContent.trim();
+      const cmp = b.dataset.type === 'num' ? Number(a) - Number(c) : String(a).localeCompare(String(c));
+      return dir === 'ascending' ? cmp : -cmp;
+    }).forEach(r => tbody.appendChild(r));
+  }));
+</script>
+</body>
+</html>
