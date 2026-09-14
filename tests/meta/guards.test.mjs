@@ -47,6 +47,31 @@ test('a missing browser fails loudly under DS_REQUIRE_BROWSER, and only skips wi
   }
 });
 
+test('the instruction surface tells the agent that SKIPPED is not a pass', () => {
+  /* The skip is a deliberate contract (see the test above): a render gate run
+     without a browser prints SKIPPED and exits 0 so local use is not blocked.
+     That is fine for a human reading the line and wrong for an agent reading
+     the exit code — and the skills name these gates individually rather than
+     going through accuracy_report, which sets the flag itself. So the rule has
+     to be written down in both instruction surfaces, or the escape valve is
+     invisible to the only reader who can be fooled by it. */
+  for (const f of ['CLAUDE.md', join('.claude', 'skills', 'design-doctrine', 'SKILL.md')]) {
+    const src = readFileSync(join(ROOT, f), 'utf8');
+    assert.match(src, /DS_REQUIRE_BROWSER/,
+      `${f} never tells the agent how to make a render gate strict`);
+    assert.match(src, /SKIPPED/,
+      `${f} never warns that a skipped gate is not a pass`);
+  }
+});
+
+test('the README says a browser is needed, since no install path provides one', () => {
+  // playwright is a devDependency and neither /plugin install nor `npx ... init`
+  // runs npm install, so the browser step only exists if the README states it.
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+  assert.match(readme, /npx playwright install chrome/,
+    'the README does not tell a user how to install the browser 30 gates need');
+});
+
 test('validate_theme_refs needs TWO paths — one silently scans examples/golden instead', () => {
   // The trap: `validate_theme_refs.py <dir>` ignores the argument and validates
   // the repo's own golden example, so a broken fixture reports OK.

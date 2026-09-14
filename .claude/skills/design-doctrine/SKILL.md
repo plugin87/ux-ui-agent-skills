@@ -27,6 +27,11 @@ then load the rule file for the territory you are actually in.
    no horizontal overflow at 280/320/414px.
 7. **Honest scope.** The gates prove objective correctness. They never prove taste.
    For that, run `/critique` and look at the work yourself.
+8. **SKIPPED is not a pass.** Render gates stay skippable by design: with no
+   Playwright installed they print `SKIPPED`, exit 0 and report nothing. Prefix
+   them with `DS_REQUIRE_BROWSER=1` so a missing browser says
+   `REQUIRED, FAILING`, then fix it with `npm install && npx playwright install
+   chrome` rather than dropping the flag.
 
 > ABSOLUTE: zero emoji in any output - UI, code, JSON, copy, comments, commit
 > messages. Not as an icon, a bullet, a status dot, or "polish". Emoji are the

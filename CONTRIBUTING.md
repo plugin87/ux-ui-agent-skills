@@ -20,7 +20,7 @@ the output anyway - a disputed gate is a conversation, a skipped gate is not.
 ```bash
 git clone https://github.com/plugin87/ux-ui-agent-skills.git
 cd ux-ui-agent-skills
-npm install                 # playwright (dev only)
+npm install                 # playwright — needed by 30 of the 40 gates, not dev-only
 npx playwright install chrome
 npm test                    # browser-free gates
 npm run test:unit           # unit + CLI + registry consistency

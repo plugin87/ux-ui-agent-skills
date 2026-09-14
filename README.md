@@ -285,6 +285,20 @@ The kit ships **40 objective gates** behind one command:
 node scripts/accuracy_report.mjs     # 40/40 or it fails — no partial credit
 ```
 
+**30 of them open a real browser, so they need one installed.** Playwright is not
+pulled in by `/plugin install` or `npx ux-ui-agent-skills init`, so run this once
+in the kit directory before expecting a full score:
+
+```bash
+npm install                          # playwright
+npx playwright install chrome        # real Chrome: six gates require the channel
+```
+
+Without it those 30 report `REQUIRED, FAILING` under `accuracy_report.mjs`, which
+is the honest answer. Run individually they print `SKIPPED` and **exit 0** — so
+prefix any single render gate with `DS_REQUIRE_BROWSER=1` if you are reading its
+exit code, rather than reading silence as green.
+
 Token validity, WCAG contrast on a real headless render in light *and* dark, every
 element in default/hover/focus, axe roles and names, focus traps, RTL, responsive
 at 280/320/414, target size, keyboard operability, reduced motion (including
