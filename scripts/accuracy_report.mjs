@@ -63,6 +63,8 @@ const checks = [
    'node scripts/verify_keyboard.mjs examples/component-states'],
   ['Token by intent — destructive never wears action.primary, affirmative never wears danger (light + dark)',
    'node scripts/lint_intent.mjs examples/component-states && node scripts/lint_intent.mjs --dark examples/component-states'],
+  ['Token by intent, source side — every destructive control in framework source declares destructive intent',
+   'node scripts/lint_intent_source.mjs examples'],
   ['Content overflow — no silently clipped text, no overlapping controls, incl. the hostile-content harness',
    'node scripts/verify_overflow.mjs examples/component-states'],
   ['Responsive under wider font metrics — every example holds at 280px with a 1.25x root font',

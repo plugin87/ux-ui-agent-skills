@@ -30,7 +30,7 @@ const evals = countEntries(read('evals', 'run.mjs'), 'const GATES = [');
 test('the accuracy report still runs the full check list', () => {
   // Not a magic number to bump casually: dropping a check silently shrinks what
   // "100%" means. Adding one is fine — update this line in the same commit.
-  assert.equal(accuracy, 40, `accuracy_report.mjs now has ${accuracy} checks`);
+  assert.equal(accuracy, 41, `accuracy_report.mjs now has ${accuracy} checks`);
 });
 
 test('the eval scorer still runs the full gate list', () => {
@@ -64,6 +64,17 @@ test('every count claimed in prose matches the array it describes', () => {
   for (const line of readme.split('\n').filter(l => l.includes('evals/run.mjs'))) {
     const n = line.match(/(\d+) objective gates/);
     if (n) assert.equal(Number(n[1]), evals, `README line disagrees with evals/run.mjs: ${line.trim()}`);
+  }
+
+  // Two more retypings of the same number that nothing was holding: the README's
+  // prose summary and CONTRIBUTING's one-line bar. Both had drifted to 38 while
+  // the array held 40 - the exact failure this file was written to stop, one
+  // section further down the page than its regexes reached.
+  for (const [file, src] of [['README.md', readme], ['CONTRIBUTING.md', read('CONTRIBUTING.md')]]) {
+    for (const m of src.matchAll(/accuracy_report\.mjs`?\s*(?:#\s*)?\(?(\d+)\/(\d+)/g)) {
+      assert.equal(Number(m[1]), accuracy, `${file} claims ${m[1]}/${m[2]} but accuracy_report.mjs has ${accuracy}`);
+      assert.equal(Number(m[2]), accuracy, `${file} claims ${m[1]}/${m[2]}, which disagrees with itself`);
+    }
   }
 });
 

@@ -19,6 +19,7 @@
     "a11y:keyboard": "node scripts/verify_keyboard.mjs",
     "a11y:reduced-motion": "node scripts/verify_reduced_motion.mjs",
     "lint:intent": "node scripts/lint_intent.mjs",
+    "lint:intent-source": "node scripts/lint_intent_source.mjs",
     "validate:template": "python3 scripts/validate_template.py",
     "validate:surface": "python3 scripts/validate_instruction_surface.py",
     "eval": "node evals/run.mjs",

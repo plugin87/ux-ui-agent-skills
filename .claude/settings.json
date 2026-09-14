@@ -17,6 +17,7 @@
       "Bash(node scripts/verify_overflow.mjs:*)",
       "Bash(node scripts/verify_interactive.mjs:*)",
       "Bash(node scripts/lint_intent.mjs:*)",
+      "Bash(node scripts/lint_intent_source.mjs:*)",
       "Bash(node scripts/build_tokens.mjs:*)",
       "Bash(python3 scripts/validate_tokens.py:*)",
       "Bash(python3 scripts/validate_contrast.py:*)",

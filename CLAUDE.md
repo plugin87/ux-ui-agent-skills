@@ -88,7 +88,10 @@ token that resolves. Destructive actions (Delete, Remove, Revoke) use
 appear, trigger and confirm dialog alike. Primary is the one main affirmative
 action; secondary is neutral (transparent or outline, dark text, never a coloured
 fill); danger is destructive. One action role, one variant, product-wide. A blue
-Delete is a bug. Measured by `scripts/lint_intent.mjs`.
+Delete is a bug. Measured by `scripts/lint_intent.mjs` on the render, and by
+`scripts/lint_intent_source.mjs` in framework source, where the render gate cannot
+look. In a .tsx a destructive control must SAY so: relying on the component
+default is how a blue Delete gets written.
 
 **2. One theme, one source of truth.** Every page and component renders from the
 same `tokens/*.json` -> one CSS-variable layer imported once at the app root. No
@@ -275,6 +278,8 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               composite widgets reachable and their arrow-key model implemented)
                             · lint_intent.mjs (token BY INTENT, measured on the render: destructive never
                               wears action.primary, affirmative never wears danger, same action same variant)
+                            · lint_intent_source.mjs (the same rule in .tsx/.jsx/.vue/.svelte, read from source:
+                              every destructive control declares its intent; proves no colour, only the declaration)
                             · verify_interactive.mjs (a control that DECLARES aria-sort/pressed/expanded/
                               checked must change something on a real click — catches the sort header that
                               draws a chevron and sorts nothing; `data-demo-state` opts a state rendering out)

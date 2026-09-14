@@ -38,7 +38,9 @@ then load the rule file for the territory you are actually in.
 1. **Token by intent.** Pick the token whose meaning matches the action.
    Destructive actions (Delete, Remove, Revoke) wear `action.destructive` in every
    place they appear - the trigger and the confirm dialog both. A blue Delete is a
-   bug. Measured by `scripts/lint_intent.mjs`.
+   bug. Measured by `scripts/lint_intent.mjs` on the render, and by
+   `scripts/lint_intent_source.mjs` in framework source - in a .tsx, say
+   `variant="destructive"`; do not inherit the component default.
 2. **One theme, one source of truth.** Every page renders from the same
    `tokens/*.json` through one CSS-variable layer imported once at the app root.
    No per-page palette, no hardcoded hex, px, or timing.

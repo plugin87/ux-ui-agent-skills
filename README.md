@@ -279,10 +279,10 @@ Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#i
 ## Proving It, and Admitting What Cannot Be Proven
 
 
-The kit ships **40 objective gates** behind one command:
+The kit ships **41 objective gates** behind one command:
 
 ```bash
-node scripts/accuracy_report.mjs     # 40/40 or it fails — no partial credit
+node scripts/accuracy_report.mjs     # 41/41 or it fails — no partial credit
 ```
 
 Token validity, WCAG contrast on a real headless render in light *and* dark, every
@@ -291,18 +291,24 @@ at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
 
-**What that number covers, stated exactly.** 30 of the 40 checks open a real
+**What that number covers, stated exactly.** 30 of the 41 checks open a real
 browser, so what they measure is **rendered HTML**: the 23 component harnesses,
-the reference app, the live demo, the starter template. The other 10 read files —
+the reference app, the live demo, the starter template. The other 11 read files —
 token JSON and alias resolution, contrast math on the token source, component
-specs, hardcoded values, theme references, emoji, the instruction surface.
+specs, hardcoded values, theme references, emoji, the instruction surface, and
+destructive-intent declarations in framework source.
 
 Framework source (`.tsx`, `.vue`, `.swift`) is therefore reached by the
 file-reading checks only: no emoji, no hardcoded values, every `var(--…)`
-resolving to the theme. A React component this kit generates is written to the
-token and accessibility rules in `.claude/rules/`, but it is **not** proven by
-this number until it is rendered and measured. Rendering framework components
-through the same gates is open work, named here rather than implied away.
+resolving to the theme, and — since a blue Delete shipped in this repo's own
+`Settings.tsx` while the HTML twin of that screen was correct — every
+destructive control declaring its intent (`lint_intent_source.mjs`). That last
+one proves a **declaration**, never a colour: `variant="destructive"` wired to a
+blue token passes it, and only a render catches that. A React component this kit
+generates is written to the token and accessibility rules in `.claude/rules/`,
+but it is **not** proven by this number until it is rendered and measured.
+Rendering framework components through the same gates is still open work, named
+here rather than implied away.
 
 That is correctness. It is not quality, and the kit says so out loud:
 
@@ -342,7 +348,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ## Contributing
 
 
-Two commands are the whole bar: `node scripts/accuracy_report.mjs` (38/38, no
+Two commands are the whole bar: `node scripts/accuracy_report.mjs` (41/41, no
 partial credit) and `npm run test:gates` (every gate must still reject its
 broken fixture). Paste the real output in the pull request rather than
 describing it.

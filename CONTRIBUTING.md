@@ -7,7 +7,7 @@ only ever sees passing examples proves nothing.
 ## The bar, in one line
 
 ```bash
-node scripts/accuracy_report.mjs     # 38/38 or it fails - no partial credit
+node scripts/accuracy_report.mjs     # 41/41 or it fails - no partial credit
 npm run test:gates                   # every gate must still REJECT a broken fixture
 ```
 
