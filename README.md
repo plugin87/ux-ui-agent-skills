@@ -12,7 +12,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-[![Version](https://img.shields.io/badge/version-2.6.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-2.7.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -34,7 +34,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 </div>
 
-**Current release [`v2.6.0`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime — a pure instruction and knowledge layer for AI agents.
+**Current release [`v2.7.0`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime — a pure instruction and knowledge layer for AI agents.
 
 ---
 
