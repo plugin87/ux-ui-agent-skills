@@ -3,7 +3,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 
 type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "destructive";
   loading?: boolean;
   selected?: boolean;
 };
@@ -28,7 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
   );
 });
 
-/*
+export const buttonCss = `
 .ds-btn {
   display: inline-flex; align-items: center; gap: var(--space-2);
   block-size: var(--size-control-md); padding-inline: var(--space-4);
@@ -46,4 +46,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(function Button(
   background: transparent; color: var(--color-text-primary);
   box-shadow: inset 0 0 0 1px var(--color-border-strong);
 }
-*/
+.ds-btn[data-variant="destructive"] { background: var(--color-action-danger); color: var(--color-text-on-action); }
+.ds-btn[data-variant="destructive"]:hover { background: var(--color-action-danger-hover); }            /* Hover */
+.ds-btn[data-variant="destructive"][aria-pressed="true"] { background: var(--color-action-danger-hover); } /* Selected */
+`;

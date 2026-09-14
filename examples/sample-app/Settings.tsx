@@ -31,7 +31,7 @@ export function Settings() {
         </div>
 
         <div>
-          <Button onClick={() => setConfirmOpen(true)}>Delete account</Button>
+          <Button variant="destructive" onClick={() => setConfirmOpen(true)}>Delete account</Button>
         </div>
 
         <Modal open={confirmOpen} onClose={() => setConfirmOpen(false)} titleId="confirm-title">
@@ -41,7 +41,7 @@ export function Settings() {
           <p className="subtle">This is permanent and cannot be undone.</p>
           <div style={{ display: "flex", gap: "var(--space-2)", marginBlockStart: "var(--space-4)" }}>
             <Button className="btn--secondary" onClick={() => setConfirmOpen(false)}>Cancel</Button>
-            <Button onClick={() => setConfirmOpen(false)}>Delete</Button>
+            <Button variant="destructive" onClick={() => setConfirmOpen(false)}>Delete</Button>
           </div>
         </Modal>
       </main>
