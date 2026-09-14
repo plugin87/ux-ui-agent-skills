@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Live demo
+    url: https://plugin87.github.io/ux-ui-agent-skills/
+    about: Every screen and component harness in the kit, rendered - check the behaviour there first.
+  - name: Contributing guide
+    url: https://github.com/plugin87/ux-ui-agent-skills/blob/main/CONTRIBUTING.md
+    about: The bar for a pull request, and how to add a gate that can still say no.

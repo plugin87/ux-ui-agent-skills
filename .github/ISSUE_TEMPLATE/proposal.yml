@@ -1,0 +1,47 @@
+name: Proposal - a component, skill, gate, or rule
+description: Suggest something the kit should add or change.
+title: "[proposal] "
+labels: ["proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Check first that it is not an existing component or variant. The
+        promotion path in `workflows/governance.md` is: product one-off ->
+        candidate (documented, used in two or more places) -> core.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind
+      options:
+        - Component or variant
+        - Skill or command
+        - Gate
+        - Rule or doctrine
+        - Framework adapter
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem it solves
+      description: >
+        Where does this recur? A one-off belongs in a product, not in the system.
+    validations:
+      required: true
+  - type: textarea
+    id: enforcement
+    attributes:
+      label: How it would be enforced or verified
+      description: >
+        A rule nothing checks will drift. If this is a gate, what input proves it
+        can still say no? If it is a component, which harness would render it?
+    validations:
+      required: true
+  - type: input
+    id: semver
+    attributes:
+      label: Version impact
+      description: Major if it renames or removes anything public, minor if additive, patch if a fix.
+      placeholder: minor
