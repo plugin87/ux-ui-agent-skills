@@ -357,7 +357,7 @@ Claude Code UI, `/plugin` then **Discover** browses the same thing.
 
 | Kind | What |
 |---|---|
-| Skills (18) | `design-doctrine` plus every runnable skill: tokens, component, code, review, a11y-audit, aesthetic, brandkit, image-to-code, redesign, interop, prototype, ux-writing, governance, token-build, figma, qa, performance |
+| Skills (19) | `design-doctrine` plus every runnable skill: tokens, component, code, review, a11y-audit, aesthetic, brandkit, data-dashboard, image-to-code, redesign, interop, prototype, ux-writing, governance, token-build, figma, qa, performance |
 | Commands (5) | `/grill-me`, `/gate`, `/critique`, `/ship`, `/scaffold-project` |
 | Agent | `design-critic`, the adversarial reviewer behind `/critique` |
 | MCP servers | none - deliberately. The repo's own `.mcp.json` ships as `.mcp.example.json` so installing a design kit never registers a third-party server on your machine |

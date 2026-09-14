@@ -38,6 +38,7 @@ const SHOTS = [
   ['examples/component-states/button.html',   'button-states-dark.png',   'dark',  [1280, 520],  false],
   // the before/after pair: the statistical defaults, and the same screen built to the rules
   ['tests/fixtures/bad/slop-screen.html',     'before-slop.png',          'light', [1280, 760],  false],
+  ['examples/terminal/index.html',            'terminal-dark.png',        'dark',  [1600, 1750], false],
   // GitHub's social preview: 1280x640, uploaded by hand in Settings -> General.
   // It is never shown inline in the README, so --check exempts it below.
   ['cover.html',                              'social-preview.png',       'light', [1280, 640],  false],
