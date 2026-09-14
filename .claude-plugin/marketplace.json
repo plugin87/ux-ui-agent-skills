@@ -11,7 +11,7 @@
       "source": "./",
       "version": "2.6.0",
       "category": "design",
-      "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 37 objective quality gates that fail the build instead of claiming success.",
+      "description": "Turn Claude into a senior design architect: DTCG design tokens, 50 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 38 objective quality gates that fail the build instead of claiming success.",
       "tags": ["design-system", "design-tokens", "accessibility", "wcag", "ui", "figma", "react", "tailwindcss"]
     }
   ]

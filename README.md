@@ -22,7 +22,8 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-18-14b8a6?style=flat-square)
-![Gates](https://img.shields.io/badge/objective_gates-37-16a34a?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-38-16a34a?style=flat-square)
+[![Live demo](https://img.shields.io/badge/live_demo-open-0ea5e9?style=flat-square)](https://plugin87.github.io/ux-ui-agent-skills/)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
 ![Adapters](https://img.shields.io/badge/framework_adapters-16-22d3ee?style=flat-square)
@@ -46,8 +47,12 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 ## The output, rendered
 
 Not a mockup. These are screenshots of the files in `examples/`, taken by
-`node scripts/screenshot_docs.mjs` from the same HTML the 37 gates measure — so
+`node scripts/screenshot_docs.mjs` from the same HTML the 38 gates measure — so
 what you see below is what the gate run passed, in both themes.
+
+**Click through them yourself: [plugin87.github.io/ux-ui-agent-skills](https://plugin87.github.io/ux-ui-agent-skills/)**
+ — 26 live pages, every component harness and both reference screens, with a
+theme toggle. No install, no clone.
 
 <table>
 <tr>
@@ -276,7 +281,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 
 ## Proving It, and Admitting What Cannot Be Proven
 
-The kit ships **37 objective gates** behind one command:
+The kit ships **38 objective gates** behind one command:
 
 ```bash
 node scripts/accuracy_report.mjs     # 35/35 or it fails — no partial credit

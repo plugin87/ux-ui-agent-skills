@@ -75,6 +75,8 @@ const checks = [
    'python3 scripts/validate_instruction_surface.py'],
   ['Starter template — reference layout complete, tokens resolve, seeded theme passes WCAG (light + dark)',
    'python3 scripts/validate_template.py'],
+  ['Live demo front door — the public index page, every gate that applies to it (light + dark)',
+   'node scripts/measure_render.mjs examples/index.html && node scripts/measure_render.mjs --dark examples/index.html && node scripts/verify_states.mjs examples/index.html && node scripts/verify_states.mjs --dark examples/index.html && node scripts/axe_audit.mjs examples/index.html && node scripts/axe_audit.mjs --dark examples/index.html && node scripts/verify_keyboard.mjs examples/index.html && node scripts/verify_target_size.mjs examples/index.html && node scripts/verify_interactive.mjs examples/index.html && node scripts/verify_responsive.mjs examples/index.html --scale=1.25 && node scripts/verify_reduced_motion.mjs examples/index.html'],
   ['Edge cases — hostile content harness (long unbroken strings, empty, single, missing, extremes, many items)',
    'node scripts/verify_states.mjs examples/component-states/edge-cases.html && node scripts/verify_states.mjs --dark examples/component-states/edge-cases.html && node scripts/axe_audit.mjs examples/component-states/edge-cases.html && node scripts/axe_audit.mjs --dark examples/component-states/edge-cases.html'],
 ];
