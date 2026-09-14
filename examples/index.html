@@ -15,7 +15,13 @@
   /* one thing leads: the title, then the reference app, then everything else is quiet */
   header{display:flex;gap:var(--space-4);align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
     margin-block-end:var(--space-8)}
-  h1{font-size:var(--text-5xl);line-height:var(--leading-tight);letter-spacing:-0.03em;max-inline-size:18ch}
+  /* Fluid display size: at 280px with a 1.25x root font, --text-5xl put the single
+     word "produces," at 297px - wider than the viewport - and the wrapped flex item's
+     automatic minimum size carried that out to the page. Both bounds stay tokenised;
+     1280px is unchanged at --text-5xl. */
+  h1{font-size:clamp(var(--text-4xl), 8vw, var(--text-5xl));line-height:var(--leading-tight);letter-spacing:-0.03em;max-inline-size:18ch}
+  /* The heading block is a flex item: without this its min-content can never shrink. */
+  header > div{min-inline-size:0}
   .lede{color:var(--color-text-secondary);margin-block-start:var(--space-3);max-inline-size:58ch}
 
   .toggle{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:2.5rem;
