@@ -2,6 +2,8 @@
 // Build this once; reuse for every dialog. Never hand-roll a div-as-modal per screen.
 // Covers WCAG 2.4.3 (focus order) + 2.1.2 (no keyboard trap-out): focus trap, Escape,
 // aria-modal, labelledby, return-focus on close, backdrop. Token-driven (no hardcoded values).
+// Styles live in ./components.css, which also defines the ds-pop keyframe this used to
+// animate against without it existing anywhere.
 import { useEffect, useRef, type ReactNode } from "react";
 
 type Props = {
@@ -62,18 +64,3 @@ export function Modal({ open, onClose, titleId, children }: Props) {
     </div>
   );
 }
-
-/*
-.ds-modal-backdrop {
-  position: fixed; inset: 0; display: grid; place-items: center;
-  background: var(--color-scrim); z-index: var(--z-modal);
-}
-.ds-modal {
-  background: var(--color-surface-card); color: var(--color-text-primary);
-  border-radius: var(--radius-lg); padding: var(--space-6);
-  max-inline-size: var(--bp-sm); box-shadow: var(--shadow-overlay);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .ds-modal { animation: ds-pop var(--transition-micro); }
-}
-*/

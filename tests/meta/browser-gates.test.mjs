@@ -153,10 +153,13 @@ test('exactly ten gates reject the slop screen - the number both front doors pri
   // keeps both true: a gate that stops catching this page, or a new gate that
   // starts, moves the number and fails this test.
   //
-  // Measure it on a quiet machine. Under a concurrent full gate run, five of the
-  // gates that pass here time out instead and the count reads 13 - that is
-  // contention, not detection, which is why a null status is an error below and
-  // never counted as a rejection.
+  // Count it in a process, never in a shell loop. The first attempt at this
+  // number read 13, from a zsh loop doing `node scripts/$g` where $g held
+  // "slop_tells.mjs --strict": zsh does not word-split an unquoted expansion, so
+  // every multi-word entry became one bogus filename, exited MODULE_NOT_FOUND,
+  // and was counted as a rejection. A gate that cannot even start is not a gate
+  // that found something, which is why only status 1 counts below and anything
+  // else is an error.
   const SLOP = F('bad/slop-screen.html');
   const ONE_FILE = [
     'measure_render.mjs', 'verify_states.mjs', 'axe_audit.mjs', 'verify_keyboard.mjs',
