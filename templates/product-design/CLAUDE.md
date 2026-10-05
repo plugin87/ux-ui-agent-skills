@@ -70,10 +70,29 @@ every control, and look before you claim it is right.
 - Tokens: `design-tokens.json` -> generated CSS variables imported once at the app root
 - Icons: <lucide>
 
+## Design work — where to start
+
+| The request | Start with |
+|---|---|
+| Design or build a page, screen, landing page or app | `/design-screen` |
+| A dashboard, console, or any screen of dense data | `/data-dashboard` |
+| One component's spec, states and anatomy | `/design-component` |
+| Apply a look, vibe or named design system | `/apply-aesthetic` |
+| Improve an existing screen | `/redesign` |
+| Match a screenshot or mockup | `/image-to-code` |
+| Is this actually any good? | `/critique` |
+
+**For any page, screen or app: write the taste block from
+`.claude/rules/taste.md` before you write markup.** Not after, and not only in
+your head. Generating first is where generated-looking work comes from, and no
+gate in this project can catch it.
+
 ## Conventions
 
 Detailed conventions live in `.claude/rules/` and load only when relevant:
 
+- `.claude/rules/taste.md` — decide the brief before generating; the banned
+  defaults; the copy tells. Read it for any page, screen or component
 - `.claude/rules/components.md` — how a component is structured and named
 - `.claude/rules/tokens.md` — how to add or change a token
 - `.claude/rules/accessibility.md` — the checks that must pass before merge

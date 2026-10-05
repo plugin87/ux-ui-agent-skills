@@ -27,7 +27,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
-![Skills](https://img.shields.io/badge/runnable_skills-24-14b8a6?style=flat-square)
+![Skills](https://img.shields.io/badge/runnable_skills-25-14b8a6?style=flat-square)
 ![Gates](https://img.shields.io/badge/objective_gates-45-16a34a?style=flat-square)
 [![Live demo](https://img.shields.io/badge/live_demo-open-0ea5e9?style=flat-square)](https://plugin87.github.io/ux-ui-agent-skills/)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
@@ -212,13 +212,16 @@ project you open — no files copied into your repo:
 /plugin install ux-ui-agent-skills@ux-ui-agent-skills
 ```
 
-You get 24 skills and the `design-critic` agent.
+You get 25 skills and the `design-critic` agent.
 
-**Thirteen the model reaches for on its own** when the work calls for them:
+**Fourteen the model reaches for on its own** when the work calls for them:
 `design-tokens`, `design-component`, `design-code`, `design-review`,
 `a11y-audit`, `apply-aesthetic`, `data-dashboard`, `design-qa`,
-`figma-integration`, `performance`, `token-build`, `ux-writing`, and
-`design-doctrine`.
+`figma-integration`, `performance`, `token-build`, `ux-writing`,
+`design-doctrine`, and `design-screen` — the one that claims "design a page /
+screen / app", which until 2026-10-05 no skill did, so the most common request
+there is matched nothing strongly and the kit got used at a fraction of its
+depth.
 
 **Eleven you start yourself**, because each one takes an action or sets a
 direction that should be your call: `/brandkit`, `/governance`, `/image-to-code`,

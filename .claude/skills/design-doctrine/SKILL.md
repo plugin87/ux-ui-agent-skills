@@ -32,11 +32,47 @@ then load the rule file for the territory you are actually in.
 6. **Responsive is gated too:** `node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_responsive.mjs <file|dir>` -
    no horizontal overflow at 280/320/414px.
 7. **Honest scope.** The gates prove objective correctness. They never prove taste.
-   For that, run `/critique` and look at the work yourself.
+   For that, run `/critique`, look at the work yourself, and start from the taste
+   preflight below rather than from default components.
 8. **SKIPPED is not a pass.** With no browser installed a render gate prints
    `SKIPPED` and exits 0, reporting nothing. Run single render gates behind
    `DS_REQUIRE_BROWSER=1` so that becomes `REQUIRED, FAILING`, and fix it with
    `npx playwright install chrome` rather than by removing the flag.
+
+## Taste preflight - before any markup
+
+The gates cannot see this half, so it has to be decided rather than discovered.
+Write the block into your reply, then build to it. Generating first is where
+generated-looking work comes from.
+
+```
+Domain:          fintech | editorial | dev-tool | healthcare | consumer | ...
+Audience & tone: expert vs first-time, calm vs energetic, premium vs utilitarian
+Mood:            the one adjective the result must earn - "expensive", "precise", "warm"
+Motion depth:    none | subtle feedback | expressive choreography
+Layout family:   the section sequence you will use, named, varied per section
+Reference anchor: an archetype or named system to aim at
+```
+
+Break each of these deliberately; they are defects, not starting points.
+
+- Three or four identical equal-weight cards. **One thing leads.**
+- Everything centered. Use asymmetry on a real grid.
+- The same left-text / right-image row repeated.
+- A heading that is only bold body text. Display type is at least 2.5x body,
+  short, on an 18-24ch measure.
+- A drop shadow on every box. Most things are flat.
+- `#000` on `#fff`. Off-black on warm-white, from the theme.
+- More than one accent. Neutrals carry the weight.
+- A colored border on one side only of a card, alert, toast or callout. Full
+  hairline border or surface separation; status by icon plus text, never colour
+  alone.
+- Em-dashes in UI copy, marketing filler ("elevate", "seamless", "unlock"),
+  hollow triads, fake labels ("SECTION 01", lorem ipsum).
+
+Depth, and the full Variance Mandate:
+`${CLAUDE_SKILL_DIR}/../../../taste/design-taste.md`. For a whole page or app,
+use `design-screen`, which runs this preflight as step 1 of the pipeline.
 
 > ABSOLUTE: zero emoji in any output - UI, code, JSON, copy, comments, commit
 > messages. Not as an icon, a bullet, a status dot, or "polish". Emoji are the

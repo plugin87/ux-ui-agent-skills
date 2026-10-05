@@ -227,6 +227,52 @@ design skill accidentally hidden from the model is a skill that never runs.
 
 ---
 
+## After Phase 1A — a skill owns the most common request, and taste is in context
+
+**Cause 1.** "Design a page / screen / landing page / app" is the most common
+request there is, and no skill claimed it: `design-code` wanted a stack named,
+`design-component` works at the spec level, `apply-aesthetic` waits to be asked
+for a look, `redesign` needs existing UI. Nothing matched strongly, so the model
+picked a neighbouring skill or none. `design-screen` claims it, in English and
+Thai, and runs the pipeline no single skill covered: taste preflight, doctrine,
+direction into tokens, build, gate, render-and-look, critic. It also says when to
+hand off rather than absorbing work that belongs elsewhere.
+
+The trigger phrases live in `description`, not in a `when_to_use` field. That
+field may well be real, but it has not been verified on this version, and
+shipping an unverified key is precisely the `invocation` mistake this branch has
+already had to undo once.
+
+**Cause 2.** Taste was three files totalling 531 lines that a skill had to choose
+to read, and `design-doctrine` mentioned it only to say the gates do not prove
+it. A compact preflight is now in the body of both `design-doctrine` and
+`design-screen`, so it is in context the moment either loads instead of depending
+on a file read: the brief block to fill in, and the banned defaults to break.
+
+The product template gained `.claude/rules/taste.md` and a design-work router in
+its `CLAUDE.md`, because `new` deliberately skips the engine's own `CLAUDE.md`
+and rules — which is where taste was routed from.
+
+**Cause 5.** `AREAS` had no entry for `.claude/agents`, `examples/` or
+`templates/`, so an initialised project had no critic to delegate to, no
+reference output, and nothing for `/scaffold-project` to scaffold from.
+`tests/cli/installed-references.test.mjs` now scaffolds a real project and opens
+every file the installed skills name — 177 references — which caught three the
+inferential measurement was reporting as fine.
+
+| | before | after |
+|---|---|---|
+| skills claiming "design a page or app" | **0** | 1 |
+| skills with the taste preflight in their body | 0 | 2 |
+| template rule files about taste | 0 | 1 |
+| kit references that open in a real `init` project | 174 of 177 | **177 of 177** |
+
+H1 and the Harness Score are unchanged at **0.6667** and **0.143**: this phase
+moves H7, and H7 has no instrument yet. Recording it as an improvement without
+one would be the same mistake this file already documents three times.
+
+---
+
 ## Re-measuring
 
 ```bash
