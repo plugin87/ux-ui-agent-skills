@@ -9,11 +9,11 @@ invocation: model
 Make the UI fast and stable. Treat performance as an accessibility concern — slow/janky UIs fail low-end devices first.
 
 ## Steps
-1. Read `workflows/performance.md` (Core Web Vitals targets, loading strategy, layout-shift, animation perf, design-system runtime cost).
+1. Read `${CLAUDE_SKILL_DIR}/../../../workflows/performance.md` (Core Web Vitals targets, loading strategy, layout-shift, animation perf, design-system runtime cost).
 2. Diagnose against budgets: **LCP ≤ 2.5s**, **INP ≤ 200ms**, **CLS ≤ 0.1**. Measure on a mid-tier mobile profile (throttle slow 4G + 4× CPU).
 3. Loading: render above-fold first (SSR/Server Components), code-split by route + heavy widget, lazy-load below-fold/behind-interaction (Astro islands / Qwik), preload one critical font weight, modern responsive images.
-4. Kill layout shift: size skeletons to final dimensions, reserve media space via `aspect-ratio` (`tokens/sizing.json`), never inject content above existing.
-5. Animation: only `transform`/`opacity`, `will-change` sparingly, 100–300ms (`tokens/motion.json`), honor `prefers-reduced-motion`. Prefer CSS state styling over JS for low INP; tree-shake/per-component imports.
+4. Kill layout shift: size skeletons to final dimensions, reserve media space via `aspect-ratio` (`${CLAUDE_SKILL_DIR}/../../../tokens/sizing.json`), never inject content above existing.
+5. Animation: only `transform`/`opacity`, `will-change` sparingly, 100–300ms (`${CLAUDE_SKILL_DIR}/../../../tokens/motion.json`), honor `prefers-reduced-motion`. Prefer CSS state styling over JS for low INP; tree-shake/per-component imports.
 
 ## Verification (definition of done)
 - Lighthouse / field data meets LCP ≤ 2.5s, INP ≤ 200ms, CLS ≤ 0.1 on mid-tier mobile.

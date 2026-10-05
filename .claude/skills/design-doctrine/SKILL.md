@@ -15,15 +15,15 @@ then load the rule file for the territory you are actually in.
 1. **Never state a number you did not measure.** Any contrast ratio, "WCAG pass",
    or "100%" must come from running a gate and reporting its real output. If you
    have not run it, say "not verified yet."
-2. **Verify every state, not just resting.** `node scripts/verify_states.mjs <file> [--dark]`
+2. **Verify every state, not just resting.** `node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_states.mjs <file> [--dark]`
    measures default, hover and focus - a button that passes at rest can fail on hover.
-3. **One command before reporting done:** `node scripts/accuracy_report.mjs`.
+3. **One command before reporting done:** `node ${CLAUDE_SKILL_DIR}/../../../scripts/accuracy_report.mjs`.
    Report the real `N/N` line. It is all-or-nothing.
 4. **Build with the gates, not after them.** Fix and re-run until green; never
    announce success between failures.
 5. **Render and LOOK.** Gates pass while a UI is still visibly broken. Screenshot
    the harness in both themes, click every control, and confirm the state changed.
-6. **Responsive is gated too:** `node scripts/verify_responsive.mjs <file|dir>` -
+6. **Responsive is gated too:** `node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_responsive.mjs <file|dir>` -
    no horizontal overflow at 280/320/414px.
 7. **Honest scope.** The gates prove objective correctness. They never prove taste.
    For that, run `/critique` and look at the work yourself.
@@ -35,16 +35,16 @@ then load the rule file for the territory you are actually in.
 > ABSOLUTE: zero emoji in any output - UI, code, JSON, copy, comments, commit
 > messages. Not as an icon, a bullet, a status dot, or "polish". Emoji are the
 > number-one tell of machine-generated work. Use a lucide icon (inline SVG,
-> `currentColor`) or plain words. Enforced by `scripts/check_no_emoji.py`.
+> `currentColor`) or plain words. Enforced by `${CLAUDE_SKILL_DIR}/../../../scripts/check_no_emoji.py`.
 
 ## The five non-negotiables
 
 1. **Token by intent.** Pick the token whose meaning matches the action.
    Destructive actions (Delete, Remove, Revoke) wear `action.destructive` in every
    place they appear - the trigger and the confirm dialog both. A blue Delete is a
-   bug. Measured by `scripts/lint_intent.mjs`.
+   bug. Measured by `${CLAUDE_SKILL_DIR}/../../../scripts/lint_intent.mjs`.
 2. **One theme, one source of truth.** Every page renders from the same
-   `tokens/*.json` through one CSS-variable layer imported once at the app root.
+   `${CLAUDE_SKILL_DIR}/../../../tokens/*.json` through one CSS-variable layer imported once at the app root.
    No per-page palette, no hardcoded hex, px, or timing.
 3. **Every interactive element ships eight states:** default, hover, focus,
    active, disabled, loading (if async), error (if input), and selected (if

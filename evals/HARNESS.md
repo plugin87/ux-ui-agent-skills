@@ -29,42 +29,52 @@ produced it is not a score.
 
 | ID | Indicator | Score | Measured by |
 |---|---|---|---|
-| H1 | Install-path parity | **0.297** | `python3 scripts/measure_install_paths.py` |
+| H1 | Install-path parity | **0.265** | `python3 scripts/measure_install_paths.py` |
 | H2 | Invocation correctness | **0** (no instrument) | needs `claude plugin eval` |
 | H3 | Enforcement coverage | **0.000** | counted below |
 | H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs` |
 | H5 | Blind first-pass, per route | **0.333** | `evals/RESULTS.md` |
 | H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/` |
 | H7 | Taste applied on page/app work | **0** (no instrument) | needs the page-and-app prompt set |
-| | **Harness Score** | **0.090** | mean of H1..H7 |
+| | **Harness Score** | **0.086** | mean of H1..H7 |
 
 Four of the seven are zero for want of an instrument. The score is therefore
 mostly a statement about what has never been looked at.
 
-### H1 — install-path parity: 0.297
+### H1 — install-path parity: 0.265
 
 ```
-Plugin surface: 25 file(s), 139 kit-file reference(s), 0 already variable-guarded.
+Plugin surface: 25 file(s), 156 kit-file reference(s), 0 already variable-guarded.
 
   route          resolves    share
   ------------ ----------  -------
-  plugin          0 / 139     0.0%
-  init          124 / 139    89.2%
-  skills-add      0 / 139     0.0%
+  plugin          0 / 156     0.0%
+  init          124 / 156    79.5%
+  skills-add      0 / 156     0.0%
 
-  H1 (mean across the three routes) = 0.2974
+  H1 (mean across the three routes) = 0.265
 ```
 
-The 19 skills, 5 commands and 1 agent name 139 kit files between them. Not one
+The 19 skills, 5 commands and 1 agent name 156 kit files between them. Not one
 reference carries a path variable, so on the plugin route — the one the README
 recommends first — every single one resolves against the user's own project,
 where the kit is not. `npx skills add` copies the skill folders alone, so the
-same 139 are missing there too.
+same references are missing there too.
 
-`init` is the only route that mostly works, and 15 references still fail on it:
-12 under `examples/`, 2 under `templates/`, 1 under `docs/`. The CLI's `AREAS`
-map has no entry for any of them, so a skill that holds up `examples/golden/`
-as the quality bar is pointing at nothing in an initialised project.
+`init` is the only route that mostly works, and 32 references still fail on it,
+under `examples/`, `templates/` and `docs/`. The CLI's `AREAS` map has no entry
+for any of them, so a skill that holds up `examples/golden/` as the quality bar
+is pointing at nothing in an initialised project.
+
+> **This number was published wrong first.** The initial commit of this file
+> recorded H1 as 0.297 over 139 references. Three bugs in the instrument moved
+> it: the `AREAS` parser read a nested map the CLI does not use (reporting `init`
+> at 0%), prose like "SemVer for tokens/components" counted as a broken path, and
+> a reference that had been *fixed* stopped matching the pattern entirely, so
+> repairing one would have shrunk the denominator instead of moving it into the
+> resolved column. The last of those is the dangerous one: it would have made any
+> improvement look larger than it was. Both numbers in the table below come from
+> the instrument as it stands now, run against both trees.
 
 ### H3 — enforcement coverage: 0.000
 
@@ -100,6 +110,41 @@ this indicator can move for the right reason rather than by adding routes alone.
 | H4 | A gate wrapper that records what it measured | No run is recorded anywhere, so no number in any answer can be traced to a measurement |
 | H6 | Seeded-defect fixtures and an answer key | The critic has never been scored against known defects |
 | H7 | A page-and-app prompt set run in a fresh project | The owner reports taste is not applied at all in new projects; nothing has confirmed or refuted that |
+
+---
+
+## After 1.1 — skills carry the kit root
+
+The 19 skills now express every kit-file reference as
+`${CLAUDE_SKILL_DIR}/../../../<path>`.
+
+**Verified before applying it**, as the plan requires, with a throwaway probe
+skill asked to copy one line back verbatim. On both routes it reported an
+absolute path, not the variable, which is the only proof that Claude Code
+substitutes it in skill *content* rather than leaving it to the shell — the
+shell environment has it unset on both:
+
+| route | what the model received | probe |
+|---|---|---|
+| plugin, from a local marketplace, cwd `/tmp/probe-project` | `MARKER=/Users/plug/Development/ux-ui-agent-skills/.claude/skills/path-probe` | `PROBE_OK` |
+| init, into an empty `/tmp/init-project` | `MARKER=/private/tmp/init-project/.claude/skills/path-probe` | `PROBE_OK` |
+
+Because `plugin.json` points skills at `./.claude/skills`, a skill sits at
+`<root>/.claude/skills/<name>/` on both routes, so `../../..` is the kit root on
+both. The probe was deleted afterwards; it is not in the skill listing.
+
+| route | before | after |
+|---|---|---|
+| plugin | 0 / 156 (0.0%) | **133 / 156 (85.3%)** |
+| init | 124 / 156 (79.5%) | **152 / 156 (97.4%)** |
+| skills-add | 0 / 156 (0.0%) | **133 / 156 (85.3%)** |
+| **H1** | **0.265** | **0.8932** |
+
+Harness Score 0.086 → **0.175**. Only H1 moved; the other six are untouched.
+
+The 23 references still unresolved on the plugin route are all in the five
+commands and the design-critic agent, which have no `CLAUDE_SKILL_DIR` of their
+own. That is the next commit, not a limitation of this approach.
 
 ---
 

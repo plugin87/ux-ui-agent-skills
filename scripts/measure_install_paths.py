@@ -48,9 +48,11 @@ KIT_DIRS = (
     "accessibility", "workflows", "content", "examples", "evals", "templates",
     "docs", "tests",
 )
-REF = re.compile(
-    r"(?<![\w./-])((?:" + "|".join(KIT_DIRS) + r")/[A-Za-z0-9_./-]*[A-Za-z0-9_])"
-)
+# The same body in both patterns, so a reference counts identically whether or
+# not it is prefixed: a denominator that moves when you fix something makes the
+# before and after incomparable.
+_BODY = r"((?:" + "|".join(KIT_DIRS) + r")/[A-Za-z0-9_./*-]*[A-Za-z0-9_*])"
+REF = re.compile(r"(?<![\w./-])" + _BODY)
 # Extensions the kit's own files use. A match that neither exists in the repo nor
 # ends in one of these is prose, not a path: "SemVer for tokens/components" means
 # tokens and components, and counting it as a broken reference would inflate the
@@ -60,10 +62,16 @@ FILE_EXT = (".md", ".mjs", ".js", ".py", ".json", ".html", ".css", ".tsx", ".jsx
 
 
 def is_path_reference(text: str) -> bool:
+    if "*" in text:
+        # `taste/*` means "the files in taste/" - a real reference to a real dir
+        return (ROOT / text.split("*")[0].rstrip("/")).is_dir()
     return (ROOT / text).exists() or text.endswith(FILE_EXT)
-# A path already carrying a variable is portable by construction; count it as
-# resolved everywhere so progress shows up as the fix lands.
-VARIABLE = re.compile(r"\$\{?CLAUDE_(?:SKILL_DIR|PLUGIN_ROOT|PROJECT_DIR)\}?")
+# A reference already built from a path variable. It must still be COUNTED, or
+# fixing a reference would make it disappear from the denominator instead of
+# moving it into the resolved column - an instrument that flatters itself.
+GUARDED = re.compile(
+    r"\$\{?CLAUDE_(?:SKILL_DIR|PLUGIN_ROOT|PROJECT_DIR)\}?(?:/\.\.)*/" + _BODY
+)
 
 
 def surface_files():
@@ -86,12 +94,33 @@ def references():
         except (OSError, UnicodeDecodeError) as err:
             print(f"ERROR: could not read {f}: {err}", file=sys.stderr)
             continue
-        for n, line in enumerate(text.splitlines(), 1):
-            guarded = bool(VARIABLE.search(line))
+        # Frontmatter is the listing text Claude Code shows the model when it
+        # picks a skill, not an instruction to open anything. A path named there
+        # is prose ("transform the DTCG tokens/*.json"), so it is not a
+        # reference and must not be rewritten or counted as one.
+        lines = text.splitlines()
+        body_starts = 0
+        if lines and lines[0].strip() == "---":
+            for i, l in enumerate(lines[1:], 1):
+                if l.strip() == "---":
+                    body_starts = i + 1
+                    break
+        for n, line in enumerate(lines, 1):
+            if n <= body_starts:
+                continue
+            seen_spans = []
+            # guarded first, so the bare-path pattern does not re-match the tail
+            # of a reference that is already prefixed
+            for m in GUARDED.finditer(line):
+                seen_spans.append(m.span(1))
+                if is_path_reference(m.group(1)):
+                    out.append((f.relative_to(ROOT), n, m.group(1), True))
             for m in REF.finditer(line):
+                if any(a <= m.start(1) < b for a, b in seen_spans):
+                    continue
                 if not is_path_reference(m.group(1)):
                     continue
-                out.append((f.relative_to(ROOT), n, m.group(1), guarded))
+                out.append((f.relative_to(ROOT), n, m.group(1), False))
     return out
 
 
