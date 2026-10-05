@@ -28,24 +28,45 @@
   .opt{padding:var(--space-3);font-size:var(--text-base);cursor:pointer}
   .opt:hover{background:var(--color-surface-raised)}
   .opt[aria-selected="true"]{background:var(--color-surface-raised);font-weight:600}
+  /* Open has to be visible on the trigger itself, not only in aria-expanded.
+     A native select rotates its chevron and lifts its edge; a replacement that
+     changes nothing a sighted user can see is worse than the control it replaced. */
+  .control[aria-expanded="true"]{border-color:var(--color-action-primary);background:var(--color-surface-raised)}
+  .wrap:has(.control[aria-expanded="true"]) .chev{transform:rotate(180deg)}
+  .chev{transition:transform var(--transition-micro)}
+  /* The rotation is feedback, not information: under reduce the chevron still
+     ENDS rotated, it just gets there instantly. Nothing is lost. */
+  @media (prefers-reduced-motion: reduce){ .chev{transition:none} }
 </style>
 </head>
 <body>
 <h1>Select &amp; Combobox</h1>
 <div class="grid">
 
+  <!-- No native <select> anywhere in this kit. The native control draws its own
+       chevron hard against the edge, and appearance:none plus a custom chevron
+       fights the platform rather than matching the system. This is the trigger
+       pattern that replaces it: a button that announces the current value, with
+       the chevron placed by the layout and real keyboard parity. -->
   <div class="cell"><div class="field">
-    <label class="label" for="s1">Native select · default</label>
+    <span class="label" id="s1lab">Select &middot; collapsed</span>
     <div class="wrap">
-      <select class="control" id="s1"><option>United States</option><option>Thailand</option><option>Japan</option></select>
+      <button class="control" id="s1" role="combobox" aria-haspopup="listbox"
+        aria-expanded="false" aria-controls="s1list" aria-labelledby="s1lab s1">United States</button>
       <svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg>
     </div>
+    <ul class="listbox" role="listbox" id="s1list" aria-labelledby="s1lab" hidden>
+      <li class="opt" role="option" id="s1o1" aria-selected="true">United States</li>
+      <li class="opt" role="option" id="s1o2">Thailand</li>
+      <li class="opt" role="option" id="s1o3">Japan</li>
+    </ul>
   </div></div>
 
   <div class="cell"><div class="field">
-    <label class="label" for="s2">Native select · disabled</label>
+    <span class="label" id="s2lab">Select &middot; disabled</span>
     <div class="wrap">
-      <select class="control" id="s2" disabled><option>United States</option></select>
+      <button class="control" id="s2" role="combobox" aria-haspopup="listbox"
+        aria-expanded="false" disabled aria-labelledby="s2lab s2">United States</button>
       <svg class="chev" aria-hidden="true" style="opacity:.5"><use href="#i-chevron-down"/></svg>
     </div>
   </div></div>
@@ -95,6 +116,35 @@
     else if(e.key==='Escape'){box.setAttribute('aria-expanded','false');}
   });
   opts.forEach((o,i)=>o.addEventListener('click',()=>{activate(i);box.value=o.textContent;box.focus();}));
+
+  /* The select trigger that replaces a native <select>. Everything the native
+     control gave away for free has to be built back: the current value is the
+     accessible name, aria-expanded really toggles, the list really opens, and
+     the arrow keys, Home, End, Enter and Escape all work. */
+  const trig=document.getElementById('s1');
+  const list=document.getElementById('s1list');
+  const sopts=[...list.querySelectorAll('.opt')];
+  const open=v=>{trig.setAttribute('aria-expanded',String(v));list.hidden=!v;};
+  const pick=o=>{sopts.forEach(x=>x.setAttribute('aria-selected',String(x===o)));
+    trig.textContent=o.textContent;open(false);trig.focus();};
+  trig.addEventListener('click',()=>open(trig.getAttribute('aria-expanded')!=='true'));
+  trig.addEventListener('keydown',e=>{
+    if(e.key==='ArrowDown'||e.key==='Enter'||e.key===' '){e.preventDefault();open(true);
+      (sopts.find(o=>o.getAttribute('aria-selected')==='true')||sopts[0]).focus();}
+    else if(e.key==='Escape'){open(false);}
+  });
+  sopts.forEach((o,i)=>{
+    o.tabIndex=-1;
+    o.addEventListener('click',()=>pick(o));
+    o.addEventListener('keydown',e=>{
+      if(e.key==='ArrowDown'){e.preventDefault();sopts[(i+1)%sopts.length].focus();}
+      else if(e.key==='ArrowUp'){e.preventDefault();sopts[(i-1+sopts.length)%sopts.length].focus();}
+      else if(e.key==='Home'){e.preventDefault();sopts[0].focus();}
+      else if(e.key==='End'){e.preventDefault();sopts[sopts.length-1].focus();}
+      else if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(o);}
+      else if(e.key==='Escape'){e.preventDefault();open(false);trig.focus();}
+    });
+  });
 </script>
 <footer style="margin-block-start:var(--space-10);padding-block-start:var(--space-5);border-block-start:1px solid var(--color-border-default);color:var(--color-text-secondary);font-size:var(--text-sm);max-inline-size:65ch">Component harness. Every state above is rendered so the gates can measure it: contrast in both themes, hover and focus, target size, keyboard, reduced motion, and overflow.</footer>
 </body>

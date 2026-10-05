@@ -52,7 +52,12 @@ The fastest way a UI reads as machine-generated is the writing and the rhythm, n
 - **Fake structure labels.** "SECTION 01", "FEATURE", "Lorem ipsum", "Your headline here." Real, specific copy or nothing.
 - **Symmetric everything.** Three identical equal-weight cards, every section centered, one repeated row. Break it (see the Variance Mandate).
 - **Emoji as icons / decoration.** Use a real icon set (lucide). (Banned-Defaults table above.)
-- **Colored left-border accent strips** on alerts, toasts, callouts, and cards. The 3-4px tinted `border-left` is a generated-UI cliche. Convey status with a real icon plus text (never color alone); use a full hairline border or surface separation, not a colored bar.
+- **A colored border on ONE SIDE ONLY** of an alert, toast, callout or card - `border-left`,
+  `border-right`, `border-top`, `border-bottom`, or the logical `border-inline-*` and
+  `border-block-*` forms. The tinted 3-4px bar is a generated-UI cliche in every direction, not
+  just on the left: it is decoration standing in for hierarchy the layout never established.
+  Convey status with a real icon plus text (never color alone); use a full hairline border on
+  all sides, or surface and elevation separation.
 - **Over-hedged microcopy.** "You may want to consider possibly..." Be direct: frontload the verb (`content/voice-tone.md`).
 
 > Read the copy aloud. If it sounds like a press release or a model warming up, rewrite it shorter and more specific.

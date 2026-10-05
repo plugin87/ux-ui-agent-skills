@@ -133,9 +133,11 @@
 <dialog id="transfer" aria-labelledby="tt">
   <h2 id="tt">Move money</h2>
   <div class="field" style="margin-block-end:var(--space-4)"><label for="from">From</label>
-    <select id="from"><option>Everyday current · GBP 14,208.55</option><option>Savings · GBP 61,400.00</option></select></div>
+    <button type="button" class="pick" id="from" role="combobox" aria-haspopup="listbox"
+      aria-expanded="false">Everyday current · GBP 14,208.55<svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
   <div class="field" style="margin-block-end:var(--space-4)"><label for="to">To</label>
-    <select id="to"><option>Savings · 04-21-90</option><option>Credit card · 7741</option></select></div>
+    <button type="button" class="pick" id="to" role="combobox" aria-haspopup="listbox"
+      aria-expanded="false">Savings · 04-21-90<svg class="chev" aria-hidden="true"><use href="#i-chevron-down"/></svg></button></div>
   <div class="field" style="margin-block-end:var(--space-5)"><label for="amt">Amount</label>
     <input id="amt" inputmode="decimal" value="500.00" />
     <span class="hint">Arrives instantly between your own accounts.</span></div>

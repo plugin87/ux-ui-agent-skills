@@ -39,6 +39,30 @@ then load the rule file for the territory you are actually in.
    `DS_REQUIRE_BROWSER=1` so that becomes `REQUIRED, FAILING`, and fix it with
    `npx playwright install chrome` rather than by removing the flag.
 
+## Two house rules on what never ships
+
+**Never ship a native `<select>`.** It draws its own chevron, pressed against the
+control's edge with no breathing room, and `appearance: none` plus a custom
+chevron fights the platform instead of matching the system. Use the Listbox or
+Combobox pattern in
+`${CLAUDE_SKILL_DIR}/../../../components/forms-advanced.md`: a button trigger
+that announces the current value, the chevron placed with inner padding from
+tokens, and full keyboard parity (typeahead, arrows, Home/End, Escape,
+`aria-expanded` that really toggles something visible). Losing native select
+means accessibility stops being free, so the replacement has to pass every state,
+keyboard and axe gate before it counts. Measured by
+`${CLAUDE_SKILL_DIR}/../../../scripts/lint_native_select.py`.
+
+**Never a colored border on one side only** of a card, alert, toast or callout -
+`border-left`, `border-right`, `border-top`, `border-bottom`, or the logical
+`border-inline-*` and `border-block-*` forms. The tinted 3-4px bar is a
+generated-UI cliche in every direction, not only on the left: it is decoration
+standing in for hierarchy the layout never established. Use a full hairline
+border on all sides, or surface and elevation separation, and carry status with a
+real icon plus text, never colour alone. Measured on the render by the one-sided
+accent-border tell in
+`${CLAUDE_SKILL_DIR}/../../../scripts/slop_tells.mjs`.
+
 ## Taste preflight - before any markup
 
 The gates cannot see this half, so it has to be decided rather than discovered.

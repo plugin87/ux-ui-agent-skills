@@ -7,7 +7,7 @@ only ever sees passing examples proves nothing.
 ## The bar, in one line
 
 ```bash
-node scripts/accuracy_report.mjs     # 46/46 or it fails - no partial credit
+node scripts/accuracy_report.mjs     # 47/47 or it fails - no partial credit
 npm run test:gates                   # every gate must still REJECT a broken fixture
 ```
 
@@ -20,7 +20,7 @@ the output anyway - a disputed gate is a conversation, a skipped gate is not.
 ```bash
 git clone https://github.com/plugin87/ux-ui-agent-skills.git
 cd ux-ui-agent-skills
-npm install                 # playwright — needed by 31 of the 46 gates, not dev-only
+npm install                 # playwright — needed by 32 of the 47 gates, not dev-only
 npx playwright install chrome
 npm test                    # browser-free gates
 npm run test:unit           # unit + CLI + registry consistency

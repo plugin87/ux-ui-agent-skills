@@ -99,12 +99,18 @@ main{display:flex;flex-direction:column;min-inline-size:0}
    with it. Align to the start and give the control a fixed height. */
 .field{display:grid;gap:var(--space-2);min-inline-size:0;align-content:start}
 .field label{font-size:var(--text-sm);font-weight:500}
-.field input,.field select{block-size:var(--size-control-md)}
-.field input,.field select,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
+/* No native <select>: it draws its own chevron hard against the edge. .pick is
+   the button trigger that replaces it - same metrics as an input, with the
+   chevron placed by the layout so it keeps real inner padding. */
+.field input,.field .pick{block-size:var(--size-control-md)}
+.field input,.field .pick,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
   padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
   background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--text-sm)/1.4 var(--font-sans)}
+.field .pick{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);
+  text-align:start;cursor:pointer}
+.field .pick .chev{inline-size:var(--size-icon-sm,1rem);block-size:var(--size-icon-sm,1rem);flex:none;opacity:.7}
 .field textarea{padding-block:var(--space-2);min-block-size:5rem;resize:vertical}
-.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.field input:focus-visible,.field .pick:focus-visible,.field textarea:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
 .field .hint{font-size:var(--text-xs);color:var(--color-text-secondary)}
 
 /* badges: a dot is a pair for the word, never the only signal */

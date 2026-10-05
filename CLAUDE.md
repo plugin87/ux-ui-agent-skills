@@ -130,6 +130,18 @@ files, never placeholders (`// ... rest unchanged`). Asked for N components or
 screens, deliver all N. Split only at clean boundaries when length forces it, and
 continue to completion.
 
+**6. Two house rules on what never ships.** *Never a native `<select>`* - it
+draws its own chevron hard against the control edge and cannot be made to match
+the system. Use the Listbox or Combobox pattern in `components/forms-advanced.md`:
+button trigger, chevron placed with inner padding from tokens, full keyboard
+parity. Accessibility stops being free, so the replacement must pass every state,
+keyboard and axe gate. *Never a colored border on one side only* of a card,
+alert, toast or callout - left, right, top, bottom, or the logical forms. The
+tinted bar is a generated-UI cliche in every direction; use a full hairline
+border or surface separation, and carry status with a real icon plus text, never
+colour alone. Measured by `scripts/lint_native_select.py` and by the one-sided
+accent-border tell in `scripts/slop_tells.mjs`.
+
 ---
 
 ## Rules — depth, loaded when relevant

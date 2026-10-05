@@ -72,6 +72,59 @@ for (const f of files) {
     };
 
     // 1. radius monotony — among card/button/input-sized rounded boxes
+    /* 9. One-sided accent border.
+       A card, alert, toast or callout wearing a thick colored bar on exactly one
+       side. The maintainer bans it in every direction, not only the left: it is
+       decoration standing in for hierarchy the layout never established.
+       Measured on computed style, so a utility class like border-l-4 is caught
+       the same as the longhand, and a tab underline or a spinner ring is not -
+       those are not boxes with a surface. */
+    const oneSidedBars = [];
+    const SIDES = ['Top', 'Right', 'Bottom', 'Left'];
+    for (const el of document.querySelectorAll('div,section,article,aside,li,p,form,figure')) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 80 || r.height < 32) continue;
+      const cs = getComputedStyle(el);
+      // only boxes that read as a surface: a fill, a radius, or padding
+      const filled = cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent';
+      const padded = parseFloat(cs.paddingLeft) >= 8 || parseFloat(cs.paddingTop) >= 8;
+      if (!filled && !padded) continue;
+
+      const w = SIDES.map(s => parseFloat(cs[`border${s}Width`]) || 0);
+      const c = SIDES.map(s => cs[`border${s}Color`]);
+      const visible = SIDES.map((s, i) => w[i] > 0 && cs[`border${s}Style`] !== 'none'
+        && c[i] !== 'rgba(0, 0, 0, 0)' && c[i] !== 'transparent');
+
+      /* "Colored" is the operative word, and it is where this tell needed
+         calibrating: the cliche is a SATURATED status bar standing in for
+         hierarchy. A neutral rule - a near-transparent white list divider, a grey
+         keyline - is not an accent, and flagging it made the tell noisy on real
+         pages rather than sharp on bad ones. Hue -1 from the helper above means
+         neutral, so only hued borders count. */
+      const colored = c.map(x => { const v = rgb(x); return v ? hue(v[0], v[1], v[2]) !== -1 : false; });
+      const thick = w.map((x, i) => visible[i] && colored[i] && x >= 2);
+      const thickCount = thick.filter(Boolean).length;
+      if (thickCount === 1) {
+        const i = thick.indexOf(true);
+        const others = w.filter((_, j) => j !== i);
+        if (others.every(x => x <= 1)) {
+          oneSidedBars.push({ side: SIDES[i], width: w[i], color: c[i],
+            tag: el.tagName.toLowerCase(), cls: (el.className || '').toString().slice(0, 40) });
+          continue;
+        }
+      }
+      // the same cliche spelled as a colour change: four borders, one odd out
+      if (visible.every(Boolean)) {
+        const uniq = [...new Set(c)];
+        if (uniq.length === 2) {
+          const odd = c.findIndex(x => c.filter(y => y === x).length === 1);
+          if (odd >= 0 && colored[odd]) oneSidedBars.push({ side: SIDES[odd], width: w[odd], color: c[odd],
+            tag: el.tagName.toLowerCase(), cls: (el.className || '').toString().slice(0, 40),
+            viaColor: true });
+        }
+      }
+    }
+
     const radii = {}; let roundedBoxes = 0;
     // 7. padding distribution
     const pads = {}; let padBoxes = 0;
@@ -149,6 +202,7 @@ for (const f of files) {
       shadows: Object.keys(shadows).length, genericShadow, blackShadow,
       aiGradient, blackText, neutrals: [...neutrals],
       lorem: /lorem ipsum|\bplaceholder text\b/i.test(document.body.innerText || ''),
+      oneSided: oneSidedBars,
     };
   });
   await page.close();
@@ -175,6 +229,13 @@ for (const f of files) {
     findings.push(['HIGH', `Hardcoded indigo/violet -> blue gradient${data.aiGradient.angle ? ` (${data.aiGradient.angle}deg)` : ''} — the single most common generated-UI tell. Tokenize it (gradients.json) or use a flat surface.`]);
 
   // 4. pure black text
+  // 9. one-sided accent border (a rule the maintainer set)
+  if (data.oneSided?.length) {
+    const first = data.oneSided.slice(0, 3).map(b =>
+      `${b.tag}${b.cls ? '.' + b.cls.trim().split(/\s+/)[0] : ''} ${b.side.toLowerCase()} ${b.width}px ${b.color}${b.viaColor ? ' (colour, not width)' : ''}`);
+    findings.push(['HIGH', `${data.oneSided.length} element(s) wear a colored border on ONE side only - ${first.join('; ')}${data.oneSided.length > 3 ? ', ...' : ''}. The tinted bar is a generated-UI cliche in every direction, not just the left. Use a full hairline border or surface separation, and carry status with an icon plus text.`]);
+  }
+
   if (data.blackText >= 1)
     findings.push(['MED', `${data.blackText} element(s) use pure #000 text — switch to a tinted near-black (e.g. text.primary token) for less eye strain.`]);
 

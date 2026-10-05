@@ -34,7 +34,12 @@ Custom-styled selection from a list (single or multi), groups, custom rendering.
 **States (8):** default, hover, focus, open, selected, disabled, loading, error (`state.error.border`).
 
 **Accessibility:**
-- Prefer native `<select>` when styling allows — free a11y. For custom: ARIA Listbox or Combobox pattern (above).
+- **Never ship a native `<select>` in generated UI.** It draws its own chevron, pressed against
+  the control edge with no breathing room, and `appearance: none` plus a custom chevron fights
+  the platform rather than matching the system. Use the Listbox or Combobox pattern above: a
+  button trigger, the chevron placed with inner padding from tokens, and full keyboard parity.
+  Losing native select means accessibility is no longer free, so the custom one must pass every
+  state, keyboard and axe gate before it counts.
 - Trigger announces current value; `aria-expanded`; keyboard parity with native select (typeahead, arrows, `Esc`).
 
 ---

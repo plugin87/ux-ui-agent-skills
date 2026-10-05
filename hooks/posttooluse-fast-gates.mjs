@@ -52,6 +52,8 @@ try {
 const GATES = [
   ['python3', [join(ROOT, 'scripts/lint_hardcodes.py'), file]],
   ['python3', [join(ROOT, 'scripts/check_no_emoji.py'), file]],
+  // A house rule, caught at the moment it is written rather than at review.
+  ['python3', [join(ROOT, 'scripts/lint_native_select.py'), file]],
 ];
 
 const findings = [];
