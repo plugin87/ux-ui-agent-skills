@@ -8,7 +8,12 @@ description: Pre-release gate — run the full gate, responsive + render checks,
 # listing budget the model's skill choice is drawn from.
 disable-model-invocation: true
 ---
-
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Gate first, then prepare the release. Do nothing destructive without explicit
 confirmation (no tag, no publish) — this command verifies and drafts only.

@@ -1,10 +1,16 @@
 ---
 name: a11y-audit
 description: Audit a UI or design against WCAG 2.2 AA/AAA and ARIA patterns, returning criterion-referenced findings with severity and specific fixes. Use when the user wants an accessibility check, contrast verification, keyboard/screen-reader review, or wants to confirm a component meets POUR.
-invocation: model
 ---
 
 # Skill: Accessibility Audit
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Evaluate against WCAG 2.2 and the project's ARIA patterns.
 

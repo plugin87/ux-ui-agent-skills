@@ -1,10 +1,16 @@
 ---
 name: design-component
 description: Design a UI component spec to the house quality bar — anatomy, variants, sizes, the 8 states, token mapping, and accessibility. Use when the user wants to design or document a component (button, input, tabs, toast, combobox, date picker, modal, etc.) at the spec level before or alongside code. For generating framework code, use design-code.
-invocation: model
 ---
 
 # Skill: Design Component
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Produce a complete component specification matching the project format.
 

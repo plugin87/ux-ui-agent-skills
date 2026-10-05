@@ -1,10 +1,16 @@
 ---
 name: apply-aesthetic
 description: Apply a visual direction — an archetype (high-end agency, editorial minimal, brutalist, soft-SaaS, dark-tech) or one of 138 named design systems (apple, linear-app, stripe, vercel, notion, material, shadcn, spotify, tesla…) — by resolving it into the token system. Use when the user wants a specific look/vibe/brand feel, or asks to make a design feel premium/expensive/non-generic.
-invocation: model
 ---
 
 # Skill: Apply Aesthetic
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Choose and apply a design direction without breaking accessibility.
 

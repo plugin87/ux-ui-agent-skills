@@ -187,6 +187,46 @@ got back.
 
 ---
 
+## After 1.2 and 1.3 — the kit notices when it is missing, and user-only is real
+
+**1.2.** `npx skills add` copies the skill folders alone: no `scripts/`, no
+`tokens/`, no `taste/`. Every skill that reads a kit file now opens with a check:
+
+```
+ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING
+```
+
+Verified both ways — `KIT_OK` in a normal install, `KIT_MISSING` against a tree
+holding `.claude/skills/` and nothing else. On `KIT_MISSING` the skill names the
+install that fixes it and stops, rather than proceeding from files it never
+opened.
+
+**H1 for `skills-add` stays 0.0%, deliberately.** The references still do not
+resolve; what changed is that the failure is now loud instead of silent. Scoring
+a louder failure as a resolved path would be exactly the kind of flattering
+measurement this file keeps catching. Making that route actually work means
+shipping the kit through it, which is a different fix.
+
+**1.3.** All 19 skills carried `invocation: user|model`, a key Claude Code does
+not read. Unknown frontmatter keys are ignored without an error, so the six
+marked user-only had been auto-invocable for as long as the field existed, and
+`claude plugin validate` passed the whole time.
+
+| | before | after |
+|---|---|---|
+| skills whose user-only marking actually worked | **0 of 6** | 11 of 11 |
+| skills in the model's listing | 24 | 13 |
+
+Confirmed live: after the change the session's skill listing dropped the eleven
+user-started skills and showed thirteen, which is also the Cause 4 saving — the
+listing budget no longer carries entries the model must never pick.
+
+`tests/meta/skill-frontmatter.test.mjs` pins the allowed frontmatter keys, so a
+future typo cannot behave like a working field, and holds the inverse too: a
+design skill accidentally hidden from the model is a skill that never runs.
+
+---
+
 ## Re-measuring
 
 ```bash

@@ -8,7 +8,12 @@ description: Adversarial design critique of the current work — render it, look
 # listing budget the model's skill choice is drawn from.
 disable-model-invocation: true
 ---
-
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 The gates prove objective correctness. They cannot tell you whether the work is
 any good. This command closes that gap the only honest way: render the thing, look

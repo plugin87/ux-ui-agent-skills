@@ -1,10 +1,16 @@
 ---
 name: data-dashboard
 description: Build a dense, data-heavy screen - an analytics console or a trading terminal - with real charts drawn from tokens: candlestick, volume, depth, stacked area, waterfall, scatter, correlation matrix, donut, gauge, sparklines, heatmaps and order books. Use when the request is a dashboard, terminal, monitoring view, data console, or any screen whose job is to show many numbers at once. Covers the layout sequence, the SVG geometry, the accessibility contract per chart type, and the contrast traps that only appear in dark mode.
-invocation: model
 ---
 
 # Skill: Data dashboard
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 A dashboard is the hardest screen to keep honest: it is dense, it is mostly
 non-text, and almost every default makes it worse. This is the recipe that

@@ -212,15 +212,27 @@ project you open — no files copied into your repo:
 /plugin install ux-ui-agent-skills@ux-ui-agent-skills
 ```
 
-You get 24 skills and the `design-critic` agent. Nineteen are the design work
-itself (`/design-component`, `/data-dashboard`, `/brandkit`, …). The other five
-are the ones you start by hand (`/gate`, `/critique`, `/grill-me`, `/ship`,
-`/scaffold-project`); they were commands until 2026-10-05, and are skills now so
-that they have a `CLAUDE_SKILL_DIR` of their own and their paths resolve under a
-plugin install. They carry `disable-model-invocation: true`, so the model never
-starts them and they cost nothing in the skill listing. The `design-doctrine` skill carries the house rules that
-`CLAUDE.md` carries in the repo, because a plugin root `CLAUDE.md` is not loaded
-as project context.
+You get 24 skills and the `design-critic` agent.
+
+**Thirteen the model reaches for on its own** when the work calls for them:
+`design-tokens`, `design-component`, `design-code`, `design-review`,
+`a11y-audit`, `apply-aesthetic`, `data-dashboard`, `design-qa`,
+`figma-integration`, `performance`, `token-build`, `ux-writing`, and
+`design-doctrine`.
+
+**Eleven you start yourself**, because each one takes an action or sets a
+direction that should be your call: `/brandkit`, `/governance`, `/image-to-code`,
+`/migrate-design-system`, `/prototype`, `/redesign`, `/gate`, `/critique`,
+`/grill-me`, `/ship`, `/scaffold-project`. They carry
+`disable-model-invocation: true`, which is the field that actually stops the
+model invoking them — until 2026-10-05 six of them said `invocation: user`, a
+key Claude Code does not read, so they were auto-invocable the whole time. The
+last five were commands and are skills now, so they have a `CLAUDE_SKILL_DIR` of
+their own and their paths resolve under a plugin install.
+
+`design-doctrine` carries the house rules that `CLAUDE.md` carries in the repo,
+because a plugin root `CLAUDE.md` is not loaded as project context — Claude
+Code's own `plugin validate` says so.
 
 **Then just work.** Ask for the thing you want and the right skill loads itself:
 

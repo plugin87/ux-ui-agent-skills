@@ -1,10 +1,20 @@
 ---
 name: governance
 description: Govern how the design system evolves — SemVer for tokens/components, the contribution workflow, deprecation policy, and change communication. Use when the user wants to add/promote/deprecate a component or token, decide a version bump, set up a contribution process, or keep the system from fragmenting.
-invocation: user
+# `invocation:` was not a field Claude Code reads - unknown frontmatter keys are
+# ignored without an error, so these six were auto-invocable the whole time they
+# were marked user-only. This is the field that actually does it.
+disable-model-invocation: true
 ---
 
 # Skill: Governance
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Keep the system consistent as it grows. Apply versioning, contribution, and deprecation rules.
 
