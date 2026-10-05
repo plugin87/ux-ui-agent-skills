@@ -32,7 +32,7 @@ produced it is not a score.
 | H1 | Install-path parity | **0.265** | `python3 scripts/measure_install_paths.py` |
 | H2 | Invocation correctness | **0** (no instrument) | needs `claude plugin eval` |
 | H3 | Enforcement coverage | **0.000** | counted below |
-| H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs` |
+| H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs` — built in Phase 3.1 |
 | H5 | Blind first-pass, per route | **0.333** | `evals/RESULTS.md` |
 | H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/` |
 | H7 | Taste applied on page/app work | **0** (no instrument) | needs the page-and-app prompt set |
@@ -270,6 +270,69 @@ inferential measurement was reporting as fine.
 H1 and the Harness Score are unchanged at **0.6667** and **0.143**: this phase
 moves H7, and H7 has no instrument yet. Recording it as an improvement without
 one would be the same mistake this file already documents three times.
+
+---
+
+## After 3.1 and 3.2 — the first things that run without being asked
+
+Every gate in this repo ran because a human typed a command or a skill told the
+model to. H3 was 0.000 for that reason: eleven always-on rules, nothing enforcing
+any of them.
+
+**3.1 — receipts.** `scripts/gate.mjs` runs any gate with `DS_REQUIRE_BROWSER=1`
+always set and writes one JSON line per run: the gate, the file, the **SHA-256 of
+that file at the moment it was measured**, the exit code, the numbers printed,
+and when.
+
+The hash is the whole mechanism. A receipt is evidence only while the file still
+hashes the same:
+
+```
+$ node scripts/gate.mjs --check examples/sample-app/preview.html
+OK: 1 live receipt(s) for examples/sample-app/preview.html
+
+# ... edit the file ...
+$ node scripts/gate.mjs --check examples/sample-app/preview.html
+EXPIRED: it was measured, then edited. The old numbers no longer describe it.
+```
+
+That is exactly the moment a remembered number becomes a lie, and now it is
+detectable rather than a matter of trust.
+
+**3.2 — three hooks**, shipped to both routes: `hooks/hooks.json` with
+`${CLAUDE_PLUGIN_ROOT}` for the plugin, the same scripts in
+`.claude/settings.json` with `$CLAUDE_PROJECT_DIR` for `init`.
+
+| hook | what it does | verified |
+|---|---|---|
+| SessionStart | says whether the render gates can run here at all, before anything is built | prints the verdict, never blocks, spawns no process |
+| PostToolUse on Write/Edit | runs the browser-free gates on the file just written; exit 2 puts the findings in front of Claude | exit 2 on the slop fixture (63 hardcoded values, 12 emoji), exit 0 on a clean file |
+| Stop | refuses to finish when a UI file was edited and has no live receipt | blocks after an edit, releases after a measured run, passes straight through on `stop_hook_active` |
+
+**H3: 0.000 → 0.273.** Three of the eleven always-on rules now fire without the
+model choosing to: no hardcoded values, no emoji, and never state a number you
+did not measure. The other eight still depend on a gate somebody runs.
+
+| | before | after |
+|---|---|---|
+| H3 enforcement coverage | 0.000 | **0.273** |
+| H4 verification receipts | 0 (no instrument) | instrument exists; **first real measurement pending** |
+| Harness Score | 0.143 | **0.182** |
+
+H4 stays 0 on purpose. The wrapper exists, but no session has yet been scored on
+how many of its stated numbers carry a live receipt, and scoring an indicator the
+day its tooling lands — using the tooling's own existence as the evidence — is
+the circularity this file keeps catching.
+
+### The hook that did nothing
+
+The first PostToolUse hook called `require` in an ES module. The
+`ReferenceError` landed in a `catch`, the payload stayed empty, and it exited 0
+on every edit — including a file with 63 hardcoded values and 12 emoji. A hook
+that never fires is indistinguishable from a codebase with no findings, which
+makes it the worst failure available to a mechanism whose entire job is to be
+unskippable. `tests/meta/hooks.test.mjs` drives all three with real JSON on
+stdin and asserts the exit codes, including that one.
 
 ---
 

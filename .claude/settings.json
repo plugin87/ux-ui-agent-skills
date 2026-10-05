@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
+      "Bash(node scripts/gate.mjs:*)",
       "Bash(node scripts/accuracy_report.mjs)",
       "Bash(node scripts/measure_render.mjs:*)",
       "Bash(node scripts/verify_states.mjs:*)",
@@ -31,8 +32,46 @@
       "Bash(python3 scripts/contrast.py:*)",
       "Bash(python3 scripts/scaffold_component.py:*)",
       "Bash(npm test)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(node hooks/:*)"
     ],
     "deny": []
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/hooks/session-start-preflight.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/hooks/posttooluse-fast-gates.mjs\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/hooks/stop-require-measurement.mjs\"",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
   }
 }

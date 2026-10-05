@@ -53,6 +53,7 @@
     "workflows/",
     "content/",
     "scripts/",
+    "hooks/",
     "templates/",
     ".claude/skills/",
     ".claude/rules/",
