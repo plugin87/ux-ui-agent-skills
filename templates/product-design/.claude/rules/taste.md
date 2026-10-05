@@ -55,6 +55,16 @@ it shorter and more specific.
 
 ---
 
+## Mobile is the base
+
+Base styles ARE the phone layout. Wider screens are layered on with `min-width`.
+`max-width` queries are fine for a genuine narrow refinement, or for a range
+between two breakpoints - what is forbidden is a desktop-first stylesheet where
+the base assumes a wide screen and mobile is patched in afterwards.
+
+(The `max-width` *property* is unaffected: it is right for reading measure, a
+container cap, and `max-width: 100%` on an image.)
+
 ## Before you call it done
 
 Screenshot the screen and look at it. Click every control and confirm something

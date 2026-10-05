@@ -130,17 +130,21 @@ files, never placeholders (`// ... rest unchanged`). Asked for N components or
 screens, deliver all N. Split only at clean boundaries when length forces it, and
 continue to completion.
 
+**7. Mobile is the base.** Base styles ARE the phone layout; wider screens layer
+on with `min-width`. `max-width` is fine for a narrow refinement, never as the way
+mobile gets supported. `scripts/verify_mobile_first.mjs` strips every `@media` and
+renders the base at 320px: mobile-first passes, desktop-first cannot fit.
+
 **6. Two house rules on what never ships.** *Never a native `<select>`* - it
-draws its own chevron hard against the control edge and cannot be made to match
-the system. Use the Listbox or Combobox pattern in `components/forms-advanced.md`:
-button trigger, chevron placed with inner padding from tokens, full keyboard
-parity. Accessibility stops being free, so the replacement must pass every state,
-keyboard and axe gate. *Never a colored border on one side only* of a card,
-alert, toast or callout - left, right, top, bottom, or the logical forms. The
-tinted bar is a generated-UI cliche in every direction; use a full hairline
-border or surface separation, and carry status with a real icon plus text, never
-colour alone. Measured by `scripts/lint_native_select.py` and by the one-sided
-accent-border tell in `scripts/slop_tells.mjs`.
+draws its own chevron hard against the control edge and cannot match the system.
+Use the Listbox or Combobox pattern in `components/forms-advanced.md`: button
+trigger, chevron placed with inner padding, full keyboard parity. Accessibility
+stops being free, so the replacement must pass every state, keyboard and axe
+gate. *Never a colored border on one side only* of a card, alert, toast or
+callout, in any direction - the tinted bar is a generated-UI cliche. Full
+hairline border or surface separation, status by icon plus text. Measured by
+`scripts/lint_native_select.py` and the one-sided-border tell in
+`scripts/slop_tells.mjs`.
 
 ---
 

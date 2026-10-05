@@ -39,6 +39,18 @@ then load the rule file for the territory you are actually in.
    `DS_REQUIRE_BROWSER=1` so that becomes `REQUIRED, FAILING`, and fix it with
    `npx playwright install chrome` rather than by removing the flag.
 
+## Mobile is the base
+
+Base styles ARE the phone layout. Wider screens are layered on with `min-width`.
+`max-width` is not banned - it is right for a genuine narrow refinement, or for a
+range between two breakpoints - but a desktop-first stylesheet, where the base
+assumes a wide screen and mobile is patched in afterwards, is a bug.
+
+Measured by `${CLAUDE_SKILL_DIR}/../../../scripts/verify_mobile_first.mjs`, which
+removes every `@media` and `@container` rule and renders what is left at 320px. A
+mobile-first page passes because its base already is the phone layout. A
+desktop-first page cannot fit.
+
 ## Two house rules on what never ships
 
 **Never ship a native `<select>`.** It draws its own chevron, pressed against the

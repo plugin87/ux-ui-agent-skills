@@ -24,9 +24,12 @@
     font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
   .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
   .c-bad{--dot:var(--color-text-error)} .c-ok{--dot:var(--trm-accent)}
-  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
-  @media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-  @media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+  /* Mobile first: the base IS the phone layout. This was a 12-column grid
+     stepped down by two max-width queries, so stripping the queries left a
+     wide layout that overflowed a phone. */
+  .grid{display:grid;gap:var(--space-4);grid-template-columns:minmax(0,1fr);padding:var(--space-3)}
+  @media (min-width:46rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr));padding:var(--space-4)}}
+  @media (min-width:72rem){.grid{grid-template-columns:repeat(12,minmax(0,1fr))}}
   .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
     padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
   .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;
@@ -35,16 +38,23 @@
   h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
     color:var(--lin-ink-3)}
   .note{color:var(--lin-ink-3);font-size:var(--text-xs)}
-  .c8{grid-column:span 8} .c4{grid-column:span 4} .c6{grid-column:span 6}
-  @media (max-width:72rem){.c8,.c6{grid-column:span 6} .c4{grid-column:span 3}}
-  @media (max-width:46rem){.c8,.c6,.c4{grid-column:span 1}}
+  .c8,.c4,.c6{grid-column:span 1}
+  @media (min-width:46rem){.c8,.c6{grid-column:span 6} .c4{grid-column:span 3}}
+  @media (min-width:72rem){.c8{grid-column:span 8} .c4{grid-column:span 4} .c6{grid-column:span 6}}
 
   /* waterfall */
-  .span{display:grid;grid-template-columns:minmax(6rem,12rem) 5.5rem minmax(0,1fr) 4.5rem;gap:var(--space-3);
-    align-items:center;padding-block:var(--space-1);min-inline-size:0}
-  @media (max-width:52rem){.span{grid-template-columns:minmax(0,1fr) 4.5rem;grid-template-areas:"nm ms" "tr tr";
-    row-gap:var(--space-1)}
-    .span .nm{grid-area:nm} .span .ms{grid-area:ms} .span .track{grid-area:tr} .span .svc{display:none}}
+  /* Mobile first: on a phone a span is two rows - name and duration, then the
+     track beneath. The four fixed columns are added for wider screens. The old
+     base was those four columns, and a minmax(6rem,12rem) floor cannot shrink
+     past 6rem, so the base layer could not fit a 320px screen at all. */
+  .span{display:grid;grid-template-columns:minmax(0,1fr) 4.5rem;grid-template-areas:"nm ms" "tr tr";
+    gap:var(--space-3);row-gap:var(--space-1);align-items:center;padding-block:var(--space-1);min-inline-size:0}
+  .span .nm{grid-area:nm} .span .ms{grid-area:ms} .span .track{grid-area:tr} .span .svc{display:none}
+  @media (min-width:52rem){
+    .span{grid-template-columns:minmax(6rem,12rem) 5.5rem minmax(0,1fr) 4.5rem;grid-template-areas:none;
+      row-gap:0}
+    .span .nm,.span .ms,.span .track{grid-area:auto} .span .svc{display:block}
+  }
   .span .nm{padding-inline-start:calc(var(--d) * var(--space-4));font-size:var(--text-xs);
     overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--lin-ink-2)}
   .span .svc{font-family:var(--font-mono);font-size:.625rem;letter-spacing:.06em;text-transform:uppercase;

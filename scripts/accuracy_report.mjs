@@ -31,6 +31,8 @@ const checks = [
    'node --test tests/meta/hooks.test.mjs'],
   ['No native select, and no one-sided accent border - the two house rules',
    'python3 scripts/lint_native_select.py examples && node scripts/slop_tells.mjs --strict tests/fixtures/bad/one-sided-border.html; test $? -eq 1'],
+  ['Mobile-first - every base layer is the phone layout, with the queries removed',
+   'node scripts/verify_mobile_first.mjs examples'],
   ['No emoji in UI output, taste docs, or the agent instruction surface', 'python3 scripts/check_no_emoji.py'],
   ['REAL-render WCAG — sample-app (light)', 'node scripts/measure_render.mjs examples/sample-app/preview.html'],
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],

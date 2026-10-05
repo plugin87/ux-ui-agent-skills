@@ -336,6 +336,52 @@ stdin and asserts the exit codes, including that one.
 
 ---
 
+## After 3.7 and 3.8 — three house rules, each with a gate
+
+**3.7** is recorded in the commit; both rules now have a gate and a fixture.
+
+**3.8, mobile-first.** The doctrine already said it. `tokens/breakpoints.json`
+described its breakpoints as mobile-first, `CLAUDE.md` said "Mobile-first", and
+the adapter protocol agreed. The examples said the opposite: **90 `max-width`
+media queries against 9 `min-width`**, and agents copy examples far more readily
+than they follow prose.
+
+Counting cannot tell a desktop-first stylesheet from a mobile-first one with a
+couple of narrow refinements, so `scripts/verify_mobile_first.mjs` does not
+count. It removes every `@media` and `@container` rule and renders what is left
+at 320px. A mobile-first page passes because its base already is the phone
+layout; a desktop-first page cannot fit.
+
+| | before | after |
+|---|---|---|
+| pages whose base layer fits a phone | 39 of 49 | **49 of 49** |
+| worst base overflow | 204px (showcase) | 0 |
+
+Ten pages were desktop-first. The fixes were structural, not cosmetic: the
+console grid and the app shell were built from a 12-column base stepped *down*
+by `max-width`, so the base layer was a wide layout that only worked once a query
+patched it. Four of the ten also exposed the same underlying bug, which is Cause
+2 in the repo's own narrow-width rules and had been invisible until the queries
+came off: `min-inline-size:0` lets a PANEL shrink and does nothing for the
+implicit grid column inside it, which is `max-content` and sizes itself to the
+widest child.
+
+`max-width` is not banned, and `tests/fixtures/good/mobile-first.html` is the
+fixture that proves it: a mobile-first page using two genuine narrow refinements,
+which the gate must accept. `tests/fixtures/bad/desktop-first.html` is the one it
+must reject.
+
+**The refactor broke something, and the existing gates caught it.**
+`verify_responsive` failed `trial.html` at 280px under a 1.25x root font, +26px.
+The forest-plot axis centres each label on its tick, so the outermost hung half a
+label past the edge — invisible until the layout stopped being wide enough to
+hide it. The end labels anchor to the edge now. That failure is the argument for
+running the whole suite rather than only the gate you just wrote.
+
+Registry 47 -> 48.
+
+---
+
 ## Re-measuring
 
 ```bash

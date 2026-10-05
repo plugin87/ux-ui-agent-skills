@@ -1,10 +1,36 @@
-## What changed, and why
+> **Pull requests are not merged in this repository.**
+>
+> Every line here is written by its maintainer, which is a deliberate choice. If
+> you opened this PR, thank you for the work, and please read this before going
+> further: it will not be merged, and that is policy rather than a verdict on the
+> change.
+>
+> **What does get acted on**, and credited by name in the CHANGELOG:
+>
+> - **A gate gap** - a case where a gate reports green on something wrong. The
+>   most valuable report there is. Open a *gate gap* issue with the input and the
+>   real output.
+> - **A reproduction** - a screen, token set or prompt where the kit produces
+>   something bad.
+> - **A proposal** - the idea, the reasoning, and what it would replace.
+>
+> If the change in this PR describes a real problem, please close it and open an
+> issue with the same description. The fix gets written here and your name goes on
+> it. Forking is welcome too; the MIT licence says so.
+>
+> Full policy: [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+---
+
+## What this would change, and why
 
 <!-- The diff shows what. Say why, and what you decided against. -->
 
-## Gate output
+## The problem it reports
 
-<!-- Paste the real run. Do not describe it. If it could not run, say which gate and why. -->
+<!-- This is the part that is actually used. What goes wrong, with the real input
+     and the real output. A gate that said green when it should not have is worth
+     more than the patch. -->
 
 ```
 $ node scripts/accuracy_report.mjs
@@ -12,20 +38,3 @@ $ node scripts/accuracy_report.mjs
 $ npm run test:gates
 
 ```
-
-## Checklist
-
-- [ ] `node scripts/accuracy_report.mjs` is green, and the output is pasted above
-- [ ] `npm run test:gates` is green (every gate still rejects its broken fixture)
-- [ ] No emoji anywhere: UI, code, JSON, copy, comments, commit messages
-- [ ] No hardcoded hex, px, or timing outside a commented `ds-allow-hardcode` exception
-- [ ] Every number in the description and the docs was measured, not remembered
-- [ ] If this adds a gate: a fixture in `tests/fixtures/bad/`, a meta-test asserting exit 1 for the right reason, and the count bumped in `tests/meta/registry.test.mjs`
-- [ ] If this adds a component: the eight states, a harness under `examples/component-states/`, and a row in the `CLAUDE.md` router
-- [ ] Version impact named below
-
-**Version impact:** patch / minor / major (see `workflows/governance.md`)
-
-## What is still open
-
-<!-- Written down beats implied. If part of this is deliberately unfinished, say so here. -->

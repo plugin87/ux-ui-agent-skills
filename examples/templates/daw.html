@@ -31,8 +31,8 @@
   .key:focus-visible{outline:var(--ring-w) solid var(--lin-accent);outline-offset:var(--space-1)}
   .key[aria-pressed="true"]{background:var(--lin-accent-bg)}
 
-  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 22rem;gap:var(--space-4);padding:var(--space-4)}
-  @media (max-width:72rem){.wrap{grid-template-columns:minmax(0,1fr)}}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-4);padding:var(--space-4)}
+  @media (min-width:72rem){.wrap{grid-template-columns:minmax(0,1fr) 22rem}}
   .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
     padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
   .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap}

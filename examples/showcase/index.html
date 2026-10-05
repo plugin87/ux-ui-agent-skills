@@ -17,8 +17,8 @@
   .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
   /* ---------- shell: sidebar + main, collapses to a single column ---------- */
-  .shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100dvh}
-  @media (max-width:63rem){.shell{grid-template-columns:minmax(0,1fr)}}
+  .shell{display:grid;grid-template-columns:minmax(0,1fr);min-block-size:100dvh}
+  @media (min-width:63rem){.shell{grid-template-columns:15rem minmax(0,1fr)}}
 
   .side{display:flex;flex-direction:column;gap:var(--space-6);padding:var(--space-5) var(--space-4);
     background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default)}
@@ -89,8 +89,8 @@
     box-shadow:var(--shadow-sm)}
 
   /* ---------- hero: one thing leads ---------- */
-  .hero{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5)}
-  @media (max-width:60rem){.hero{grid-template-columns:minmax(0,1fr)}}
+  .hero{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-5)}
+  @media (min-width:60rem){.hero{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr)}}
   .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);
     border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0}
   .card.lift{box-shadow:var(--shadow-md)}
@@ -155,8 +155,8 @@
   .acct span{overflow-wrap:anywhere}
 
   /* ---------- feed ---------- */
-  .split{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
-  @media (max-width:60rem){.split{grid-template-columns:minmax(0,1fr)}}
+  .split{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (min-width:60rem){.split{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr)}}
   .feed{display:grid;gap:var(--space-4);list-style:none;padding:0}
   .feed li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3)}
   .feed .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);

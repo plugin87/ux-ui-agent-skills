@@ -98,7 +98,9 @@ Reference output to match for quality:
 
 ## 4. Build
 
-Mobile-first. Every value a token. Every interactive element ships all eight
+**Mobile is the base**, not an afterthought: write the phone layout as the base
+styles and layer wider screens on with `min-width`. `max-width` is fine for a
+narrow refinement, never as the way mobile gets supported. Every value a token. Every interactive element ships all eight
 states. Content first, then the layout that serves it.
 
 ## 5. Gate — run it, never claim it
