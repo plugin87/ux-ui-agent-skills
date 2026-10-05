@@ -15,8 +15,7 @@ disable-model-invocation: true
 > `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
 > contents of a file you could not open.
 
-Generate a new design-project skeleton from `${CLAUDE_SKILL_DIR}/../../../templates/product-design/` (Track B
-of `${CLAUDE_SKILL_DIR}/../../../docs/restructure-plan.md`) into a target directory the user names.
+Generate a new design-project skeleton from `${CLAUDE_SKILL_DIR}/../../../templates/product-design/` into a target directory the user names.
 
 The layout to produce (exactly the reference structure):
 

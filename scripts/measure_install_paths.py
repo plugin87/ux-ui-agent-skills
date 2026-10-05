@@ -153,12 +153,19 @@ def resolves(path_text: str, guarded: bool, route: str) -> bool:
     """Would this reference open, on this install route?"""
     if guarded:
         # A variable fixes WHERE the kit root is. It cannot conjure a kit that was
-        # never copied: `npx skills add` installs the skill folder alone, so
-        # ../../../scripts points at a directory that does not exist on that
-        # route no matter how the path is spelled. Treating a guarded reference
-        # as resolved everywhere is how this script first reported H1 = 1.0.
+        # never copied. Treating a guarded reference as resolved everywhere is how
+        # this script first reported H1 = 1.0.
         if route == "skills-add":
+            # That route installs the skill folder alone, so ../../../scripts
+            # points at a directory that does not exist, however it is spelled.
             return path_text.split("/", 1)[0] in SKILLS_ADD_KEEPS
+        if route == "init":
+            # And a variable does not install an area the CLI never copies.
+            # tests/cli/installed-references.test.mjs caught three of these while
+            # this function was still returning True for every guarded init path:
+            # templates/ and docs/ were not in AREAS, so scaffold-project pointed
+            # at nothing in a real initialised project while this reported 100%.
+            return installed_by_cli(path_text)
         return True
     target = ROOT / path_text
     if not target.exists():
