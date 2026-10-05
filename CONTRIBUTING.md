@@ -4,16 +4,40 @@ This repo is an instruction layer for an AI agent, plus the gates that keep the
 agent honest. Both halves matter: a rule nothing enforces drifts, and a gate that
 only ever sees passing examples proves nothing.
 
-## The bar, in one line
+## Pull requests are not merged here
+
+Every line in this repository is written by its maintainer, and that is a
+deliberate choice rather than an oversight. **Pull requests will not be merged.**
+Asking anyone to meet a bar and then declining their work would waste their time,
+so the policy is stated here instead of discovered at the end of a review.
+
+What is genuinely wanted, and acted on:
+
+- **A gate gap.** A case where a gate reports green on something that is wrong is
+  the most valuable report there is. Open a gate-gap issue with the input and the
+  output; the fix gets written here, and you are credited by name in the
+  CHANGELOG entry that carries it.
+- **A reproduction.** A screen, a token set, or a prompt where the kit produces
+  something bad. Show the real output.
+- **A proposal.** The idea, the reasoning, and what it would replace.
+
+Credit for a reported idea goes in the CHANGELOG as "Reported by @name". That is
+a real contribution and it is recorded as one; what does not happen is someone
+else's code landing in the history.
+
+If you want the kit to do something it does not, forking is welcome and the MIT
+licence says so.
+
+## The bar, for the maintainer and for anything proposed
 
 ```bash
 node scripts/accuracy_report.mjs     # 47/47 or it fails - no partial credit
 npm run test:gates                   # every gate must still REJECT a broken fixture
 ```
 
-Both must be green before a pull request. Paste the real output in the PR; do not
-describe it. If a run is red and you believe the gate is wrong, say so and show
-the output anyway - a disputed gate is a conversation, a skipped gate is not.
+Both must be green before anything ships. Paste the real output; do not describe
+it. If a run is red and you believe the gate is wrong, say so and show the output
+anyway - a disputed gate is a conversation, a skipped gate is not.
 
 ## Setup
 

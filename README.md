@@ -379,7 +379,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | **[Live demo](https://plugin87.github.io/ux-ui-agent-skills/)** | 49 rendered pages: twenty industry screens, every component harness, both reference screens, a theme toggle |
 | [docs/GUIDE.md](docs/GUIDE.md) | Using it as a plugin (inventory, management, token cost), how the skills compose, the repo map, token architecture, frameworks, interop, a11y standards, starting a new product project |
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | The bar for a pull request, and how to add a gate that can still say no |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Why PRs are not merged, what to report instead, and how a gate that can still say no is built |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |
 | [.claude/rules/](.claude/rules/) | The depth behind it: tokens and colour, type and spacing, components, accessibility, frameworks, review, brand and operations |
 | [taste/](taste/) | The anti-slop doctrine, 138 named design systems, motion choreography |
@@ -389,10 +389,17 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ## Contributing
 
 
-Two commands are the whole bar: `node scripts/accuracy_report.mjs` (47/47, no
-partial credit) and `npm run test:gates` (every gate must still reject its
-broken fixture). Paste the real output in the pull request rather than
-describing it.
+**Pull requests are not merged here.** Every line is written by the maintainer,
+deliberately. Asking for work against a bar and then declining it would waste
+your time, so the policy is stated up front instead of at the end of a review.
+
+What is wanted, and credited by name in the CHANGELOG: a **gate gap**, a
+**reproduction**, or a **proposal**. Forking is welcome; the MIT licence says so.
+
+Two commands are the whole bar for anything that does ship:
+`node scripts/accuracy_report.mjs` (47/47, no partial credit) and
+`npm run test:gates` (every gate must still reject its broken fixture). Paste
+the real output rather than describing it.
 
 The most valuable issue this repo can receive is a **gate gap** - a case where a
 gate said yes to work it should have caught. There is a template for exactly
