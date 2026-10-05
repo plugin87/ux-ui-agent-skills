@@ -36,6 +36,17 @@ const AREAS = {
   rules: '.claude/rules',
 };
 
+// Counted, never typed. This line read "10 runnable Claude skills" while 19 were
+// installed, because a number in a string has nothing holding it to the folder.
+function skillCount() {
+  try {
+    return fs.readdirSync(path.join(ROOT, '.claude', 'skills'), { withFileTypes: true })
+      .filter(d => d.isDirectory()).length;
+  } catch {
+    return 0;
+  }
+}
+
 const DESC = {
   claude: 'CLAUDE.md — agent persona & master instructions (+ Request Router)',
   tokens: '13 DTCG token files (colors, type, spacing, motion, theming…)',
@@ -47,7 +58,7 @@ const DESC = {
   workflows: 'Design review, handoff, prototyping, redesign-audit',
   content: 'Voice & tone / UX writing system',
   scripts: 'validate_tokens · contrast · design_systems · scaffold_component',
-  skills: '10 runnable Claude skills (.claude/skills/)',
+  skills: `${skillCount()} runnable Claude skills (.claude/skills/)`,
   rules: 'Depth split out of CLAUDE.md, loaded on demand (.claude/rules/)',
 };
 

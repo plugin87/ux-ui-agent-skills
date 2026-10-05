@@ -18,16 +18,36 @@ Usage:
   python3 scripts/measure_install_paths.py            # table + the H1 score
   python3 scripts/measure_install_paths.py --json     # machine-readable
   python3 scripts/measure_install_paths.py --list-unresolved <route>
+  python3 scripts/measure_install_paths.py --gate      # fail if a bare path is back
+  python3 scripts/measure_install_paths.py --root DIR  # measure a copy
 
-This measures, it does not judge: it always exits 0. It is a baseline
-instrument, not a gate.
+Reporting is the default and always exits 0. `--gate` is the half that can say
+no: it fails when any reference in the surface is NOT built from a path variable,
+which is the state the whole surface was in before 2026-10-05 and the state it
+would silently return to the first time somebody writes `scripts/foo.mjs` in a
+skill.
+
+`skills-add` is deliberately NOT gated. On that route the kit is never copied, so
+no spelling of a path can reach it; closing that gap is a different fix, and
+gating it here would only tempt someone to weaken the measurement.
 """
 import json
 import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
+def _root():
+    """`--root <dir>` points the gate at a copy, which is the only way to show it
+    refusing a surface that has gone back to bare paths."""
+    argv = sys.argv[1:]
+    if "--root" in argv:
+        i = argv.index("--root")
+        if i + 1 < len(argv):
+            return Path(argv[i + 1]).resolve()
+    return Path(__file__).resolve().parent.parent
+
+
+ROOT = _root()
 SURFACE = [
     ROOT / ".claude" / "skills",
     ROOT / ".claude" / "commands",
@@ -69,8 +89,13 @@ def is_path_reference(text: str) -> bool:
 # A reference already built from a path variable. It must still be COUNTED, or
 # fixing a reference would make it disappear from the denominator instead of
 # moving it into the resolved column - an instrument that flatters itself.
+# $KIT is the convention for a subagent, which gets no CLAUDE_SKILL_DIR of its
+# own: the invoking skill passes KIT=<absolute path> in its delegation message.
+# It is a reference like any other and must stay in the denominator - the first
+# version of this script lost four of them the moment they were fixed.
 GUARDED = re.compile(
-    r"\$\{?CLAUDE_(?:SKILL_DIR|PLUGIN_ROOT|PROJECT_DIR)\}?(?:/\.\.)*/" + _BODY
+    r"(?:\$\{?CLAUDE_(?:SKILL_DIR|PLUGIN_ROOT|PROJECT_DIR)\}?|\$\{?KIT\}?)"
+    r"(?:/\.\.)*/" + _BODY
 )
 
 
@@ -127,7 +152,13 @@ def references():
 def resolves(path_text: str, guarded: bool, route: str) -> bool:
     """Would this reference open, on this install route?"""
     if guarded:
-        # The line builds its path from a variable Claude Code substitutes.
+        # A variable fixes WHERE the kit root is. It cannot conjure a kit that was
+        # never copied: `npx skills add` installs the skill folder alone, so
+        # ../../../scripts points at a directory that does not exist on that
+        # route no matter how the path is spelled. Treating a guarded reference
+        # as resolved everywhere is how this script first reported H1 = 1.0.
+        if route == "skills-add":
+            return path_text.split("/", 1)[0] in SKILLS_ADD_KEEPS
         return True
     target = ROOT / path_text
     if not target.exists():
@@ -167,6 +198,22 @@ def installed_by_cli(path_text: str) -> bool:
 def main(argv):
     refs = references()
     routes = ["plugin", "init", "skills-add"]
+
+    if "--gate" in argv:
+        bare = [(f, n, p) for f, n, p, g in refs if not g]
+        print(f"Plugin surface: {len(refs)} kit-file reference(s), "
+              f"{len(refs) - len(bare)} built from a path variable.")
+        if bare:
+            print(f"\nFAIL: {len(bare)} reference(s) are bare repo-root paths. Under a "
+                  f"plugin install they resolve against the user's project, where the "
+                  f"kit is not:")
+            for f, n, p in bare:
+                print(f"  x {f}:{n}: {p}")
+            print("\nWrite them as ${CLAUDE_SKILL_DIR}/../../../<path>, or for a "
+                  "subagent as $KIT/<path> with the invoking skill passing KIT=.")
+            return 1
+        print("OK: every reference in the plugin surface carries a path variable.")
+        return 0
 
     if "--list-unresolved" in argv:
         route = argv[argv.index("--list-unresolved") + 1]

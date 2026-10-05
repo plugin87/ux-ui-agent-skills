@@ -36,7 +36,13 @@ test('the tarball carries everything a consumer needs', () => {
     'package.json', 'README.md', 'LICENSE', 'CHANGELOG.md', 'CONTRIBUTING.md',
     'CLAUDE.md', 'bin/cli.js',
     '.claude/skills/design-doctrine/SKILL.md',
-    '.claude/commands/gate.md',
+    // /gate was a command until 2026-10-05 and is a skill now, so it has a
+    // CLAUDE_SKILL_DIR of its own and its paths resolve under a plugin install.
+    '.claude/skills/gate/SKILL.md',
+    // The critic was never in the package at all: `files` had no .claude/agents
+    // entry, so every npm consumer got a /critique that delegates to an agent
+    // that was not shipped.
+    '.claude/agents/design-critic.md',
     '.claude/rules/components.md',
     'tokens/colors.json',
     'examples/index.html',

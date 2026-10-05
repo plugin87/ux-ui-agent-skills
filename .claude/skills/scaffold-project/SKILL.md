@@ -1,9 +1,17 @@
 ---
+name: scaffold-project
 description: Scaffold a new design-product project that matches the recommended Claude Code layout (the reference structure). Use when starting a fresh product/app that will be built with this design system.
+# A command the user runs. Converted from .claude/commands/ so it has a
+# CLAUDE_SKILL_DIR of its own and its paths resolve on every install route.
+# disable-model-invocation keeps the behaviour a command had: the user
+# starts it, the model never does, and its description stays out of the
+# listing budget the model's skill choice is drawn from.
+disable-model-invocation: true
 ---
 
-Generate a new design-project skeleton from `templates/product-design/` (Track B
-of `docs/restructure-plan.md`) into a target directory the user names.
+
+Generate a new design-project skeleton from `${CLAUDE_SKILL_DIR}/../../../templates/product-design/` (Track B
+of `${CLAUDE_SKILL_DIR}/../../../docs/restructure-plan.md`) into a target directory the user names.
 
 The layout to produce (exactly the reference structure):
 
@@ -41,7 +49,7 @@ by hand from a clone.
 
 Steps:
 1. Ask for the target directory if not given. Create it if it does not exist.
-2. Copy every file of `templates/product-design/` into it, preserving the tree.
+2. Copy every file of `${CLAUDE_SKILL_DIR}/../../../templates/product-design/` into it, preserving the tree.
    Two rules on the copy:
    - `CLAUDE.local.md.template` lands as `CLAUDE.local.md` (the suffix exists
      only so the kit's own gitignore cannot swallow the file).
@@ -69,7 +77,7 @@ Steps:
    keep the semantic and component tiers, then prove it still passes:
 
    ```
-   python3 scripts/validate_contrast.py
+   python3 ${CLAUDE_SKILL_DIR}/../../../scripts/validate_contrast.py
    ```
 
 7. Remind the user to fill `reference/` with real screens and `public/images/`
@@ -79,7 +87,7 @@ Steps:
 Verify before handing over: the target tree matches the layout above, and
 
 ```
-python3 scripts/validate_template.py
+python3 ${CLAUDE_SKILL_DIR}/../../../scripts/validate_template.py
 ```
 
 passes against the source template.

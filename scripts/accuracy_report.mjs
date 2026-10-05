@@ -25,6 +25,8 @@ const checks = [
   ['Every var(--…) resolves to the theme (no floating tokens) — golden', 'python3 scripts/validate_theme_refs.py'],
   ['Every var(--…) resolves — templates, harnesses, demos and the front door',
    'python3 scripts/validate_theme_refs.py --theme examples/brandkit-demo/theme.css --theme examples/directions.css examples/templates examples/component-states examples/index.html examples/showcase examples/terminal examples/apple-demo examples/brandkit-demo'],
+  ['Plugin surface reachable — every skill/agent path built from a variable, not the cwd',
+   'python3 scripts/measure_install_paths.py --gate'],
   ['No emoji in UI output, taste docs, or the agent instruction surface', 'python3 scripts/check_no_emoji.py'],
   ['REAL-render WCAG — sample-app (light)', 'node scripts/measure_render.mjs examples/sample-app/preview.html'],
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],

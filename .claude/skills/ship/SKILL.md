@@ -1,14 +1,22 @@
 ---
+name: ship
 description: Pre-release gate — run the full gate, responsive + render checks, then produce the release checklist (README badge/current/changelog). Use before tagging a release.
+# A command the user runs. Converted from .claude/commands/ so it has a
+# CLAUDE_SKILL_DIR of its own and its paths resolve on every install route.
+# disable-model-invocation keeps the behaviour a command had: the user
+# starts it, the model never does, and its description stays out of the
+# listing budget the model's skill choice is drawn from.
+disable-model-invocation: true
 ---
+
 
 Gate first, then prepare the release. Do nothing destructive without explicit
 confirmation (no tag, no publish) — this command verifies and drafts only.
 
 1. Quality gate (must be fully green before continuing):
-   - `node scripts/accuracy_report.mjs` — report the real N/N.
-   - `node scripts/verify_responsive.mjs examples` — no overflow at 280/320/414.
-   - `python3 scripts/check_no_emoji.py` — UI + taste + instruction surface.
+   - `node ${CLAUDE_SKILL_DIR}/../../../scripts/accuracy_report.mjs` — report the real N/N.
+   - `node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_responsive.mjs examples` — no overflow at 280/320/414.
+   - `python3 ${CLAUDE_SKILL_DIR}/../../../scripts/check_no_emoji.py` — UI + taste + instruction surface.
    If anything fails, stop and fix; do not proceed to the checklist.
 
 2. Release checklist (per the project release rule):

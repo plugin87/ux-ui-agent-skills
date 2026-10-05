@@ -56,7 +56,7 @@
     "templates/",
     ".claude/skills/",
     ".claude/rules/",
-    ".claude/commands/",
+    ".claude/agents/",
     "!**/__pycache__/**",
     "!**/*.pyc",
     "!**/.DS_Store"
@@ -90,6 +90,6 @@
   "author": "Thientan Soparat (plugin87)",
   "license": "MIT",
   "engines": {
-    "node": ">=16"
+    "node": ">=20"
   }
 }

@@ -133,18 +133,57 @@ Because `plugin.json` points skills at `./.claude/skills`, a skill sits at
 `<root>/.claude/skills/<name>/` on both routes, so `../../..` is the kit root on
 both. The probe was deleted afterwards; it is not in the skill listing.
 
-| route | before | after |
-|---|---|---|
-| plugin | 0 / 156 (0.0%) | **133 / 156 (85.3%)** |
-| init | 124 / 156 (79.5%) | **152 / 156 (97.4%)** |
-| skills-add | 0 / 156 (0.0%) | **133 / 156 (85.3%)** |
-| **H1** | **0.265** | **0.8932** |
+| route | before | after skills | after commands + agent |
+|---|---|---|---|
+| plugin | 0 / 156 (0.0%) | 133 / 156 (85.3%) | **156 / 156 (100%)** |
+| init | 124 / 156 (79.5%) | 152 / 156 (97.4%) | **156 / 156 (100%)** |
+| skills-add | 0 / 156 (0.0%) | 0 / 156 (0.0%) | **0 / 156 (0.0%)** |
+| **H1** | **0.265** | **0.609** | **0.6667** |
+| Harness Score | 0.086 | 0.135 | **0.143** |
 
-Harness Score 0.086 → **0.175**. Only H1 moved; the other six are untouched.
+Three more things the same work turned up, all of them the plan's 1.4 and
+Cause 5, all now held by `tests/meta/registry.test.mjs`:
 
-The 23 references still unresolved on the plugin route are all in the five
-commands and the design-critic agent, which have no `CLAUDE_SKILL_DIR` of their
-own. That is the next commit, not a limitation of this approach.
+- `plugin.json` and `marketplace.json` both advertised **41** objective gates
+  while the registry held 44 and the GitHub description said 43. Nothing read
+  those two files, so nothing noticed. A marketplace listing is the first number
+  many people ever see.
+- `bin/cli.js` described its skills area as "10 runnable Claude skills" with 19
+  installed. It is counted from the folder now, never typed.
+- `package.json` `files` had no `.claude/agents/` entry, so every npm consumer
+  got a `/critique` that delegates to an agent which was never shipped.
+
+`engines` moved from `>=16` to `>=20`, matching what CI actually runs.
+
+Only H1 moved; the other six are untouched.
+
+The five commands became skills, so each has a `CLAUDE_SKILL_DIR` of its own.
+They keep a command's behaviour through `disable-model-invocation: true`: the
+user starts them, the model never does, and their descriptions stay out of the
+listing budget the model's skill choice is drawn from. `plugin.json` no longer
+carries a `commands` array.
+
+A subagent gets no `CLAUDE_SKILL_DIR` at all, so `design-critic` takes the root
+as `KIT=<absolute path>`, which the `critique` skill now passes verbatim in its
+delegation message. The agent is told to say so and review without the scripts
+if that line is missing, rather than guess a path or report a number it never
+got back.
+
+> **The first figure published here for this step, 0.8932, was wrong**, and
+> wrong in the direction that flatters. Two faults, both caught by distrusting a
+> round number:
+>
+> 1. A guarded reference was treated as resolving on **every** route. A variable
+>    fixes *where* the kit root is; it cannot conjure a kit that was never
+>    copied. `npx skills add` installs the skill folder alone, so
+>    `../../../scripts` points at nothing there no matter how it is spelled.
+>    That alone had the whole exercise reading 1.0.
+> 2. `$KIT` was not in the pattern, so the four agent references disappeared from
+>    the denominator the moment they were fixed — the same class of fault as the
+>    one already recorded above, in a new spelling.
+>
+> `skills-add` stays at 0.0% and will until the kit is actually reachable on that
+> route. That is Phase 1.2, and it is a real gap, not a measurement artefact.
 
 ---
 

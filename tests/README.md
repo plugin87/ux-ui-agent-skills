@@ -1,6 +1,6 @@
 # tests/ — the layer that checks the gates
 
-The kit's 44 objective gates all point at `examples/` that already pass. That
+The kit's 45 objective gates all point at `examples/` that already pass. That
 proves a gate says yes to good work. It never proves the gate can still say no.
 
 This directory supplies the other half: input built to be wrong, and the
