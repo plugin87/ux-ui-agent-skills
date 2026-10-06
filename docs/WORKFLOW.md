@@ -129,16 +129,23 @@ Edit knowledge files → commit
 │                       README changelog block)  │
 │   job 2 "publish"  → guards tag == pkg version │
 │                      → npm publish --provenance │
-│                        (uses the NPM_TOKEN      │
-│                         repo secret)            │
+│                        (OIDC trusted publisher, │
+│                         no token, no 2FA)       │
 └──────────────────────────────────────────────┘
         │
         ▼
   GitHub Release is live   +   npm is updated   — automatically.
 ```
 
-### Setup (one-time, already done)
-- **Repo secret `NPM_TOKEN`** = an npm **Automation token** (bypasses 2FA so CI can publish).
+### Setup (one-time)
+- **npm Trusted Publisher.** On npmjs.com → `ux-ui-agent-skills` → Settings →
+  Trusted Publisher: publisher **GitHub Actions**, user **plugin87**, repository
+  **ux-ui-agent-skills**, workflow filename **`release.yml`**, Environment blank.
+  That is the whole setup. There is no token to create, rotate, or leak: GitHub
+  mints a short-lived OIDC credential scoped to that one workflow, and npm trusts
+  it because the package says to. It also removes the 2FA prompt, which is what
+  made a scripted publish impossible before.
+- The workflow filename has to match exactly, or npm will not recognise the token.
 - The workflow also supports **manual backfill**: Actions → *Release on tag* → *Run workflow* → enter an existing tag (this creates the Release only; it does **not** re-publish to npm).
 
 ### Day-to-day releasing

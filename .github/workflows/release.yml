@@ -57,19 +57,38 @@ jobs:
 
   publish-npm:
     # Only on a real tag push (not manual backfill of an old tag).
-    # Requires repo secret NPM_TOKEN = an npm Automation token (bypasses 2FA).
+    #
+    # No NPM_TOKEN. This publishes through npm Trusted Publishing: GitHub mints a
+    # short-lived OIDC token scoped to this one workflow, and npm trusts it
+    # because the package is configured to. Nothing to rotate, nothing to leak,
+    # and no 2FA prompt - which is what made a scripted publish impossible before.
+    #
+    # One-time setup on npmjs.com, under the package's Settings -> Trusted Publisher:
+    #   Publisher: GitHub Actions
+    #   Organization or user: plugin87
+    #   Repository: ux-ui-agent-skills
+    #   Workflow filename: release.yml        <- must match this file's name
+    # Leave Environment blank.
+    #
+    # Trusted publishing needs npm >= 11.5.1 and Node >= 22.14.0, which is why
+    # this job pins Node 22 and upgrades npm before publishing.
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write          # enables npm provenance
+      id-token: write          # required for OIDC, and enables provenance
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
+
+      - name: npm new enough for trusted publishing
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version), node $(node --version)"
 
       - name: Guard — tag must match package.json version
         run: |
@@ -96,30 +115,26 @@ jobs:
             echo "$NAME@$VER is not on the registry yet (HTTP $CODE) - publishing."
           fi
 
-      - name: Preflight - is NPM_TOKEN a usable Automation token?
-        if: steps.exists.outputs.skip != 'true'
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          if [ -z "${NODE_AUTH_TOKEN}" ]; then
-            echo "::error::Repo secret NPM_TOKEN is empty. Create an npm *Automation* token"
-            echo "::error::(npmjs.com -> Access Tokens -> Generate New Token -> Automation; Classic"
-            echo "::error::'Publish' tokens still prompt for 2FA and fail here), then add it as the"
-            echo "::error::repo secret NPM_TOKEN. The GitHub Release above was created regardless."
-            exit 1
-          fi
-          if ! npm whoami >/dev/null 2>&1; then
-            echo "::error::NPM_TOKEN is set but the registry rejects it (401). It is most likely a"
-            echo "::error::Classic 'Publish' token, an expired token, or one scoped to another"
-            echo "::error::account. Replace it with an npm Automation token, which bypasses 2FA."
-            echo "::error::Nothing else is wrong: the tag, the version guard, and the GitHub"
-            echo "::error::Release all passed."
-            exit 1
-          fi
-          echo "authenticated as $(npm whoami)"
-
-      - name: Publish to npm
+      - name: Publish to npm (OIDC, no token)
         if: steps.exists.outputs.skip != 'true'
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Say what to fix when the registry refuses
+        if: failure() && steps.exists.outputs.skip != 'true'
+        run: |
+          echo "::error::npm refused the publish. The GitHub Release above was created"
+          echo "::error::regardless - only the registry push failed."
+          echo "::error::"
+          echo "::error::Almost always this is the one-time setup not being done yet:"
+          echo "::error::npmjs.com -> ux-ui-agent-skills -> Settings -> Trusted Publisher"
+          echo "::error::  Publisher: GitHub Actions"
+          echo "::error::  Organization or user: plugin87"
+          echo "::error::  Repository: ux-ui-agent-skills"
+          echo "::error::  Workflow filename: release.yml"
+          echo "::error::Environment must be left blank, and the workflow filename has to"
+          echo "::error::match exactly or npm will not recognise the OIDC token."
+          echo "::error::"
+          echo "::error::If it IS configured, check the package is not also requiring 2FA for"
+          echo "::error::publishes: npmjs.com -> Settings -> Require two-factor authentication"
+          echo "::error::should be 'Authorization only', not 'Authorization and writes'."
+          exit 1
