@@ -10,6 +10,7 @@
  * Exit 1 if the trap leaks, the dialog lacks semantics, or focus isn't returned.
  */
 import { resolve } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -22,7 +23,7 @@ catch {
 }
 
 const argv = process.argv.slice(2);
-const file = argv.find(a => !a.startsWith('--'));
+const [file] = requireTargets(argv.filter(a => !a.startsWith('--')), { allowDirs: false });
 const open = (argv.find(a => a.startsWith('--open=')) || '').split('=')[1];
 /* A native <dialog> opened with showModal() IS a modal dialog: the role and the
    modal semantics are implicit, and the browser traps focus itself. Looking only

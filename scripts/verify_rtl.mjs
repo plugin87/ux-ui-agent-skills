@@ -9,6 +9,7 @@
  * Exit 1 if RTL introduces horizontal overflow that LTR did not have.
  */
 import { resolve } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -20,7 +21,7 @@ catch {
   process.exit(required ? 1 : 0);
 }
 
-const file = process.argv.slice(2).find(a => !a.startsWith('--'));
+const [file] = requireTargets(process.argv.slice(2).filter(a => !a.startsWith('--')), { allowDirs: false });
 if (!file) { console.log('usage: node scripts/verify_rtl.mjs <file.html>'); process.exit(0); }
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());

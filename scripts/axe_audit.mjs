@@ -13,6 +13,7 @@
  */
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -26,7 +27,7 @@ catch {
 
 const argv = process.argv.slice(2);
 const dark = argv.includes('--dark');
-const file = argv.find(a => !a.startsWith('--'));
+const [file] = requireTargets(argv.filter(a => !a.startsWith('--')), { allowDirs: false });
 if (!file) { console.log('usage: node scripts/axe_audit.mjs <file.html> [--dark]'); process.exit(0); }
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());

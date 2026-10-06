@@ -28,6 +28,7 @@
  */
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -40,7 +41,7 @@ catch {
 }
 
 const argv = process.argv.slice(2);
-const targets = argv.filter(a => !a.startsWith('--'));
+const targets = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!targets.length) {
   console.log('usage: node scripts/verify_target_size.mjs <file.html | dir> [--widths=414,1280] [--min=24] [--dark]');
   process.exit(0);

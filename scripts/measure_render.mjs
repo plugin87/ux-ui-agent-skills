@@ -15,6 +15,7 @@
  */
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 
 let chromium;
 try { ({ chromium } = await import('playwright')); }
@@ -29,7 +30,7 @@ catch {
 
 const argv = process.argv.slice(2);
 const dark = argv.includes('--dark');
-let files = argv.filter(a => !a.startsWith('--'));
+let files = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (files.length === 0) {
   const root = resolve('examples');
   const walk = d => readdirSync(d).flatMap(n => {
