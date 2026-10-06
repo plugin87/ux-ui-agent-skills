@@ -96,8 +96,13 @@
   .card.lift{box-shadow:var(--shadow-md)}
   .eyebrow{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
     color:var(--color-text-secondary)}
-  .figure{font-size:var(--text-6xl);line-height:1;letter-spacing:-0.04em;font-weight:700;margin-block:var(--space-2)}
-  @media (max-width:40rem){.figure{font-size:var(--text-5xl)}}
+  /* Mobile first, and the hero figure has to shrink with the SCREEN, not only
+     with the breakpoint: a rem-only display size keeps growing with the user's
+     root font while the viewport does not, and "$2.48M" is one unbreakable token
+     that then pushes the page sideways. The vw term is what bounds it. */
+  .figure{font-size:clamp(var(--text-4xl),13vw,var(--text-6xl));line-height:1;
+    letter-spacing:-0.04em;font-weight:700;margin-block:var(--space-2);
+    overflow-wrap:anywhere}
   .delta{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-sm);font-weight:600}
   .up{color:var(--color-feedback-success)} .down{color:var(--color-text-error)}
   .muted{color:var(--color-text-secondary);font-size:var(--text-sm)}

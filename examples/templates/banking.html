@@ -22,7 +22,11 @@
   .split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
   @media (max-width:64rem){.split{grid-template-columns:minmax(0,1fr)}}
   .spend{display:grid;gap:var(--space-3)}
-  .spend .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-3);font-size:var(--text-sm)}
+  /* An `auto` track is max-content and overflows rather than shrinking once the
+     row runs out of room, which a larger root font makes happen sooner. */
+  .spend .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,auto);gap:var(--space-3);
+    font-size:var(--text-sm)}
+  .spend .row > *{min-inline-size:0;overflow-wrap:anywhere}
   .spend .bar{grid-column:1 / -1}
   .mono{font-variant-numeric:tabular-nums}
   .txn td:first-child{inline-size:2.5rem}
