@@ -31,6 +31,39 @@ squash subject is the pull request title and the body is its description, and
 merged branches delete themselves. `docs/BRANCHING.md` covers the half that
 settings cannot enforce.
 
+**The kit works without Claude Code.** `AGENTS.md` is an open convention read by
+Codex, Cursor, Copilot, Jules, Aider, VS Code and about twenty more.
+`npx ux-ui-agent-skills init --agent codex` installs it with the whole kit and
+all 51 gates; `--agent both` installs both surfaces. The gates were always plain
+Node and Python - only the instructions were Claude-specific.
+
+Proven by running Codex CLI against a project installed that way, which found two
+real defects in the first draft: the two house rules were present but unlabelled
+and it named two different rules, and the file sent it at `accuracy_report.mjs`,
+the kit's own self-test, where it scored 17/50 in a project that number says
+nothing about. Both fixed, both held by `validate_agents_surface.py`. On the
+re-run it reported a gate's `SKIPPED ... This measured NOTHING - not a pass`
+verbatim rather than calling it a pass.
+
+Honest about the loss: the three rules Claude Code enforces with hooks are
+requests on that surface. The README says so in a table rather than implying
+parity.
+
+**Every render gate refuses a missing path.** Thirteen of fifteen took their
+arguments straight to the browser; a path that did not exist threw inside
+Playwright and exited 1 on macOS and **0 on Linux**, so a typo in a filename read
+as a clean pass on CI. `scripts/_targets.mjs` checks first, in one place, and
+exits 2 - "I could not look", which is not the same as "I looked and found
+nothing".
+
+**Five public numbers were wrong** and all five shared a cause: nothing read
+them. 19 runnable skills against 25, 50 components against 52, 48 gates against
+50, and `bin/cli.js` claiming 13 token files and 42 component specs against 14
+and 52. The counts are derived from the folders now and held by
+`tests/meta/registry.test.mjs`.
+
+The objective gate goes from 50 to **51**.
+
 ---
 
 ### `v2.9.0`
