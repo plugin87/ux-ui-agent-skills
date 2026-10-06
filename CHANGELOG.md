@@ -10,6 +10,25 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.2`
+
+Same kit as `v2.9.1`, which never reached the registry.
+
+The `v2.9.1` tag published nothing: npm answered `E404` on the `PUT`, which reads
+like "package not found" and means "that credential was rejected" - npm returns
+404 rather than 401 so nobody can probe which private packages exist. The cause
+was in the workflow log, `NODE_AUTH_TOKEN: XXXXX-XXXXX-XXXXX-XXXXX`:
+`setup-node`'s `registry-url` writes an `.npmrc` containing
+`_authToken=${NODE_AUTH_TOKEN}`, and with no secret set that expands to the
+literal placeholder. npm finds a credential, uses it, and never mints an OIDC
+one. A half-configured token is worse than none.
+
+`registry-url` is gone and the job clears any auth line before publishing. This
+release is cut from a tree that matches its tag exactly, rather than publishing
+`2.9.1` from a later commit and leaving the tag and the tarball disagreeing.
+
+---
+
 ### `v2.9.1`
 
 Release plumbing only; the kit is unchanged from `v2.9.0`.
