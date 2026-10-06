@@ -43,6 +43,7 @@
   "files": [
     "bin/",
     "CLAUDE.md",
+    "AGENTS.md",
     "README.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
