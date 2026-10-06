@@ -18,6 +18,7 @@
  *   --strict → exit 1 on any HIGH finding (use as a gate). Default: report, exit 0.
  */
 import { resolve } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -32,7 +33,7 @@ catch {
 const argv = process.argv.slice(2);
 const strict = argv.includes('--strict');
 const dark = argv.includes('--dark');
-const files = argv.filter(a => !a.startsWith('--'));
+const files = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!files.length) { console.log('usage: node scripts/taste_audit.mjs <file.html> [--dark] [--strict]'); process.exit(0); }
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());

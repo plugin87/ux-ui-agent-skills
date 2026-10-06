@@ -107,6 +107,71 @@ test('the skill count is derived from the folders, never retyped', () => {
     `bin/cli.js still types a skill count (${typed && typed[1]}); derive it from the folder instead`);
 });
 
+test('every counted thing matches what the surfaces claim', () => {
+  // Found by counting on 2026-10-06: package.json said 19 runnable skills with 25
+  // installed, four surfaces said 50 components with 52 documented, the GitHub
+  // description said 48 gates with 50 registered, and bin/cli.js said 13 token
+  // files and 42 component specs against 14 and 52. None of it was load-bearing,
+  // which is exactly why it rotted - a number nothing reads is a number nothing
+  // corrects.
+  const countDir = (d, ext) =>
+    readdirSync(join(ROOT, d)).filter(f => f.endsWith(ext)).length;
+  const components = readdirSync(join(ROOT, 'components'))
+    .filter(f => f.endsWith('.md'))
+    .reduce((n, f) => n + (readFileSync(join(ROOT, 'components', f), 'utf8')
+      .match(/^## \d+\. /gm) || []).length, 0);
+  const skills = readdirSync(join(ROOT, '.claude/skills'), { withFileTypes: true })
+    .filter(d => d.isDirectory()).length;
+  const systems = readdirSync(join(ROOT, 'design-systems/library'), { withFileTypes: true })
+    .filter(d => d.isDirectory()).length;
+  const adapters = countDir('frameworks/adapters', '.md');
+  const pages = (function walk(d) {
+    return readdirSync(d, { withFileTypes: true }).reduce((n, e) =>
+      n + (e.isDirectory() ? walk(join(d, e.name)) : (e.name.endsWith('.html') ? 1 : 0)), 0);
+  })(join(ROOT, 'examples'));
+
+  const truth = { components, skills, systems, adapters, pages };
+
+  // package.json and both plugin manifests describe the kit to a marketplace.
+  for (const f of ['package.json', '.claude-plugin/plugin.json', '.claude-plugin/marketplace.json']) {
+    const src = read(...f.split('/'));
+    for (const [, n] of src.matchAll(/(\d+) components/g)) {
+      assert.equal(Number(n), truth.components, `${f} claims ${n} components, ${truth.components} are documented`);
+    }
+    for (const [, n] of src.matchAll(/(\d+) runnable skills/g)) {
+      assert.equal(Number(n), truth.skills, `${f} claims ${n} runnable skills, ${truth.skills} exist`);
+    }
+    for (const [, n] of src.matchAll(/(\d+) (?:brand-grade )?design systems/g)) {
+      assert.equal(Number(n), truth.systems, `${f} claims ${n} design systems, ${truth.systems} exist`);
+    }
+  }
+
+  // The front door states four of them as counters a visitor reads first.
+  const front = read('examples', 'index.html');
+  const counter = (label) => {
+    const m = front.match(new RegExp(`<b[^>]*>(\\d+)</b><span>${label}</span>`));
+    assert.ok(m, `the front door no longer shows a "${label}" counter`);
+    return Number(m[1]);
+  };
+  assert.equal(counter('runnable skills'), truth.skills);
+  assert.equal(counter('design systems'), truth.systems);
+  assert.equal(counter('pages rendered here'), truth.pages);
+
+  // README badges
+  const readme = read('README.md');
+  for (const [badge, want] of [['design_systems', truth.systems], ['framework_adapters', truth.adapters]]) {
+    const m = readme.match(new RegExp(`${badge}-(\\d+)-`));
+    assert.ok(m, `README lost its ${badge} badge`);
+    assert.equal(Number(m[1]), want, `README ${badge} badge says ${m[1]}, counted ${want}`);
+  }
+
+  // bin/cli.js must derive, never type.
+  const cli = read('bin', 'cli.js');
+  for (const typed of [/'\d+ DTCG token files/, /'\d+ component specs/, /'\d+ runnable/]) {
+    assert.ok(!typed.test(cli), `bin/cli.js types a count (${typed}); derive it from the folder`);
+  }
+});
+
 test('evals/README spells the same number it scores with', () => {
   const WORDS = { 12: 'Twelve', 13: 'Thirteen', 14: 'Fourteen', 15: 'Fifteen', 16: 'Sixteen' };
   const src = read('evals', 'README.md');

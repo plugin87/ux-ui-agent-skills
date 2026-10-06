@@ -9,6 +9,7 @@
  * Exit 1 if any state of any element drops below WCAG AA.
  */
 import { resolve } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -22,7 +23,7 @@ catch {
 
 const argv = process.argv.slice(2);
 const dark = argv.includes('--dark');
-const file = argv.find(a => !a.startsWith('--'));
+const [file] = requireTargets(argv.filter(a => !a.startsWith('--')), { allowDirs: false });
 if (!file) { console.log('usage: node scripts/verify_states.mjs <file.html> [--dark]'); process.exit(0); }
 
 function lin(c) { c /= 255; return c <= .03928 ? c / 12.92 : ((c + .055) / 1.055) ** 2.4; }

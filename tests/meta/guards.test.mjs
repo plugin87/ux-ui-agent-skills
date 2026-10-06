@@ -28,6 +28,9 @@ test('a missing browser fails loudly under DS_REQUIRE_BROWSER, and only skips wi
   // playwright — the state a clean CI runner or a fresh npx install is in.
   const dir = mkdtempSync(join(tmpdir(), 'ds-nobrowser-'));
   try {
+    // _targets.mjs travels with them: the gates import it, and a missing import
+    // would fail for the wrong reason and still look like the right answer.
+    copyFileSync(join(ROOT, 'scripts', '_targets.mjs'), join(dir, '_targets.mjs'));
     for (const g of BROWSER_GATES) {
       copyFileSync(join(ROOT, 'scripts', g), join(dir, g));
       const target = join(ROOT, 'examples', 'sample-app', 'preview.html');
@@ -70,8 +73,37 @@ test('a path that does not exist never exits 0', () => {
   ]) {
     assert.notEqual(py(cmd, args).status, 0, `${cmd} accepted a missing path`);
   }
-  assert.notEqual(node('verify_states.mjs', ['tests/fixtures/nope.html'],
-    { env: { DS_REQUIRE_BROWSER: '1' } }).status, 0);
+});
+
+test('every render gate REFUSES a missing path, rather than crashing into one', () => {
+  // Thirteen of these went straight to the browser with whatever path they were
+  // handed. A missing file threw somewhere inside Playwright, which happened to
+  // exit 1 on macOS and exited 0 on Linux CI - so a typo in a filename read as a
+  // clean pass on the machine that matters. scripts/_targets.mjs checks first.
+  //
+  // Exit 2, not 1, and the distinction is the point: 1 means "I looked and found
+  // something wrong", 2 means "I could not look".
+  const RENDER_GATES = [
+    'verify_states.mjs', 'measure_render.mjs', 'axe_audit.mjs', 'verify_keyboard.mjs',
+    'verify_target_size.mjs', 'verify_overflow.mjs', 'verify_interactive.mjs',
+    'lint_intent.mjs', 'verify_reduced_motion.mjs', 'verify_rtl.mjs', 'slop_tells.mjs',
+    'taste_audit.mjs', 'verify_responsive.mjs', 'verify_mobile_first.mjs',
+    'verify_focustrap.mjs',
+  ];
+  for (const g of RENDER_GATES) {
+    const r = node(g, ['tests/fixtures/nope.html'], { env: { DS_REQUIRE_BROWSER: '1' } });
+    assert.equal(r.status, 2,
+      `${g} exited ${r.status} on a missing path; expected 2 ("could not look")\n${r.out}`);
+    assert.match(r.out, /not found/,
+      `${g} did not say which path was missing`);
+  }
+});
+
+test('a render gate given no target at all refuses too', () => {
+  // The other half of the same hole: no argument is not "scan everything".
+  const r = node('verify_states.mjs', [], { env: { DS_REQUIRE_BROWSER: '1' } });
+  assert.equal(r.status, 2, r.out);
+  assert.match(r.out, /no target given/);
 });
 
 test('the deliberately broken fixtures stay out of the repo-wide default scans', () => {
@@ -87,11 +119,13 @@ test('the deliberately broken fixtures stay out of the repo-wide default scans',
 });
 
 test('a usage message is never mistaken for a pass', async () => {
-  // Nine gates print usage and exit 0 when handed nothing. The helper has to
-  // reject that, or a typo'd fixture path would read as a clean run.
+  // The gates used to print usage and exit 0 when handed nothing, which is why
+  // the helper learned to reject that shape. They exit 2 now - see the
+  // missing-path tests above - so the helper is checked against the shape
+  // directly rather than against a gate that no longer produces it. The guard
+  // stays because any future gate could regress into it.
   const { accepts } = await import('../helpers/run.mjs');
-  const usage = node('verify_states.mjs', [], { env: { DS_REQUIRE_BROWSER: '1' } });
-  assert.equal(usage.status, 0);
+  const usage = { status: 0, out: 'Usage: node scripts/verify_states.mjs <file> [--dark]', signal: null };
   assert.throws(() => accepts(usage), /printed usage/);
 });
 

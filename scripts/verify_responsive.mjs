@@ -18,6 +18,7 @@
  */
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -30,7 +31,7 @@ catch {
 }
 
 const argv = process.argv.slice(2);
-const target = argv.find(a => !a.startsWith('--'));
+const [target] = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!target) { console.log('usage: node scripts/verify_responsive.mjs <file.html | dir> [--widths=280,320,414]'); process.exit(0); }
 const widths = (argv.find(a => a.startsWith('--widths=')) || '--widths=280,320,414').split('=')[1].split(',').map(Number);
 const scale = Number((argv.find(a => a.startsWith('--scale=')) || '--scale=1').split('=')[1]) || 1;

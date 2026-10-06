@@ -37,6 +37,7 @@
  */
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
+import { requireTargets } from './_targets.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -51,7 +52,7 @@ catch {
 const argv = process.argv.slice(2);
 const dark = argv.includes('--dark');
 const advisory = argv.includes('--advisory');
-const target = argv.find(a => !a.startsWith('--'));
+const [target] = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!target) {
   console.log('usage: node scripts/verify_interactive.mjs <file.html | dir> [--dark] [--advisory]');
   process.exit(0);

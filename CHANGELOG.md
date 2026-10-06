@@ -10,6 +10,29 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.1`
+
+Release plumbing only; the kit is unchanged from `v2.9.0`.
+
+**npm publishes itself.** The publish job wanted an `NPM_TOKEN` repo secret that
+was never set, which is the one thing that has ever failed on `main`: the
+`v2.9.0` tag created its GitHub Release and stopped at the registry. It uses npm
+Trusted Publishing now - GitHub mints a short-lived OIDC credential scoped to
+this one workflow and npm trusts it because the package says to. Nothing to
+create, rotate or leak, and no 2FA prompt, which is what made a scripted publish
+impossible before.
+
+`v2.9.0` went to the registry by hand, because its own tree still carried the
+token-based workflow and could not publish itself. This release is the first one
+the automation publishes.
+
+**`main` stays one commit per change.** Squash is the only merge route, the
+squash subject is the pull request title and the body is its description, and
+merged branches delete themselves. `docs/BRANCHING.md` covers the half that
+settings cannot enforce.
+
+---
+
 ### `v2.9.0`
 
 **The kit now reaches the agent on every install route, and three rules fire
