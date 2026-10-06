@@ -45,6 +45,27 @@ const AREAS = {
 
 // Counted, never typed. This line read "10 runnable Claude skills" while 19 were
 // installed, because a number in a string has nothing holding it to the folder.
+// Counted, never typed - the same reason skillCount() exists. These read "13 DTCG
+// token files" with 14 present, and "42 component specs" with 52.
+function count(dir, ext) {
+  try {
+    return fs.readdirSync(path.join(ROOT, dir)).filter(f => f.endsWith(ext)).length;
+  } catch {
+    return 0;
+  }
+}
+
+function componentCount() {
+  try {
+    return fs.readdirSync(path.join(ROOT, 'components'))
+      .filter(f => f.endsWith('.md'))
+      .reduce((n, f) => n + (fs.readFileSync(path.join(ROOT, 'components', f), 'utf8')
+        .match(/^## \d+\. /gm) || []).length, 0);
+  } catch {
+    return 0;
+  }
+}
+
 function skillCount() {
   try {
     return fs.readdirSync(path.join(ROOT, '.claude', 'skills'), { withFileTypes: true })
@@ -56,8 +77,8 @@ function skillCount() {
 
 const DESC = {
   claude: 'CLAUDE.md — agent persona & master instructions (+ Request Router)',
-  tokens: '13 DTCG token files (colors, type, spacing, motion, theming…)',
-  components: '42 component specs (atoms → templates + nav/feedback/forms/overlays)',
+  tokens: `${count('tokens', '.json')} DTCG token files (colors, type, spacing, motion, theming…)`,
+  components: `${componentCount()} component specs (atoms → templates + nav/feedback/forms/overlays)`,
   taste: 'Anti-slop doctrine, aesthetic archetypes, motion choreography',
   'design-systems': 'Interop protocol + crosswalk + 138-system library',
   frameworks: 'Adapter Protocol + React/Next/SwiftUI + 10 concise adapters',
