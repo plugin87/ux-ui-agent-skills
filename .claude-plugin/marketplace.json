@@ -11,7 +11,8 @@
       "source": "./",
       "version": "2.9.1",
       "category": "design",
-      "description": "Turn Claude into a senior design architect: DTCG design tokens, 52 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 50 objective quality gates that fail the build instead of claiming success.",
+  "version": "2.9.1",
+  "description": "Turn Claude into a senior design architect: DTCG design tokens, 52 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 51 objective quality gates that fail the build instead of claiming success.",
       "tags": [
         "design-system",
         "design-tokens",

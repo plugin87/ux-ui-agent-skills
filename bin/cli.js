@@ -23,6 +23,10 @@ const ROOT = path.join(__dirname, '..');
 // area -> source path (relative to package root)
 const AREAS = {
   claude: 'CLAUDE.md',
+  // The open AGENTS.md convention: Codex, Cursor, Copilot, Jules, Aider, VS Code
+  // and ~25 more read it. Same doctrine as CLAUDE.md, minus what only Claude Code
+  // can enforce. --agent picks which one lands.
+  agentsmd: 'AGENTS.md',
   tokens: 'tokens',
   components: 'components',
   taste: 'taste',
@@ -77,6 +81,7 @@ function skillCount() {
 
 const DESC = {
   claude: 'CLAUDE.md — agent persona & master instructions (+ Request Router)',
+  agentsmd: 'AGENTS.md — the same doctrine for Codex, Cursor, Copilot and ~25 more',
   tokens: `${count('tokens', '.json')} DTCG token files (colors, type, spacing, motion, theming…)`,
   components: `${componentCount()} component specs (atoms → templates + nav/feedback/forms/overlays)`,
   taste: 'Anti-slop doctrine, aesthetic archetypes, motion choreography',
@@ -99,12 +104,26 @@ const C = {
 };
 
 function parseFlags(argv) {
-  const flags = { force: false, dry: false, noOpen: false };
+  // agent: which instruction surface to install.
+  //   claude -> CLAUDE.md + .claude/ (skills, hooks: enforced, not requested)
+  //   codex  -> AGENTS.md, read by Codex, Cursor, Copilot, Jules, Aider and more
+  //   both   -> both files; they are held in step by validate_agents_surface.py
+  const flags = { force: false, dry: false, noOpen: false, agent: 'claude' };
   const rest = [];
-  for (const a of argv) {
+  for (let i = 0; i < argv.length; i++) {
+    const a = argv[i];
     if (a === '--force' || a === '-f') flags.force = true;
     else if (a === '--dry' || a === '--dry-run') flags.dry = true;
     else if (a === '--no-open') flags.noOpen = true;
+    else if (a === '--agent' || a.startsWith('--agent=')) {
+      const v = a.includes('=') ? a.split('=')[1] : argv[++i];
+      const ok = ['claude', 'codex', 'agents', 'both'];
+      if (!ok.includes(v)) {
+        console.error(`${C.red}--agent must be one of:${C.reset} ${ok.join(', ')}\n`);
+        process.exit(1);
+      }
+      flags.agent = v === 'agents' ? 'codex' : v;
+    }
     /* An unrecognised flag used to fall through into `rest` and be read as a
        destination path, so a typo like --forse silently created a directory
        called "--forse". Say so instead. */
@@ -178,7 +197,7 @@ function cmdNew(destRoot, flags) {
   }
   // the engine, minus its own CLAUDE.md and rules: the product repo keeps the lean
   // brief and the three project rules the template ships, not the engine's depth
-  installAreas(Object.keys(AREAS).filter(k => k !== 'claude' && k !== 'rules'), destRoot, flags);
+  installAreas(Object.keys(AREAS).filter(k => k !== 'claude' && k !== 'agentsmd' && k !== 'rules'), destRoot, flags);
   console.log(`\n${C.bold}Next${C.reset}`);
   console.log(`  1. Fill the placeholders in ${C.cyan}CLAUDE.md${C.reset} (product, user, stack, vocabulary).`);
   console.log(`  2. Point ${C.cyan}design-tokens.json${C.reset} at your brand, then prove it:`);
@@ -275,7 +294,25 @@ function main() {
   if (cmd === 'init') {
     const destRoot = path.resolve(rest[0] || process.cwd());
     console.log(`\n${C.bold}Installing full kit${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
-    installAreas(Object.keys(AREAS), destRoot, flags);
+    // --agent decides which instruction surface lands. Everything else - tokens,
+    // components, taste, and the 50 gates - is the same either way, because none
+    // of it depends on which agent is reading.
+    const surfaces = { claude: ['claude'], codex: ['agentsmd'], both: ['claude', 'agentsmd'] };
+    const keep = surfaces[flags.agent];
+    // skills, rules, agents (the critic) and commands are Claude Code mechanisms.
+    // On the codex surface they would be dead files, so they stay out.
+    const claudeOnly = ['skills', 'rules', 'agents'];
+    installAreas(
+      Object.keys(AREAS).filter(k => {
+        if (k === 'claude' || k === 'agentsmd') return keep.includes(k);
+        if (flags.agent === 'codex' && claudeOnly.includes(k)) return false;
+        return true;
+      }),
+      destRoot, flags);
+    if (flags.agent === 'codex') {
+      console.log(`\n  ${C.dim}AGENTS.md installed. Codex, Cursor, Copilot, Jules and ~25 more read it.${C.reset}`);
+      console.log(`  ${C.dim}The .claude/ skills and hooks were not installed - they are Claude Code only.${C.reset}`);
+    }
     return summary(destRoot);
   }
 

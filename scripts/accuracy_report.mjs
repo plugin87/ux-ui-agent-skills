@@ -33,6 +33,8 @@ const checks = [
    'python3 scripts/lint_native_select.py examples && node scripts/slop_tells.mjs --strict tests/fixtures/bad/one-sided-border.html; test $? -eq 1'],
   ['Mobile-first - every base layer is the phone layout, with the queries removed',
    'node scripts/verify_mobile_first.mjs examples && node scripts/verify_mobile_first.mjs examples --scale=1.25'],
+  ['AGENTS.md and CLAUDE.md carry the same doctrine - the agent-neutral surface',
+   'python3 scripts/validate_agents_surface.py'],
   ['No emoji in UI output, taste docs, or the agent instruction surface', 'python3 scripts/check_no_emoji.py'],
   ['REAL-render WCAG — sample-app (light)', 'node scripts/measure_render.mjs examples/sample-app/preview.html'],
   ['REAL-render WCAG — sample-app (dark)', 'node scripts/measure_render.mjs --dark examples/sample-app/preview.html'],

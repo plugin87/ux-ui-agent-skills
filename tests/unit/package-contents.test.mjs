@@ -14,12 +14,13 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { run } from '../helpers/run.mjs';
 
-const packed = (() => {
+const manifest = (() => {
   const r = run('npm', ['pack', '--dry-run', '--json']);
   if (r.status !== 0) throw new Error(`npm pack failed:\n${r.stderr}`);
   // npm prints notices on stderr and the JSON document on stdout
-  return JSON.parse(r.stdout)[0].files.map(f => f.path);
+  return JSON.parse(r.stdout)[0];
 })();
+const packed = manifest.files.map(f => f.path);
 
 test('the tarball carries no build junk from whoever ran publish', () => {
   const junk = packed.filter(p =>
@@ -54,8 +55,22 @@ test('the tarball carries everything a consumer needs', () => {
 
 test('the tarball is not accidentally huge', () => {
   // A design kit is text. If this jumps, something binary crept in.
-  assert.ok(packed.length > 250 && packed.length < 400,
+  // The file count is a weak tripwire - it was `< 400` and the package reached
+  // exactly 400 by adding AGENTS.md and two scripts, all of it text. Raised, and
+  // backed by the two assertions that actually catch a binary: total bytes, and
+  // no single file larger than a long markdown document.
+  assert.ok(packed.length > 250 && packed.length < 500,
     `unexpected file count: ${packed.length}`);
+
+  const MB = 1024 * 1024;
+  assert.ok(manifest.unpackedSize < 12 * MB,
+    `unpacked ${(manifest.unpackedSize / MB).toFixed(1)}MB - a text kit should not reach 12MB`);
+
+  const big = manifest.files
+    .filter(f => f.size > 600 * 1024 && !f.path.startsWith('examples/thumbs/'))
+    .map(f => `${f.path} (${(f.size / 1024).toFixed(0)}kB)`);
+  assert.deepEqual(big, [],
+    `a file this large is almost certainly binary:\n  ${big.join('\n  ')}`);
   assert.equal(packed.filter(p => p.startsWith('.github/images/')).length, 0,
     'README screenshots do not belong in a consumer install');
 });
