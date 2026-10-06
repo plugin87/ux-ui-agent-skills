@@ -80,15 +80,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Deliberately NO registry-url. setup-node writes an .npmrc containing
+      # //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}, and with no secret
+      # set that resolves to the literal placeholder. npm then authenticates with
+      # a bogus token INSTEAD of minting an OIDC one, and the registry answers
+      # E404 on the PUT - which reads like "package not found" and actually means
+      # "that credential is not valid". That is what failed the v2.9.1 tag.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: 'https://registry.npmjs.org'
 
       - name: npm new enough for trusted publishing
         run: |
           npm install -g npm@latest
           echo "npm $(npm --version), node $(node --version)"
+
+      - name: No stray credential can shadow the OIDC one
+        run: |
+          # Belt and braces: if anything upstream left an auth line behind, drop
+          # it. A half-configured token is worse than none, because npm will try
+          # it and stop there.
+          rm -f ~/.npmrc "${NPM_CONFIG_USERCONFIG:-/dev/null}" 2>/dev/null || true
+          npm config delete //registry.npmjs.org/:_authToken 2>/dev/null || true
+          echo "registry: $(npm config get registry)"
 
       - name: Guard — tag must match package.json version
         run: |
@@ -137,4 +151,8 @@ jobs:
           echo "::error::If it IS configured, check the package is not also requiring 2FA for"
           echo "::error::publishes: npmjs.com -> Settings -> Require two-factor authentication"
           echo "::error::should be 'Authorization only', not 'Authorization and writes'."
+          echo "::error::"
+          echo "::error::E404 on a PUT is npm saying the credential was rejected, not that the"
+          echo "::error::package is missing. It answers 404 rather than 401 so an attacker"
+          echo "::error::cannot probe which private packages exist."
           exit 1
