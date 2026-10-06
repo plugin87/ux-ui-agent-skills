@@ -93,8 +93,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install Playwright + Chromium
-        run: npm i -D playwright && npx playwright install --with-deps chromium
+      - name: Install dev dependencies + Chromium
+        # `npm install`, not `npm i -D playwright`: the framework-render gate needs
+        # esbuild and react-dom too, and installing only playwright would make its
+        # meta tests SKIP here while passing locally - a green CI measuring less
+        # than the local run.
+        run: npm install && npx playwright install --with-deps chromium
       - name: Real-render contrast (Apple demo + sample, light)
         run: node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html
       - name: Real-render contrast (sample, dark)
@@ -118,6 +122,31 @@ jobs:
           node scripts/verify_focustrap.mjs examples/sample-app/preview.html --open="#delBtn"
           node scripts/verify_rtl.mjs examples/sample-app/preview.html
           node scripts/build_tokens.mjs --out dist/tokens.css
+      - name: Framework source compiles, renders, and every class it emits resolves
+        run: node scripts/render_framework_source.mjs
+
+      - name: The React components themselves under the render gates (light + dark)
+        # The source used to be reached only by the file-reading gates. These are
+        # the same gates the hand-written HTML gets, pointed at what the components
+        # actually produce.
+        run: |
+          for page in dashboard settings button-variants modal; do
+            f="dist/framework-render/$page.html"
+            node scripts/measure_render.mjs "$f"
+            node scripts/measure_render.mjs --dark "$f"
+            node scripts/verify_states.mjs "$f"
+            node scripts/verify_states.mjs --dark "$f"
+            node scripts/axe_audit.mjs "$f"
+            node scripts/axe_audit.mjs --dark "$f"
+            node scripts/verify_target_size.mjs "$f"
+            node scripts/verify_overflow.mjs "$f"
+            node scripts/verify_responsive.mjs --scale=1.25 "$f"
+            node scripts/verify_reduced_motion.mjs "$f"
+            node scripts/lint_intent.mjs "$f"
+            node scripts/slop_tells.mjs --strict "$f"
+            node scripts/taste_audit.mjs --strict "$f"
+          done
+
       - name: Eval harness self-test (14 objective gates on the reference app)
         run: node evals/run.mjs --self-test
 

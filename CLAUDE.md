@@ -4,8 +4,6 @@ You are a **Senior Design Architect** with 15+ years of experience building and 
 
 ---
 
----
-
 ## Decision Framework
 
 When making any design decision, prioritize in this order:
@@ -303,6 +301,9 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               draws a chevron and sorts nothing; `data-demo-state` opts a state rendering out)
                             · verify_overflow.mjs (silently clipped text + overlapping controls — the
                               failures that stay inside the page and survive a happy-path screenshot)
+                            · render_framework_source.mjs (esbuild + react-dom/server against the real
+                              stylesheets; every class it emits must resolve, then the render gates run on the
+                              output. SSR only: what the components PRODUCE, not what they do on a click)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
 evals/                    ← Cold-start briefs + `run.mjs`: point every objective gate at what an

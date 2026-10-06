@@ -9,14 +9,56 @@
 }
 
 /* layout */
-.container { max-inline-size: var(--bp-lg); margin-inline: auto; padding: var(--space-6); }
+/* Settings.tsx makes this a grid inline, and an implicit grid column is
+   max-content: the track sized itself to the widest child and overflowed its own
+   box by 24px under a larger root font. min-inline-size:0 lets the CONTAINER
+   shrink and does nothing for the track inside it - the explicit minmax(0,1fr)
+   is what actually lets the contents shrink. Cause 2 in
+   .claude/rules/components.md, and the same shape that bit the panels. */
+.container {
+  max-inline-size: var(--bp-lg);
+  margin-inline: auto;
+  padding: var(--space-6);
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+.container > * { min-inline-size: 0; }
 .page-title { font-size: var(--text-3xl); line-height: var(--leading-tight); font-weight: 700; }
+/* A page whose content carries no large figure has to lead with its title, or the
+   eye lands nowhere: Settings measured 30px over 16px body, 1.9x, which is bold
+   body text and not a display scale (non-negotiable 4). The Dashboard keeps the
+   quieter title because its hero revenue figure is what leads there. */
+/* The floor has to be able to shrink. clamp(--text-4xl, 6vw, --text-5xl) looks
+   responsive and is not: at 280px the 6vw term is 17px so the 36px floor wins,
+   and under a 1.25x root font that floor is 45px - "Settings" then overflowed a
+   280px screen by 55px. A display size has to answer to the viewport AND to the
+   user's text size, which is what the lower floor and the larger vw term do. */
+.page-title--display { font-size: clamp(var(--text-2xl), 9vw, var(--text-5xl)); }
 .subtle { color: var(--color-text-secondary); font-size: var(--text-sm); }
 
-/* responsive grid — uses multiple breakpoints, not one */
-.grid { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
-@media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, 1fr); } }
-@media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
+/* The page header wraps instead of forcing its button off the edge. It was a flex
+   row with no wrap, and at 280px with a 1.25x root font the Export button pushed
+   the page 13px wide - a real overflow, only visible once the source was rendered. */
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* responsive grid — uses multiple breakpoints, not one.
+   minmax(0, 1fr) rather than 1fr: a bare 1fr track keeps min-width:auto, so a
+   child that refuses to shrink widens the whole column. Three supporting cards,
+   so the wide breakpoint is 3 columns and the hero spans all of them. */
+.grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: minmax(0, 1fr);
+  margin-block-start: var(--space-6);
+}
+@media (min-width: 640px)  { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 
 /* stat card */
 .card {
@@ -27,8 +69,49 @@
 }
 .card__value { font-size: var(--text-4xl); line-height: var(--leading-tight); font-weight: 700; }
 .card__label { color: var(--color-text-secondary); font-size: var(--text-sm); }
-.card__delta--up { color: var(--color-action-primary); }
-.card__delta--down { color: var(--color-feedback-error); }
+
+/* The one card that leads. Bigger figure, stronger edge, its own row, and the
+   caveat the number needs — so the eye lands somewhere and the other three can
+   stay quiet. */
+.card--hero {
+  padding: var(--space-6);
+  border-color: var(--color-border-strong);
+}
+.card--hero .card__value { font-size: clamp(var(--text-4xl), 9vw, var(--text-5xl)); }
+.card--hero .card__label {
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+.card__note {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  max-inline-size: 34ch;
+}
+@media (min-width: 640px) {
+  .card--hero {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22ch);
+    align-items: end;
+  }
+  .card--hero .card__note { margin-block-start: 0; }
+}
+
+/* Icons inherit the text colour and sit on the text baseline, so a delta reads as
+   one phrase rather than a glyph next to a number. */
+.icon {
+  inline-size: var(--size-icon-sm);
+  block-size: var(--size-icon-sm);
+  vertical-align: text-bottom;
+}
+/* Feedback tokens, not action tokens: a delta reports, it is not something you
+   can click. --color-action-primary here measured 3.43:1 on the dark card. */
+.card__delta--up { color: var(--color-success); font-size: var(--text-sm); }
+.card__delta--down { color: var(--color-feedback-error); font-size: var(--text-sm); }
 
 /* button (shared primitive) */
 .btn {
@@ -48,9 +131,14 @@
 }
 
 /* form field — essential border uses border-strong (3:1) */
-.field { display: grid; gap: var(--space-2); }
-.field__label { font-size: var(--text-sm); font-weight: 500; }
+/* Same two causes as everywhere else: the implicit track is max-content, and an
+   <input> keeps an intrinsic width of about twenty characters, which at a large
+   root font is wider than the field holding it. Causes 1 and 2. */
+.field { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); min-inline-size: 0; }
+.field > * { min-inline-size: 0; }
+.field__label { font-size: var(--text-sm); font-weight: 500; overflow-wrap: anywhere; }
 .field__input {
+  inline-size: 100%; min-inline-size: 0;
   block-size: var(--size-control-md); padding-inline: var(--space-3);
   border: 1px solid var(--color-border-strong); border-radius: var(--radius-button);
   background: var(--color-surface-page); color: var(--color-text-primary);

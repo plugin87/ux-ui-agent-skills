@@ -31,7 +31,7 @@ licence says so.
 ## The bar, for the maintainer and for anything proposed
 
 ```bash
-node scripts/accuracy_report.mjs     # 48/48 or it fails - no partial credit
+node scripts/accuracy_report.mjs     # 50/50 or it fails - no partial credit
 npm run test:gates                   # every gate must still REJECT a broken fixture
 ```
 
@@ -44,7 +44,7 @@ anyway - a disputed gate is a conversation, a skipped gate is not.
 ```bash
 git clone https://github.com/plugin87/ux-ui-agent-skills.git
 cd ux-ui-agent-skills
-npm install                 # playwright — needed by 33 of the 48 gates, not dev-only
+npm install                 # playwright — needed by 35 of the 50 gates, not dev-only
 npx playwright install chrome
 npm test                    # browser-free gates
 npm run test:unit           # unit + CLI + registry consistency
