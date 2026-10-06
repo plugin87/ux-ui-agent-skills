@@ -43,14 +43,22 @@
     background:color-mix(in oklab,var(--lin-accent) var(--v),var(--lin-raised))}
   .cc.d{background:color-mix(in oklab,var(--trm-accent) var(--v),var(--lin-raised))}
 
-  .grow2{display:grid;grid-template-columns:3.5rem minmax(2rem,1fr) 2.5rem 3.5rem 2.75rem;gap:var(--space-2);
+  /* Mobile first: on a phone a GPU row is name, bar and utilisation. The memory
+     and clock columns arrive with the width to hold them. The five fixed columns
+     were the base, which is 15.75rem of track that cannot shrink - at a 1.25x
+     root font that is wider than a 320px screen on its own. */
+  .grow2{display:grid;grid-template-columns:3.5rem minmax(2rem,1fr) 2.5rem;gap:var(--space-2);
     align-items:center;font-size:var(--text-xs)}
+  .gm,.gc{display:none}
+  @media (min-width:30rem){
+    .grow2{grid-template-columns:3.5rem minmax(2rem,1fr) 2.5rem 3.5rem 2.75rem}
+    .gm,.gc{display:block}
+  }
   .gn{font-family:var(--font-mono);color:var(--lin-ink-3)}
   .gt{block-size:.4375rem;border-radius:var(--radius-full);background:var(--lin-raised);overflow:hidden;
     min-inline-size:0}
   .gt i{display:block;block-size:100%;inline-size:var(--w);background:var(--trm-accent)}
   .gv,.gm,.gc{font-family:var(--font-mono);text-align:end;color:var(--lin-ink-2)}
-  @media (max-width:30rem){.grow2{grid-template-columns:3.5rem minmax(2rem,1fr) 2.5rem} .gm,.gc{display:none}}
 
   .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
     font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-inline-size:0}

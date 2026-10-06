@@ -97,3 +97,16 @@ footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--
 footer a{color:var(--lin-accent-hover)}
 footer span{min-inline-size:0;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* Narrow-width defences, applied once rather than per page. Three templates
+   passed at 320px on macOS and failed on Linux CI by 3-6px, because font metrics
+   differ per platform and these pages had no slack left. Causes 1-3 in
+   .claude/rules/components.md:
+     - a long token sets min-content width, and only `anywhere` shrinks that
+     - a flex or grid child keeps min-width:auto and widens its own track
+     - a button's label is one unbreakable run unless it is allowed to wrap */
+.page p, .page td, .page th, .page li, .page dd, .page dt,
+.panel p, .panel td, .panel th, .panel li, .panel dd, .panel dt,
+.topbar h1, .topbar .sub{overflow-wrap:anywhere}
+.btn{overflow-wrap:anywhere;min-inline-size:0}
+.topbar, .panel > header, .page > header{flex-wrap:wrap}

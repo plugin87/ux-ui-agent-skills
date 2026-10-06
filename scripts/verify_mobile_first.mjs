@@ -64,7 +64,20 @@ function queryRatio(file) {
 const args = process.argv.slice(2);
 const widthArg = args.indexOf('--width');
 const WIDTH = widthArg !== -1 ? Number(args[widthArg + 1]) : 320;
-const paths = args.filter((a, i) => !a.startsWith('--') && !(widthArg !== -1 && i === widthArg + 1));
+/* --scale stresses the base with a wider root font, which is how another
+   platform's fallback font behaves. Three pages passed this gate on macOS and
+   failed it on Linux CI by 3-6px; the repo's own narrow-width rules say exactly
+   why, and a gate that only holds on the machine that wrote it is not a gate. */
+const scaleArg = args.findIndex(a => a.startsWith('--scale'));
+const SCALE = scaleArg !== -1
+  ? Number(args[scaleArg].includes('=') ? args[scaleArg].split('=')[1] : args[scaleArg + 1])
+  : 1;
+// Only skip the value slot when the flag is actually present. `widthArg + 1`
+// with widthArg === -1 is index 0, which silently ate the path argument.
+const skip = new Set();
+if (widthArg !== -1) skip.add(widthArg + 1);
+if (scaleArg !== -1 && !args[scaleArg].includes('=')) skip.add(scaleArg + 1);
+const paths = args.filter((a, i) => !a.startsWith('--') && !skip.has(i));
 
 if (!paths.length) {
   console.log('Usage: node scripts/verify_mobile_first.mjs <file|dir> [...] [--width 320]');
@@ -100,6 +113,12 @@ const warnings = [];
 for (const file of files) {
   const page = await browser.newPage({ viewport: { width: WIDTH, height: 900 } });
   await page.goto(pathToFileURL(resolve(file)).href, { waitUntil: 'networkidle' });
+  if (SCALE !== 1) {
+    await page.evaluate((s) => {
+      const base = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
+      document.documentElement.style.fontSize = `${base * s}px`;
+    }, SCALE);
+  }
 
   const result = await page.evaluate(() => {
     /* Delete every conditional rule, so what renders is the base layer alone.
@@ -199,7 +218,9 @@ for (const file of files) {
 
 await browser.close();
 
-console.log(`Checked ${files.length} file(s) at ${WIDTH}px with every width @media and @container removed.`);
+console.log(`Checked ${files.length} file(s) at ${WIDTH}px`
+  + (SCALE !== 1 ? ` with a ${SCALE}x root font` : '')
+  + ' with every width @media and @container removed.');
 
 for (const w of warnings) console.log(`  note: ${w}`);
 

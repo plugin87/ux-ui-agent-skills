@@ -70,6 +70,10 @@
   @media (min-width:44rem){.c8,.c6{grid-column:span 6} .c4,.c3{grid-column:span 3}}
   @media (min-width:70rem){.c8{grid-column:span 8} .c4{grid-column:span 4} .c6{grid-column:span 6} .c3{grid-column:span 3}}
 
+  /* Narrow-width defences. This page passed at 320px on macOS and overflowed on
+     Linux CI: font metrics differ per platform and there was no slack left. */
+  .panel p, .panel td, .panel th, .panel li{overflow-wrap:anywhere}
+  .panel > header{flex-wrap:wrap}
   svg.chart{inline-size:100%;block-size:auto;display:block;overflow:visible}
   .gridline{stroke:var(--color-chart-grid);stroke-width:1}
   .axis-t{fill:var(--color-text-secondary);font-size:.625rem;font-family:var(--font-sans)}

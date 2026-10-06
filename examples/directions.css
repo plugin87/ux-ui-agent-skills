@@ -59,3 +59,14 @@
   --trm-line:#233028;
   --trm-accent:#5ef2a0;
 }
+
+/* Narrow-width defences, applied once rather than per page. These pages passed at
+   320px on macOS and failed on Linux CI, because font metrics differ per platform
+   and they had no slack left. Causes 1-3 in .claude/rules/components.md: a long
+   token sets min-content width and only `anywhere` shrinks it; a flex or grid
+   child keeps min-width:auto and widens its own track; a button label is one
+   unbreakable run unless it is allowed to wrap. */
+.panel p, .panel td, .panel th, .panel li, .panel dd, .panel dt,
+.grid p, .grid td, .grid th, .grid li{overflow-wrap:anywhere}
+.btn{overflow-wrap:anywhere;min-inline-size:0}
+.panel > header, .top{flex-wrap:wrap}

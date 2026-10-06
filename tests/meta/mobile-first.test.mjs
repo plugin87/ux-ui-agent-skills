@@ -23,6 +23,15 @@ test('every example and template is mobile-first at the base', () => {
   assert.match(r.stdout, /every base layer is already the mobile layout/);
 });
 
+test('and holds under a wider root font, which is how another platform behaves', () => {
+  // Three pages passed this gate on macOS and failed it on Linux CI by 3-6px.
+  // Font metrics differ per platform, so a base layout with no slack left is a
+  // layout that works on the machine that wrote it and nowhere else. --scale is
+  // the local way to see what CI sees.
+  const r = gate('verify_mobile_first.mjs', [join(ROOT, 'examples'), '--scale=1.25']);
+  assert.equal(r.status, 0, r.out);
+});
+
 test('it REJECTS a desktop-first page, and names what overflows', () => {
   const r = gate('verify_mobile_first.mjs', [F('bad/desktop-first.html')]);
   assert.equal(r.status, 1, `expected a finding, got ${r.status}:\n${r.out}`);
