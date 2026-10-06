@@ -10,6 +10,62 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.0`
+
+**The kit now reaches the agent on every install route, and three rules fire
+without being asked.** The objective gate goes from 42 to **50**.
+
+**Every path resolved against the wrong directory.** The 19 skills, 5 commands
+and the critic named 156 kit files between them, all as bare repo-root paths. On
+the plugin route - the one the README recommends first - every one of them
+resolved against the user's own project, where the kit is not. No error; the
+model simply proceeded without the file. They are built from
+`${CLAUDE_SKILL_DIR}` now, verified on both routes with a throwaway probe skill
+before anything was changed: plugin 0% to 100%, init 79.5% to 100%.
+
+`npx skills add` copies the skill folders alone, so the kit is genuinely absent
+there. Every skill that reads a kit file now checks and says so, instead of
+working from files it never opened.
+
+**`invocation: user` never did anything.** Claude Code does not read that key and
+ignores unknown frontmatter without an error, so the six skills marked user-only
+had been auto-invocable the whole time. They carry `disable-model-invocation`
+now, and the skill listing dropped from 24 entries to 13.
+
+**`design-screen`** claims the most common request there is - "design a page,
+screen, landing page or app" - which no skill previously did, in English and
+Thai. It runs the pipeline no single skill covered: taste preflight, doctrine,
+direction into tokens, build, gate, render-and-look, critic.
+
+**Receipts and hooks.** `scripts/gate.mjs` records what each gate measured, with
+the file's hash at the time: edit the file and the receipt expires, which is
+exactly when a remembered number stops being true. Three hooks ship on both
+routes - a session preflight that says whether the render gates can run at all, a
+PostToolUse fast-gate set, and a Stop hook that refuses to finish a session that
+edited UI and measured none of it.
+
+**Three house rules, each with a gate and a broken fixture.** No native
+`<select>`, which the kit's own docs had recommended and four examples used. No
+colored border on one side only, widened from the left-only ban and measured on
+the render. And mobile-first, where the doctrine already claimed what the
+examples contradicted: 90 `max-width` queries against 9 `min-width`, and ten
+pages whose base layer could not fit a phone once the queries came off.
+
+**The React source is rendered and gated**, not just read as text. It found four
+defects, the worst being that `examples/golden/Button.tsx` had not compiled for
+months - its CSS sat in a block comment containing a nested comment - and nobody
+noticed because nothing ever built it.
+
+Fixes along the way: the critic was never in the npm package at all, `init` never
+installed `examples/`, `templates/` or the agent, `bin/cli.js` claimed 10 skills
+with 19 installed, and the plugin manifests advertised 41 gates while the
+registry held 44 and the GitHub description said 43. All held by a test now.
+
+`engines` moves to Node 20, matching CI. Pull requests are no longer accepted;
+gate gaps, reproductions and proposals are, and are credited in the changelog.
+
+---
+
 ### `v2.8.0`
 
 **From 23 component harnesses to twenty whole product screens.** The demo could
