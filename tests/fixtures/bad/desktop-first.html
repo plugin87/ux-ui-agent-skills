@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Desktop-first</title>
+<!-- A fixture. The base styles assume a wide screen and mobile is patched in
+     afterwards with max-width. verify_mobile_first.mjs must reject it: strip the
+     queries and the base cannot fit a phone. -->
+<style>
+  body{margin:0;font:16px/1.5 system-ui;background:#fff;color:#111}
+  .shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100vh}
+  .side{background:#f4f4f5;padding:16px}
+  .main{padding:24px;display:grid;grid-template-columns:repeat(3,minmax(14rem,1fr));gap:16px}
+  .card{background:#f9fafb;border:1px solid #e4e4e7;border-radius:8px;padding:16px}
+  /* mobile, patched on afterwards - this is the shape the rule forbids */
+  @media (max-width:64rem){.shell{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:48rem){.main{grid-template-columns:minmax(0,1fr)}}
+</style>
+<div class="shell">
+  <nav class="side">Sidebar</nav>
+  <main class="main">
+    <div class="card">One</div><div class="card">Two</div><div class="card">Three</div>
+  </main>
+</div>

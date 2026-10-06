@@ -13,46 +13,58 @@ a{color:inherit}
 .up{color:var(--color-feedback-success)} .dn{color:var(--color-text-error)}
 
 /* shell */
-.shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100dvh}
-@media (max-width:64rem){.shell{grid-template-columns:minmax(0,1fr)}}
-.side{display:flex;flex-direction:column;gap:var(--space-6);padding:var(--space-5) var(--space-4);
-  background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default)}
-/* Collapsed to a row the nav scrolls sideways - but a grid item defaults to
-   min-content width, so without min-inline-size:0 the scroller widens the whole
-   page instead of scrolling. Cause 2 in the narrow-width rules. */
-@media (max-width:64rem){.side{flex-direction:row;align-items:center;gap:var(--space-4);overflow-x:auto;
-  min-inline-size:0;border-inline-end:0;border-block-end:1px solid var(--color-border-default)}}
+/* Mobile first: one column is the base, and the 15rem sidebar is added for wide
+   screens. It used to be the other way round - a two-column base patched by
+   max-width - so stripping the queries left a layout that pushed a phone sideways
+   by 103px.
+   The nav scrolls sideways on a phone, and a grid item defaults to min-content
+   width, so min-inline-size:0 is what makes it scroll rather than widen the whole
+   page. Cause 2 in the narrow-width rules. */
+.shell{display:grid;grid-template-columns:minmax(0,1fr);min-block-size:100dvh}
+.side{display:flex;flex-direction:row;align-items:center;gap:var(--space-4);overflow-x:auto;
+  min-inline-size:0;padding:var(--space-5) var(--space-4);background:var(--color-surface-card);
+  border-block-end:1px solid var(--color-border-default)}
+@media (min-width:64rem){
+  .shell{grid-template-columns:15rem minmax(0,1fr)}
+  .side{flex-direction:column;align-items:stretch;gap:var(--space-6);overflow-x:visible;
+    border-block-end:0;border-inline-end:1px solid var(--color-border-default)}
+}
 .side,main{min-inline-size:0}
 .brand{display:flex;align-items:center;gap:var(--space-3);font-weight:700;font-size:var(--text-lg);letter-spacing:-0.02em}
 .brand .mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;flex:none;
   border-radius:var(--radius-sm);background:var(--color-action-primary);color:var(--color-text-on-action)}
 .brand .mark .ico{inline-size:1rem;block-size:1rem}
-nav.menu{display:flex;flex-direction:column;gap:var(--space-1)}
-@media (max-width:64rem){nav.menu{flex-direction:row;gap:var(--space-2)}}
+nav.menu{display:flex;flex-direction:row;gap:var(--space-2)}
+@media (min-width:64rem){nav.menu{flex-direction:column;gap:var(--space-1)}}
 nav.menu a{display:flex;align-items:center;gap:var(--space-3);min-block-size:2.5rem;padding-inline:var(--space-3);
   border-radius:var(--radius-button);color:var(--color-text-secondary);text-decoration:none;
   font-size:var(--text-sm);font-weight:500;white-space:nowrap;transition:background var(--transition-micro)}
 nav.menu a:hover{background:var(--color-surface-raised);color:var(--color-text-primary)}
 nav.menu a:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
 nav.menu a[aria-current="page"]{background:var(--color-surface-brand);color:var(--color-text-primary);font-weight:600}
-.side .grow{flex:1}
-@media (max-width:64rem){.side .grow{display:none}}
+.side .grow{display:none}
+@media (min-width:64rem){.side .grow{display:block;flex:1}}
 
 main{display:flex;flex-direction:column;min-inline-size:0}
 .topbar{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;min-inline-size:0;
-  padding:var(--space-4) var(--space-6);background:var(--color-surface-card);
+  padding:var(--space-3) var(--space-4);background:var(--color-surface-card);
   border-block-end:1px solid var(--color-border-default)}
-@media (max-width:40rem){.topbar{padding:var(--space-3) var(--space-4)}}
+@media (min-width:40rem){.topbar{padding:var(--space-4) var(--space-6)}}
 .topbar h1{font-size:var(--text-xl);letter-spacing:-0.02em}
 .topbar .sub{color:var(--color-text-secondary);font-size:var(--text-sm)}
 .spacer{flex:1}
-.page{padding:var(--space-6);display:grid;gap:var(--space-5);align-content:start}
-@media (max-width:40rem){.page{padding:var(--space-4)}}
+.page{padding:var(--space-4);display:grid;gap:var(--space-5);align-content:start}
+@media (min-width:40rem){.page{padding:var(--space-6)}}
 
 /* surfaces */
+/* min-inline-size:0 lets the PANEL shrink; it does nothing for the implicit
+   column inside it, which is max-content and sized itself to the widest child.
+   The explicit minmax(0,1fr) track is what actually lets the contents shrink,
+   and its absence is why several templates pushed a phone sideways. */
 .panel{background:var(--color-surface-card);border:1px solid var(--color-border-default);
-  border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0;display:grid;gap:var(--space-4);
-  align-content:start}
+  border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0;display:grid;
+  grid-template-columns:minmax(0,1fr);gap:var(--space-4);align-content:start}
+.panel > *{min-inline-size:0}
 .panel > header{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-3);
   flex-wrap:wrap;min-inline-size:0}
 .panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
@@ -99,12 +111,18 @@ main{display:flex;flex-direction:column;min-inline-size:0}
    with it. Align to the start and give the control a fixed height. */
 .field{display:grid;gap:var(--space-2);min-inline-size:0;align-content:start}
 .field label{font-size:var(--text-sm);font-weight:500}
-.field input,.field select{block-size:var(--size-control-md)}
-.field input,.field select,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
+/* No native <select>: it draws its own chevron hard against the edge. .pick is
+   the button trigger that replaces it - same metrics as an input, with the
+   chevron placed by the layout so it keeps real inner padding. */
+.field input,.field .pick{block-size:var(--size-control-md)}
+.field input,.field .pick,.field textarea{inline-size:100%;min-inline-size:0;min-block-size:var(--size-control-md);
   padding-inline:var(--space-3);border:1px solid var(--color-border-strong);border-radius:var(--radius-button);
   background:var(--color-surface-page);color:var(--color-text-primary);font:400 var(--text-sm)/1.4 var(--font-sans)}
+.field .pick{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);
+  text-align:start;cursor:pointer}
+.field .pick .chev{inline-size:var(--size-icon-sm,1rem);block-size:var(--size-icon-sm,1rem);flex:none;opacity:.7}
 .field textarea{padding-block:var(--space-2);min-block-size:5rem;resize:vertical}
-.field input:focus-visible,.field select:focus-visible,.field textarea:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+.field input:focus-visible,.field .pick:focus-visible,.field textarea:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
 .field .hint{font-size:var(--text-xs);color:var(--color-text-secondary)}
 
 /* badges: a dot is a pair for the word, never the only signal */
@@ -116,7 +134,11 @@ main{display:flex;flex-direction:column;min-inline-size:0}
 .b-mute{--dot:var(--color-text-secondary)}
 
 /* tables */
-.tablewrap{overflow-x:auto;position:relative;border:1px solid var(--color-border-default);
+/* overflow-x:auto makes it scroll; min-inline-size:0 is what makes it SHRINK.
+   As a grid item it keeps min-width:auto, so without this the table's min-content
+   sized the wrapper and the wrapper widened the page instead of scrolling.
+   Cause 2 in .claude/rules/components.md, and worth 7px on this page. */
+.tablewrap{overflow-x:auto;min-inline-size:0;position:relative;border:1px solid var(--color-border-default);
   border-radius:var(--radius-card);background:var(--color-surface-card)}
 table{inline-size:100%;border-collapse:collapse;font-size:var(--text-sm)}
 caption{text-align:start;padding:var(--space-4) var(--space-5) var(--space-2);font-weight:600}
@@ -141,3 +163,16 @@ td.end,th.end{text-align:end}
 .credit a{display:inline}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+
+/* Narrow-width defences, applied once rather than per page. Three templates
+   passed at 320px on macOS and failed on Linux CI by 3-6px, because font metrics
+   differ per platform and these pages had no slack left. Causes 1-3 in
+   .claude/rules/components.md:
+     - a long token sets min-content width, and only `anywhere` shrinks that
+     - a flex or grid child keeps min-width:auto and widens its own track
+     - a button's label is one unbreakable run unless it is allowed to wrap */
+.page p, .page td, .page th, .page li, .page dd, .page dt,
+.panel p, .panel td, .panel th, .panel li, .panel dd, .panel dt,
+.topbar h1, .topbar .sub{overflow-wrap:anywhere}
+.btn{overflow-wrap:anywhere;min-inline-size:0}
+.topbar, .panel > header, .page > header{flex-wrap:wrap}

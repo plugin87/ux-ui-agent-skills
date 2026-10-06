@@ -1,14 +1,20 @@
 ---
 name: data-dashboard
 description: Build a dense, data-heavy screen - an analytics console or a trading terminal - with real charts drawn from tokens: candlestick, volume, depth, stacked area, waterfall, scatter, correlation matrix, donut, gauge, sparklines, heatmaps and order books. Use when the request is a dashboard, terminal, monitoring view, data console, or any screen whose job is to show many numbers at once. Covers the layout sequence, the SVG geometry, the accessibility contract per chart type, and the contrast traps that only appear in dark mode.
-invocation: model
 ---
 
 # Skill: Data dashboard
 
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
+
 A dashboard is the hardest screen to keep honest: it is dense, it is mostly
 non-text, and almost every default makes it worse. This is the recipe that
-produced `examples/showcase/` and `examples/terminal/`, both of which pass every
+produced `${CLAUDE_SKILL_DIR}/../../../examples/showcase/` and `${CLAUDE_SKILL_DIR}/../../../examples/terminal/`, both of which pass every
 gate in both themes.
 
 ## 1. Decide the brief before drawing anything
@@ -145,16 +151,16 @@ screenshot and looking, which is why that step is not optional:
 ## 7. The loop
 
 ```bash
-node scripts/measure_render.mjs <file> && node scripts/measure_render.mjs --dark <file>
-node scripts/verify_states.mjs <file>  && node scripts/axe_audit.mjs --dark <file>
-node scripts/verify_responsive.mjs <file> --scale=1.25
-node scripts/verify_interactive.mjs <file>
-node scripts/slop_tells.mjs --strict <file> && node scripts/taste_audit.mjs --strict <file>
+node ${CLAUDE_SKILL_DIR}/../../../scripts/measure_render.mjs <file> && node ${CLAUDE_SKILL_DIR}/../../../scripts/measure_render.mjs --dark <file>
+node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_states.mjs <file>  && node ${CLAUDE_SKILL_DIR}/../../../scripts/axe_audit.mjs --dark <file>
+node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_responsive.mjs <file> --scale=1.25
+node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_interactive.mjs <file>
+node ${CLAUDE_SKILL_DIR}/../../../scripts/slop_tells.mjs --strict <file> && node ${CLAUDE_SKILL_DIR}/../../../scripts/taste_audit.mjs --strict <file>
 ```
 
 Then **screenshot it and look**, in both themes, at 1600 and 390 wide. The gates
 will pass a chart that is drawn wrong. A correlation matrix that is not
 symmetric is 16/16 green and still embarrassing.
 
-Worked references, both gate-verified: `examples/showcase/index.html` (revenue
-console) and `examples/terminal/index.html` (trading desk, ten chart types).
+Worked references, both gate-verified: `${CLAUDE_SKILL_DIR}/../../../examples/showcase/index.html` (revenue
+console) and `${CLAUDE_SKILL_DIR}/../../../examples/terminal/index.html` (trading desk, ten chart types).

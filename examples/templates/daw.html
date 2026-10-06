@@ -21,9 +21,11 @@
   h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
   @media (max-width:46rem){h1{font-size:var(--text-2xl)}}
   .sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
-  .tc{font-family:var(--font-mono);font-size:var(--text-3xl);letter-spacing:.04em;color:var(--trm-accent);
-    font-variant-numeric:tabular-nums;margin-inline-start:auto}
-  @media (max-width:46rem){.tc{font-size:var(--text-xl);margin-inline-start:0}}
+  /* Mobile first, and a monospace timecode is one unbreakable run: its width is
+     the font size times eleven characters, so a rem-only size keeps growing with
+     the user's root font while the viewport does not. The vw term bounds it. */
+  .tc{font-family:var(--font-mono);font-size:clamp(var(--text-base),7vw,var(--text-3xl));
+    letter-spacing:.04em;color:var(--trm-accent);font-variant-numeric:tabular-nums;min-inline-size:0}
   .keys{display:flex;gap:var(--space-2);flex-wrap:wrap}
   .key{display:grid;place-items:center;min-inline-size:2.75rem;min-block-size:2.75rem;border-radius:var(--radius-sm);
     border:1px solid var(--lin-hairline);background:var(--lin-raised);color:var(--lin-ink);cursor:pointer}
@@ -31,8 +33,8 @@
   .key:focus-visible{outline:var(--ring-w) solid var(--lin-accent);outline-offset:var(--space-1)}
   .key[aria-pressed="true"]{background:var(--lin-accent-bg)}
 
-  .wrap{display:grid;grid-template-columns:minmax(0,1fr) 22rem;gap:var(--space-4);padding:var(--space-4)}
-  @media (max-width:72rem){.wrap{grid-template-columns:minmax(0,1fr)}}
+  .wrap{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-4);padding:var(--space-4)}
+  @media (min-width:72rem){.wrap{grid-template-columns:minmax(0,1fr) 22rem}}
   .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
     padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
   .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap}

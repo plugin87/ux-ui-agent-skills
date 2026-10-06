@@ -1,10 +1,16 @@
 ---
 name: design-tokens
 description: Generate, extend, or audit design tokens in DTCG format with the 3-tier architecture (primitive → semantic → component). Use when the user wants a color palette, type scale, spacing/shadow/radius/motion tokens, multi-brand theming, or wants to validate token files. Covers colors, typography, spacing, shadows, borders, breakpoints, motion, gradients, opacity, blur, sizing, states, theming.
-invocation: model
 ---
 
 # Skill: Design Tokens
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Produce and maintain DTCG (`$type`/`$value`) tokens following the project's 3-tier system.
 
@@ -13,9 +19,9 @@ Produce and maintain DTCG (`$type`/`$value`) tokens following the project's 3-ti
 2. Read the relevant existing files in `tokens/` to match structure: `colors.json`, `typography.json`, `spacing.json`, `shadows.json`, `borders.json`, `breakpoints.json`, `motion.json`, `gradients.json`, `opacity.json`, `blur.json`, `sizing.json`, `states.json`, `theming.json`.
 3. Generate/extend tokens:
    - Primitives = raw values (never used directly). Semantic = purpose aliases. Component = component-scoped.
-   - New palettes: generate 11 OKLCH shades; verify 500 ≥ 4.5:1 on white (text), 600 ≥ 3:1 (UI) using the `a11y-audit` skill / `scripts/contrast.py`.
+   - New palettes: generate 11 OKLCH shades; verify 500 ≥ 4.5:1 on white (text), 600 ≥ 3:1 (UI) using the `a11y-audit` skill / `${CLAUDE_SKILL_DIR}/../../../scripts/contrast.py`.
    - Multi-brand/density → `theming.json`.
-4. **Validate**: run `python3 scripts/validate_tokens.py` (JSON validity + alias resolution).
+4. **Validate**: run `python3 ${CLAUDE_SKILL_DIR}/../../../scripts/validate_tokens.py` (JSON validity + alias resolution).
 
 ## Output
 DTCG JSON. Preserve `$description` on every token. Reference, never hardcode.

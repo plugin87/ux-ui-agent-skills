@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from '../helpers/run.mjs';
 
@@ -30,7 +30,7 @@ const evals = countEntries(read('evals', 'run.mjs'), 'const GATES = [');
 test('the accuracy report still runs the full check list', () => {
   // Not a magic number to bump casually: dropping a check silently shrinks what
   // "100%" means. Adding one is fine — update this line in the same commit.
-  assert.equal(accuracy, 46, `accuracy_report.mjs now has ${accuracy} checks`);
+  assert.equal(accuracy, 50, `accuracy_report.mjs now has ${accuracy} checks`);
 });
 
 test('the eval scorer still runs the full gate list', () => {
@@ -76,6 +76,35 @@ test('every count claimed in prose matches the array it describes', () => {
       assert.equal(Number(m[2]), accuracy, `${file} claims ${m[1]}/${m[2]}, which disagrees with itself`);
     }
   }
+});
+
+test('the plugin manifests state the same gate count as the registry', () => {
+  // These two were the furthest adrift of anything in the repo: both said 41
+  // while accuracy_report.mjs held 44 and the GitHub description said 43. Nothing
+  // read them, so nothing noticed. A marketplace listing is the first number many
+  // people ever see, which makes it the worst one to leave stale.
+  for (const f of ['.claude-plugin/plugin.json', '.claude-plugin/marketplace.json']) {
+    const src = read(...f.split('/'));
+    const claims = [...src.matchAll(/(\d+) objective quality gates/g)].map(m => Number(m[1]));
+    assert.ok(claims.length > 0, `${f} no longer states a gate count`);
+    for (const n of claims) assert.equal(n, accuracy, `${f} claims ${n} gates, the registry has ${accuracy}`);
+  }
+});
+
+test('the skill count is derived from the folders, never retyped', () => {
+  // bin/cli.js described the skills area as "10 runnable Claude skills" while 19
+  // were installed. A typed count is a claim; the folder listing is the fact.
+  const dirs = readdirSync(join(ROOT, '.claude/skills'), { withFileTypes: true })
+    .filter(d => d.isDirectory()).length;
+  const readme = read('README.md');
+  const badge = readme.match(/runnable_skills-(\d+)-/);
+  assert.ok(badge, 'README no longer carries a runnable-skills badge');
+  assert.equal(Number(badge[1]), dirs, `README badge says ${badge[1]} skills, ${dirs} folders exist`);
+
+  const cli = read('bin', 'cli.js');
+  const typed = cli.match(/skills:\s*'(\d+) runnable/);
+  assert.equal(typed, null,
+    `bin/cli.js still types a skill count (${typed && typed[1]}); derive it from the folder instead`);
 });
 
 test('evals/README spells the same number it scores with', () => {

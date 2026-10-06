@@ -27,8 +27,8 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm](https://img.shields.io/npm/v/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
-![Skills](https://img.shields.io/badge/runnable_skills-19-14b8a6?style=flat-square)
-![Gates](https://img.shields.io/badge/objective_gates-46-16a34a?style=flat-square)
+![Skills](https://img.shields.io/badge/runnable_skills-25-14b8a6?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-50-16a34a?style=flat-square)
 [![Live demo](https://img.shields.io/badge/live_demo-open-0ea5e9?style=flat-square)](https://plugin87.github.io/ux-ui-agent-skills/)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
@@ -48,7 +48,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 
 Not a mockup. These are screenshots of the files in `examples/`, taken by
-`node scripts/screenshot_docs.mjs` from the same HTML the 46 gates measure — so
+`node scripts/screenshot_docs.mjs` from the same HTML the 50 gates measure — so
 what you see below is what the gate run passed, in both themes.
 
 **Click through them yourself: [plugin87.github.io/ux-ui-agent-skills](https://plugin87.github.io/ux-ui-agent-skills/)**
@@ -123,10 +123,8 @@ left is `tests/fixtures/bad/slop-screen.html`; here is what the gates say about 
 | No emoji | `x slop-screen.html:55: emoji/pictograph` - a chart glyph in the `<h1>` |
 | No hardcoded values | `FAIL: 63 hardcoded value(s)` |
 
-Ten gates reject it, none of them on a matter of taste. The right-hand page is
-`examples/sample-app/`, which the kit's own run gates at 46/46 — and since
-2026-10-05 the React source behind it is rendered and gated too, not just the
-hand-written HTML.
+Ten gates reject it, none of them on a matter of taste. The right-hand page
+passes all 50.
 
 The last row is there because building this comparison broke a gate open.
 `lint_intent` originally read that blue Delete Account as fine: it resolved
@@ -214,11 +212,30 @@ project you open — no files copied into your repo:
 /plugin install ux-ui-agent-skills@ux-ui-agent-skills
 ```
 
-You get 19 skills (`/design-component`, `/data-dashboard`, `/brandkit`, …), 5 commands
-(`/gate`, `/critique`, `/grill-me`, `/ship`, `/scaffold-project`), and the
-`design-critic` agent. The `design-doctrine` skill carries the house rules that
-`CLAUDE.md` carries in the repo, because a plugin root `CLAUDE.md` is not loaded
-as project context.
+You get 25 skills and the `design-critic` agent.
+
+**Fourteen the model reaches for on its own** when the work calls for them:
+`design-tokens`, `design-component`, `design-code`, `design-review`,
+`a11y-audit`, `apply-aesthetic`, `data-dashboard`, `design-qa`,
+`figma-integration`, `performance`, `token-build`, `ux-writing`,
+`design-doctrine`, and `design-screen` — the one that claims "design a page /
+screen / app", which until 2026-10-05 no skill did, so the most common request
+there is matched nothing strongly and the kit got used at a fraction of its
+depth.
+
+**Eleven you start yourself**, because each one takes an action or sets a
+direction that should be your call: `/brandkit`, `/governance`, `/image-to-code`,
+`/migrate-design-system`, `/prototype`, `/redesign`, `/gate`, `/critique`,
+`/grill-me`, `/ship`, `/scaffold-project`. They carry
+`disable-model-invocation: true`, which is the field that actually stops the
+model invoking them — until 2026-10-05 six of them said `invocation: user`, a
+key Claude Code does not read, so they were auto-invocable the whole time. The
+last five were commands and are skills now, so they have a `CLAUDE_SKILL_DIR` of
+their own and their paths resolve under a plugin install.
+
+`design-doctrine` carries the house rules that `CLAUDE.md` carries in the repo,
+because a plugin root `CLAUDE.md` is not loaded as project context — Claude
+Code's own `plugin validate` says so.
 
 **Then just work.** Ask for the thing you want and the right skill loads itself:
 
@@ -226,7 +243,7 @@ as project context.
 "Design a notification component with all states and accessibility"
 "Build the billing settings screen, one shared theme, light and dark"
 "/grill-me"      interrogate the brief before anything is built
-"/gate"          run all 46 checks and report the real N/N
+"/gate"          run all 50 checks and report the real N/N
 "/critique"      hand the result to a critic that argues for rejection
 ```
 
@@ -288,13 +305,13 @@ Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#i
 ## Proving It, and Admitting What Cannot Be Proven
 
 
-The kit ships **46 objective gates** behind one command:
+The kit ships **50 objective gates** behind one command:
 
 ```bash
-node scripts/accuracy_report.mjs     # 46/46 or it fails — no partial credit
+node scripts/accuracy_report.mjs     # 50/50 or it fails — no partial credit
 ```
 
-**32 of them open a real browser, so they need one installed.** Playwright is not
+**35 of them open a real browser, so they need one installed.** Playwright is not
 pulled in by `/plugin install` or `npx ux-ui-agent-skills init`, so run this once
 in the kit directory before expecting a full score:
 
@@ -314,10 +331,10 @@ at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
 
-**What that number covers, stated exactly.** 32 of the 46 checks open a real
+**What that number covers, stated exactly.** 35 of the 50 checks open a real
 browser, so what they measure is **rendered HTML**: the 23 component harnesses,
 the twenty industry screens, the reference app, the live demo, the starter
-template. The other 14 read files — token JSON and alias resolution, contrast
+template. The other 15 read files — token JSON and alias resolution, contrast
 math on the token source, component specs, hardcoded values, theme references,
 emoji, the instruction surface, and destructive-intent declarations in framework
 source.
@@ -362,7 +379,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | **[Live demo](https://plugin87.github.io/ux-ui-agent-skills/)** | 49 rendered pages: twenty industry screens, every component harness, both reference screens, a theme toggle |
 | [docs/GUIDE.md](docs/GUIDE.md) | Using it as a plugin (inventory, management, token cost), how the skills compose, the repo map, token architecture, frameworks, interop, a11y standards, starting a new product project |
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | The bar for a pull request, and how to add a gate that can still say no |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Why PRs are not merged, what to report instead, and how a gate that can still say no is built |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |
 | [.claude/rules/](.claude/rules/) | The depth behind it: tokens and colour, type and spacing, components, accessibility, frameworks, review, brand and operations |
 | [taste/](taste/) | The anti-slop doctrine, 138 named design systems, motion choreography |
@@ -372,10 +389,17 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 ## Contributing
 
 
-Two commands are the whole bar: `node scripts/accuracy_report.mjs` (46/46, no
-partial credit) and `npm run test:gates` (every gate must still reject its
-broken fixture). Paste the real output in the pull request rather than
-describing it.
+**Pull requests are not merged here.** Every line is written by the maintainer,
+deliberately. Asking for work against a bar and then declining it would waste
+your time, so the policy is stated up front instead of at the end of a review.
+
+What is wanted, and credited by name in the CHANGELOG: a **gate gap**, a
+**reproduction**, or a **proposal**. Forking is welcome; the MIT licence says so.
+
+Two commands are the whole bar for anything that does ship:
+`node scripts/accuracy_report.mjs` (50/50, no partial credit) and
+`npm run test:gates` (every gate must still reject its broken fixture). Paste
+the real output rather than describing it.
 
 The most valuable issue this repo can receive is a **gate gap** - a case where a
 gate said yes to work it should have caught. There is a template for exactly

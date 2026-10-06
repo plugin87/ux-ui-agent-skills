@@ -34,7 +34,25 @@ const AREAS = {
   scripts: 'scripts',
   skills: '.claude/skills',
   rules: '.claude/rules',
+  // Added 2026-10-05. Without these three an initialised project had no
+  // /critique and no design-critic (the skills delegate to an agent that was
+  // never copied), and every skill that holds up examples/golden/ or
+  // examples/component-states/ as the quality bar pointed at nothing.
+  agents: '.claude/agents',
+  examples: 'examples',
+  templates: 'templates',
 };
+
+// Counted, never typed. This line read "10 runnable Claude skills" while 19 were
+// installed, because a number in a string has nothing holding it to the folder.
+function skillCount() {
+  try {
+    return fs.readdirSync(path.join(ROOT, '.claude', 'skills'), { withFileTypes: true })
+      .filter(d => d.isDirectory()).length;
+  } catch {
+    return 0;
+  }
+}
 
 const DESC = {
   claude: 'CLAUDE.md — agent persona & master instructions (+ Request Router)',
@@ -47,8 +65,11 @@ const DESC = {
   workflows: 'Design review, handoff, prototyping, redesign-audit',
   content: 'Voice & tone / UX writing system',
   scripts: 'validate_tokens · contrast · design_systems · scaffold_component',
-  skills: '10 runnable Claude skills (.claude/skills/)',
+  skills: `${skillCount()} runnable Claude skills (.claude/skills/)`,
   rules: 'Depth split out of CLAUDE.md, loaded on demand (.claude/rules/)',
+  agents: 'design-critic — the adversarial reviewer behind /critique',
+  examples: 'The gated reference output every skill points at as the bar',
+  templates: 'Starter layout /scaffold-project generates a new project from',
 };
 
 const C = {

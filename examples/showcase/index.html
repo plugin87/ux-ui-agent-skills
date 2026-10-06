@@ -17,8 +17,8 @@
   .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
   /* ---------- shell: sidebar + main, collapses to a single column ---------- */
-  .shell{display:grid;grid-template-columns:15rem minmax(0,1fr);min-block-size:100dvh}
-  @media (max-width:63rem){.shell{grid-template-columns:minmax(0,1fr)}}
+  .shell{display:grid;grid-template-columns:minmax(0,1fr);min-block-size:100dvh}
+  @media (min-width:63rem){.shell{grid-template-columns:15rem minmax(0,1fr)}}
 
   .side{display:flex;flex-direction:column;gap:var(--space-6);padding:var(--space-5) var(--space-4);
     background:var(--color-surface-card);border-inline-end:1px solid var(--color-border-default)}
@@ -89,15 +89,20 @@
     box-shadow:var(--shadow-sm)}
 
   /* ---------- hero: one thing leads ---------- */
-  .hero{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5)}
-  @media (max-width:60rem){.hero{grid-template-columns:minmax(0,1fr)}}
+  .hero{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-5)}
+  @media (min-width:60rem){.hero{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr)}}
   .card{background:var(--color-surface-card);border:1px solid var(--color-border-default);
     border-radius:var(--radius-card);padding:var(--space-5);min-inline-size:0}
   .card.lift{box-shadow:var(--shadow-md)}
   .eyebrow{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
     color:var(--color-text-secondary)}
-  .figure{font-size:var(--text-6xl);line-height:1;letter-spacing:-0.04em;font-weight:700;margin-block:var(--space-2)}
-  @media (max-width:40rem){.figure{font-size:var(--text-5xl)}}
+  /* Mobile first, and the hero figure has to shrink with the SCREEN, not only
+     with the breakpoint: a rem-only display size keeps growing with the user's
+     root font while the viewport does not, and "$2.48M" is one unbreakable token
+     that then pushes the page sideways. The vw term is what bounds it. */
+  .figure{font-size:clamp(var(--text-4xl),13vw,var(--text-6xl));line-height:1;
+    letter-spacing:-0.04em;font-weight:700;margin-block:var(--space-2);
+    overflow-wrap:anywhere}
   .delta{display:inline-flex;align-items:center;gap:var(--space-1);font-size:var(--text-sm);font-weight:600}
   .up{color:var(--color-feedback-success)} .down{color:var(--color-text-error)}
   .muted{color:var(--color-text-secondary);font-size:var(--text-sm)}
@@ -155,8 +160,8 @@
   .acct span{overflow-wrap:anywhere}
 
   /* ---------- feed ---------- */
-  .split{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
-  @media (max-width:60rem){.split{grid-template-columns:minmax(0,1fr)}}
+  .split{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-5);align-items:start}
+  @media (min-width:60rem){.split{grid-template-columns:minmax(0,2.2fr) minmax(0,1fr)}}
   .feed{display:grid;gap:var(--space-4);list-style:none;padding:0}
   .feed li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:var(--space-3)}
   .feed .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);

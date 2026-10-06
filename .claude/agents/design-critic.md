@@ -53,14 +53,23 @@ Work down this list. Most generated UI fails in the first three.
 
 ## What you run
 
-Use these to turn impressions into numbers, and report their real output:
+Use these to turn impressions into numbers, and report their real output.
+
+An agent has no `CLAUDE_SKILL_DIR` of its own, so the kit root cannot be written
+here: under a plugin install these scripts are not in the working directory. The
+skill that invoked you passes it as `KIT=<absolute path>` in the delegation
+message. Use that value.
 
 ```
-node scripts/taste_audit.mjs <file> [--dark]      type scale, uniform repetition, measure, palette
-node scripts/slop_tells.mjs  <file> [--dark]      radius, elevation, gradient, neutrals, placeholders
-node scripts/verify_overflow.mjs <file|dir>       clipped text, overlapping controls
-node scripts/verify_responsive.mjs <file|dir>     280 / 320 / 414
+node $KIT/scripts/taste_audit.mjs <file> [--dark]      type scale, uniform repetition, measure, palette
+node $KIT/scripts/slop_tells.mjs  <file> [--dark]      radius, elevation, gradient, neutrals, placeholders
+node $KIT/scripts/verify_overflow.mjs <file|dir>       clipped text, overlapping controls
+node $KIT/scripts/verify_responsive.mjs <file|dir>     280 / 320 / 414
 ```
+
+If no `KIT=` was passed, say so and review without the scripts. Do not guess a
+path and do not report a number you did not get back: a critic that invents
+evidence is worse than a critic with none.
 
 They are heuristics, not proof, and you say so. They give you the specific noun
 for something you already saw.

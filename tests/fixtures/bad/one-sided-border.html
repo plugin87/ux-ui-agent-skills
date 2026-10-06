@@ -1,0 +1,30 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>One-sided accent borders</title>
+<!-- A fixture, not a page. Four callouts wearing the tinted bar the maintainer
+     bans, one per side, plus one spelled as a colour change on an otherwise even
+     border. slop_tells.mjs must report every one of them as HIGH.
+     It also contains the things that must NOT be flagged: a tab underline and a
+     spinner ring are not surfaces, and an even hairline border is the fix. -->
+<style>
+  body{font:16px/1.5 system-ui;background:#fff;color:#111;margin:0;padding:24px;display:grid;gap:16px}
+  .callout{background:#f6f7f9;padding:16px;border-radius:6px}
+  .l{border-left:4px solid #2563eb}
+  .r{border-right:4px solid #dc2626}
+  .t{border-top:4px solid #15803d}
+  .b{border-bottom:4px solid #b45309}
+  .viaColor{border:2px solid #d4d4d8;border-left-color:#2563eb}
+  /* the fix, which must stay clean */
+  .ok{border:1px solid #d4d4d8}
+  /* not surfaces: these must never be flagged */
+  .tab{border-bottom:2px solid #2563eb;padding:8px 0;background:none}
+  .spinner{inline-size:16px;block-size:16px;border:2px solid #111;border-top-color:transparent;border-radius:50%}
+</style>
+<div class="callout l">Left bar</div>
+<div class="callout r">Right bar</div>
+<div class="callout t">Top bar</div>
+<div class="callout b">Bottom bar</div>
+<div class="callout viaColor">Even width, one odd colour</div>
+<div class="callout ok">Full hairline border, which is the fix</div>
+<nav><span class="tab">A tab underline is not a callout</span></nav>
+<div class="spinner"></div>

@@ -1,0 +1,37 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mobile-first with refinements</title>
+<!-- A fixture, and the one that proves the rule stays flexible. The base IS the
+     phone layout and the wide layouts arrive with min-width. It ALSO uses two
+     genuine max-width refinements, which are allowed: what the rule forbids is a
+     desktop-first base, not the max-width feature. verify_mobile_first.mjs must
+     accept this. -->
+<style>
+  body{margin:0;font:16px/1.5 system-ui;background:#fff;color:#111}
+  .shell{display:grid;grid-template-columns:minmax(0,1fr);min-block-size:100vh}
+  .side{background:#f4f4f5;padding:16px}
+  .main{padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+  .card{background:#f9fafb;border:1px solid #e4e4e7;border-radius:8px;padding:16px;min-inline-size:0}
+  h1{font-size:1.5rem;margin:0 0 8px}
+
+  /* wider screens are layered on */
+  @media (min-width:48rem){.main{grid-template-columns:repeat(2,minmax(0,1fr));padding:24px}}
+  @media (min-width:64rem){
+    .shell{grid-template-columns:15rem minmax(0,1fr)}
+    .main{grid-template-columns:repeat(3,minmax(0,1fr))}
+    h1{font-size:2rem}
+  }
+
+  /* genuine narrow refinements on top of a mobile base: allowed, and the reason
+     this fixture exists */
+  @media (max-width:22rem){.card{padding:12px}}
+  @media (max-width:22rem){h1{font-size:1.25rem}}
+</style>
+<div class="shell">
+  <nav class="side">Sidebar</nav>
+  <main class="main">
+    <h1>Mobile first</h1>
+    <div class="card">One</div><div class="card">Two</div><div class="card">Three</div>
+  </main>
+</div>

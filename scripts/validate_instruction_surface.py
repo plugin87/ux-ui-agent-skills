@@ -62,6 +62,8 @@ PLUGIN_ALWAYS_ON = [
     ("single shared theme",           r"[Oo]ne theme, one source of truth"),
     ("the 8 states",                  r"eight states"),
     ("output completeness",           r"partial output is a broken output"),
+    ("no native select",                  r"[Nn]ever a native `?<select>?`?|[Nn]ever ship a native"),
+    ("no one-sided accent border",        r"colored border on one side only|ONE SIDE ONLY"),
 ]
 
 # (label, regex) - must be present in CLAUDE.md itself, not only in a rule file.
@@ -75,6 +77,8 @@ ALWAYS_ON = [
     ("request router",                     r"##\s+Request Router"),
     ("token by intent",                    r"[Tt]oken by intent"),
     ("single shared theme",                r"[Oo]ne theme, one source of truth|Single-Theme Consistency"),
+    ("no native select",                  r"[Nn]ever a native `?<select>?`?|[Nn]ever ship a native"),
+    ("no one-sided accent border",        r"colored border on one side only|ONE SIDE ONLY"),
     ("the 8 states",                       r"\|\s*8\s*\|\s*Selected"),
     ("output completeness",                r"partial output is a broken output"),
 ]

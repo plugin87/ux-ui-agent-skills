@@ -32,18 +32,21 @@
   .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
   .c-ok{--dot:var(--trm-accent)} .c-warn{--dot:var(--color-feedback-warning)} .c-bad{--dot:var(--color-text-error)}
 
-  .grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
-  @media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-  @media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
+  /* Mobile first: the base IS the phone layout. This was a 12-column grid
+     stepped down by two max-width queries, so stripping the queries left a
+     wide layout that overflowed a phone. */
+  .grid{display:grid;gap:var(--space-4);grid-template-columns:minmax(0,1fr);padding:var(--space-3)}
+  @media (min-width:46rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr));padding:var(--space-4)}}
+  @media (min-width:72rem){.grid{grid-template-columns:repeat(12,minmax(0,1fr))}}
   .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
     padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start}
   .panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap}
   .panel h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
     color:var(--lin-ink-3)}
   .note{color:var(--lin-ink-3);font-size:var(--text-xs)}
-  .c9{grid-column:span 9} .c3{grid-column:span 3} .c6{grid-column:span 6} .c4{grid-column:span 4}
-  @media (max-width:72rem){.c9,.c6{grid-column:span 6} .c3,.c4{grid-column:span 3}}
-  @media (max-width:46rem){.c9,.c6,.c3,.c4{grid-column:span 1}}
+  .c9,.c3,.c6,.c4{grid-column:span 1}
+  @media (min-width:46rem){.c9,.c6{grid-column:span 6} .c3,.c4{grid-column:span 3}}
+  @media (min-width:72rem){.c9{grid-column:span 9} .c3{grid-column:span 3} .c6{grid-column:span 6} .c4{grid-column:span 4}}
 
   /* map */
   .map{position:relative;border-radius:var(--radius-sm);overflow:hidden;background:var(--lin-canvas)}

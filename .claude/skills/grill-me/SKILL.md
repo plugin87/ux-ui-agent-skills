@@ -1,6 +1,14 @@
 ---
+name: grill-me
 description: Interrogate the brief before a line is built — ask only the questions whose answers change the work, and put every unasked decision on the record as a stated assumption.
+# A command the user runs. Converted from .claude/commands/ so it has a
+# CLAUDE_SKILL_DIR of its own and its paths resolve on every install route.
+# disable-model-invocation keeps the behaviour a command had: the user
+# starts it, the model never does, and its description stays out of the
+# listing budget the model's skill choice is drawn from.
+disable-model-invocation: true
 ---
+
 
 The gates catch a screen built wrongly. Nothing in this repo catches a screen
 built correctly from the wrong brief, and that is where the expensive rework
@@ -18,7 +26,7 @@ Asking for something the repo already answers is noise, and it teaches the user
 that answering you is a waste of time. Before writing a single question:
 
 - Look for an existing brief, `CLAUDE.md`, `BRIEF.md`, or a `reference/` folder.
-- Look for an existing theme: `tokens/*.json`, `design-tokens.json`, `theme.css`.
+- Look for an existing theme: `${CLAUDE_SKILL_DIR}/../../../tokens/*.json`, `design-tokens.json`, `theme.css`.
   If one exists, the theme question is answered — do not ask it.
 - Look at the neighbouring screens and components. Framework, conventions, and
   the component inventory are usually visible, not unknown.
@@ -84,6 +92,13 @@ Write `BRIEF.md` next to the work, in this shape:
 
 ```
 # <what is being built>
+
+> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING` only the skill folders were installed, which is what
+> `npx skills add` does. Say so plainly, point the user at
+> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
+> contents of a file you could not open.
 
 Goal            one sentence, from the user's side
 User and task   who, and the task they came to finish

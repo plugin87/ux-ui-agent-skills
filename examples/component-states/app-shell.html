@@ -72,17 +72,29 @@
   .bars .barbox{flex:1;inline-size:100%;display:flex;align-items:flex-end;justify-content:center}
   .bars .bar{inline-size:100%;max-inline-size:2.2rem;border-radius:var(--radius-sm) var(--radius-sm) 0 0;background:var(--color-action-primary)}
   .bars .cap{font-size:var(--text-xs);color:var(--color-text-secondary)}
-  /* responsive */
-  @media (max-width:980px){ .panels{grid-template-columns:1fr} }
-  @media (max-width:720px){
-    .shell{display:block}                 /* block stack: header, (sidebar), main, no overlap */
-    aside.side{display:none;border-inline-end:0;border-block-end:1px solid var(--color-border-default)}
-    aside.side.open{display:block}         /* opening pushes main DOWN, never covers it */
-    .menutoggle{display:grid}
-    .hsearch{display:none}                  /* search moves to command palette on mobile */
-    .brand{flex:1;min-inline-size:0;overflow:hidden;white-space:nowrap}
-    header.bar{padding-inline:var(--space-3);gap:var(--space-2)}
+  /* Mobile first. The phone layout IS the base now: one column of panels, the
+     shell stacked, the sidebar closed behind a toggle and the search in the
+     command palette. The wider layouts are added with min-width above. Before
+     this the base was the desktop shell and every narrow rule was a patch, so
+     with the queries stripped the page overflowed a phone by 103px. */
+  .panels{grid-template-columns:1fr}
+  .shell{display:block}                   /* block stack: header, (sidebar), main, no overlap */
+  aside.side{display:none;border-inline-end:0;border-block-end:1px solid var(--color-border-default)}
+  aside.side.open{display:block}          /* opening pushes main DOWN, never covers it */
+  .menutoggle{display:grid}
+  .hsearch{display:none}                  /* search moves to command palette on mobile */
+  .brand{flex:1;min-inline-size:0;overflow:hidden;white-space:nowrap}
+  header.bar{padding-inline:var(--space-3);gap:var(--space-2)}
+
+  @media (min-width:721px){
+    .shell{display:grid}
+    aside.side{display:block;border-inline-end:1px solid var(--color-border-default);border-block-end:0}
+    .menutoggle{display:none}
+    .hsearch{display:flex}
+    .brand{flex:none;overflow:visible}
+    header.bar{padding-inline:var(--space-5);gap:var(--space-4)}
   }
+  @media (min-width:981px){ .panels{grid-template-columns:1.6fr 1fr} }
 </style>
 </head>
 <body>

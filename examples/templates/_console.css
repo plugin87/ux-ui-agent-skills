@@ -15,25 +15,37 @@ img{max-inline-size:100%;block-size:auto;display:block}
 .top{display:flex;align-items:center;gap:var(--space-5);flex-wrap:wrap;min-inline-size:0;overflow-wrap:anywhere;
   padding:var(--space-4) var(--space-5);border-block-end:1px solid var(--lin-hairline);background:var(--lin-panel)}
 .top > *{min-inline-size:0}
-h1{font-size:var(--text-4xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
-@media (max-width:46rem){h1{font-size:var(--text-2xl)}}
+/* Mobile first, in both directions. These rules used to start at a 12-column
+   desktop grid and step DOWN through two max-width queries, which meant the base
+   layer was a wide layout that only worked once a query patched it. Strip the
+   queries and it overflowed a phone by 30px. The base is the phone now, and the
+   wider layouts are added on top with min-width. */
+h1{font-size:var(--text-2xl);letter-spacing:-0.035em;line-height:var(--leading-tight)}
+@media (min-width:46rem){h1{font-size:var(--text-4xl)}}
 .sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
-.clock{margin-inline-start:auto;font-family:var(--font-mono);font-size:var(--text-2xl);color:var(--trm-accent);
+.clock{font-family:var(--font-mono);font-size:var(--text-lg);color:var(--trm-accent);
   font-variant-numeric:tabular-nums}
-@media (max-width:46rem){.clock{margin-inline-start:0;font-size:var(--text-lg)}}
+@media (min-width:46rem){.clock{margin-inline-start:auto;font-size:var(--text-2xl)}}
 
-.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--space-4);padding:var(--space-4)}
-@media (max-width:72rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr))}}
-@media (max-width:46rem){.grid{grid-template-columns:minmax(0,1fr);padding:var(--space-3)}}
-.s12{grid-column:span 12} .s8{grid-column:span 8} .s6{grid-column:span 6}
-.s4{grid-column:span 4} .s3{grid-column:span 3}
-@media (max-width:72rem){.s12,.s8,.s6{grid-column:span 6} .s4,.s3{grid-column:span 3}}
-@media (max-width:46rem){.s12,.s8,.s6,.s4,.s3{grid-column:span 1}}
+.grid{display:grid;grid-template-columns:minmax(0,1fr);gap:var(--space-4);padding:var(--space-3)}
+@media (min-width:46rem){.grid{grid-template-columns:repeat(6,minmax(0,1fr));padding:var(--space-4)}}
+@media (min-width:72rem){.grid{grid-template-columns:repeat(12,minmax(0,1fr))}}
+.s12,.s8,.s6,.s4,.s3{grid-column:span 1}
+@media (min-width:46rem){.s12,.s8,.s6{grid-column:span 6} .s4,.s3{grid-column:span 3}}
+@media (min-width:72rem){
+  .s12{grid-column:span 12} .s8{grid-column:span 8} .s6{grid-column:span 6}
+  .s4{grid-column:span 4} .s3{grid-column:span 3}
+}
 
+/* The explicit minmax(0,1fr) track is what lets the contents shrink; an implicit
+   column is max-content and sizes itself to the widest child, whatever
+   min-inline-size says about the panel. */
 .panel{background:var(--lin-panel);border:1px solid var(--lin-hairline);border-radius:var(--radius-card);
-  padding:var(--space-4);min-inline-size:0;display:grid;gap:var(--space-3);align-content:start;position:relative}
-.panel > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-3);flex-wrap:wrap;
-  min-inline-size:0}
+  padding:var(--space-3);min-inline-size:0;display:grid;grid-template-columns:minmax(0,1fr);
+  gap:var(--space-3);align-content:start;position:relative}
+.panel > *{min-inline-size:0}
+.panel > header{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
+  gap:var(--space-1);flex-wrap:wrap;min-inline-size:0}
 .panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
 h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
   color:var(--lin-ink-3)}
@@ -46,11 +58,13 @@ h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;te
    `.spread` a list of rows shares the slack out as breathing room. */
 .panel.fill{align-content:normal;grid-template-rows:auto minmax(0,1fr)}
 .panel.spread{align-content:space-between}
-/* On a genuinely narrow viewport a panel title and its aside cannot share a row:
-   stacking them is what keeps the page from being pushed sideways. */
-@media (max-width:30rem){
-  .panel{padding:var(--space-3)}
-  .panel > header{flex-direction:column;align-items:flex-start;gap:var(--space-1)}
+/* A panel title and its aside cannot share a row on a phone, so stacked is the
+   base and the row is added for wider screens. This is the shape the rule asks
+   for: the narrow case is what the base already does, not a patch applied to a
+   wide default. */
+@media (min-width:30rem){
+  .panel{padding:var(--space-4)}
+  .panel > header{flex-direction:row;align-items:baseline;gap:var(--space-3)}
 }
 
 /* the scroller is the positioned ancestor its hidden caption needs; without one
@@ -83,3 +97,16 @@ footer{padding:var(--space-4) var(--space-5);border-block-start:1px solid var(--
 footer a{color:var(--lin-accent-hover)}
 footer span{min-inline-size:0;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}
+
+/* Narrow-width defences, applied once rather than per page. Three templates
+   passed at 320px on macOS and failed on Linux CI by 3-6px, because font metrics
+   differ per platform and these pages had no slack left. Causes 1-3 in
+   .claude/rules/components.md:
+     - a long token sets min-content width, and only `anywhere` shrinks that
+     - a flex or grid child keeps min-width:auto and widens its own track
+     - a button's label is one unbreakable run unless it is allowed to wrap */
+.page p, .page td, .page th, .page li, .page dd, .page dt,
+.panel p, .panel td, .panel th, .panel li, .panel dd, .panel dt,
+.topbar h1, .topbar .sub{overflow-wrap:anywhere}
+.btn{overflow-wrap:anywhere;min-inline-size:0}
+.topbar, .panel > header, .page > header{flex-wrap:wrap}
