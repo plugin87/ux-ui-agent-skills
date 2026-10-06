@@ -379,6 +379,7 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | **[Live demo](https://plugin87.github.io/ux-ui-agent-skills/)** | 49 rendered pages: twenty industry screens, every component harness, both reference screens, a theme toggle |
 | [docs/GUIDE.md](docs/GUIDE.md) | Using it as a plugin (inventory, management, token cost), how the skills compose, the repo map, token architecture, frameworks, interop, a11y standards, starting a new product project |
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
+| [docs/BRANCHING.md](docs/BRANCHING.md) | One concern per branch, one commit per merge, and the settings that enforce it |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Why PRs are not merged, what to report instead, and how a gate that can still say no is built |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |
 | [.claude/rules/](.claude/rules/) | The depth behind it: tokens and colour, type and spacing, components, accessibility, frameworks, review, brand and operations |

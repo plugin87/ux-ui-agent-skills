@@ -28,6 +28,17 @@ else's code landing in the history.
 If you want the kit to do something it does not, forking is welcome and the MIT
 licence says so.
 
+## One concern per branch, one commit per merge
+
+`main` carries one commit per change, with the pull request title as its subject
+and the description as its body, so `git log` reads as the history of the project
+rather than of the typing. Branch settings enforce the merge side; the branch
+side is a habit: work in as many commits as the work needs, then collapse them
+with `git reset --soft origin/main` and write the one message that explains the
+whole change before asking for a merge.
+
+Details, and what that message has to carry: [docs/BRANCHING.md](docs/BRANCHING.md).
+
 ## The bar, for the maintainer and for anything proposed
 
 ```bash
