@@ -1,0 +1,35 @@
+/* render-harness.css — chrome for the generated pages, not part of any component.
+ *
+ * scripts/render_framework_source.mjs renders a single component per entry. A
+ * lone <button> on a blank page gives the gates one state to measure, so the
+ * Button entry is laid out as a labelled gallery of its variants. Those wrapper
+ * classes are harness furniture and are deliberately kept OUT of components.css,
+ * which ships. Every value is still a theme token: the harness has to pass the
+ * same gates as the thing it is showing, or it would be the one unmeasured page
+ * in the repo.
+ */
+.ds-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-6);
+  max-inline-size: var(--bp-lg);
+  margin-inline: auto;
+  padding: var(--space-6);
+  font-family: var(--font-sans);
+  background: var(--color-surface-page);
+  color: var(--color-text-primary);
+  min-block-size: 100vh;
+  align-content: start;
+}
+.ds-gallery__item {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: start;
+  min-inline-size: 0;
+}
+.ds-gallery__label {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-secondary);
+}

@@ -287,6 +287,10 @@ scripts/                  ← validate_tokens.py [file|dir] · contrast.py · va
                               draws a chevron and sorts nothing; `data-demo-state` opts a state rendering out)
                             · verify_overflow.mjs (silently clipped text + overlapping controls — the
                               failures that stay inside the page and survive a happy-path screenshot)
+                            · render_framework_source.mjs (compiles the .tsx with esbuild, renders it
+                              with react-dom/server against the real stylesheets, and checks every class it
+                              emits resolves — then every render gate runs on the output. SSR only: it proves
+                              what the components PRODUCE, never what they do on a click)
                             · accuracy_report.mjs (one-command 100%-or-fail: all gates + real render + states)
                             · design_systems.py · scaffold_component.py
 evals/                    ← Cold-start briefs + `run.mjs`: point every objective gate at what an

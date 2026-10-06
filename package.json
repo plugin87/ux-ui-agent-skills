@@ -1,7 +1,7 @@
 {
   "name": "ux-ui-agent-skills",
   "version": "2.8.0",
-  "description": "Turn Claude into a Senior Design Architect \u2014 DTCG design tokens, 50 components, WCAG 2.2 AA\u2192AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 19 runnable skills. Install as a Claude Code plugin or with npx.",
+  "description": "Turn Claude into a Senior Design Architect — DTCG design tokens, 50 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 138 design systems, 19 runnable skills. Install as a Claude Code plugin or with npx.",
   "type": "commonjs",
   "bin": {
     "ux-ui-skills": "bin/cli.js",
@@ -30,11 +30,15 @@
     "test:focustrap": "node scripts/verify_focustrap.mjs",
     "test:rtl": "node scripts/verify_rtl.mjs",
     "build:tokens": "node scripts/build_tokens.mjs --out dist/tokens.css",
+    "render:source": "node scripts/render_framework_source.mjs",
     "docs:shots": "node scripts/screenshot_docs.mjs",
     "docs:shots:check": "node scripts/screenshot_docs.mjs --check"
   },
   "devDependencies": {
-    "playwright": "^1.40.0"
+    "esbuild": "^0.28.2",
+    "playwright": "^1.40.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
   },
   "files": [
     "bin/",

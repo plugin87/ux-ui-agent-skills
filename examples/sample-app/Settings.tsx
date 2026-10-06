@@ -10,7 +10,7 @@ export function Settings() {
   return (
     <div className="app">
       <main className="container" style={{ display: "grid", gap: "var(--space-6)" }}>
-        <h1 className="page-title">Settings</h1>
+        <h1 className="page-title page-title--display">Settings</h1>
 
         <div className="field">
           <label className="field__label" htmlFor="name">Display name</label>
@@ -35,12 +35,13 @@ export function Settings() {
         </div>
 
         <Modal open={confirmOpen} onClose={() => setConfirmOpen(false)} titleId="confirm-title">
-          <h2 id="confirm-title" className="page-title" style={{ fontSize: "var(--text-xl)" }}>
-            Delete account?
-          </h2>
-          <p className="subtle">This is permanent and cannot be undone.</p>
-          <div style={{ display: "flex", gap: "var(--space-2)", marginBlockStart: "var(--space-4)" }}>
-            <Button className="btn--secondary" onClick={() => setConfirmOpen(false)}>Cancel</Button>
+          {/* The dialog's own slots, not the page's heading class with an inline
+              font-size override on top of it. Modal ships ds-modal__title /
+              __body / __actions precisely so a caller never has to re-style. */}
+          <h2 id="confirm-title" className="ds-modal__title">Delete account?</h2>
+          <p className="ds-modal__body">This is permanent and cannot be undone.</p>
+          <div className="ds-modal__actions">
+            <Button variant="secondary" onClick={() => setConfirmOpen(false)}>Cancel</Button>
             <Button variant="destructive" onClick={() => setConfirmOpen(false)}>Delete</Button>
           </div>
         </Modal>
