@@ -9,14 +9,19 @@ on:
   workflow_dispatch:           # manual run to backfill an existing tag
     inputs:
       tag:
-        description: 'Existing tag to create a Release for (e.g. v1.2.0)'
-        required: true
+        description: 'Existing tag to create a Release for (e.g. v1.2.0). Ignored when auth_check is true.'
+        required: false
+      auth_check:
+        description: 'Only check whether npm trusted publishing works. Publishes nothing.'
+        type: boolean
+        default: false
 
 permissions:
   contents: write              # required for gh release create/edit
 
 jobs:
   release:
+    if: inputs.auth_check != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -72,7 +77,10 @@ jobs:
     #
     # Trusted publishing needs npm >= 11.5.1 and Node >= 22.14.0, which is why
     # this job pins Node 22 and upgrades npm before publishing.
-    if: github.event_name == 'push'
+    # A tag push publishes. A manual run with auth_check only asks the registry
+    # who we are - which is how you find out trusted publishing works WITHOUT
+    # spending a version number to learn it. Three were spent that way.
+    if: github.event_name == 'push' || inputs.auth_check == true
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -80,31 +88,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Deliberately NO registry-url. setup-node writes an .npmrc containing
-      # //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}, and with no secret
-      # set that resolves to the literal placeholder. npm then authenticates with
-      # a bogus token INSTEAD of minting an OIDC one, and the registry answers
-      # E404 on the PUT - which reads like "package not found" and actually means
-      # "that credential is not valid". That is what failed the v2.9.1 tag.
+      # registry-url IS needed: it writes the registry into .npmrc, and npm
+      # attaches the OIDC exchange to a configured registry. Removing it was the
+      # wrong fix - v2.9.2 then failed with ENEEDAUTH, npm having no registry
+      # entry to authenticate against at all.
+      #
+      # What actually has to go is the credential LINE setup-node writes next to
+      # it: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}. With no secret
+      # set that is a placeholder, npm finds it, tries it, and never mints an
+      # OIDC token - which is what failed v2.9.1 with E404.
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          registry-url: 'https://registry.npmjs.org'
 
       - name: npm new enough for trusted publishing
         run: |
           npm install -g npm@latest
           echo "npm $(npm --version), node $(node --version)"
 
-      - name: No stray credential can shadow the OIDC one
+      - name: Keep the registry, drop the placeholder credential
         run: |
-          # Belt and braces: if anything upstream left an auth line behind, drop
-          # it. A half-configured token is worse than none, because npm will try
-          # it and stop there.
-          rm -f ~/.npmrc "${NPM_CONFIG_USERCONFIG:-/dev/null}" 2>/dev/null || true
-          npm config delete //registry.npmjs.org/:_authToken 2>/dev/null || true
+          NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          if [ -f "$NPMRC" ]; then
+            echo "before:"; sed 's/=.*/=<redacted>/' "$NPMRC"
+            # strip only the auth line; the registry line stays
+            sed -i '/_authToken/d' "$NPMRC"
+            echo "after:"; cat "$NPMRC"
+          fi
           echo "registry: $(npm config get registry)"
+          echo "OIDC available: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
 
       - name: Guard — tag must match package.json version
+        if: inputs.auth_check != true
         run: |
           PKG="$(node -p "require('./package.json').version")"
           TAG="${GITHUB_REF_NAME#v}"
@@ -116,6 +132,7 @@ jobs:
 
       - name: Is this version already on the registry?
         id: exists
+        if: inputs.auth_check != true
         run: |
           VER="$(node -p "require('./package.json').version")"
           NAME="$(node -p "require('./package.json').name")"
@@ -129,8 +146,21 @@ jobs:
             echo "$NAME@$VER is not on the registry yet (HTTP $CODE) - publishing."
           fi
 
+      - name: Who does the registry think we are?
+        run: |
+          if npm whoami; then
+            echo "::notice::OIDC works - the registry authenticated this workflow."
+          else
+            echo "::error::npm could not authenticate. A tag push will NOT publish."
+            echo "::error::npmjs.com -> ux-ui-agent-skills -> Settings -> Trusted Publisher:"
+            echo "::error::  Publisher: GitHub Actions | user: plugin87"
+            echo "::error::  Repository: ux-ui-agent-skills | Workflow: release.yml"
+            echo "::error::  Environment: (blank). The filename must match exactly."
+            exit 1
+          fi
+
       - name: Publish to npm (OIDC, no token)
-        if: steps.exists.outputs.skip != 'true'
+        if: steps.exists.outputs.skip != 'true' && inputs.auth_check != true
         run: npm publish --provenance --access public
 
       - name: Say what to fix when the registry refuses
