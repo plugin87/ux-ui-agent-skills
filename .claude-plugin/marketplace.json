@@ -9,9 +9,9 @@
     {
       "name": "ux-ui-agent-skills",
       "source": "./",
-      "version": "2.9.3",
+      "version": "2.9.4",
       "category": "design",
-  "version": "2.9.3",
+  "version": "2.9.4",
   "description": "Turn Claude into a senior design architect: DTCG design tokens, 52 components, WCAG 2.2 AA to AAA accessibility, 138 brand-grade design systems, any-framework code generation, and 51 objective quality gates that fail the build instead of claiming success.",
       "tags": [
         "design-system",

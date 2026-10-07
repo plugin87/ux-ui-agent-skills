@@ -10,6 +10,43 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.4`
+
+First release published automatically. `v2.9.3` validated npm trusted
+publishing, so from here a `vX.Y.Z` tag cuts the GitHub Release and publishes to
+the registry with no token anywhere - a short-lived OIDC credential minted per
+run, plus a signed provenance statement.
+
+**`ux-ui-skills version`** (also `--version`, `-v`) prints the running package's
+version. It reads `package.json` rather than a literal so the number cannot
+drift from the package it claims to describe.
+
+**The closing line after `init` now matches the surface that was installed.** It
+always said "Open the folder in Claude Code - CLAUDE.md loads automatically. Try
+/design-tokens", including on `--agent codex`, where it named a file the user
+does not have and a mechanism their agent does not implement. It was the last
+thing a Codex user saw.
+
+**`help` documents `--agent` and `version`.** The Codex route existed but was
+undiscoverable from the CLI itself.
+
+**Homebrew.** `brew install plugin87/tap/ux-ui-agent-skills`. The formula
+installs this same npm tarball; `scripts/update_homebrew_formula.mjs` generates
+it from the registry - version from `package.json`, URL and digest from that
+version's registry entry, sha256 computed from the bytes actually downloaded and
+checked against npm's `dist.integrity` before anything is written. See
+`docs/HOMEBREW.md`.
+
+**The release workflow's `auth_check` input is gone.** It was meant to answer
+"will this publish?" without spending a version number, and it could not: npm
+mints the trusted-publishing token inside the publish flow, so `npm whoami`
+reports `ENEEDAUTH` whether the configuration is right or wrong. What was left
+was a knob that sent failure mail for runs that proved nothing.
+
+Gates: 51/51, 43/43 unit, 162/162 meta.
+
+---
+
 ### `v2.9.3`
 
 Same kit as `v2.9.2`. This is the release that validates npm trusted publishing,
