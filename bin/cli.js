@@ -9,6 +9,7 @@
  *   npx ux-ui-skills new [dest]         Scaffold a NEW product repo from the starter template
  *   npx ux-ui-skills add <area>...      Install specific areas
  *   npx ux-ui-skills list               List available areas
+ *   npx ux-ui-skills version            Print the installed version
  *   npx ux-ui-skills help
  *
  * Flags: --force (overwrite existing files), --dry (print actions only)
@@ -261,9 +262,14 @@ ${C.bold}Usage${C.reset}
   npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
   npx ux-ui-skills ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
   npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
+  npx ux-ui-skills ${C.cyan}version${C.reset}            Print the installed version
   npx ux-ui-skills ${C.cyan}help${C.reset}
 
 ${C.bold}Flags${C.reset}
+  --agent <which> init only: which instruction surface to install
+                  ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, hooks
+                  ${C.cyan}codex${C.reset}             AGENTS.md — Codex, Cursor, Copilot, Aider, +more
+                  ${C.cyan}both${C.reset}              both files, held in step by a gate
   --force, -f     Overwrite existing files
   --dry           Show what would be copied, change nothing
   --no-open       demo only: copy the examples but do not launch a browser
@@ -272,15 +278,23 @@ ${C.bold}Examples${C.reset}
   npx ux-ui-skills demo
   npx ux-ui-skills init
   npx ux-ui-skills init ./my-app
+  npx ux-ui-skills init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
   npx ux-ui-skills new ./my-product
   npx ux-ui-skills add tokens taste design-systems
   npx ux-ui-skills add skills --force
 `);
 }
 
-function summary(destRoot) {
+/* The next step depends on which surface was installed. Telling a Codex user to
+   open Claude Code and run /design-tokens names a file they do not have and a
+   mechanism their agent does not implement. */
+function summary(destRoot, agent) {
   console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset} → ${path.relative(process.cwd(), destRoot) || '.'}`);
-  console.log(`${C.dim}Open the folder in Claude Code — CLAUDE.md loads automatically. Try /design-tokens, /design-code, /apply-aesthetic.${C.reset}\n`);
+  if (agent === 'codex') {
+    console.log(`${C.dim}Open the folder in Codex, Cursor, Copilot or Aider — AGENTS.md is read automatically. Ask for a screen; the gates live in scripts/.${C.reset}\n`);
+  } else {
+    console.log(`${C.dim}Open the folder in Claude Code — CLAUDE.md loads automatically. Try /design-tokens, /design-code, /apply-aesthetic.${C.reset}\n`);
+  }
 }
 
 function main() {
@@ -290,6 +304,15 @@ function main() {
 
   if (!cmd || cmd === 'help' || cmd === '--help' || cmd === '-h') return help();
   if (cmd === 'list' || cmd === 'ls') return cmdList();
+
+  /* Read from the package that is actually running, never a literal. A typed
+     version drifts from package.json the first time one of them is bumped
+     alone, and the Homebrew formula's test asserts the two agree - which is the
+     point of having it: it catches a bottle built from the wrong tarball. */
+  if (cmd === 'version' || cmd === '--version' || cmd === '-v') {
+    console.log(require(path.join(ROOT, 'package.json')).version);
+    return;
+  }
 
   if (cmd === 'init') {
     const destRoot = path.resolve(rest[0] || process.cwd());
@@ -313,7 +336,7 @@ function main() {
       console.log(`\n  ${C.dim}AGENTS.md installed. Codex, Cursor, Copilot, Jules and ~25 more read it.${C.reset}`);
       console.log(`  ${C.dim}The .claude/ skills and hooks were not installed - they are Claude Code only.${C.reset}`);
     }
-    return summary(destRoot);
+    return summary(destRoot, flags.agent);
   }
 
   if (cmd === 'new') {

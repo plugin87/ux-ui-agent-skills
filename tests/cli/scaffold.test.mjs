@@ -122,3 +122,64 @@ test('a mistyped flag is refused, not read as a destination path', () => {
   assert.match(stripAnsi(r.stderr + r.stdout), /unknown flag: --forse/);
   assert.ok(!existsSync(join(ROOT, '--forse')), 'a flag became a directory');
 });
+
+/**
+ * `version` exists because the Homebrew formula's test block asserts the CLI
+ * reports the version Homebrew installed. That assertion only means something
+ * if the number is read from the running package rather than typed, so this
+ * checks the number AND where it came from.
+ */
+test('version prints package.json, under every spelling', () => {
+  const expected = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+  for (const spelling of ['version', '--version', '-v']) {
+    const r = cli(spelling);
+    assert.equal(r.status, 0, `\`${spelling}\` exited ${r.status}`);
+    assert.equal(stripAnsi(r.stdout).trim(), expected,
+      `\`${spelling}\` printed something other than package.json's version`);
+  }
+  const src = readFileSync(join(ROOT, 'bin', 'cli.js'), 'utf8');
+  assert.match(src, /require\(path\.join\(ROOT, 'package\.json'\)\)\.version/,
+    'the version must be read from package.json, never retyped into the source');
+});
+
+/**
+ * A Codex install has no CLAUDE.md and no slash commands. The closing line used
+ * to tell every user to open Claude Code and run /design-tokens regardless,
+ * which names a file they do not have and a mechanism their agent does not
+ * implement - the first thing a Codex user would see, and wrong.
+ */
+test('the closing line matches the surface that was installed', () => {
+  // The closing line only, not the whole log: the codex route also prints a
+  // note saying the Claude-Code-only areas were skipped, which is correct and
+  // mentions Claude Code on purpose.
+  const closing = (out) => stripAnsi(out).trim().split('\n').pop();
+
+  tmp((dir) => {
+    const line = closing(cli('init', '--agent', 'codex', dir).stdout);
+    assert.match(line, /AGENTS\.md is read automatically/);
+    assert.doesNotMatch(line, /Claude Code/, 'a Codex install closed by pointing at Claude Code');
+    assert.doesNotMatch(line, /\/design-tokens/, 'a Codex install advertised a slash command');
+  });
+  tmp((dir) => {
+    const line = closing(cli('init', dir).stdout);
+    assert.match(line, /CLAUDE\.md loads automatically/);
+    assert.match(line, /\/design-tokens/);
+  });
+});
+
+/**
+ * The claim the closing line makes about the codex route has to be true: slash
+ * commands, skills, rules and the critic are Claude Code mechanisms, so on that
+ * route they are dead files. `.claude/` should not exist at all.
+ */
+test('a codex install ships no Claude Code mechanism', () => {
+  tmp((dir) => {
+    cli('init', '--agent', 'codex', dir);
+    assert.ok(existsSync(join(dir, 'AGENTS.md')), 'AGENTS.md was not installed');
+    assert.ok(!existsSync(join(dir, 'CLAUDE.md')), 'CLAUDE.md leaked onto the codex route');
+    assert.ok(!existsSync(join(dir, '.claude')), '.claude/ leaked onto the codex route');
+    // The gates are plain Node and Python, so they must still be there.
+    assert.ok(existsSync(join(dir, 'scripts', 'verify_states.mjs')), 'the gates did not install');
+    assert.ok(existsSync(join(dir, 'tokens', 'colors.json')), 'the tokens did not install');
+  });
+});
