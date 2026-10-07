@@ -9,19 +9,14 @@ on:
   workflow_dispatch:           # manual run to backfill an existing tag
     inputs:
       tag:
-        description: 'Existing tag to create a Release for (e.g. v1.2.0). Ignored when auth_check is true.'
+        description: 'Existing tag to create a Release for (e.g. v1.2.0).'
         required: false
-      auth_check:
-        description: 'Print the publish environment and stop. Does NOT prove OIDC - only a real publish does.'
-        type: boolean
-        default: false
 
 permissions:
   contents: write              # required for gh release create/edit
 
 jobs:
   release:
-    if: inputs.auth_check != true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,10 +72,16 @@ jobs:
     #
     # Trusted publishing needs npm >= 11.5.1 and Node >= 22.14.0, which is why
     # this job pins Node 22 and upgrades npm before publishing.
-    # A tag push publishes. A manual run with auth_check only asks the registry
-    # who we are - which is how you find out trusted publishing works WITHOUT
-    # spending a version number to learn it. Three were spent that way.
-    if: github.event_name == 'push' || inputs.auth_check == true
+    # Validated on 2026-10-07 by v2.9.3, which published with no token at all.
+    #
+    # There used to be an `auth_check` input here that was meant to answer "will
+    # this publish?" without spending a version number. It could not: `npm
+    # whoami` does not exercise OIDC - npm mints the trusted-publishing token
+    # inside the publish flow itself - so the check failed while publishing
+    # worked, and as a blocking step it would have failed every real release.
+    # A knob that cannot answer its own question is worse than no knob: it sends
+    # a failure email for a run that proved nothing. Removed.
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -120,7 +121,6 @@ jobs:
           echo "OIDC available: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
 
       - name: Guard — tag must match package.json version
-        if: inputs.auth_check != true
         run: |
           PKG="$(node -p "require('./package.json').version")"
           TAG="${GITHUB_REF_NAME#v}"
@@ -132,7 +132,6 @@ jobs:
 
       - name: Is this version already on the registry?
         id: exists
-        if: inputs.auth_check != true
         run: |
           VER="$(node -p "require('./package.json').version")"
           NAME="$(node -p "require('./package.json').name")"
@@ -147,14 +146,9 @@ jobs:
           fi
 
       # Informational only, and it must never gate the publish. `npm whoami` does
-      # NOT exercise OIDC: npm mints the trusted-publishing token as part of the
-      # publish flow itself, so whoami with no token in .npmrc reports ENEEDAUTH
-      # whether or not the trusted publisher is configured correctly.
-      #
-      # This was briefly a blocking check, which would have failed every real
-      # release while publishing worked fine. npm's own UI says the only way to
-      # validate the configuration is to publish once - so that is what validates
-      # it, and auth_check just prints the environment.
+      # NOT exercise OIDC, so it reports ENEEDAUTH here whether or not the
+      # trusted publisher is configured correctly. It is printed because it is
+      # useful context in a log, never because it decides anything.
       - name: Environment, for the record
         run: |
           echo "npm $(npm --version), node $(node --version)"
@@ -164,7 +158,7 @@ jobs:
           echo "whoami above does not test OIDC - only a publish does."
 
       - name: Publish to npm (OIDC, no token)
-        if: steps.exists.outputs.skip != 'true' && inputs.auth_check != true
+        if: steps.exists.outputs.skip != 'true'
         run: npm publish --provenance --access public
 
       - name: Say what to fix when the registry refuses
