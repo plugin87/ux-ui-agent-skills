@@ -74,6 +74,39 @@ function targetsFrom(args) {
   return args.filter(a => !a.startsWith('-') && extname(a) && existsSync(a));
 }
 
+/**
+ * Write one receipt, for a caller that ran the gate itself.
+ *
+ * `accuracy_report.mjs` runs 51 checks, several of them long `&&` chains across
+ * many files, so wrapping each one in this script would mean re-parsing those
+ * chains here. It records its own receipts through this instead, which keeps
+ * one definition of what a receipt is and one place that decides when one is
+ * live.
+ *
+ * `files` are the paths the check measured. A receipt is evidence only while
+ * every one of them still hashes the same, so a caller that under-reports its
+ * files writes a receipt that outlives the measurement - which is the one
+ * failure this whole mechanism exists to prevent.
+ */
+export function writeReceipt({ gate, args = [], exit, files = [], values = {}, at }) {
+  const targets = files.map(f => ({ path: resolve(f), sha256: hashFile(f) }))
+    .filter(t => t.sha256);
+  const receipt = {
+    at: at || new Date().toISOString(),
+    gate, args, exit, targets, values,
+    browser_required: true,
+  };
+  try {
+    mkdirSync(receiptsDir(), { recursive: true });
+    appendFileSync(receiptsFile(), JSON.stringify(receipt) + '\n');
+    return true;
+  } catch (err) {
+    console.error(`gate.mjs: could not write a receipt for ${gate} (${err.message}). `
+      + 'Treat that check as unrecorded.');
+    return false;
+  }
+}
+
 export function readReceipts() {
   const f = receiptsFile();
   if (!existsSync(f)) return [];

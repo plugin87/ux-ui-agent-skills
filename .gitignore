@@ -29,3 +29,4 @@ dist/
 # Gate receipts: what was measured, when, and against which file hash.
 # Per-session and machine-local - they are evidence for this run, not history.
 .ds-receipts/
+plugin-evals/results/

@@ -518,12 +518,20 @@ is really saying.
 ## Re-measuring
 
 ```bash
-python3 scripts/measure_install_paths.py          # H1
-ls hooks/ 2>/dev/null; grep -c hooks .claude/settings.json   # H3
+node evals/measure_harness.mjs            # every indicator, computed
+node evals/measure_harness.mjs --json     # the same, machine-readable
 
 # H6: critique each fixture, save as critique-<fixture>.md, then
 node evals/score_critic.mjs critique-*.md
 ```
+
+`measure_harness.mjs` replaced the hand-assembled table below, and the first
+thing it did was contradict it: this file recorded H3 as **3 of 11 rules
+enforced** while the always-on list had grown and the real figure was 3 of 9. A
+number that was true when it was typed and wrong by the time anyone read it is
+the reason the table is computed now. Indicators that need a paid run are read
+from `harness-measurements.json`, which records the commit each was measured at
+and marks an entry STALE once HEAD moves past it.
 
 H6 is re-measured by running `/critique` against each page in
 `tests/fixtures/critic/` and scoring what came back. Read the printed excerpts

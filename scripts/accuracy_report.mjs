@@ -12,6 +12,8 @@
  * Exit 0 only if 100% of checks pass.
  */
 import { execSync } from 'node:child_process';
+import { existsSync } from 'node:fs';
+import { writeReceipt } from './gate.mjs';
 
 const checks = [
   ['Token JSON valid + aliases resolve', 'python3 scripts/validate_tokens.py'],
@@ -113,12 +115,40 @@ console.log('='.repeat(64));
 
 let pass = 0;
 const fails = [];
+/**
+ * The files a check measured, read out of the command it ran.
+ *
+ * A receipt is evidence only while every file it names still hashes the same,
+ * so under-reporting here would write a receipt that outlives its measurement.
+ * The command strings are the ground truth for what was looked at, so they are
+ * what gets parsed - not a second list that could drift from them.
+ */
+const filesIn = (cmd) => [...new Set(
+  (cmd.match(/[\w./-]+\.(?:html|json|css|mjs|py|md|tsx|jsx|ts|js)/g) || [])
+    .filter(f => !f.startsWith('scripts/') && !f.startsWith('node_modules'))
+    .filter(existsSync))];
+
+let recorded = 0, unrecorded = 0;
+
 for (const [label, cmd] of checks) {
   let ok = true, out = '';
+  const at = new Date().toISOString();
   try { out = execSync(cmd, { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, DS_REQUIRE_BROWSER: '1' } }).toString(); }
   catch (e) { ok = false; out = (e.stdout || '').toString() + (e.stderr || '').toString(); }
   console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${label}`);
   if (ok) pass++; else fails.push([label, out.trim().split('\n').slice(-6).join('\n')]);
+
+  /* Record what this check measured, so the result can be traced to the bytes
+     it was measured against rather than to this scrollback. A check that names
+     no file - the ones that scan a whole tree by default - leaves no receipt,
+     and the count below says so instead of pretending otherwise. */
+  const files = filesIn(cmd);
+  if (files.length) {
+    writeReceipt({ gate: 'accuracy_report', args: [label], exit: ok ? 0 : 1, files, at });
+    recorded++;
+  } else {
+    unrecorded++;
+  }
 }
 
 const pct = Math.round((pass / checks.length) * 100);
@@ -131,6 +161,8 @@ if (fails.length) {
   process.exit(1);
 }
 console.log('\n 100% — every objective correctness check passes. Re-run anytime to reproduce.');
+console.log(` Receipts: ${recorded} check(s) recorded against the files they measured, ${unrecorded} not`);
+console.log(' (a check that names no file scans a tree by default and leaves none).');
 console.log(' Scope: token-consistency, theme-resolution, WCAG AA (real render, light+dark),');
 console.log(' no hardcodes, no emoji. Subjective visual/brand fidelity is NOT claimed here.');
 process.exit(0);

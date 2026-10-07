@@ -1,0 +1,33 @@
+{
+  "$comment": [
+    "Indicators that need a paid model run, recorded with the commit they were",
+    "measured at. measure_harness.mjs reads this file and marks an entry STALE",
+    "when HEAD has moved past that commit, so a number is never quietly carried",
+    "forward as if it were fresh.",
+    "",
+    "Only record a value a command actually printed, and put that command in",
+    "`command` so anyone can reproduce it. An entry with no command is a claim,",
+    "not a measurement."
+  ],
+  "H2": {
+    "value": 1,
+    "commit": "14f8d44",
+    "at": "2026-10-07T05:56:43.008Z",
+    "command": "claude plugin eval . --runs 2 --ablation none --trust-plugin --no-publish",
+    "detail": "12/12 cases, $4.34, 682s"
+  },
+  "H6": {
+    "value": 1,
+    "commit": "14f8d44",
+    "at": "2026-10-07T02:00:00Z",
+    "command": "node evals/score_critic.mjs critique-*.md  (four blind design-critic runs, one per fixture)",
+    "detail": "14/14 seeded defects caught. Read with the three caveats in HARNESS.md: fixtures and key written in the same session, and the keyword matcher was widened against these same four critiques after a hand-read of 14/14."
+  },
+  "H7": {
+    "value": 0.8333333333333334,
+    "commit": "14f8d44",
+    "at": "2026-10-07T06:13:47.045Z",
+    "command": "claude plugin eval . --case taste-applied --runs 3 --ablation none",
+    "detail": "design-screen fired 3/3; the Brief Inference block was written 2/3. A loose grader scored this 1.0000 by also matching the skill template loaded into context - see plugin-evals/taste-applied/NOTES.md."
+  }
+}

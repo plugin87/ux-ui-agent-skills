@@ -24,5 +24,8 @@
   "agents": [
     "./.claude/agents/design-critic.md"
   ],
-  "skills": "./.claude/skills"
+  "skills": "./.claude/skills",
+  "experimental": {
+    "evals": "./plugin-evals"
+  }
 }
