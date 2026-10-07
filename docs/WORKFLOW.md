@@ -146,6 +146,10 @@ Edit knowledge files → commit
   it because the package says to. It also removes the 2FA prompt, which is what
   made a scripted publish impossible before.
 - The workflow filename has to match exactly, or npm will not recognise the token.
+- **Check it before tagging.** Actions -> *Release on tag* -> Run workflow ->
+  `auth_check: true` runs the publish job's exact setup and stops at
+  `npm whoami`. It answers "will a tag push publish?" for free. Three version
+  numbers were spent discovering that answer one release at a time.
 - The workflow also supports **manual backfill**: Actions → *Release on tag* → *Run workflow* → enter an existing tag (this creates the Release only; it does **not** re-publish to npm).
 
 ### Day-to-day releasing
