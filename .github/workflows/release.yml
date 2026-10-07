@@ -161,6 +161,36 @@ jobs:
         if: steps.exists.outputs.skip != 'true'
         run: npm publish --provenance --access public
 
+      # Tell the tap a release happened, so `brew install` is current within a
+      # minute instead of within a day.
+      #
+      # Optional on purpose: the tap also runs its own daily schedule, so a
+      # missing or expired token delays the formula, it does not break the
+      # release. The token is a fine-grained PAT with Contents: write on
+      # plugin87/homebrew-tap only, stored here as TAP_DISPATCH_TOKEN. Without
+      # it this step says so and succeeds.
+      - name: Nudge the Homebrew tap
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$TAP_TOKEN" ]; then
+            echo "::notice::TAP_DISPATCH_TOKEN is not set - the Homebrew tap will pick this up on its daily schedule instead."
+            exit 0
+          fi
+          VER="$(node -p "require('./package.json').version")"
+          CODE=$(curl -s -o /tmp/dispatch.out -w '%{http_code}' -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $TAP_TOKEN" \
+            https://api.github.com/repos/plugin87/homebrew-tap/dispatches \
+            -d "{\"event_type\":\"npm-published\",\"client_payload\":{\"version\":\"$VER\"}}")
+          if [ "$CODE" = "204" ]; then
+            echo "tap notified of $VER"
+          else
+            echo "::warning::tap dispatch returned HTTP $CODE - the tap's daily schedule will catch up."
+            cat /tmp/dispatch.out || true
+          fi
+
       - name: Say what to fix when the registry refuses
         if: failure() && steps.exists.outputs.skip != 'true'
         run: |

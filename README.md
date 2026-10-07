@@ -267,7 +267,21 @@ Every page it opens is a page the gates measure. Delete the folder afterwards;
 nothing was installed. Or skip the copy entirely and use the
 [live demo](https://plugin87.github.io/ux-ui-agent-skills/).
 
-### Option B — Install with `npx`
+### Option B — Install with Homebrew
+
+```bash
+brew install plugin87/tap/ux-ui-agent-skills
+ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, hooks
+ux-ui-skills init --agent codex     # AGENTS.md, for Codex, Cursor, Copilot, Aider
+```
+
+Same npm tarball the `npx` route runs, so this is a convenience rather than a
+second product that can drift. The formula is generated from the registry and
+its `test do` block asserts the installed CLI reports the version the formula
+names, and that `--agent codex` writes `AGENTS.md` without `CLAUDE.md` or
+`.claude/`. Details in [docs/HOMEBREW.md](docs/HOMEBREW.md).
+
+### Option C — Install with `npx`
 
 Drop the kit into any project, no clone needed:
 
@@ -311,7 +325,7 @@ The kit ships **51 objective gates** behind one command:
 node scripts/accuracy_report.mjs     # 51/51 or it fails — no partial credit
 ```
 
-**35 of them open a real browser, so they need one installed.** Playwright is not
+**33 of them open a real browser, so they need one installed.** Playwright is not
 pulled in by `/plugin install` or `npx ux-ui-agent-skills init`, so run this once
 in the kit directory before expecting a full score:
 
@@ -320,7 +334,7 @@ npm install                          # playwright
 npx playwright install chrome        # real Chrome: six gates require the channel
 ```
 
-Without it those 31 report `REQUIRED, FAILING` under `accuracy_report.mjs`, which
+Without it those 33 report `REQUIRED, FAILING` under `accuracy_report.mjs`, which
 is the honest answer. Run individually they print `SKIPPED` and **exit 0** — so
 prefix any single render gate with `DS_REQUIRE_BROWSER=1` if you are reading its
 exit code, rather than reading silence as green.
@@ -331,25 +345,33 @@ at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
 
-**What that number covers, stated exactly.** 35 of the 51 checks open a real
+**What that number covers, stated exactly.** 33 of the 51 checks open a real
 browser, so what they measure is **rendered HTML**: the 23 component harnesses,
 the twenty industry screens, the reference app, the live demo, the starter
-template. The other 16 read files — token JSON and alias resolution, contrast
-math on the token source, component specs, hardcoded values, theme references,
-emoji, the instruction surface, and destructive-intent declarations in framework
-source.
+template, and the React source compiled and server-rendered. The other 18 read
+files — token JSON and alias resolution, contrast math on the token source,
+component specs, hardcoded values, theme references, emoji, hooks, the
+instruction surface held in step across `CLAUDE.md` and `AGENTS.md`, and
+destructive-intent declarations in framework source.
 
-Framework source (`.tsx`, `.vue`, `.swift`) is therefore reached by the
-file-reading checks only: no emoji, no hardcoded values, every `var(--…)`
-resolving to the theme, and — since a blue Delete shipped in this repo's own
-`Settings.tsx` while the HTML twin of that screen was correct — every
-destructive control declaring its intent (`lint_intent_source.mjs`). That last
-one proves a **declaration**, never a colour: `variant="destructive"` wired to a
-blue token passes it, and only a render catches that. A React component this kit
-generates is written to the token and accessibility rules in `.claude/rules/`,
-but it is **not** proven by this number until it is rendered and measured.
-Rendering framework components through the same gates is still open work, named
-here rather than implied away.
+The split is not typed here: `tests/meta/counts.test.mjs` derives it from which
+gates import Playwright and fails if this paragraph drifts from the report. It
+read 35/16 until 2026-10-07, when the derivation was first run - two numbers
+nobody had measured, in the section about not stating numbers you did not
+measure.
+
+Framework source (`.tsx`, `.vue`, `.swift`) gets the file-reading checks — no
+emoji, no hardcoded values, every `var(--…)` resolving to the theme, and, since a
+blue Delete shipped in this repo's own `Settings.tsx` while the HTML twin of that
+screen was correct, every destructive control declaring its intent
+(`lint_intent_source.mjs`). That last one proves a **declaration**, never a
+colour: `variant="destructive"` wired to a blue token passes it.
+
+Only a render catches that, so the React components are now compiled with esbuild,
+server-rendered, and put through the same browser gates as the HTML
+(`render_framework_source.mjs`, which also fails if any class the components emit
+resolves in no linked stylesheet). `.vue` and `.swift` are still file-checks only,
+and are not proven by this number until they are rendered and measured.
 
 That is correctness. It is not quality, and the kit says so out loud:
 

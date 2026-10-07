@@ -93,13 +93,13 @@ class UxUiAgentSkills < Formula
     # init must actually write the surface it promises, and must not write the
     # Claude Code mechanisms on the codex route.
     system bin/"ux-ui-skills", "init", "--agent", "codex"
-    assert_predicate testpath/"AGENTS.md", :exist?
-    refute_predicate testpath/"CLAUDE.md", :exist?
-    refute_predicate testpath/".claude", :exist?
+    assert_path_exists testpath/"AGENTS.md"
+    refute_path_exists testpath/"CLAUDE.md"
+    refute_path_exists testpath/".claude"
 
     # The gates are plain Node and Python, so they ship on every route.
-    assert_predicate testpath/"scripts/verify_states.mjs", :exist?
-    assert_predicate testpath/"tokens/colors.json", :exist?
+    assert_path_exists testpath/"scripts/verify_states.mjs"
+    assert_path_exists testpath/"tokens/colors.json"
 
     # And one browser-free gate must actually run and pass on the kit's own tokens.
     system "python3", testpath/"scripts/validate_tokens.py", testpath/"tokens"
