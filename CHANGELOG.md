@@ -10,6 +10,21 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.3`
+
+Same kit as `v2.9.2`. This is the release that validates npm trusted publishing,
+which npm's own UI says can only be validated by publishing once through the
+workflow.
+
+The auth check added in `2.9.2` was wrong and is corrected here. `npm whoami`
+does not exercise OIDC - npm mints the trusted-publishing token as part of the
+publish flow - so whoami reports `ENEEDAUTH` whether the configuration is right
+or wrong. As a blocking step before the publish it would have failed every
+release while publishing worked fine. It prints the environment now and gates
+nothing.
+
+---
+
 ### `v2.9.2`
 
 Same kit as `v2.9.1`, which never reached the registry.
