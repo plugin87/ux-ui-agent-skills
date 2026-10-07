@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Welcome</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --color-surface-page:#ffffff;
+    --color-surface-raised:#f4f4f6;
+    --color-surface-sunken:#e8e8ec;
+    --color-text-primary:#1d1d1f;
+    --color-text-secondary:#55575c;
+    --color-text-on-action:#ffffff;
+    --color-action-primary:#1d4ed8;
+    --color-action-primary-hover:#173fad;
+    --color-action-danger:#b3261e;
+    --color-action-danger-hover:#8f1e18;
+    --color-border-strong:#6b6b70;
+    --color-border-subtle:#c9c9d0;
+    --radius-sm:4px;
+    --radius-md:10px;
+    --radius-lg:20px;
+    --space-1:4px;
+    --space-2:8px;
+    --space-3:12px;
+    --space-4:16px;
+    --space-6:24px;
+    --space-8:32px;
+    --duration-fast:160ms;
+    --ease-out:cubic-bezier(.2,.8,.3,1);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --color-surface-page:#0b0b0c;
+      --color-surface-raised:#1c1c1f;
+      --color-surface-sunken:#2a2a2e;
+      --color-text-primary:#f5f5f7;
+      --color-text-secondary:#b0b0b6;
+      --color-text-on-action:#0b0b0c;
+      --color-action-primary:#9ec1ff;
+      --color-action-primary-hover:#c2d8ff;
+      --color-action-danger:#ff9d94;
+      --color-action-danger-hover:#ffc0ba;
+      --color-border-strong:#8a8a90;
+      --color-border-subtle:#46464c;
+    }
+  }
+  :root[data-theme="dark"] {
+    --color-surface-page:#0b0b0c;
+    --color-surface-raised:#1c1c1f;
+    --color-surface-sunken:#2a2a2e;
+    --color-text-primary:#f5f5f7;
+    --color-text-secondary:#b0b0b6;
+    --color-text-on-action:#0b0b0c;
+    --color-action-primary:#9ec1ff;
+    --color-action-primary-hover:#c2d8ff;
+    --color-action-danger:#ff9d94;
+    --color-action-danger-hover:#ffc0ba;
+    --color-border-strong:#8a8a90;
+    --color-border-subtle:#46464c;
+  }
+
+  * { box-sizing:border-box; }
+  html, body { margin:0; }
+  body { background:var(--color-surface-page); color:var(--color-text-primary);
+         font:16px/1.5 system-ui, sans-serif; }
+  main { padding:var(--space-4); max-inline-size:72ch; margin-inline:auto; }
+
+  /* Type scale is deliberately fine: 42/16 = 2.6x. The seeded defects are
+     composition, not metrics, so no gate can reach them. */
+  h1 { font-size:42px; line-height:1.1; letter-spacing:-.02em; margin:0 0 var(--space-3); }
+  h2 { font-size:20px; line-height:1.3; margin:var(--space-6) 0 var(--space-2); }
+  h3 { font-size:17px; line-height:1.3; margin:0 0 var(--space-1); }
+  p  { margin:0 0 var(--space-4); color:var(--color-text-secondary); overflow-wrap:anywhere; }
+
+  /* Radius varies by component size so the single-radius tell cannot fire. */
+  .card { background:var(--color-surface-raised); border:1px solid var(--color-border-subtle);
+          border-radius:var(--radius-lg); padding:var(--space-4); min-inline-size:0; }
+  .btn { min-block-size:44px; padding-block:var(--space-3); padding-inline:var(--space-4);
+         border:1px solid transparent; border-radius:var(--radius-md); font:inherit;
+         color:var(--color-text-on-action); cursor:pointer;
+         transition:background-color var(--duration-fast) var(--ease-out); }
+  .btn:focus-visible { outline:3px solid var(--color-action-primary); outline-offset:2px; }
+  .btn-primary { background:var(--color-action-primary); }
+  .btn-primary:hover { background:var(--color-action-primary-hover); }
+  .btn-primary:active { background:var(--color-action-primary-hover); }
+  .btn-danger { background:var(--color-action-danger); }
+  .btn-danger:hover { background:var(--color-action-danger-hover); }
+  .btn-quiet { background:transparent; color:var(--color-text-primary);
+               border-color:var(--color-border-strong); border-radius:var(--radius-sm); }
+  .btn-quiet:hover { background:var(--color-surface-sunken); }
+  .btn[disabled] { opacity:.5; pointer-events:none; }
+  input[type="checkbox"] { inline-size:24px; block-size:24px; accent-color:var(--color-action-primary); }
+  label { display:inline-flex; align-items:center; gap:var(--space-2); min-block-size:44px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation:none !important; transition:none !important; }
+  }
+</style></head>
+<body>
+<main>
+  <h1>Welcome</h1>
+
+  <label><input type="checkbox" id="debugMode"> Debug mode</label>
+
+  <div class="scroller" tabindex="0" role="region" aria-label="Invoices, scrolls horizontally">
+    <table>
+      <caption>Invoices</caption>
+      <thead><tr><th scope="col">Number</th><th scope="col">Customer</th><th scope="col">Status</th><th scope="col">Amount</th><th scope="col">Date</th></tr></thead>
+      <tbody>
+      <tr><td>Invoice 1000</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-01</td></tr>
+      <tr><td>Invoice 1001</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-02</td></tr>
+      <tr><td>Invoice 1002</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-03</td></tr>
+      <tr><td>Invoice 1003</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-04</td></tr>
+      <tr><td>Invoice 1004</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-05</td></tr>
+      <tr><td>Invoice 1005</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-06</td></tr>
+      <tr><td>Invoice 1006</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-07</td></tr>
+      <tr><td>Invoice 1007</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-08</td></tr>
+      <tr><td>Invoice 1008</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-09</td></tr>
+      <tr><td>Invoice 1009</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-01</td></tr>
+      <tr><td>Invoice 1010</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-02</td></tr>
+      <tr><td>Invoice 1011</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-03</td></tr>
+      <tr><td>Invoice 1012</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-04</td></tr>
+      <tr><td>Invoice 1013</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-05</td></tr>
+      <tr><td>Invoice 1014</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-06</td></tr>
+      <tr><td>Invoice 1015</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-07</td></tr>
+      <tr><td>Invoice 1016</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-08</td></tr>
+      <tr><td>Invoice 1017</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-09</td></tr>
+      <tr><td>Invoice 1018</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-01</td></tr>
+      <tr><td>Invoice 1019</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-02</td></tr>
+      <tr><td>Invoice 1020</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-03</td></tr>
+      <tr><td>Invoice 1021</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-04</td></tr>
+      <tr><td>Invoice 1022</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-05</td></tr>
+      <tr><td>Invoice 1023</td><td>Acme Corp</td><td>Paid</td><td>$420.00</td><td>2026-03-06</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+<style>
+  .scroller { overflow-x:auto; border:1px solid var(--color-border-subtle);
+              border-radius:var(--radius-md); }
+  .scroller:focus-visible { outline:3px solid var(--color-action-primary); outline-offset:2px; }
+  table { border-collapse:collapse; min-inline-size:48rem; }
+  caption { text-align:start; padding:var(--space-3); color:var(--color-text-secondary); }
+  th, td { padding:var(--space-3); text-align:start; white-space:nowrap;
+           border-block-end:1px solid var(--color-border-subtle); }
+  th { color:var(--color-text-primary); }
+  td { color:var(--color-text-secondary); }
+</style>
+</body></html>

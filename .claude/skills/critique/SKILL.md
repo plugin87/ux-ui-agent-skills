@@ -1,74 +1,113 @@
 ---
 name: critique
 description: Adversarial design critique of the current work — render it, look at it, and argue for rejection. Run after the gates are green, never instead of them.
-# A command the user runs. Converted from .claude/commands/ so it has a
-# CLAUDE_SKILL_DIR of its own and its paths resolve on every install route.
-# disable-model-invocation keeps the behaviour a command had: the user
-# starts it, the model never does, and its description stays out of the
-# listing budget the model's skill choice is drawn from.
+# Converted from .claude/commands/ so it has a CLAUDE_SKILL_DIR of its own and
+# its paths resolve on every install route.
 disable-model-invocation: true
+# The critic runs in a forked subagent: a fresh context that never sees the
+# conversation that produced the work. That is the whole point. A critic that
+# has read the maker's reasoning is reviewing the argument, not the artifact,
+# and it agrees far too easily.
+context: fork
+# Wait for the verdict in this turn. Forked skills run in the background by
+# default, which would hand the user a "started" message and no critique.
+# Requires Claude Code v2.1.218 or later.
+background: false
+#
+# There is deliberately NO `agent:` field, and it is not an oversight.
+#
+# A plugin namespaces every component under the plugin name, so this repo's
+# critic is `design-critic` when installed with `npx ux-ui-skills init` (a
+# project file in .claude/agents/) and `ux-ui-agent-skills:design-critic` when
+# installed as a plugin. One frontmatter value cannot be both, and a wrong one
+# is the `invocation:` failure again: a field that looks right, is silently
+# ignored or unresolved, and leaves the behaviour it promised switched off.
+#
+# So the fork is generic and the body below loads the critic's instructions from
+# a ${CLAUDE_SKILL_DIR}-relative path, which does resolve on both routes.
 ---
-> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
-> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
-> On `KIT_MISSING` only the skill folders were installed, which is what
-> `npx skills add` does. Say so plainly, point the user at
-> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
-> contents of a file you could not open.
+You are now running in a forked context. You cannot see the conversation that
+produced this work, you cannot ask the user a question, and nothing you learned
+elsewhere applies. Everything you need is below or on disk.
 
-The gates prove objective correctness. They cannot tell you whether the work is
-any good. This command closes that gap the only honest way: render the thing, look
-at it, and let a critic who is trying to reject it write the findings.
+**Step 0 — is the kit here?**
 
-Target: `$ARGUMENTS` (a file, a directory, or the screens changed in this session;
-ask if it is ambiguous).
-
-## 1. Refuse to critique blind
-
-If the target has never been rendered, render it first. A critique written from
-source alone is worthless. Screenshot every screen or harness at 1280 and 390
-wide, in light and dark, pointer parked off the UI, then click every control and
-note what actually changed.
-
-## 2. Gather the numbers the critic will need
-
-```
-node ${CLAUDE_SKILL_DIR}/../../../scripts/taste_audit.mjs <file> && node ${CLAUDE_SKILL_DIR}/../../../scripts/taste_audit.mjs <file> --dark
-node ${CLAUDE_SKILL_DIR}/../../../scripts/slop_tells.mjs  <file> && node ${CLAUDE_SKILL_DIR}/../../../scripts/slop_tells.mjs  <file> --dark
-node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_overflow.mjs   <file|dir>
-node ${CLAUDE_SKILL_DIR}/../../../scripts/verify_responsive.mjs <file|dir>
+```bash
+ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING
 ```
 
-Report their real output. These are heuristics: they name what you saw, they do
-not decide whether it is good.
+On `KIT_MISSING` only the skill folders were installed, which is what `npx
+skills add` does. Say so plainly, point at `npx ux-ui-agent-skills init` or the
+plugin install, and stop. Do not guess the contents of a file you could not open.
 
-## 3. Hand it to the critic
+**Step 1 — take the critic's instructions, in full.**
 
-Delegate to the `design-critic` subagent with the screenshots, the script output,
-and the file paths. Its stance is adversarial on purpose: the work is mediocre
-until the render proves otherwise, a passing gate is never evidence of taste, and
-every finding must name its evidence.
-
-**Open the delegation message with this line, exactly:**
-
+```bash
+cat ${CLAUDE_SKILL_DIR}/../../../.claude/agents/design-critic.md
 ```
+
+That file is your brief: the stance, the three rules you never break, and the
+verdict format. Read it and follow it literally. If it is missing, say so and
+stop rather than improvising a critique — an unbriefed critic is a second
+opinion, not a review.
+
+**Step 2 — resolve the target.**
+
+Target: `$ARGUMENTS` — a file or a directory.
+
+You cannot ask. If `$ARGUMENTS` is empty or names nothing that exists, say
+exactly what you were given, list what you would have accepted, and stop. A
+critique of a guessed target is worse than no critique, because it reads like a
+verdict on the real work.
+
+**Step 3 — refuse to critique blind.**
+
+A critique written from source alone is worthless. Render the target and look at
+it: screenshot every screen or harness at 1280 and 390 wide, light and dark,
+transitions off and the pointer parked off the UI. Then click every control and
+write down what actually changed. A control that changes nothing is a finding.
+
+**Step 4 — gather the numbers you will cite.**
+
+```bash
 KIT=${CLAUDE_SKILL_DIR}/../../..
+node $KIT/scripts/taste_audit.mjs      <file> && node $KIT/scripts/taste_audit.mjs <file> --dark
+node $KIT/scripts/slop_tells.mjs       <file> && node $KIT/scripts/slop_tells.mjs  <file> --dark
+node $KIT/scripts/verify_overflow.mjs  <file|dir>
+node $KIT/scripts/verify_responsive.mjs <file|dir> --scale=1.25
 ```
 
-A subagent gets no `CLAUDE_SKILL_DIR`, so without that line it cannot find the
-scripts under a plugin install and will either guess a path or report nothing.
+Report what they actually printed. These are heuristics: they name what you saw,
+they do not decide whether it is good. A clean run is not a defence: the kit's
+own seeded-defect fixtures pass every one of these gates, in both themes, and
+every one of them is work a senior designer would send back.
 
-If subagents are unavailable, adopt
-`${CLAUDE_SKILL_DIR}/../../../.claude/agents/design-critic.md` yourself and
-follow it literally, including the verdict format.
+**Step 5 — write the verdict.**
 
-## 4. Report, then decide
+In the format `design-critic.md` specifies: the verdict, the three reasons a
+senior designer would send this back, and the findings table with evidence per
+finding. Name the file and the element. "The spacing feels off" is not a finding;
+"the card's 12px internal gap is the same as the 12px gap between cards, so the
+grouping reads as one block" is.
 
-Relay the verdict, the three rejection reasons, and the findings table as written.
-Do not soften it, and do not pad the "what is good" list.
+Do not soften it, and do not pad the "what is good" list to balance the tone.
 
-Then act on it: fix every Critical and Major finding, re-run `/gate`, and re-run
-this critique on what changed. The loop ends when the critic's remaining findings
-are Minor or Enhancement, not when you are tired of it.
+**Step 6 — state the scope, every time.**
 
-Honest scope, always stated with the result: this is judgement, not measurement.
-It does not produce a percentage, and no percentage in this repo covers taste.
+This is judgement, not measurement. It produces no percentage, and no percentage
+in this repo covers taste. Say so in the output.
+
+---
+
+## After the critique comes back
+
+For the session that invoked this skill, not for the fork:
+
+Act on it. Fix every Critical and Major finding, re-run `/gate`, and run this
+critique again on what changed. The loop ends when the remaining findings are
+Minor or Enhancement — not when you are tired of it.
+
+Scoring the critic itself, rather than the work, is a maintainer task and lives
+with the harness in the kit's repository - not here. This skill installs into
+your project, and nothing it tells you to do should name a file your install
+does not have.

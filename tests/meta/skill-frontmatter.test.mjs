@@ -23,7 +23,19 @@ const ALLOWED = new Set([
   'name',
   'description',
   'disable-model-invocation',
+  // `critique` runs as a forked subagent so the critic never sees the
+  // conversation that produced the work. Verified against the skills
+  // frontmatter reference on 2026-10-07, which is the whole lesson of
+  // `invocation:` below: a plausible key that nothing reads changes nothing.
+  'context',
+  'background',
 ]);
+
+/** Values each field accepts, where the reference lists a closed set. */
+const ALLOWED_VALUES = {
+  context: new Set(['fork']),
+  background: new Set(['true', 'false']),
+};
 
 /** The eleven that take an action or set a direction: the user's call, not the model's. */
 const USER_STARTED = [
@@ -44,12 +56,13 @@ function frontmatter(name) {
   const end = text.indexOf('\n---', 3);
   assert.ok(end > 0, `${name}: frontmatter is not closed`);
   const keys = [];
+  const pairs = [];
   for (const line of text.slice(4, end).split('\n')) {
     if (!line.trim() || line.trimStart().startsWith('#')) continue;
-    const m = line.match(/^([A-Za-z][\w-]*)\s*:/);
-    if (m) keys.push(m[1]);
+    const m = line.match(/^([A-Za-z][\w-]*)\s*:\s*(.*)$/);
+    if (m) { keys.push(m[1]); pairs.push([m[1], m[2].trim()]); }
   }
-  return { keys, text };
+  return { keys, pairs, text };
 }
 
 test('no skill carries a frontmatter key Claude Code does not read', () => {
@@ -109,4 +122,55 @@ test('the kit check names the install that fixes it, not just the failure', () =
     'a failure the user cannot act on is only half a message');
   assert.match(text, /Do not guess the\n> contents of a file you could not open/,
     'the skill must be told to stop, not to improvise');
+});
+
+
+/**
+ * `context: fork` is only worth having if the fork actually returns something
+ * in the turn that asked for it. Forked skills run in the BACKGROUND by
+ * default, so a skill that sets `context: fork` and forgets `background: false`
+ * hands the user a "started" notice instead of the critique they asked for -
+ * the field doing half its job, which is the hardest kind of bug to notice.
+ */
+test('a forked skill waits for its own result', () => {
+  for (const name of skills()) {
+    const { pairs } = frontmatter(name);
+    const map = Object.fromEntries(pairs);
+    if (map.context !== 'fork') continue;
+    assert.equal(map.background, 'false',
+      `${name} sets context: fork without background: false, so its result arrives after the turn that asked for it`);
+    assert.equal(map['disable-model-invocation'], 'true',
+      `${name} forks but is model-invocable; a fork the model can start on its own spends a whole subagent without the user asking`);
+  }
+});
+
+test('every frontmatter value is one the field accepts', () => {
+  const bad = [];
+  for (const name of skills()) {
+    for (const [k, v] of frontmatter(name).pairs) {
+      const allowed = ALLOWED_VALUES[k];
+      if (allowed && !allowed.has(v)) bad.push(`${name}: ${k}: ${v}`);
+    }
+  }
+  assert.deepEqual(bad, [], `value(s) outside what the reference lists:\n  ${bad.join('\n  ')}`);
+});
+
+/**
+ * The critique skill deliberately carries no `agent:` field. A plugin
+ * namespaces its components, so this repo's critic is `design-critic` on the
+ * init route and `ux-ui-agent-skills:design-critic` under a plugin install, and
+ * no single value is right on both. The skill body loads the brief from a
+ * ${CLAUDE_SKILL_DIR}-relative path instead, which resolves either way.
+ *
+ * This is pinned because `agent: design-critic` is the obvious-looking edit,
+ * and it would silently stop briefing the critic on the route the README
+ * recommends first.
+ */
+test('the forked critic is briefed by path, not by a route-dependent agent name', () => {
+  const { pairs, text } = frontmatter('critique');
+  const map = Object.fromEntries(pairs);
+  assert.equal(map.agent, undefined,
+    'critique sets agent:, which cannot be correct on both the plugin and init routes');
+  assert.match(text, /\$\{CLAUDE_SKILL_DIR\}\/\.\.\/\.\.\/\.\.\/\.claude\/agents\/design-critic\.md/,
+    'critique no longer loads design-critic.md, so the fork would improvise a critique');
 });

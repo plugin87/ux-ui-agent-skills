@@ -1,0 +1,259 @@
+{
+  "$comment": [
+    "Answer key for H6, the critic catch rate. The critic must never read this file,",
+    "and nothing under tests/fixtures/critic/ points at it.",
+    "",
+    "Every defect listed here is invisible to the harness: all four fixtures pass",
+    "measure_render, verify_states, axe_audit, verify_keyboard, verify_target_size,",
+    "verify_overflow, verify_reduced_motion, verify_responsive --scale=1.25,",
+    "lint_intent, verify_interactive, slop_tells --strict and taste_audit --strict,",
+    "in light and dark. tests/meta/critic-fixtures.test.mjs re-proves that, because a",
+    "defect a gate can catch measures the gate rather than the critic.",
+    "",
+    "`signals` are alternative phrasings, not the only correct wording. The score they",
+    "produce is a FLOOR: read the printed excerpts before quoting it."
+  ],
+  "defects": [
+    {
+      "id": "D1-no-focal-point",
+      "fixture": "dashboard-no-lead.html",
+      "defect": "Four equal-weight stat cards. Nothing leads, so the eye lands nowhere and the screen reads as generated.",
+      "rule": ".claude/rules/components.md -> Composition 1 (One thing leads)",
+      "signals": [
+        "focal point",
+        "nothing leads",
+        "no lead",
+        "eye lands nowhere",
+        "four equal",
+        "equal[- ]weight",
+        "all four cards (are )?the same",
+        "no hierarchy between the cards"
+      ]
+    },
+    {
+      "id": "D2-page-does-not-end",
+      "fixture": "dashboard-no-lead.html",
+      "defect": "The page stops after the card row. No footer, summary line or closing panel, so it reads as content that failed to load rather than content that finished.",
+      "rule": ".claude/rules/components.md -> Composition 4 (A page ends on purpose)",
+      "signals": [
+        "ends? on purpose",
+        "no footer",
+        "just stops",
+        "page does ?n[o']t end",
+        "nothing closes the page",
+        "no closing",
+        "trails off"
+      ]
+    },
+    {
+      "id": "D3-marketing-filler",
+      "fixture": "dashboard-no-lead.html",
+      "defect": "Intro copy is a hollow triad (\"Powerful, intuitive, and beautiful\") plus marketing filler (\"unlock\", \"seamless\"). It says nothing a user can act on.",
+      "rule": "AGENTS.md -> Break these deliberately (hollow triads, marketing filler)",
+      "signals": [
+        "hollow triad",
+        "marketing (filler|speak|copy)",
+        "empty adjectives",
+        "filler copy",
+        "(powerful,? intuitive|seamless|unlock).{0,100}(filler|hollow|meaningless|says nothing|generic|empty|vague|no information|cliche)",
+        "(filler|hollow|meaningless|says nothing|generic|empty|vague|no information|cliche).{0,100}(powerful,? intuitive|seamless|unlock)"
+      ]
+    },
+    {
+      "id": "D4-empty-state-floats",
+      "fixture": "empty-state-floating.html",
+      "defect": "The empty state is a small centred block pinned under the header with the rest of the viewport blank. It does not own the space it is in.",
+      "rule": ".claude/rules/components.md -> Composition 3 (An empty state owns the viewport)",
+      "signals": [
+        "owns? (the|its) viewport",
+        "floating under the header",
+        "pinned under the header",
+        "centred block",
+        "centered block",
+        "rest of the (page|viewport) (is )?(blank|empty)",
+        "failed to load",
+        "does ?n[o']t fill"
+      ]
+    },
+    {
+      "id": "D5-empty-state-no-way-forward",
+      "fixture": "empty-state-floating.html",
+      "defect": "\"No data. There is nothing to show.\" gives no first action, no explanation of what will appear here, and no way forward.",
+      "rule": "content/voice-tone.md -> Empty states (explain the value, guide to the first action)",
+      "signals": [
+        "no way forward",
+        "no (first )?action",
+        "no call to action",
+        "no next step",
+        "dead end",
+        "(no data|nothing to show).{0,100}(no (action|way|next|guidance|cta)|does ?n[o']t (say|tell|offer)|unhelpful|gives the user nothing)",
+        "(no (action|way|next|guidance|cta)|does ?n[o']t (say|tell|offer)|unhelpful|gives the user nothing).{0,100}(no data|nothing to show)"
+      ]
+    },
+    {
+      "id": "D6-fake-label",
+      "fixture": "empty-state-floating.html",
+      "defect": "\"SECTION 01\" is a fake eyebrow label. It names nothing and exists only as decoration.",
+      "rule": "AGENTS.md -> Break these deliberately (fake labels, \"SECTION 01\")",
+      "signals": [
+        "fake label",
+        "decorative label",
+        "arbitrary label",
+        "(section 01|eyebrow).{0,100}(fake|decorat|means nothing|names nothing|arbitrary|no purpose|says nothing|numbered for no)",
+        "(fake|decorat|means nothing|names nothing|arbitrary|no purpose|says nothing|numbered for no).{0,100}(section 01|eyebrow)",
+        "placeholder content",
+        "placeholder label",
+        "(section 01|eyebrow).{0,100}(placeholder|no meaning|unshipped|scaffold)",
+        "(placeholder|no meaning|unshipped|scaffold).{0,100}(section 01|eyebrow)"
+      ]
+    },
+    {
+      "id": "D7-undifferentiated-list",
+      "fixture": "list-identical.html",
+      "defect": "Twenty-four rows that are identical apart from the number: same customer, same status, same amount. Nothing varies, so the eye has nowhere to land while scrolling.",
+      "rule": ".claude/rules/components.md -> Composition 5 (A long list needs one differentiator)",
+      "signals": [
+        "differentiator",
+        "identical rows",
+        "every row (is )?the same",
+        "nothing varies",
+        "same (customer|status|amount)",
+        "no variation",
+        "indistinguishable rows",
+        "differentiat",
+        "distinguish",
+        "one distinct value",
+        "identical (grey|gray|rows|text)",
+        "nowhere to land"
+      ]
+    },
+    {
+      "id": "D8-hidden-overflow-no-cue",
+      "fixture": "list-identical.html",
+      "defect": "The table scrolls sideways inside its own region, and the only indication is an aria-label. Sighted users simply lose the last columns.",
+      "rule": ".claude/rules/components.md -> Composition 7 (A hidden overflow needs a visible cue)",
+      "signals": [
+        "visible cue",
+        "edge fade",
+        "scroll(s|ing)? sideways",
+        "horizontal(ly)? scroll",
+        "aria-label (only|alone)",
+        "sighted users",
+        "lose the columns",
+        "no (visual|visible) (hint|indicator|affordance)"
+      ]
+    },
+    {
+      "id": "D9-scaffolding-shipped",
+      "fixture": "list-identical.html",
+      "defect": "A \"Debug mode\" checkbox is rendered in the product screen. It is scaffolding, not product.",
+      "rule": ".claude/rules/components.md -> Composition 9 (Nothing that is scaffolding ships)",
+      "signals": [
+        "scaffolding",
+        "should ?n[o']t ship",
+        "not product",
+        "development (toggle|control)",
+        "left in by accident",
+        "(debug).{0,100}(ship|product|scaffold|remove|should ?n[o']t be (here|visible)|internal|not for users)",
+        "(ship|product|scaffold|remove|should ?n[o']t be (here|visible)|internal|not for users).{0,100}(debug)"
+      ]
+    },
+    {
+      "id": "D10-generic-display-type",
+      "fixture": "list-identical.html",
+      "defect": "The one piece of display type on the page says \"Welcome\". It is the right size and carries no information, so the largest element on the screen is wasted.",
+      "rule": ".claude/rules/components.md -> Composition 1, and AGENTS.md taste block (display type is short AND says something)",
+      "signals": [
+        "generic heading",
+        "carries no information",
+        "meaningless (heading|title)",
+        "placeholder heading",
+        "(\\\"?welcome\\\"?|the h1|largest (element|type)).{0,100}(generic|says nothing|no information|wasted|tells (the user )?nothing|empty|could be any)",
+        "(generic|says nothing|no information|wasted|tells (the user )?nothing|empty|could be any).{0,100}(\\\"?welcome\\\"?|the h1|largest (element|type))"
+      ]
+    },
+    {
+      "id": "D11-loading-reuses-disabled",
+      "fixture": "async-lies.html",
+      "defect": "The in-flight state dims the button to the same opacity the disabled state uses, so \"this is happening\" reads as \"you cannot do this\".",
+      "rule": ".claude/rules/components.md -> Composition 8 (Loading is not disabled)",
+      "signals": [
+        "loading is not disabled",
+        "reuses? the disabled",
+        "dim(s|med|ming)",
+        "same opacity",
+        "looks disabled",
+        "reads as (disabled|you cannot)",
+        "no spinner",
+        "disabled treatment",
+        "you cannot do this",
+        "in-?flight .{0,80}(disabled|dimmed|opacity)",
+        "busy .{0,60}(disabled|opacity|washed)",
+        "washed-out",
+        "not \"?this is happening",
+        "same .{0,20}as .{0,20}disabled"
+      ]
+    },
+    {
+      "id": "D12-feedback-outruns-truth",
+      "fixture": "async-lies.html",
+      "defect": "The toast says \"Draft project created\" while the list above still shows the same two projects. The user catches the lie immediately.",
+      "rule": ".claude/rules/components.md -> Composition 6 (Feedback may not outrun the truth)",
+      "signals": [
+        "outruns? the truth",
+        "list (is )?(still )?unchanged",
+        "nothing was (created|added)",
+        "toast (claims|says|lies)",
+        "did ?n[o']t change",
+        "a lie",
+        "does ?n[o']t appear in the list",
+        "outrun",
+        "untouched",
+        "without doing anything",
+        "announces success",
+        "(claims?|says|announces) .{0,60}(created|success|happened)",
+        "did ?n[o']t (actually )?happen",
+        "things that did not happen",
+        "confirmation copy is false",
+        "no project was"
+      ]
+    },
+    {
+      "id": "D13-two-primaries",
+      "fixture": "async-lies.html",
+      "defect": "\"Create draft project\" and \"Export\" both wear the primary fill. Primary is the one main affirmative action; a secondary action must be neutral, never a coloured fill.",
+      "rule": "CLAUDE.md -> Non-negotiable 1 (Token by intent: one action role, one variant)",
+      "signals": [
+        "two primar",
+        "both primary",
+        "secondary .{0,30}(fill|coloured|colored)",
+        "one main (affirmative )?action",
+        "same (variant|weight) (for|as)",
+        "export .{0,40}primary",
+        "competing (buttons|actions)",
+        "every button .{0,60}primary",
+        "all (five|5|four|4|three|3|the) buttons are",
+        "\\d+ of \\d+ buttons are",
+        "one primary per",
+        "accent emphasi[sz]es nothing",
+        "nothing leads,? because everything",
+        "(export|secondary) .{0,60}(is a secondary|should be .{0,20}quiet|btn-quiet)"
+      ]
+    },
+    {
+      "id": "D14-three-equal-plans",
+      "fixture": "async-lies.html",
+      "defect": "Three plan tiles of identical weight with no recommended option. The pricing choice is handed back to the user with no guidance.",
+      "rule": ".claude/rules/components.md -> Composition 1, and AGENTS.md (three identical equal-weight cards)",
+      "signals": [
+        "three (equal|identical)",
+        "plan (tiles|cards)",
+        "no recommended",
+        "(pricing|plans?) .{0,60}(no guidance|equal|identical|nothing (leads|stands out))",
+        "which (one|plan) to (pick|choose)",
+        "(starter|team|scale) .{0,40}(same|equal|identical)",
+        "nothing is highlighted"
+      ]
+    }
+  ]
+}

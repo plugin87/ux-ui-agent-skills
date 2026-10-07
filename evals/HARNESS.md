@@ -34,7 +34,7 @@ produced it is not a score.
 | H3 | Enforcement coverage | **0.000** | counted below |
 | H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs` — built in Phase 3.1 |
 | H5 | Blind first-pass, per route | **0.333** | `evals/RESULTS.md` |
-| H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/` |
+| H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/` — built in Phase 3.3 |
 | H7 | Taste applied on page/app work | **0** (no instrument) | needs the page-and-app prompt set |
 | | **Harness Score** | **0.086** | mean of H1..H7 |
 
@@ -382,12 +382,153 @@ Registry 47 -> 48.
 
 ---
 
+## After 3.3 — the critic runs in a fork, and is scored for the first time
+
+**The critic is a forked subagent now.** `/critique` carries `context: fork` and
+`background: false`, so it runs in a context that never saw the conversation
+that produced the work, and still returns its verdict in the turn that asked.
+The reason is not isolation for its own sake: a critic holding the maker's
+reasoning reviews the argument instead of the artifact, and it agrees.
+
+It deliberately carries **no `agent:` field**. A plugin namespaces every
+component under the plugin name, so this repo's critic is `design-critic` after
+`npx ux-ui-skills init` and `ux-ui-agent-skills:design-critic` under a plugin
+install. No single frontmatter value is correct on both routes, and a wrong one
+is `invocation:` again - a field that looks right and silently does nothing. The
+fork loads its brief from a `${CLAUDE_SKILL_DIR}`-relative path instead, which
+resolves either way, and `tests/meta/skill-frontmatter.test.mjs` pins the
+decision because `agent: design-critic` is the obvious-looking edit.
+
+### The instrument
+
+`tests/fixtures/critic/` holds four pages carrying **fourteen seeded defects**,
+with `evals/critic-answer-key.json` naming each one and the rule it breaks.
+
+The property the whole thing rests on: **every one of those four pages passes
+every gate in this repo** - `measure_render`, `verify_states`, `axe_audit`,
+`verify_keyboard`, `verify_target_size`, `verify_overflow`,
+`verify_reduced_motion`, `verify_interactive`, `lint_intent`, `slop_tells
+--strict`, `taste_audit --strict` and `verify_responsive --scale=1.25`, in light
+and dark. A defect a gate can catch would measure the gate.
+`tests/meta/critic-fixtures.test.mjs` re-proves that on every run, with
+`DS_REQUIRE_BROWSER=1` so a missing browser fails instead of printing SKIPPED.
+
+### The first run — H6: 0 -> 1.000
+
+Four critics, one per page, each given only the page and the brief.
+
+| fixture | seeded | caught |
+|---|---|---|
+| `dashboard-no-lead.html` | 3 | 3 |
+| `empty-state-floating.html` | 3 | 3 |
+| `list-identical.html` | 4 | 4 |
+| `async-lies.html` | 4 | 4 |
+| | **14** | **14** |
+
+**Read this number with its three caveats, because 1.000 on a first run is
+exactly the shape of a number that is measuring the wrong thing.**
+
+1. **The fixtures and the key were written in the same session, by the same
+   party, from the repo's own doctrine.** Every seeded defect is a textbook
+   instance of a rule already in the critic's brief. A real screen's defects are
+   subtler than "the toast says created and the list is unchanged". This scores
+   whether the critic applies doctrine it has been handed, not whether it has
+   taste.
+2. **The keyword matcher scored 9/14 before it was calibrated against these same
+   four critiques.** The five it missed were all caught in prose and missed on
+   vocabulary: the key looked for "differentiator" and the critic wrote "nothing
+   differentiates one row from the next"; it looked for "outruns the truth" and
+   the critic wrote "Feedback may not outrun the data". So part of the 14/14 is a
+   statement about the matcher. The hand-read count was 14/14 both before and
+   after - that is the number, and the matcher was moved to agree with it.
+3. **Calibrating a matcher on the runs it scores is circular**, and it is only
+   acceptable here because the controls still hold: a critique that merely quotes
+   the page ("an h1 reading Welcome, a Debug mode checkbox, the eyebrow says
+   SECTION 01") still scores **0/4**, and an empty file scores 0/4. The signals
+   got wider, not weaker. The next genuinely independent measurement is defects
+   seeded by someone else.
+
+### The instrument caught the skill that built it
+
+The first full gate run after this landed failed, and the failure was H1:
+install-path parity dropped from **1.000 to 0.9884** on both the plugin and the
+init route. `measure_install_paths.py` named the two references exactly:
+
+```
+.claude/skills/critique/SKILL.md:111  tests/fixtures/critic
+.claude/skills/critique/SKILL.md:113  evals/score_critic.mjs
+```
+
+The new skill told the reader how to score the critic, naming two paths that
+ship with a clone and with neither install - `tests/` and `evals/` are outside
+both the npm package and the plugin. A paragraph next to them said so, which is
+not a fix: a path inside an installed skill that resolves on no route is a dead
+reference whatever the prose beside it claims.
+
+The guidance was maintainer-only and did not belong in a skill that installs
+into someone else's project. It moved here. H1 is back to 1.000 on both real
+routes.
+
+Worth saying plainly, because it is the argument for keeping instruments
+pointed at yourself: the thing that caught this was built two phases earlier to
+measure a different problem, and it caught a defect in the phase that was adding
+a critic.
+
+### What the critics found that nobody seeded
+
+A stronger signal than the catch rate, because none of it was in the key:
+
+- `dashboard-no-lead.html` - the label outranks the number (`h3` 17px/700 over a
+  28px/400 value); page padding, grid gap and card padding are all 16px so
+  nothing groups; body measure is 97 characters because `72ch` undersizes against
+  real mixed-case text.
+- `list-identical.html` - `color-scheme` is never declared, so in dark mode the
+  UA paints a light checkbox and the **unchecked** debug toggle is the
+  highest-contrast element on the page, reading as "on"; the `<caption>` and the
+  Number column both scroll away with the overflow, so the identity column
+  truncates to "000".
+- `async-lies.html` - four of five buttons have no handler at all; at 390 two
+  cards in the same row carry buttons of 74px and 50px because one label wraps.
+
+Three of those are findings about the fixtures I wrote, which is the correct
+direction for this to run.
+
+### Harness Score
+
+| | baseline | after 3.2 | after 3.3 |
+|---|---|---|---|
+| H1 install-path parity | 0.265 | 0.6667 | 0.6667 |
+| H2 invocation correctness | 0 | 0 | 0 |
+| H3 enforcement coverage | 0.000 | 0.273 | 0.273 |
+| H4 verification receipts | 0 | 0 | 0 |
+| H5 blind first-pass | 0.333 | 0.333 | 0.333 |
+| H6 critic catch rate | 0 | 0 | **1.000** |
+| H7 taste on page/app work | 0 | 0 | 0 |
+| **Harness Score** | **0.086** | **0.182** | **0.325** |
+
+0.325 / 0.086 = **3.78x** against the baseline, which clears the plan's 1.5x bar
+on arithmetic. It should not be quoted yet. H6 is one of seven indicators and it
+is the only one at its ceiling, so it moves the mean more than any other single
+number could - and it is also the weakest of the seven for the reasons above.
+H2, H4 and H7 are still zero for want of an instrument, which is what the score
+is really saying.
+
+---
+
 ## Re-measuring
 
 ```bash
 python3 scripts/measure_install_paths.py          # H1
 ls hooks/ 2>/dev/null; grep -c hooks .claude/settings.json   # H3
+
+# H6: critique each fixture, save as critique-<fixture>.md, then
+node evals/score_critic.mjs critique-*.md
 ```
+
+H6 is re-measured by running `/critique` against each page in
+`tests/fixtures/critic/` and scoring what came back. Read the printed excerpts
+before quoting the number; the scorer says so itself, and the first run proved
+why.
 
 The rest become measurable as their instruments land. Record each new baseline
 in this file on the day the instrument first runs, so a later improvement is

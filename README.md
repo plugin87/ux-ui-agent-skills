@@ -386,6 +386,21 @@ review from source alone, screenshots at 1280 and 390 in both themes, clicks eve
 control, and returns a verdict with the three reasons a senior designer would send
 the work back.
 
+It runs as a **forked subagent**, so the critic never sees the conversation that
+produced the work. That is not a performance decision. A critic holding the
+maker's reasoning is reviewing the argument instead of the artifact, and it
+agrees far too easily.
+
+The critic itself is scored. `tests/fixtures/critic/` holds four pages carrying
+fourteen seeded design defects — no focal point, an empty state with no way
+forward, a toast that claims a project was created while the list is unchanged —
+and **every one of those pages passes all 51 gates**. That is the property that
+makes the number mean something: nothing in the harness can reach these, so
+catching them takes judgement. `node evals/score_critic.mjs` scores a critique
+against the key, prints the matching excerpt for every hit and the rule for every
+miss, and says in its own output that the number is a floor until you have read
+them.
+
 Runs are recorded in `evals/RESULTS.md` with their provenance attached — who built the output and whether they could see the kit while doing it — because a run without that context is not evidence of anything.
 
 The eval suite exists because "the kit's own examples pass" is a weaker claim than
