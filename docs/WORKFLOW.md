@@ -146,10 +146,13 @@ Edit knowledge files → commit
   it because the package says to. It also removes the 2FA prompt, which is what
   made a scripted publish impossible before.
 - The workflow filename has to match exactly, or npm will not recognise the token.
-- **Check it before tagging.** Actions -> *Release on tag* -> Run workflow ->
-  `auth_check: true` runs the publish job's exact setup and stops at
-  `npm whoami`. It answers "will a tag push publish?" for free. Three version
-  numbers were spent discovering that answer one release at a time.
+- **There is no cheap way to prove it.** `npm whoami` does not exercise OIDC -
+  npm mints the trusted-publishing token as part of the publish flow itself, so
+  whoami reports `ENEEDAUTH` whether the configuration is right or wrong. npm's
+  own UI says the same thing: the connection shows *Pending validation* until you
+  publish once through the workflow. `auth_check: true` prints the environment
+  (npm version, registry, whether the OIDC endpoint is present) and stops; it
+  cannot tell you the answer, and it must never gate the publish.
 - The workflow also supports **manual backfill**: Actions → *Release on tag* → *Run workflow* → enter an existing tag (this creates the Release only; it does **not** re-publish to npm).
 
 ### Day-to-day releasing

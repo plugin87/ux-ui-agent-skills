@@ -12,7 +12,7 @@ on:
         description: 'Existing tag to create a Release for (e.g. v1.2.0). Ignored when auth_check is true.'
         required: false
       auth_check:
-        description: 'Only check whether npm trusted publishing works. Publishes nothing.'
+        description: 'Print the publish environment and stop. Does NOT prove OIDC - only a real publish does.'
         type: boolean
         default: false
 
@@ -146,18 +146,22 @@ jobs:
             echo "$NAME@$VER is not on the registry yet (HTTP $CODE) - publishing."
           fi
 
-      - name: Who does the registry think we are?
+      # Informational only, and it must never gate the publish. `npm whoami` does
+      # NOT exercise OIDC: npm mints the trusted-publishing token as part of the
+      # publish flow itself, so whoami with no token in .npmrc reports ENEEDAUTH
+      # whether or not the trusted publisher is configured correctly.
+      #
+      # This was briefly a blocking check, which would have failed every real
+      # release while publishing worked fine. npm's own UI says the only way to
+      # validate the configuration is to publish once - so that is what validates
+      # it, and auth_check just prints the environment.
+      - name: Environment, for the record
         run: |
-          if npm whoami; then
-            echo "::notice::OIDC works - the registry authenticated this workflow."
-          else
-            echo "::error::npm could not authenticate. A tag push will NOT publish."
-            echo "::error::npmjs.com -> ux-ui-agent-skills -> Settings -> Trusted Publisher:"
-            echo "::error::  Publisher: GitHub Actions | user: plugin87"
-            echo "::error::  Repository: ux-ui-agent-skills | Workflow: release.yml"
-            echo "::error::  Environment: (blank). The filename must match exactly."
-            exit 1
-          fi
+          echo "npm $(npm --version), node $(node --version)"
+          echo "registry: $(npm config get registry)"
+          echo "OIDC endpoint present: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
+          npm whoami 2>&1 | sed 's/^/whoami: /' || true
+          echo "whoami above does not test OIDC - only a publish does."
 
       - name: Publish to npm (OIDC, no token)
         if: steps.exists.outputs.skip != 'true' && inputs.auth_check != true
