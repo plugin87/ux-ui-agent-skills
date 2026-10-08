@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src=".github/brand/xias-y2k-silver.png" alt="XIAS" width="640">
+<img src=".github/brand/xias-90s.png" alt="XIAS" width="620">
 
 # UX/UI Agent Skills
 

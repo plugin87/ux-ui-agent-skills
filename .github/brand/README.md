@@ -1,9 +1,37 @@
 # XIAS brand marks
 
+Generated rather than drawn, so the geometry is exact and reproducible.
+
+## Stacked rainbow — the primary set
+
+| File | Use |
+|---|---|
+| `xias-90s.png` / `.svg` | wordmark on dark, 1100x520 |
+| `xias-90s-light.png` / `.svg` | the same on white |
+| `xias-mark-90s.png` / `.svg` | square mark, the X alone |
+
+The 90s poster trick: one word drawn seventy-two times, each copy a step
+further down, with a flat white face on top.
+
+Two things decide whether it works, and both were wrong first:
+
+**Draw order is the whole job.** The deepest, palest copy goes down FIRST. The
+first attempt reversed the array, which put the pale blue on top and printed a
+second ghost word beneath the real one.
+
+**Bands, not a gradient.** The effect is contour lines - thirteen solid steps
+with a hard edge between them. Interpolating smoothly across seventy-two layers
+makes a gradient wash and the look is gone. So the layer count stays high
+enough that copies overlap without gaps, and the *colour* is quantised to
+thirteen steps. Many layers, few colours.
+
+The form is centred on caps-plus-stack, not on the baseline. Centring the
+baseline hangs the extrusion off the bottom edge.
+
 Two directions, both generated from `tokens/colors.json` rather than drawn by
 hand, so the geometry is exact and the colours trace to the token source.
 
-## Y2K chrome — the primary set
+## Y2K chrome — alternate
 
 | File | Use |
 |---|---|
