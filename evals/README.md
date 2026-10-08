@@ -40,7 +40,7 @@ and it counts as a result rather than as cheating.
    node evals/run.mjs <brief-id>
    ```
 
-   Fourteen objective gates on the real render: hardcodes, emoji, WCAG in light
+   Fifteen objective gates on the real render: hardcodes, emoji, WCAG in light
    and dark, state-aware contrast, axe, responsive at 280/320/414, the same widths
    again under a 1.25x root font (a wider fallback font on another platform, or a
    user with larger text), target size, keyboard, reduced motion, content overflow,
@@ -77,7 +77,7 @@ silently clipped. Both are fixed.
 
 ## What this is not
 
-It is not a benchmark, and it does not produce a percentage for quality. Fourteen
+It is not a benchmark, and it does not produce a percentage for quality. Fifteen
 gates passing means the work is correct, not that it is good. The briefs list a
 "Known traps" section precisely because those traps are what separates the two,
 and no script in this repo can see them.

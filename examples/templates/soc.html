@@ -41,8 +41,8 @@
 
 <div class="top">
   <div><h1>Ravenline SOC</h1><p class="sub">TIER 2 · SHIFT B · 14 ANALYSTS ONLINE</p></div>
-  <span class="badge b-bad"><span class="dot" aria-hidden="true"></span>2 critical</span>
-  <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>17 open</span>
+  <a class="badge b-bad" href="#alerts"><span class="dot" aria-hidden="true"></span>2 critical</a>
+  <a class="badge b-warn" href="#alerts"><span class="dot" aria-hidden="true"></span>17 open</a>
   <span class="clock num">02:41:07</span>
 </div>
 
@@ -89,7 +89,7 @@
   </section>
 
   <section class="panel s6">
-    <header><h2>Alert queue</h2><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>2 critical</span></header>
+    <header><h2 id="alerts">Alert queue</h2><span class="badge b-bad"><span class="dot" aria-hidden="true"></span>2 critical</span></header>
     <ul class="feed">
       <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-triangle"/></svg></span>
         <div><p><strong>Credential stuffing against the VPN portal.</strong> 4,102 attempts from 812 addresses, 3 accounts locked. Rate limit raised and geo-fence applied.</p><time datetime="2026-09-15T02:38">02:38:11</time></div></li>

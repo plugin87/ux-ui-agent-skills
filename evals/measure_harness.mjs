@@ -91,19 +91,33 @@ function h1() {
  */
 function h3() {
   const py = read('scripts/validate_instruction_surface.py');
-  /* Cut at the `]` that closes the list, which is the one at the start of a
-     line. Splitting on the first `]` lands inside a regex such as `[Nn]ever`
-     and reads 3 rules out of 13 - which this script did on its first run, and
-     is exactly the stale-by-construction number it exists to replace. */
-  const block = py.split('ALWAYS_ON = [')[1]?.split(/^\]/m)[0] ?? '';
+  /* Anchor on the line start, for two reasons that both bit.
+  
+     `split('ALWAYS_ON = [')` matches `PLUGIN_ALWAYS_ON = [` first, so this read
+     the doctrine skill's nine rules while reporting them as CLAUDE.md's
+     thirteen - a denominator off by four, in the indicator about enforcement.
+  
+     And cutting at the first `]` lands inside a regex such as `[Nn]ever`, which
+     read three rules out of thirteen on the first run.
+  
+     Both are the same mistake: matching a substring where a line was meant.
+     This script exists because hand-maintained numbers go stale; a parser that
+     quietly reads the wrong list is the same failure with extra steps. */
+  const block = py.split(/^ALWAYS_ON = \[/m)[1]?.split(/^\]/m)[0] ?? '';
   const rules = [...block.matchAll(/\(\s*"([^"]+)"/g)].map(m => m[1]);
   if (!rules.length) return { value: null, source: 'scripts/validate_instruction_surface.py', note: 'NO INSTRUMENT: could not read ALWAYS_ON' };
 
   // Which gates do the hooks actually run? Read the hook scripts, not a list.
   const hookDir = R('hooks');
-  const hookSrc = existsSync(hookDir)
-    ? readdirSync(hookDir).filter(f => f.endsWith('.mjs')).map(f => read(`hooks/${f}`)).join('\n')
-    : '';
+  const hookFiles = existsSync(hookDir)
+    ? readdirSync(hookDir).filter(f => f.endsWith('.mjs'))
+    : [];
+  /* Filenames as well as contents. A rule can be enforced by a gate a hook
+     CALLS - lint_hardcodes, named inside posttooluse-fast-gates.mjs - or by a
+     hook that IS the enforcement, like stop-require-measurement.mjs, whose own
+     name never appears in its own source. Searching contents alone missed the
+     second kind and under-reported H3 by a rule the repo actually enforces. */
+  const hookSrc = [...hookFiles, ...hookFiles.map(f => read(`hooks/${f}`))].join('\n');
   const runsGate = (g) => new RegExp(g.replace('.', '\\.')).test(hookSrc);
 
   /* A rule counts as enforced when a hook runs a gate that decides it. The

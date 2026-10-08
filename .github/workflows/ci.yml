@@ -147,7 +147,7 @@ jobs:
             node scripts/taste_audit.mjs --strict "$f"
           done
 
-      - name: Eval harness self-test (14 objective gates on the reference app)
+      - name: Eval harness self-test (15 objective gates on the reference app)
         run: node evals/run.mjs --self-test
 
       - name: Meta-gates - every gate still REJECTS a broken fixture

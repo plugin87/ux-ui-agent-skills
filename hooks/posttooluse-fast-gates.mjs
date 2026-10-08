@@ -56,6 +56,24 @@ const GATES = [
   ['python3', [join(ROOT, 'scripts/lint_native_select.py'), file]],
 ];
 
+/* validate_theme_refs.py is NOT here, and the reason is worth keeping.
+ *
+ * It is the other half of "one theme, one source of truth" - lint_hardcodes
+ * catches a value written instead of a token, and theme_refs catches a token
+ * that resolves to nothing. It runs in 25ms with no browser, so it looks like
+ * an obvious addition.
+ *
+ * It needs to be told which theme to check against, and a write hook does not
+ * know. Guessing - treating the edited file as its own theme - is correct only
+ * for a self-contained file, and produces a false failure on every write in the
+ * setup most real projects have: a shared theme imported once at the app root,
+ * where no individual component file defines anything.
+ *
+ * A gate that fires wrongly on every save is worse than the same gate running
+ * one step later with the right argument, which is what CI already does. Added
+ * on 2026-10-08, reverted the same hour, when the hook's own test caught it
+ * failing a clean file. */
+
 const findings = [];
 for (const [cmd, args] of GATES) {
   const r = spawnSync(cmd, args, { encoding: 'utf8', timeout: 20000 });

@@ -42,7 +42,7 @@ Details, and what that message has to carry: [docs/BRANCHING.md](docs/BRANCHING.
 ## The bar, for the maintainer and for anything proposed
 
 ```bash
-node scripts/accuracy_report.mjs     # 51/51 or it fails - no partial credit
+node scripts/accuracy_report.mjs     # 52/52 or it fails - no partial credit
 npm run test:gates                   # every gate must still REJECT a broken fixture
 ```
 

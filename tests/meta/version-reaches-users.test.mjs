@@ -128,3 +128,39 @@ test('no manifest declares the same key twice', () => {
     void seen;
   }
 });
+
+/**
+ * The harness instrument, held to the standard it measures.
+ *
+ * `measure_harness.mjs` exists because hand-maintained numbers go stale. Its
+ * own parser went stale twice in the same way - matching a substring where a
+ * line was meant:
+ *
+ *   `split('ALWAYS_ON = [')` matched `PLUGIN_ALWAYS_ON = [` first, so H3
+ *   counted the doctrine skill's nine rules while reporting CLAUDE.md's
+ *   thirteen.
+ *
+ *   `split(']')` landed inside the regex `[Nn]ever`, and read three rules.
+ *
+ * Both produced a confident wrong denominator in the indicator about
+ * enforcement. These assert the parser reads the list it names.
+ */
+test('the harness instrument reads the rule list it claims to', () => {
+  const py = read('scripts/validate_instruction_surface.py');
+  const src = read('evals/measure_harness.mjs');
+
+  assert.match(src, /split\(\/\^ALWAYS_ON = \\\[\/m\)/,
+    'the ALWAYS_ON split is not anchored to a line start, so it matches PLUGIN_ALWAYS_ON');
+  assert.match(src, /split\(\/\^\\\]\/m\)/,
+    'the closing bracket is not anchored, so the list is cut inside a regex such as [Nn]ever');
+
+  // The counts the parser gets must match the counts the file actually holds.
+  const block = py.split(/^ALWAYS_ON = \[/m)[1].split(/^\]/m)[0];
+  const parsed = [...block.matchAll(/\(\s*"([^"]+)"/g)].length;
+  const plugin = py.split(/^PLUGIN_ALWAYS_ON = \[/m)[1].split(/^\]/m)[0];
+  const pluginCount = [...plugin.matchAll(/\(\s*"([^"]+)"/g)].length;
+
+  assert.ok(parsed >= 10, `ALWAYS_ON parsed as ${parsed} rules, which is too few to be the real list`);
+  assert.notEqual(parsed, pluginCount,
+    'ALWAYS_ON and PLUGIN_ALWAYS_ON now hold the same number of rules, so this test can no longer tell them apart - check the parser by hand');
+});

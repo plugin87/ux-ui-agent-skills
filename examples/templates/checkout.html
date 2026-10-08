@@ -52,10 +52,9 @@
   .trust{display:grid;gap:var(--space-2);font-size:var(--text-xs);color:var(--color-text-secondary)}
   .trust div{display:flex;gap:var(--space-2);align-items:flex-start}
   .trust .ico{inline-size:.875rem;block-size:.875rem;margin-block-start:.15rem;color:var(--color-feedback-success)}
-  /* A heading the page needs for its outline but not for its layout: the
-     steps and the brand already say where you are, visually. */
-  .visually-hidden{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;
-    clip-path:inset(50%);white-space:nowrap}
+  /* Sized to lead the page without competing with the order total, which is
+     the number the reader is here to check. */
+  .co-title{font-size:var(--text-2xl);line-height:1.15;margin-block-end:var(--space-4)}
 </style>
 </head>
 <body>
@@ -68,11 +67,13 @@
 
 <div class="co" id="main">
   <div>
-    <!-- The page had no h1 at all. Every section opened at h2, so a screen
-         reader landed in a document with no title and the outline started one
-         level down. The kit's own typography rule says h1 once per page; no
-         gate was checking, and verify_screen_economy is what found it. -->
-    <h1 class="visually-hidden">Checkout</h1>
+    <!-- The page had no h1 at all: every section opened at h2, so the outline
+         started a level down and a screen reader landed in an untitled
+         document. A visually-hidden h1 fixed that and nothing else - the
+         reader still had no heading on the first screen, and the gate was
+         right to keep failing it. The step row is what actually tells you
+         where you are, so it carries the heading now. -->
+    <h1 class="co-title">Checkout</h1>
     <ol class="steps">
       <li class="done"><span class="n" aria-hidden="true"><svg class="ico" style="inline-size:.75rem;block-size:.75rem"><use href="#i-check"/></svg></span>Cart</li>
       <li class="done"><span class="n" aria-hidden="true"><svg class="ico" style="inline-size:.75rem;block-size:.75rem"><use href="#i-check"/></svg></span>Delivery</li>

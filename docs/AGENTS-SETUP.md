@@ -10,7 +10,7 @@ npx ux-ui-agent-skills init --agent codex
 
 That installs `AGENTS.md`, the tokens, the component specs, the accessibility
 reference, the taste doctrine, 138 design systems, the framework adapters, and
-all 51 gates. It does **not** install `.claude/` — those are Claude Code
+all 52 gates. It does **not** install `.claude/` — those are Claude Code
 mechanisms and would be dead files here.
 
 `--agent both` installs both surfaces. `--agent claude` (the default) installs
@@ -23,7 +23,7 @@ only the Claude Code one.
 | | Claude Code | `AGENTS.md` |
 |---|---|---|
 | Tokens, components, accessibility, taste, 138 design systems | yes | **yes** |
-| All 51 gates | yes | **yes** — plain Node and Python |
+| All 52 gates | yes | **yes** — plain Node and Python |
 | The doctrine: eight states, token by intent, mobile-first, the house rules | yes | **yes** |
 | 25 skills that load on demand | yes | no — the doctrine is inlined instead |
 | Hooks that fire whether or not the model remembers | yes | **no** |

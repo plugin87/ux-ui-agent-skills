@@ -133,6 +133,21 @@ main{display:flex;flex-direction:column;min-inline-size:0}
 .b-bad{--dot:var(--color-text-error)} .b-info{--dot:var(--color-text-link)}
 .b-mute{--dot:var(--color-text-secondary)}
 
+/* A badge that takes you to what it counts.
+   These consoles put a count in the top bar - "2 critical", "17 open" - and
+   drew it as a span, so the screen named a problem and offered no way to reach
+   it. On a phone that left nothing to act on above the fold at all: soc.html
+   had zero interactive elements in the console itself. A count the operator
+   would obviously click is the affordance the screen was already implying. */
+a.badge{text-decoration:none;color:inherit;
+  transition:background-color var(--transition-micro),box-shadow var(--transition-micro)}
+a.badge:hover{background:var(--color-surface-sunken, var(--color-surface-raised));
+  box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+a.badge:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+a.badge:active{background:var(--color-surface-raised)}
+/* The target of such a jump, so the landing is visible rather than silent. */
+:target{scroll-margin-block-start:var(--space-6)}
+
 /* tables */
 /* overflow-x:auto makes it scroll; min-inline-size:0 is what makes it SHRINK.
    As a grid item it keeps min-width:auto, so without this the table's min-content

@@ -84,7 +84,9 @@ for (const p of paths) {
 /** Runs in the page. Returns findings, never verdicts. */
 const MEASURE = ({ T }) => {
   const vw = innerWidth, vh = innerHeight;
-  const out = { media: [], boxes: [], firstScreen: null, images: [], forever: [], bright: 0 };
+  const out = { media: [], boxes: [], firstScreen: null, images: [], forever: [], bright: 0,
+    /* The page's own declaration that it has not finished. */
+    busy: document.querySelector('[aria-busy="true"]') !== null };
   const name = (el) => {
     const id = el.id ? '#' + el.id : (typeof el.className === 'string' && el.className.trim()
       ? '.' + el.className.trim().split(/\s+/)[0] : '');
@@ -266,8 +268,24 @@ for (const f of files) {
       colorScheme: DARK ? 'dark' : 'light',
     });
     await page.goto('file://' + abs);
-    await page.waitForTimeout(400);
-    const r = await page.evaluate(MEASURE, { T });
+    /* Wait for the page to finish, not for a constant.
+     *
+     * A flat wait reads a loading state as the page. verify_reduced_motion had
+     * exactly this bug - it compared a half-loaded render against a finished
+     * one - and this gate was written afterwards with the same flat timer and
+     * repeated it: a blind agent's dashboard held a skeleton for 700ms, so at
+     * 400ms the heading was still inside a display:none block and this reported
+     * "no visible h1 above the fold" on a page whose h1 is its hero.
+     *
+     * The page says when it is done. Believe it, with a cap. */
+    let r = null, prevKeys = null;
+    for (let waited = 0; waited <= 4000; waited += 250) {
+      await page.waitForTimeout(250);
+      r = await page.evaluate(MEASURE, { T });
+      const keys = JSON.stringify([r.firstScreen, r.media.length, r.boxes.length]);
+      if (!r.busy && keys === prevKeys) break;
+      prevKeys = keys;
+    }
     await page.close();
 
     for (const m of r.media) {
@@ -288,7 +306,11 @@ for (const f of files) {
       if (waiver && waiver[1].trim().length > 15) continue;
       problems.push(`${base} @${label}  [5 endless motion]  ${el} animates forever`);
     }
-    if (label === 'phone' && !r.harness) {
+    /* A page still declaring aria-busy at the cap is a rendering of a loading
+       state - the kit ships two of them on purpose. "The first screen earns
+       itself" cannot be judged on a screen that has not arrived, so the check
+       is skipped rather than failed. Everything else still applies to it. */
+    if (label === 'phone' && !r.harness && !r.busy) {
       if (!r.firstScreen.heading) problems.push(`${base} @phone  [3 first screen]  no visible h1 above the fold`);
       if (!r.firstScreen.action) problems.push(`${base} @phone  [3 first screen]  no primary action above the fold`);
     }

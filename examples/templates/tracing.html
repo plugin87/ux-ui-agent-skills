@@ -22,6 +22,13 @@
   .chip{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
     border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);font-family:var(--font-mono);
     font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
+  /* A chip that takes you to what it reports. The console put a status in the
+     top bar and drew it as a span, so on a phone there was nothing to act on
+     above the fold at all. */
+  a.chip{text-decoration:none;color:inherit}
+  a.chip:hover{box-shadow:inset 0 0 0 1px var(--color-border-strong)}
+  a.chip:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
+  :target{scroll-margin-block-start:var(--space-6)}
   .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
   .c-bad{--dot:var(--color-text-error)} .c-ok{--dot:var(--trm-accent)}
   /* Mobile first: the base IS the phone layout. This was a 12-column grid
@@ -102,7 +109,7 @@
 
 <div class="bar-top">
   <div><h1>POST /checkout</h1><p class="sub">TRACE 4F91C2A0 · 842 MS · 13 SPANS</p></div>
-  <span class="chip c-bad"><span class="dot" aria-hidden="true"></span>1 error span</span>
+  <a class="chip c-bad" href="#slowest-contributors"><span class="dot" aria-hidden="true"></span>1 error span</a>
   <span class="chip c-ok"><span class="dot" aria-hidden="true"></span>p95 within budget</span>
 </div>
 
@@ -127,7 +134,7 @@
   </section>
 
   <section class="panel c4">
-    <header><h2>Slowest contributors</h2></header>
+    <header><h2 id="slowest-contributors">Slowest contributors</h2></header>
     <dl class="kv">
       <dt>3DS challenge</dt><dd>240 ms · 28.5%</dd>
       <dt>reserve stock</dt><dd>214 ms · 25.4%</dd>

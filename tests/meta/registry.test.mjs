@@ -30,11 +30,11 @@ const evals = countEntries(read('evals', 'run.mjs'), 'const GATES = [');
 test('the accuracy report still runs the full check list', () => {
   // Not a magic number to bump casually: dropping a check silently shrinks what
   // "100%" means. Adding one is fine — update this line in the same commit.
-  assert.equal(accuracy, 51, `accuracy_report.mjs now has ${accuracy} checks`);
+  assert.equal(accuracy, 52, `accuracy_report.mjs now has ${accuracy} checks`);
 });
 
 test('the eval scorer still runs the full gate list', () => {
-  assert.equal(evals, 14, `evals/run.mjs now has ${evals} gates`);
+  assert.equal(evals, 15, `evals/run.mjs now has ${evals} gates`);
 });
 
 test('every count claimed in prose matches the array it describes', () => {

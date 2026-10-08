@@ -28,7 +28,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 [![npm downloads](https://img.shields.io/npm/dt/ux-ui-agent-skills?style=flat-square&logo=npm&logoColor=white&color=cb3837)](https://www.npmjs.com/package/ux-ui-agent-skills)
 ![Tokens](https://img.shields.io/badge/Design_Tokens-DTCG-fbbf24?style=flat-square)
 ![Skills](https://img.shields.io/badge/runnable_skills-25-14b8a6?style=flat-square)
-![Gates](https://img.shields.io/badge/objective_gates-51-16a34a?style=flat-square)
+![Gates](https://img.shields.io/badge/objective_gates-52-16a34a?style=flat-square)
 [![Live demo](https://img.shields.io/badge/live_demo-open-0ea5e9?style=flat-square)](https://plugin87.github.io/ux-ui-agent-skills/)
 ![Design Systems](https://img.shields.io/badge/design_systems-138-f97316?style=flat-square)
 ![Frameworks](https://img.shields.io/badge/frameworks-any-8b5cf6?style=flat-square)
@@ -48,7 +48,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 
 Not a mockup. These are screenshots of the files in `examples/`, taken by
-`node scripts/screenshot_docs.mjs` from the same HTML the 51 gates measure — so
+`node scripts/screenshot_docs.mjs` from the same HTML the 52 gates measure — so
 what you see below is what the gate run passed, in both themes.
 
 **Click through them yourself: [plugin87.github.io/ux-ui-agent-skills](https://plugin87.github.io/ux-ui-agent-skills/)**
@@ -124,7 +124,7 @@ left is `tests/fixtures/bad/slop-screen.html`; here is what the gates say about 
 | No hardcoded values | `FAIL: 63 hardcoded value(s)` |
 
 Ten gates reject it, none of them on a matter of taste. The right-hand page
-passes all 51.
+passes all 52.
 
 The last row is there because building this comparison broke a gate open.
 `lint_intent` originally read that blue Delete Account as fine: it resolved
@@ -243,7 +243,7 @@ Code's own `plugin validate` says so.
 "Design a notification component with all states and accessibility"
 "Build the billing settings screen, one shared theme, light and dark"
 "/grill-me"      interrogate the brief before anything is built
-"/gate"          run all 51 checks and report the real N/N
+"/gate"          run all 52 checks and report the real N/N
 "/critique"      hand the result to a critic that argues for rejection
 ```
 
@@ -319,13 +319,13 @@ Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#i
 ## Proving It, and Admitting What Cannot Be Proven
 
 
-The kit ships **51 objective gates** behind one command:
+The kit ships **52 objective gates** behind one command:
 
 ```bash
-node scripts/accuracy_report.mjs     # 51/51 or it fails — no partial credit
+node scripts/accuracy_report.mjs     # 52/52 or it fails — no partial credit
 ```
 
-**33 of them open a real browser, so they need one installed.** Playwright is not
+**34 of them open a real browser, so they need one installed.** Playwright is not
 pulled in by `/plugin install` or `npx ux-ui-agent-skills init`, so run this once
 in the kit directory before expecting a full score:
 
@@ -334,7 +334,7 @@ npm install                          # playwright
 npx playwright install chrome        # real Chrome: six gates require the channel
 ```
 
-Without it those 33 report `REQUIRED, FAILING` under `accuracy_report.mjs`, which
+Without it those 34 report `REQUIRED, FAILING` under `accuracy_report.mjs`, which
 is the honest answer. Run individually they print `SKIPPED` and **exit 0** — so
 prefix any single render gate with `DS_REQUIRE_BROWSER=1` if you are reading its
 exit code, rather than reading silence as green.
@@ -345,7 +345,7 @@ at 280/320/414, target size, keyboard operability, reduced motion (including
 content that only an animation reveals), silent text clipping, token-by-intent,
 and zero emoji anywhere in the output or the instruction surface.
 
-**What that number covers, stated exactly.** 33 of the 51 checks open a real
+**What that number covers, stated exactly.** 34 of the 52 checks open a real
 browser, so what they measure is **rendered HTML**: the 23 component harnesses,
 the twenty industry screens, the reference app, the live demo, the starter
 template, and the React source compiled and server-rendered. The other 18 read
@@ -379,7 +379,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique` — an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 14 objective gates at what the agent produced |
+| Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/` — cold-start briefs, then `node evals/run.mjs <brief-id>` points 15 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
 review from source alone, screenshots at 1280 and 390 in both themes, clicks every
@@ -394,7 +394,7 @@ agrees far too easily.
 The critic itself is scored. `tests/fixtures/critic/` holds four pages carrying
 fourteen seeded design defects — no focal point, an empty state with no way
 forward, a toast that claims a project was created while the list is unchanged —
-and **every one of those pages passes all 51 gates**. That is the property that
+and **every one of those pages passes all 52 gates**. That is the property that
 makes the number mean something: nothing in the harness can reach these, so
 catching them takes judgement. `node evals/score_critic.mjs` scores a critique
 against the key, prints the matching excerpt for every hit and the rule for every
@@ -440,7 +440,7 @@ What transfers, and what does not, stated exactly:
 | | Claude Code | AGENTS.md surface |
 |---|---|---|
 | Tokens, components, taste, accessibility, 138 design systems | yes | **yes** |
-| All 51 gates | yes | **yes** - they are plain Node and Python |
+| All 52 gates | yes | **yes** - they are plain Node and Python |
 | Doctrine: the eight states, token by intent, mobile-first, the house rules | yes | **yes** |
 | 25 skills that load on demand | yes | no, the doctrine is inlined instead |
 | Hooks that fire whether or not the model remembers | yes | **no** |
@@ -466,7 +466,7 @@ What is wanted, and credited by name in the CHANGELOG: a **gate gap**, a
 **reproduction**, or a **proposal**. Forking is welcome; the MIT licence says so.
 
 Two commands are the whole bar for anything that does ship:
-`node scripts/accuracy_report.mjs` (51/51, no partial credit) and
+`node scripts/accuracy_report.mjs` (52/52, no partial credit) and
 `npm run test:gates` (every gate must still reject its broken fixture). Paste
 the real output rather than describing it.
 

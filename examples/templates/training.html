@@ -70,7 +70,7 @@
 
 <div class="top">
   <div><h1>atlas-7b-sft</h1><p class="sub">RUN 4F21C0 · 8 x H100 · STEP 41,600 OF 42,000 · EPOCH 3.0</p></div>
-  <span class="badge b-warn"><span class="dot" aria-hidden="true"></span>Val loss rising since 39k</span>
+  <a class="badge b-warn" href="#confusion-matrix"><span class="dot" aria-hidden="true"></span>Val loss rising since 39k</a>
   <span class="clock num">02:41:07</span>
 </div>
 
@@ -123,7 +123,7 @@
   </div>
 
   <section class="panel s6">
-    <header><h2>Confusion matrix</h2><span class="note">eval set, row-normalised</span></header>
+    <header><h2 id="confusion-matrix">Confusion matrix</h2><span class="note">eval set, row-normalised</span></header>
     <div class="cm">
       <div class="chead"><span class="ch"></span><span class="ch">neu</span><span class="ch">joy</span><span class="ch">ang</span><span class="ch">fea</span><span class="ch">sad</span><span class="ch">sur</span><span class="ch">dis</span><span class="ch">tru</span></div>
         <div class="crow"><span class="cl">neutral</span><span class="cc d" style="--v:80%"><span class="sr-only">neutral predicted neutral: 80 percent</span></span><span class="cc" style="--v:1%"><span class="sr-only">neutral predicted joy: 1 percent</span></span><span class="cc" style="--v:0%"><span class="sr-only">neutral predicted anger: 0 percent</span></span><span class="cc" style="--v:9%"><span class="sr-only">neutral predicted fear: 9 percent</span></span><span class="cc" style="--v:9%"><span class="sr-only">neutral predicted sad: 9 percent</span></span><span class="cc" style="--v:1%"><span class="sr-only">neutral predicted surprise: 1 percent</span></span><span class="cc" style="--v:5%"><span class="sr-only">neutral predicted disgust: 5 percent</span></span><span class="cc" style="--v:5%"><span class="sr-only">neutral predicted trust: 5 percent</span></span></div>

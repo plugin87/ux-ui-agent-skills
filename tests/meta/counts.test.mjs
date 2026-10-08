@@ -1,5 +1,5 @@
 /**
- * The README states how the 51 checks split between the ones that open a real
+ * The README states how the checks split between the ones that open a real
  * browser and the ones that read files. Until 2026-10-07 it said 35/16 in one
  * place and 31 in another, and the real answer was 33/18 - three numbers, none
  * of them measured, inside the section about never stating a number you did not
