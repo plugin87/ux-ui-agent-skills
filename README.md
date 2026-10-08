@@ -270,7 +270,7 @@ nothing was installed. Or skip the copy entirely and use the
 ### Option B — Use it from any MCP client
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
 ```
 
 Six tools: `list_gates`, `run_gate`, `review_ui`, `get_doctrine`,

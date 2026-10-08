@@ -1,7 +1,7 @@
 # The MCP server
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
 ```
 
 Or, in any MCP client's config:
@@ -11,13 +11,21 @@ Or, in any MCP client's config:
   "mcpServers": {
     "ux-ui-gates": {
       "command": "npx",
-      "args": ["-y", "ux-ui-agent-skills", "ux-ui-mcp"]
+      "args": ["-y", "--package=ux-ui-agent-skills", "ux-ui-mcp"]
     }
   }
 }
 ```
 
 From a clone, `node mcp/server.mjs`.
+
+> **`--package=` is load-bearing.** This package's name is also one of its bin
+> names, so `npx -y ux-ui-agent-skills ux-ui-mcp` runs the *installer CLI* and
+> passes `ux-ui-mcp` to it as an argument - you get a help screen on stdout and
+> an MCP client that never completes a handshake. `--package=` names the package
+> and leaves the bin to be chosen. Found by running the documented command on a
+> clean machine, which is the only way this kind of mistake surfaces:
+> `tests/cli/mcp-install.test.mjs` now pins it.
 
 ## What it is for
 

@@ -16,7 +16,7 @@ with auto-generated notes instead.
 read its doctrine.
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
 ```
 
 Six tools: `list_gates`, `run_gate`, `review_ui` for measuring, and
