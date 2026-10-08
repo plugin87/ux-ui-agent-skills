@@ -10,6 +10,42 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.5`
+
+**The taste step now happens.** `design-screen` asks for a Brief Inference block
+- domain, audience, mood, motion depth, layout family, reference anchor - before
+any markup, and calls it "not optional". Measured on 2026-10-07, one run in three
+skipped it: the skill loaded every time and the block went unwritten, so the
+screen was designed by nobody and regressed to the statistical mean.
+
+The cause was position. The block sat at line 35, below seven lines explaining
+why the skill exists and a handoff table. Background is not an instruction. It is
+now the first thing in the file, with the stop condition stated plainly: if you
+are about to write markup, create a file, or call a tool that produces UI and the
+block is not already in your reply, stop and write it first.
+
+Measured after the move, same grader: **5/5**, up from 2/3.
+
+**`grill-me` checked for the kit after it had already read from it** - line 29
+read `tokens/*.json`, line 97 checked the kit was there, and that check sat
+inside the fenced `BRIEF.md` template, so the skill was telling the model to
+write kit-check prose into the user's brief document. Both fixed.
+
+**Every harness indicator is now measured by a command.** `node
+evals/measure_harness.mjs` computes the table from source rather than reading a
+number someone typed - the first thing it did was contradict the old table, which
+recorded 3 of 11 rules enforced when the real figure was 3 of 9.
+
+**New: `plugin-evals/`**, a 13-case `claude plugin eval` suite covering
+invocation. Four triggers, three near-misses, five invitations to the
+user-started skills, and the taste case. It exists because all 19 skills once
+carried `invocation: user|model`, a key Claude Code does not read, so the six
+marked user-only were auto-invocable and nothing noticed.
+
+Harness Score 0.086 at baseline, **0.6975** here, with nothing left unmeasured.
+
+---
+
 ### `v2.9.4`
 
 First release published automatically. `v2.9.3` validated npm trusted
