@@ -85,6 +85,36 @@ The isometric set uses **flat faces at three distinct values**, which is how
 isometric light actually works. The chrome set uses a gradient on purpose, and
 it is a metal ramp with a hard horizon, not a two-stop violet wash.
 
+## Cover, social card and wallpaper
+
+| File | Size | Use |
+|---|---|---|
+| `xias-cover.png` (also `.github/images/hero.png`) | 1920x945 | README header |
+| `xias-social.png` | 1280x640 | GitHub social preview, exact size GitHub wants |
+| `wallpaper/xias-macbook-air-13.png` | 2560x1664 | desktop |
+| `wallpaper/xias-macbook-pro-14.png` | 3024x1964 | desktop |
+| `wallpaper/xias-macbook-pro-16.png` | 3456x2234 | desktop |
+| `wallpaper/xias-studio-display.png` | 5120x2880 | desktop |
+
+The cover replaced a fake code window beside six identical feature cards. That
+is the 2021 dev-tool landing page, and it is also a composition this kit's own
+doctrine calls a defect: equal-weight cards give the eye nowhere to land. The
+mark leads now, one sentence says what it is, and the rainbow appears exactly
+once more as the rule between the claim and the counts - accent as structure
+rather than decoration.
+
+Wallpapers are rendered at each panel's native resolution rather than one image
+stretched, because a stretched stack turns its banding into stair-steps. The
+mark sits slightly above centre: the menu bar takes the top and the Dock takes
+the bottom.
+
+The social card is 1280x640 exactly. GitHub serves it at a fixed 2:1 in every
+link unfurl, and what it crops from a taller image is the bottom of the stack.
+
+**The social preview cannot be set from here.** The REST API exposes no field
+for it - checked, not assumed - so it is a drag and drop at
+`github.com/plugin87/ux-ui-agent-skills/settings`.
+
 ## PNG beside every SVG, and why the README uses it
 
 The SVGs are the source. The README embeds the **PNG**, because two things in

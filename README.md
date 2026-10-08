@@ -1,7 +1,5 @@
 <div align="center">
 
-<img src=".github/brand/xias-90s.png" alt="XIAS" width="620">
-
 # UX/UI Agent Skills
 
 *aka **XIAS***
@@ -12,7 +10,7 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-<img src=".github/images/hero.png" alt="UX/UI Agent Skills — a CLAUDE.md brief beside the capabilities it turns on: design tokens, component specs, WCAG 2.2 and ARIA, code generation, design review, workflows" width="900">
+<img src=".github/images/hero.png" alt="XIAS — design-system doctrine for coding agents, and the 52 objective gates that check their work. 52 gates, 138 design systems, 52 components, 25 skills. Claude Code, Codex, Cursor, Copilot, MCP." width="900">
 
 <br>
 <br>
