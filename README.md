@@ -202,6 +202,11 @@ The whole log, including what is still unproven, is in
 ## Quick Start
 
 
+> **Five ways in, and which one is yours:** [docs/INSTALL.md](docs/INSTALL.md)
+> walks through the Claude Code plugin, the `AGENTS.md` surface for Codex and
+> Cursor, the MCP server, Homebrew and `npx` — what each one installs, and what
+> you give up by choosing it.
+
 ### Option A — Install as a Claude Code plugin (recommended)
 
 Two lines in Claude Code, and every skill, command, and agent is available in any
