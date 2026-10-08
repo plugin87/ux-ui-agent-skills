@@ -10,6 +10,65 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.6`
+
+**The kit is an MCP server now.** Any MCP client can run its gates, not just
+read its doctrine.
+
+```bash
+claude mcp add ux-ui-gates -- npx -y ux-ui-agent-skills ux-ui-mcp
+```
+
+Six tools: `list_gates`, `run_gate`, `review_ui` for measuring, and
+`get_doctrine`, `get_design_system`, `get_tokens` for the rules and the source
+to build from. Doctrine before generating, review after.
+
+`AGENTS.md` already let Codex, Cursor and Copilot **read** the doctrine. This
+lets any client **run the 52 gates**, which reading cannot do. Plenty of things
+describe good UI; very little tells you afterwards that the contrast you shipped
+is 3.9:1 on hover.
+
+It speaks JSON-RPC directly rather than through an SDK, because this package
+ships `"dependencies": {}` and says so on its front page. MCP is JSON-RPC 2.0
+over stdio and a tools-only server needs four methods.
+
+What it refuses to do is the point: it returns what the gates printed, unedited,
+with their exit codes. 0 looked and found nothing, 1 found something, **2 could
+not look** - never a pass. `DS_REQUIRE_BROWSER=1` is set on every call so a
+render gate with no browser fails rather than printing SKIPPED and exiting 0. It
+never summarises a gate or produces a number a gate did not produce.
+
+`node mcp/server.mjs --selftest` drives the real handshake and every tool.
+Details in [`docs/MCP.md`](docs/MCP.md).
+
+**A hook could block you over another project's files.** Under a plugin install
+the receipts directory is `CLAUDE_PLUGIN_DATA`, shared by every project on the
+machine, and `CLAUDE_SESSION_ID` is unset in a `claude -p` run - so every such
+run wrote to one ledger and read the others' edits. A session in one directory
+was told that ten files in an unrelated one were unmeasured. The ledger is keyed
+by project and session now.
+
+**Screen economy is a gate.** `verify_screen_economy.mjs` - media bounded, no
+large hollow boxes, the first screen carries a heading and a way to act, images
+sized, nothing animating forever. Thresholds live in `tokens/sizing.json ->
+screen`, not in the script. The gate count is **52**.
+
+Fixing the doctrine came first, because it taught the opposite in four places:
+"bento sizing" as the answer to repeated cards, a full-bleed card image, a
+screen-filling hero archetype, and a full-bleed hero as a layout option. A named
+system never overrides the rule now - nike and spacex keep their identity and
+get their media capped, and `apply-aesthetic` states the adaptation.
+
+It found what nothing else could. `crm.html` at 390px: a grid track collapsed to
+6px while its neighbours held their floor, so three KPI panels rendered 160x1494
+- stat cards a page and a half tall on a phone, with nothing overflowing and
+nothing clipped, so every existing gate passed it. `checkout.html` had no `h1`
+at all. Twelve operational consoles had no way to act on the first phone screen,
+and `soc.html` had no interactive element in the console at all; the counts in
+their top bars are links to what they count now.
+
+---
+
 ### `v2.9.5`
 
 **The taste step now happens.** `design-screen` asks for a Brief Inference block
