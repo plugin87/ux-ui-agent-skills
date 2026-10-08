@@ -5,7 +5,8 @@
   "type": "commonjs",
   "bin": {
     "ux-ui-skills": "bin/cli.js",
-    "ux-ui-agent-skills": "bin/cli.js"
+    "ux-ui-agent-skills": "bin/cli.js",
+    "ux-ui-mcp": "mcp/server.mjs"
   },
   "scripts": {
     "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py && python3 scripts/check_links.py",
@@ -32,7 +33,9 @@
     "build:tokens": "node scripts/build_tokens.mjs --out dist/tokens.css",
     "render:source": "node scripts/render_framework_source.mjs",
     "docs:shots": "node scripts/screenshot_docs.mjs",
-    "docs:shots:check": "node scripts/screenshot_docs.mjs --check"
+    "docs:shots:check": "node scripts/screenshot_docs.mjs --check",
+    "mcp": "node mcp/server.mjs",
+    "test:mcp": "node mcp/server.mjs --selftest"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
@@ -58,6 +61,7 @@
     "workflows/",
     "content/",
     "scripts/",
+    "mcp/",
     "hooks/",
     "templates/",
     ".claude/skills/",
@@ -88,7 +92,10 @@
     "agents-md",
     "cursor",
     "github-copilot",
-    "homebrew"
+    "homebrew",
+    "mcp",
+    "model-context-protocol",
+    "mcp-server"
   ],
   "repository": {
     "type": "git",

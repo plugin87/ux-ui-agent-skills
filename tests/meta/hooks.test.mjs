@@ -197,3 +197,62 @@ test('both install routes declare all three hooks', () => {
     assert.match(projectCmds, new RegExp(f.replace('.', '\\.')));
   }
 });
+
+/**
+ * A hook must never block you over a file in someone else's project.
+ *
+ * Under a plugin install the receipts directory is CLAUDE_PLUGIN_DATA, which
+ * every project on the machine shares, and CLAUDE_SESSION_ID is not always set
+ * - a `claude -p` run has none. The ledger was keyed on the session alone, so
+ * every such run wrote to one `edited-local.jsonl` and the Stop hook in one
+ * project read another project's edits. Observed on 2026-10-08: a session in
+ * /tmp/mcptest was told ten files under /tmp/blind-plugin were unmeasured.
+ */
+test('the edit ledger is scoped to the project, not just the session', () => {
+  const shared = { CLAUDE_PLUGIN_DATA: scratch };   // no session id, as `claude -p` has none
+  const a = mkdtempSync(join(tmpdir(), 'ds-projA-'));
+  const b = mkdtempSync(join(tmpdir(), 'ds-projB-'));
+  try {
+    const target = join(ROOT, 'examples/sample-app/preview.html');
+    // Project A edits a UI file.
+    const edit = hook('posttooluse-fast-gates.mjs',
+      { tool_name: 'Edit', tool_input: { file_path: target } },
+      { ...shared, CLAUDE_PROJECT_DIR: a });
+    assert.equal(edit.status, 0, 'setup: the edit itself should be clean');
+
+    // Project B, same machine, same plugin data, no session id: must see nothing.
+    const other = hook('stop-require-measurement.mjs', {},
+      { ...shared, CLAUDE_PROJECT_DIR: b });
+    assert.equal(other.status, 0,
+      `project B was blocked by project A's edit:\n${other.stderr}`);
+
+    // Project A itself must still be blocked - the scoping must not switch the hook off.
+    const own = hook('stop-require-measurement.mjs', {},
+      { ...shared, CLAUDE_PROJECT_DIR: a });
+    assert.equal(own.status, 2,
+      `project A should still be blocked for its own unmeasured edit, got ${own.status}`);
+    assert.match(own.stderr, /preview\.html/);
+  } finally {
+    rmSync(a, { recursive: true, force: true });
+    rmSync(b, { recursive: true, force: true });
+  }
+});
+
+/**
+ * The two hooks must agree on where the ledger is, and may not get there by
+ * importing each other: posttooluse-fast-gates.mjs does its work at the top
+ * level, so importing it to ask for a path would run a PostToolUse pass as a
+ * side effect. Two hand-copied path formulas drift, and when they do the Stop
+ * hook silently sees no edits at all - which looks exactly like a clean
+ * session.
+ */
+test('both hooks read the ledger path from one place', () => {
+  const writer = readFileSync(join(ROOT, 'hooks/posttooluse-fast-gates.mjs'), 'utf8');
+  const reader = readFileSync(join(ROOT, 'hooks/stop-require-measurement.mjs'), 'utf8');
+  for (const [name, src] of [['posttooluse', writer], ['stop', reader]]) {
+    assert.match(src, /from '\.\/_ledger\.mjs'/, `${name} does not import the shared ledger module`);
+    assert.doesNotMatch(src, /edited-\$\{/, `${name} still builds the ledger filename itself`);
+  }
+  assert.doesNotMatch(reader, /posttooluse-fast-gates/,
+    'the Stop hook imports the PostToolUse script, whose top-level work would run as a side effect');
+});

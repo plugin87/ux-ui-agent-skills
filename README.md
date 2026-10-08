@@ -267,7 +267,27 @@ Every page it opens is a page the gates measure. Delete the folder afterwards;
 nothing was installed. Or skip the copy entirely and use the
 [live demo](https://plugin87.github.io/ux-ui-agent-skills/).
 
-### Option B — Install with Homebrew
+### Option B — Use it from any MCP client
+
+```bash
+claude mcp add ux-ui-gates -- npx -y ux-ui-agent-skills ux-ui-mcp
+```
+
+Six tools: `list_gates`, `run_gate`, `review_ui`, `get_doctrine`,
+`get_design_system`, `get_tokens`. Read the doctrine and the tokens before
+generating, run the gates on what you produced after.
+
+`AGENTS.md` already lets any agent **read** the doctrine. This lets any MCP
+client **run the 52 gates**, which reading cannot do — plenty of things can
+describe good UI, very little can tell you afterwards that the contrast you
+shipped is 3.9:1 on hover.
+
+It returns what the gates printed, unedited, with their exit codes: 0 looked and
+found nothing, 1 found something, **2 could not look** — never a pass. No SDK
+dependency; the protocol is implemented directly so `"dependencies": {}` stays
+true. Details in [docs/MCP.md](docs/MCP.md).
+
+### Option C — Install with Homebrew
 
 ```bash
 brew install plugin87/tap/ux-ui-agent-skills
@@ -281,7 +301,7 @@ its `test do` block asserts the installed CLI reports the version the formula
 names, and that `--agent codex` writes `AGENTS.md` without `CLAUDE.md` or
 `.claude/`. Details in [docs/HOMEBREW.md](docs/HOMEBREW.md).
 
-### Option C — Install with `npx`
+### Option D — Install with `npx`
 
 Drop the kit into any project, no clone needed:
 

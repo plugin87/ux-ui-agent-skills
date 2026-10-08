@@ -19,6 +19,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { liveReceiptsFor, receiptsDir } from '../scripts/gate.mjs';
+import { ledgerFile } from './_ledger.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -28,8 +29,10 @@ try { payload = JSON.parse(readFileSync(0, 'utf8') || '{}'); } catch { payload =
 // Already continuing because of a Stop hook: let it through or it never ends.
 if (payload.stop_hook_active) process.exit(0);
 
-const ledger = join(receiptsDir(),
-  `edited-${(process.env.CLAUDE_SESSION_ID || 'local').replace(/[^\w-]/g, '')}.jsonl`);
+/* The same path the writer builds, imported rather than rebuilt: two copies of
+   a path formula drift, and when they do this hook silently stops seeing any
+   edits at all - which looks exactly like a clean session. */
+const ledger = ledgerFile();
 if (!existsSync(ledger)) process.exit(0);
 
 const edited = [...new Set(

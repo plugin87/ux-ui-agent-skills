@@ -15,17 +15,11 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { join, dirname, extname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { ledgerDir, ledgerFile } from './_ledger.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const UI_EXT = new Set(['.html', '.htm', '.css', '.scss', '.tsx', '.jsx', '.vue', '.svelte']);
 
-function ledgerDir() {
-  const data = process.env.CLAUDE_PLUGIN_DATA;
-  if (data) return join(data, 'receipts');
-  return join(process.env.CLAUDE_PROJECT_DIR || process.cwd(), '.ds-receipts');
-}
-const ledgerFile = () =>
-  join(ledgerDir(), `edited-${(process.env.CLAUDE_SESSION_ID || 'local').replace(/[^\w-]/g, '')}.jsonl`);
 
 // `require` is not available in an ES module. The first version of this hook
 // used it, the catch swallowed the ReferenceError, and the hook silently did
