@@ -8,8 +8,18 @@
 <link rel="stylesheet" href="../brandkit-demo/theme.css" />
 <link rel="stylesheet" href="./shell.css" />
 <style>
-  .kpis{display:grid;grid-template-columns:minmax(0,1.5fr) repeat(auto-fit,minmax(min(100%,10rem),1fr));
-    gap:var(--space-4)}
+  /* One column on the phone, which is the base layer. The previous rule was
+     minmax(0,1.5fr) for the lead panel plus auto-fit tracks: at 390px the lead
+     track collapsed to 6px while the auto-fit tracks held their 10rem minimum,
+     and the three panels stretched to 1494px tall to fit their content into a
+     6px column. No gate saw it - nothing overflowed, nothing clipped - and it
+     is what verify_screen_economy was written to catch. A 1fr track can still
+     be squeezed to nothing; the lead track needs a real floor, and below the
+     width where that floor fits, the row has to stack. */
+  .kpis{display:grid;grid-template-columns:1fr;gap:var(--space-4)}
+  @media (min-width:48rem){
+    .kpis{grid-template-columns:minmax(12rem,1.5fr) repeat(auto-fit,minmax(10rem,1fr))}
+  }
   .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:var(--space-4);
     align-items:start}
   .col{display:grid;gap:var(--space-3);align-content:start;background:var(--color-surface-raised);

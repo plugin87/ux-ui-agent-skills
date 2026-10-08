@@ -117,7 +117,11 @@ A contained surface grouping related content and actions.
 **Layout:**
 - Padding: `spacing.card.padding` (24px), compact: `spacing.card.padding-sm` (16px)
 - Internal gap: `spacing.card.gap` (16px)
-- Image: full-bleed (no padding) with `border-radius` top corners only
+- Image: flush to the card edge (no padding) with `border-radius` top corners only,
+  a fixed `aspect-ratio` from `tokens/sizing.json` -> `aspectRatio`, and a height
+  capped by `sizing.screen.media-max-block`. Flush to the card is not full-bleed:
+  the card still bounds it, and a card image that grows with its content is how a
+  list of cards turns into a column of posters.
 
 **Responsive:**
 - Grid: 3 columns (desktop) → 2 (tablet) → 1 (mobile)

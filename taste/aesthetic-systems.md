@@ -52,7 +52,7 @@ Each archetype is a *recipe*, not a brand. Settings reference our existing token
 - **When:** friendly consumer/productivity apps, onboarding-heavy products.
 - **Type:** rounded humanist sans; medium scale contrast.
 - **Color:** warm neutrals + a friendly accent; soft pastels as support.
-- **Space:** comfortable padding, soft radii (`radius.lg`+), bento grids.
+- **Space:** comfortable padding, soft radii (`radius.lg`+), dense bento grids - tight content-rich tiles, never large mostly-empty blocks.
 - **Depth:** soft shadows allowed, chunky tactile elements optional.
 - **Library kin:** `duolingo`, `lingo`, `friendly`, `intercom`, `zapier`, `xiaohongshu`.
 
@@ -60,7 +60,8 @@ Each archetype is a *recipe*, not a brand. Settings reference our existing token
 - **When:** AI, crypto, gaming, infra — high-drama dark surfaces.
 - **Type:** tight sans or mono; bright type on dark.
 - **Color:** void-black surfaces, neon/gradient accents, desaturated supporting hues.
-- **Space:** full-bleed media, dramatic hero scale.
+- **Space:** bounded media at dramatic scale - the drama comes from contrast and
+  type, not from filling the viewport. Cap media at `sizing.screen.media-max-block`.
 - **Depth:** glow, gradient, glass — used once each, never stacked.
 - **Library kin:** `elevenlabs`, `runwayml`, `cursor`, `revolut`, `spacex`, `cosmic`, `shopify`.
 
@@ -85,6 +86,18 @@ Every library spec follows the same shape: **Visual Theme → Color Palette & Ro
 | Components | Render via component specs in `components/` through the framework adapter. |
 
 > **Non-negotiable:** library specs describe brand aesthetics, not accessibility. After applying one, re-run contrast, focus-visible, target-size, and reduced-motion checks. Taste never overrides POUR.
+
+> **Non-negotiable:** a named system never overrides **screen economy**. Several
+> specs here call for full-bleed photography or a screen-filling hero - nike and
+> spacex say so outright, and they are in the library because that identity is
+> worth studying. Resolving one into tokens keeps the identity (the monochrome,
+> the type scale, the stark contrast) and caps the media at
+> `sizing.screen.media-max-block`. A box that covers more than
+> `sizing.screen.box-max-viewport-share` of the viewport still has to carry
+> content. `apply-aesthetic` **states the adaptation it made** in its output - a
+> silent adaptation is as bad as a silent override, because the next person
+> cannot tell which happened. Measured by `scripts/verify_screen_economy.mjs`;
+> the rule itself is in `taste/design-taste.md` -> Screen economy.
 
 ---
 

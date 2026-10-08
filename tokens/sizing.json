@@ -1,38 +1,130 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
   "$description": "Control sizing, icon sizing, and aspect ratios. Control heights drive Button/Input/Select consistency; all meet the 24px min target (44px recommended for primary touch).",
-
   "control": {
     "$description": "Interactive control height (Button, Input, Select, etc.)",
-    "xs": { "$type": "dimension", "$value": "24px", "$description": "Min target size (WCAG 2.5.8) — dense tables, chips" },
-    "sm": { "$type": "dimension", "$value": "32px", "$description": "Compact controls" },
-    "md": { "$type": "dimension", "$value": "40px", "$description": "Default control height" },
-    "lg": { "$type": "dimension", "$value": "48px", "$description": "Prominent / comfortable touch (recommended primary)" },
-    "xl": { "$type": "dimension", "$value": "56px", "$description": "Hero CTAs" }
+    "xs": {
+      "$type": "dimension",
+      "$value": "24px",
+      "$description": "Min target size (WCAG 2.5.8) \u2014 dense tables, chips"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "32px",
+      "$description": "Compact controls"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "40px",
+      "$description": "Default control height"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "48px",
+      "$description": "Prominent / comfortable touch (recommended primary)"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "56px",
+      "$description": "Hero CTAs"
+    }
   },
-
   "icon": {
-    "$description": "Icon box sizes — keep stroke weight consistent across sizes",
-    "xs": { "$type": "dimension", "$value": "12px" },
-    "sm": { "$type": "dimension", "$value": "16px", "$description": "Default inline icon" },
-    "md": { "$type": "dimension", "$value": "20px" },
-    "lg": { "$type": "dimension", "$value": "24px" },
-    "xl": { "$type": "dimension", "$value": "32px" }
+    "$description": "Icon box sizes \u2014 keep stroke weight consistent across sizes",
+    "xs": {
+      "$type": "dimension",
+      "$value": "12px"
+    },
+    "sm": {
+      "$type": "dimension",
+      "$value": "16px",
+      "$description": "Default inline icon"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "20px"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "24px"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "32px"
+    }
   },
-
   "avatar": {
-    "sm": { "$type": "dimension", "$value": "24px" },
-    "md": { "$type": "dimension", "$value": "32px" },
-    "lg": { "$type": "dimension", "$value": "40px" },
-    "xl": { "$type": "dimension", "$value": "64px" }
+    "sm": {
+      "$type": "dimension",
+      "$value": "24px"
+    },
+    "md": {
+      "$type": "dimension",
+      "$value": "32px"
+    },
+    "lg": {
+      "$type": "dimension",
+      "$value": "40px"
+    },
+    "xl": {
+      "$type": "dimension",
+      "$value": "64px"
+    }
   },
-
   "aspectRatio": {
     "$description": "Use the unitless ratio in CSS aspect-ratio / native equivalents",
-    "square": { "$type": "number", "$value": 1, "$description": "1 / 1 — avatars, thumbnails" },
-    "video": { "$type": "string", "$value": "16 / 9", "$description": "Media embeds, hero video" },
-    "portrait": { "$type": "string", "$value": "3 / 4", "$description": "Cards, posters" },
-    "wide": { "$type": "string", "$value": "21 / 9", "$description": "Cinematic banners" },
-    "golden": { "$type": "string", "$value": "1.618 / 1", "$description": "Editorial feature blocks" }
+    "square": {
+      "$type": "number",
+      "$value": 1,
+      "$description": "1 / 1 \u2014 avatars, thumbnails"
+    },
+    "video": {
+      "$type": "string",
+      "$value": "16 / 9",
+      "$description": "Media embeds, hero video"
+    },
+    "portrait": {
+      "$type": "string",
+      "$value": "3 / 4",
+      "$description": "Cards, posters"
+    },
+    "wide": {
+      "$type": "string",
+      "$value": "21 / 9",
+      "$description": "Cinematic banners"
+    },
+    "golden": {
+      "$type": "string",
+      "$value": "1.618 / 1",
+      "$description": "Editorial feature blocks"
+    }
+  },
+  "screen": {
+    "$description": "Screen economy: the viewport is scarce and bright area costs battery. These are the ceilings a screen must stay under. Thresholds live here, not in the gate, so a project can raise one deliberately and the gate follows.",
+    "media-max-block": {
+      "$type": "dimension",
+      "$value": "60vh",
+      "$description": "An image, video or background-image block may not be taller than this share of the viewport. A hero that fills the screen shows the reader nothing they came for and costs the most battery on OLED."
+    },
+    "media-max-inline": {
+      "$type": "dimension",
+      "$value": "100%",
+      "$description": "Media never exceeds its container. Wider than the viewport is a bug, not a bleed."
+    },
+    "box-max-viewport-share": {
+      "$type": "number",
+      "$value": 0.35,
+      "$description": "A card-like box may cover at most this share of the viewport before it has to justify the space with content."
+    },
+    "box-min-content-density": {
+      "$type": "number",
+      "$value": 0.3,
+      "$description": "A box over the share above must fill at least this much of its own area with text, controls or media. Below both numbers it is a hollow box."
+    },
+    "image-bytes-budget": {
+      "$type": "number",
+      "$value": 500000,
+      "$description": "Total image bytes on one page. Prefer AVIF or WebP with srcset sized to the rendered width."
+    }
   }
 }

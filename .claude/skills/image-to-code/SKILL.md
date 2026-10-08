@@ -24,7 +24,7 @@ Reconstruct a design from a visual reference as a real design system, not a one-
    - **Type** — family feel (geometric/grotesk/serif), the scale jumps, display vs. body contrast, weights.
    - **Spacing & density** — base unit, section rhythm, card padding; airy vs. compact.
    - **Radius & depth** — radius language (sharp/soft/pill), shadow vs. hairline separation.
-   - **Layout archetype + sequence** — full-bleed hero / asymmetric split / bento / editorial stack (`${CLAUDE_SKILL_DIR}/../../../taste/design-taste.md` → Variance Mandate).
+   - **Layout archetype + sequence** — bounded hero / asymmetric split / dense bento / editorial stack (`${CLAUDE_SKILL_DIR}/../../../taste/design-taste.md` → Variance Mandate).
 2. **Anchor to a known system** if it's close — browse `${CLAUDE_SKILL_DIR}/../../../taste/aesthetic-systems.md` / `python3 ${CLAUDE_SKILL_DIR}/../../../scripts/design_systems.py search <term>` and adopt that recipe to stabilize decisions.
 3. **Build the token theme** from the inferred values → 3-tier DTCG (`design-tokens` skill); generate a single `theme.css`. Verify every color pair with `${CLAUDE_SKILL_DIR}/../../../scripts/contrast.py` / `${CLAUDE_SKILL_DIR}/../../../scripts/validate_contrast.py` (light + dark) — a sampled brand color that fails AA gets adjusted; taste never overrides POUR.
 4. **Rebuild layout + components** token-driven via `${CLAUDE_SKILL_DIR}/../../../frameworks/adapter-protocol.md` + `${CLAUDE_SKILL_DIR}/../../../components/*`: one shared primitive layer, all 8 states, a11y wired, no emoji (lucide), single theme. Apply taste (`design-taste.md`) so it doesn't regress to generic.

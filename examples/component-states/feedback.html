@@ -44,7 +44,7 @@
   .btn:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
 </style>
 </head>
-<body>
+<body data-harness>
 <h1>Feedback</h1>
 
 <h2>Alert / Banner</h2>
@@ -61,7 +61,7 @@
     <div class="meta" role="progressbar" aria-valuenow="62" aria-valuemin="0" aria-valuemax="100" aria-label="Upload progress">Uploading 62%</div>
   </div>
   <div>
-    <div class="bar bar--indet"><span></span></div>
+    <div class="bar bar--indet" role="progressbar" aria-label="Uploading" aria-busy="true"><span></span></div>
     <div class="meta" role="progressbar" aria-busy="true" aria-label="Loading">Working...</div>
   </div>
 </div>

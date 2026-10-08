@@ -20,7 +20,7 @@ const BROWSER_GATES = readdirSync(join(ROOT, 'scripts'))
 
 test('every browser gate is accounted for', () => {
   // If a new render gate lands, it must be covered by the guard below.
-  assert.equal(BROWSER_GATES.length, 14, `browser gates changed: ${BROWSER_GATES.join(', ')}`);
+  assert.equal(BROWSER_GATES.length, 15, `browser gates changed: ${BROWSER_GATES.join(', ')}`);
 });
 
 test('a missing browser fails loudly under DS_REQUIRE_BROWSER, and only skips without it', () => {

@@ -30,7 +30,7 @@ A model left to its defaults regresses to the mean — and the mean is mediocre.
 | 6-line wrapped headings in a narrow column | Reads as a paragraph, kills impact | Wide measure for display type (`max-width` ~18–24ch for headlines), short and punchy |
 | Same Left-text / Right-image row, repeated | Monotonous rhythm, obviously templated | Vary composition per section (see Variance Mandate) |
 | Everything centered | No tension, no hierarchy | Use asymmetry and a real grid; center sparingly and deliberately |
-| Three identical feature cards, equal weight | Flat, boring, no focal point | Break symmetry — one hero item, bento sizing, editorial captions |
+| Three identical feature cards, equal weight | Flat, boring, no focal point | Break symmetry with **density**, not size: one item leads on weight and content, the rest go quieter. A denser typographic or list composition beats three bigger boxes. |
 | Cheap meta-labels ("SECTION 01", "FEATURE") | Filler that says nothing | Real, specific microcopy or none at all |
 | Invisible/low-contrast button text | Looks broken, fails a11y | Solid contrast, deliberate button hierarchy |
 | Generic drop shadow on every box | Muddy, dated depth | Restrained, layered elevation (`tokens/shadows.json`); most things are flat |
@@ -168,3 +168,50 @@ Before shipping any visual output, confirm:
 12. Every value traces to a token — nothing hardcoded
 
 > If the output passes the system checks (tokens, a11y, states) **and** this aesthetic check, it is ready. If taste and a system rule conflict, the system rule wins.
+
+
+---
+
+## Screen economy — every part of the screen earns its space
+
+A house rule, and it outranks any archetype below. Two senses, both binding.
+
+**Space.** The viewport is scarce, most of all on a phone. The first screen shows
+real content and a way to act. No single box or image swallows it.
+
+**Energy.** Large bright areas, heavy images and endless animation cost battery,
+most visibly on OLED. Keep them small and rare.
+
+What that means concretely:
+
+- **No full-bleed hero.** A hero's media is bounded and capped at
+  `sizing.screen.media-max-block` (60vh). A screen-filling image shows the reader
+  nothing they came for.
+- **No image wider than its container**, ever. Wider than the viewport is a bug,
+  not a bleed.
+- **No large hollow box.** A card-like element over
+  `sizing.screen.box-max-viewport-share` of the viewport must fill at least
+  `sizing.screen.box-min-content-density` of its own area with text, controls or
+  media. Padding is not content.
+- **Bento only when the tiles are dense.** A bento grid of tight, content-rich
+  tiles is a good composition. A bento grid of large mostly-empty blocks is the
+  slop default wearing a trendy name.
+- **The first screen earns itself.** At 390x844 the primary heading and at least
+  one primary action are visible without scrolling.
+- **Images carry their size.** Every `<img>` has `width` and `height`; anything
+  below the first screen is `loading="lazy"`; total image bytes stay under
+  `sizing.screen.image-bytes-budget`.
+- **Nothing animates forever.** No infinite animation and no autoplaying
+  background video, unless the file carries an explicit opt-out comment saying
+  why.
+
+The thresholds are tokens in `tokens/sizing.json` -> `screen`, not constants in a
+script, so a project can raise one on purpose and the gate follows. Measured by
+`scripts/verify_screen_economy.mjs`.
+
+> **When a named system disagrees, economy wins.** nike and spacex are in the
+> library because their identity is worth studying, and both call for full-bleed
+> photography. Resolving either into tokens keeps the identity - the monochrome,
+> the type scale, the stark contrast - and caps the media. `apply-aesthetic` must
+> state the adaptation it made rather than quietly doing one or quietly ignoring
+> the rule.
