@@ -100,3 +100,25 @@ test('every browser gate refuses a path that is not there, by running it', () =>
   }
   assert.deepEqual(bad, [], `gates mishandled a missing path:\n  ${bad.join('\n  ')}`);
 });
+
+test('the brand cards state the gate count the report actually has', () => {
+  /* The cover reads the count out of `accuracy_report.mjs` when it is
+     generated. The social card typed it: the string "52 gates" sat in the
+     generator, so the first gate added after that would have left the card
+     lying on every link unfurl that reads og:image - GitHub, Slack, X,
+     LinkedIn - while the README beside it stayed correct.
+
+     An image is the one surface no gate in this repo renders, which is
+     exactly why the number in it has to be checked from here. The SVG is
+     text; the assertion is cheap. */
+  const n = checkEntries().length;
+  const cards = ['xias-social.svg', 'xias-cover-dark.svg', 'xias-cover-light.svg'];
+
+  for (const f of cards) {
+    const svg = readFileSync(join(ROOT, '.github', 'brand', f), 'utf8');
+    const stated = [...svg.matchAll(/(\d+)\s+(?:objective\s+)?gates/g)].map(m => Number(m[1]));
+    assert.ok(stated.length > 0, `${f} states no gate count at all`);
+    const wrong = stated.filter(v => v !== n);
+    assert.deepEqual(wrong, [], `${f} says ${wrong.join(', ')} gates; the report has ${n}`);
+  }
+});
