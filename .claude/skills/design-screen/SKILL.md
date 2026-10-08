@@ -5,13 +5,37 @@ description: Design or build a page, screen, landing page, website, app or UI fr
 
 # Skill: Design a screen
 
-The most common request there is - "design a page / screen / app" - had no skill
-that claimed it. `design-code` wanted a stack named, `design-component` works at
-the spec level, `apply-aesthetic` waits to be asked for a look, `redesign` needs
-existing UI. So nothing matched strongly and the kit got used at a fraction of
-its depth, or not at all. This skill is the whole pipeline.
+## Do this first, before anything else
 
-> **Step 0 — is the kit here?** This skill reads files from the kit. Check once:
+**Write the Brief Inference block into your reply now.** Not after reading the
+rest of this file, not in your head, not "once the layout is clearer" - now,
+before any markup, any file, any tool call.
+
+```
+Domain:           fintech | editorial | dev-tool | healthcare | consumer | ...
+Audience & tone:  expert vs first-time, calm vs energetic, premium vs utilitarian
+Mood:             the one adjective the result must earn - "expensive", "precise", "warm", "brutal"
+Motion depth:     none | subtle feedback | expressive choreography
+Layout family:    the section sequence you will use, named, varied per section
+Reference anchor: an archetype, or a named system - see step 3
+```
+
+Fill in every line with a decision. `Mood: clean` is not a decision; `Mood:
+expensive` is. If you cannot name the mood and the layout family, you have not
+decided anything yet and whatever you generate will regress to the mean.
+
+**The stop condition:** if you are about to write markup, create a file, or call
+a tool that produces UI, and this block is not already in your reply, stop and
+write it first. Measured on 2026-10-07, one run in three skipped it - the skill
+loaded, the block did not get written, and the result was a screen designed by
+nobody. This section is at the top of the file because it was previously below
+twenty-nine lines of background, and background is not an instruction.
+
+Everything below is how to execute the decisions above.
+
+---
+
+> **Is the kit here?** This skill reads files from the kit. Check once:
 > `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
 > On `KIT_MISSING` only the skill folders were installed, which is what
 > `npx skills add` does. Say so plainly, point the user at
@@ -32,21 +56,11 @@ Otherwise, continue.
 
 ---
 
-## 1. Taste preflight — write this down BEFORE any markup
+## 1. Taste preflight
 
-Slop comes from generating before deciding. This block is not optional and it is
-not internal: put it in your reply, then build to it. If you cannot name the mood
-and the layout family, you will regress to the mean and the result will look
-machine-generated no matter how many gates pass.
-
-```
-Domain:          fintech | editorial | dev-tool | healthcare | consumer | ...
-Audience & tone: expert vs first-time, calm vs energetic, premium vs utilitarian
-Mood:            the one adjective the result must earn - "expensive", "precise", "warm", "brutal"
-Motion depth:    none | subtle feedback | expressive choreography
-Layout family:   the section sequence you will use, named, varied per section
-Reference anchor: an archetype, or a named system - see step 3
-```
+The block at the top of this file. If it is not in your reply yet, go back and
+write it before reading further - the rest of this skill executes decisions it
+assumes you have already made.
 
 Full version and the reasoning: `${CLAUDE_SKILL_DIR}/../../../taste/design-taste.md`.
 

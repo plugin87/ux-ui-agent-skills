@@ -24,10 +24,10 @@
     "detail": "14/14 seeded defects caught. Read with the three caveats in HARNESS.md: fixtures and key written in the same session, and the keyword matcher was widened against these same four critiques after a hand-read of 14/14."
   },
   "H7": {
-    "value": 0.8333333333333334,
-    "commit": "14f8d44",
-    "at": "2026-10-07T06:13:47.045Z",
-    "command": "claude plugin eval . --case taste-applied --runs 3 --ablation none",
-    "detail": "design-screen fired 3/3; the Brief Inference block was written 2/3. A loose grader scored this 1.0000 by also matching the skill template loaded into context - see plugin-evals/taste-applied/NOTES.md."
+    "value": 1,
+    "commit": "a89deca",
+    "at": "2026-10-08T02:24:11.118Z",
+    "command": "claude plugin eval . --case taste-applied --runs 5 --ablation none",
+    "detail": "5/5 runs wrote the Brief Inference block, up from 2/3 before the block was moved to the top of design-screen. Small samples either side: 2/3 and 5/5 are not a significance test, they are the best evidence available at $1.51 a run of five."
   }
 }

@@ -102,17 +102,35 @@ test('no other skill is accidentally hidden from the model', () => {
 });
 
 test('every skill that reads kit files checks the kit is there first', () => {
-  // `npx skills add` copies the skill folders alone - no scripts/, no tokens/,
-  // no taste/. Without this check a skill proceeds from files it never opened
-  // and produces confident output built on nothing.
-  const missing = [];
+  /* `npx skills add` copies the skill folders alone - no scripts/, no tokens/,
+     no taste/. Without this check a skill proceeds from files it never opened
+     and produces confident output built on nothing.
+  
+     This checks the probe and its position, not the heading above it. It used
+     to require the literal string "Step 0 - is the kit here?", which failed the
+     moment design-screen moved its taste block to the top: the kit check was
+     still there, still first, and no longer step zero. A test on a label fails
+     for a renamed heading and passes for a probe that was moved after the reads
+     it protects - which is the wrong way round. */
+  const missing = [], outOfOrder = [];
   for (const name of skills()) {
     const text = readFileSync(join(SKILLS, name, 'SKILL.md'), 'utf8');
-    if (!text.includes('${CLAUDE_SKILL_DIR}/../../../')) continue;
-    if (!text.includes('Step 0 — is the kit here?')) missing.push(name);
+    const firstUse = text.indexOf('${CLAUDE_SKILL_DIR}/../../../');
+    if (firstUse === -1) continue;
+
+    const probe = text.indexOf('KIT_MISSING');
+    if (probe === -1) { missing.push(name); continue; }
+
+    /* The probe is itself a ${CLAUDE_SKILL_DIR} reference, so the first use in
+       the file must be the probe's own line - anything earlier reads the kit
+       before establishing the kit is there. */
+    const probeLineStart = text.lastIndexOf('\n', text.lastIndexOf('`ls ${CLAUDE_SKILL_DIR}')) + 1;
+    if (firstUse < probeLineStart) outOfOrder.push(name);
   }
   assert.deepEqual(missing, [],
     `these read kit files with no kit check: ${missing.join(', ')}`);
+  assert.deepEqual(outOfOrder, [],
+    `these read a kit file before checking the kit is there: ${outOfOrder.join(', ')}`);
 });
 
 test('the kit check names the install that fixes it, not just the failure', () => {
