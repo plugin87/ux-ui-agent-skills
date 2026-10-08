@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>skeleton that respects reduce</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --color-surface-page:#ffffff; --color-surface-raised:#f4f4f6;
+    --color-text-primary:#1d1d1f; --color-text-secondary:#55575c;
+    --color-skeleton:#e4e4e9; --radius-md:10px; --radius-lg:20px;
+    --space-2:8px; --space-4:16px; --space-6:24px;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --color-surface-page:#0b0b0c; --color-surface-raised:#1c1c1f;
+    --color-text-primary:#f5f5f7; --color-text-secondary:#b0b0b6;
+    --color-skeleton:#2a2a2e;
+  }}
+  * { box-sizing:border-box; } html, body { margin:0; }
+  body { background:var(--color-surface-page); color:var(--color-text-primary);
+         font:16px/1.5 system-ui, sans-serif; }
+  main { padding:var(--space-6); max-inline-size:60ch; margin-inline:auto; }
+  h1 { font-size:42px; line-height:1.1; margin:0 0 var(--space-4); }
+  p { color:var(--color-text-secondary); }
+  .sk { background:var(--color-skeleton); border-radius:var(--radius-md);
+        block-size:var(--space-6); margin-block-end:var(--space-2);
+        animation:pulse 1.2s ease-in-out infinite; }
+  .card { background:var(--color-surface-raised); border-radius:var(--radius-lg);
+          padding:var(--space-4); }
+  [hidden] { display:none; }
+  @keyframes pulse { 50% { opacity:.55; } }
+  /* The whole point of the fixture: the skeleton stops pulsing under reduce,
+     and the real content still arrives - sooner, because the artificial delay
+     is skipped. Nothing is lost; the placeholder is replaced. */
+  @media (prefers-reduced-motion: reduce) {
+    .sk { animation:none; }
+    * { transition-duration:0s !important; }
+  }
+</style></head>
+<body>
+<main>
+  <h1>Deploys</h1>
+  <section id="region" aria-busy="true" aria-label="Recent deploys">
+    <div id="loading">
+      <p>Loading your deploys</p>
+      <div class="sk"></div><div class="sk"></div>
+    </div>
+    <div id="loaded" hidden>
+      <div class="card">
+        <h2>staging</h2>
+        <p>Finished 4 minutes ago, in 51 seconds.</p>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+  /* Respecting the preference means skipping the artificial wait, so the
+     reduced-motion reader reaches the content FIRST. A gate that samples on a
+     fixed timer sees the placeholder in one branch and the content in the
+     other, and calls correct work a parity loss. */
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  setTimeout(() => {
+    document.getElementById('loading').hidden = true;
+    document.getElementById('loaded').hidden = false;
+    document.getElementById('region').setAttribute('aria-busy', 'false');
+  }, reduced ? 0 : 700);
+</script>
+</body></html>

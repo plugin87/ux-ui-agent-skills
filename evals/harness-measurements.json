@@ -29,5 +29,12 @@
     "at": "2026-10-08T02:24:11.118Z",
     "command": "claude plugin eval . --case taste-applied --runs 5 --ablation none",
     "detail": "5/5 runs wrote the Brief Inference block, up from 2/3 before the block was moved to the top of design-screen. Small samples either side: 2/3 and 5/5 are not a significance test, they are the best evidence available at $1.51 a run of five."
+  },
+  "H5": {
+    "value": 0.6666666666666666,
+    "commit": "b8ad5d7",
+    "at": "2026-10-08T03:05:03.659Z",
+    "command": "claude -p in an empty dir with only the plugin installed, then node evals/run.mjs 02-first-run-empty --dir <out>",
+    "detail": "init and plugin routes now each have a blind run that passed every gate on first submission, files unedited. The plugin run scored 13/14 first and the one failure was a false positive in verify_reduced_motion, fixed in the gate - see evals/RESULTS.md. skills-add still has none and installs no kit, so it cannot."
   }
 }

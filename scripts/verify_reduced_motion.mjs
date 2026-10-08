@@ -82,6 +82,10 @@ const SNAPSHOT = ({ THRESHOLD, linkedCss }) => {
      text in here rather than punishing anyone who is not writing inline <style>. */
   if (!hasPolicy && linkedCss && /@media[^{]*prefers-reduced-motion/.test(linkedCss)) hasPolicy = true;
 
+  /* The page's own declaration that it has not finished. A gate that samples
+     while aria-busy is still true is reading a loading state, not the page. */
+  const busy = document.querySelector('[aria-busy="true"]') !== null;
+
   const els = [...document.querySelectorAll('body *')];
   const visible = {};
   const moving = [];
@@ -109,7 +113,7 @@ const SNAPSHOT = ({ THRESHOLD, linkedCss }) => {
     }
   });
 
-  return { hasPolicy, declaresMotion, visible, moving };
+  return { hasPolicy, declaresMotion, visible, moving, busy };
 };
 
 const browser = await chromium.launch({ channel: 'chrome' });
@@ -126,11 +130,45 @@ for (const f of files) {
     .map(h => { try { return readFileSync(resolve(dirname(f), h), 'utf8'); } catch { return ''; } })
     .join('\n');
 
+  /**
+   * Snapshot once the page has SETTLED, not after a fixed wait.
+   *
+   * This used to wait a flat 450ms. A page that simulates loading for longer
+   * than that - a skeleton held for 700ms, which is ordinary - was caught
+   * mid-load in the no-preference branch and already finished in the reduce
+   * branch, because respecting the preference correctly means skipping the
+   * artificial delay. Check C then reported the skeleton as "content lost under
+   * reduce", and sent the author to fix code that was already right.
+   *
+   * Found on 2026-10-08 in the first blind run through the plugin route: six of
+   * ten produced files failed this way, and every one of them was correct.
+   *
+   * Settling is defined by the page, not by a constant: poll the visible-element
+   * set until two consecutive samples agree, up to a cap. The true failure this
+   * check exists for - content revealed only by an entrance animation, which
+   * under reduce never appears at all - still fails, because that element is
+   * invisible in every sample rather than in one.
+   */
   const shoot = async (reducedMotion) => {
     const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, reducedMotion });
     await page.goto('file://' + f);
-    await page.waitForTimeout(450); // let entrance animations settle
-    const snap = await page.evaluate(SNAPSHOT, { THRESHOLD, linkedCss });
+
+    let snap = null, prevKeys = null;
+    const STEP = 250, CAP = 4000;
+    for (let waited = 0; waited <= CAP; waited += STEP) {
+      await page.waitForTimeout(STEP);
+      snap = await page.evaluate(SNAPSHOT, { THRESHOLD, linkedCss });
+      const keys = Object.keys(snap.visible).join(',');
+      /* Settled means two things at once: the page no longer says it is busy,
+         and the visible set has stopped changing. Stability alone is not
+         enough - a skeleton held on a timer is perfectly stable while it is
+         showing, and an earlier version of this loop stopped there and
+         compared a half-loaded page against a finished one. */
+      if (!snap.busy && keys === prevKeys) break;
+      prevKeys = keys;
+    }
+    /* A page still busy or still changing at the cap is reported on the last
+       sample. A page that never stops moving is what check B is about. */
     await page.close();
     return snap;
   };

@@ -67,6 +67,26 @@ test('verify_reduced_motion rejects content revealed only by an entrance animati
   rejects(gate('verify_reduced_motion.mjs', [F('bad/motion-reveal.html')]), /verify_reduced_motion: FAIL/);
 });
 
+/**
+ * The other half of check C, and the one it got wrong for real users.
+ *
+ * Respecting `prefers-reduced-motion` correctly means skipping an artificial
+ * loading delay, so the reduced-motion reader reaches the content SOONER. The
+ * gate used to sample both branches on a flat 450ms timer, catch the skeleton
+ * mid-load in one and the finished content in the other, and report the
+ * placeholder as "content lost under reduce" - sending the author to fix code
+ * that was already right.
+ *
+ * Found on 2026-10-08 in the first blind run through the plugin route: six of
+ * the ten files it produced failed this way, every one of them correct. The
+ * gate now waits for the page to stop saying `aria-busy` AND for the visible
+ * set to stop changing, so both branches are compared once they have settled.
+ */
+test('verify_reduced_motion accepts a skeleton that skips its delay under reduce', () => {
+  accepts(gate('verify_reduced_motion.mjs', [F('good/skeleton-respects-reduce.html')]),
+    /no content lost/);
+});
+
 test('verify_focustrap rejects a dialog Tab can walk out of', () => {
   rejects(
     gate('verify_focustrap.mjs', [F('bad/leaky-modal.html'), '--open=#openBtn']),

@@ -14,6 +14,79 @@ built the output, and whether they could see the kit's internals while doing it.
 | 2026-09-15 | `data-density` | **BLIND** subagent, scaffolded project | **14/14** first submission | 5/5 by hand | First blind run on this brief. Clean first pass; keyboard sort verified to actually reorder |
 | 2026-09-15 | `notification-center` | **BLIND** subagent, scaffolded project | **14/14** first submission | 5/5 by hand | First blind run on this brief. Needed a `5xl` type step the seeded scale lacked |
 
+| 2026-10-08 | `first-run-empty` | **BLIND**, **plugin route**, `claude -p` in an empty dir | **14/14**, files unedited — but see below: 13/14 on first scoring, and the one failure was the gate's | not scored | First blind run through the plugin route at all. Ten files, no kit files in the project. |
+
+## 2026-10-08 — first-run-empty, through the plugin route
+
+**The route the README recommends first had never been tested blind.** Every
+previous blind run came from a project scaffolded with `npx ux-ui-agent-skills
+new`. This one ran `claude -p` in `/tmp/blind-plugin`, a directory containing
+one file - the brief - with the kit reaching the agent only through the
+installed plugin.
+
+It produced ten files: empty, one-project, forty-project and loading, each in
+light and dark, plus `tokens.css`, `app.css` and `app.js`.
+
+### What it refused to claim
+
+The agent was granted edits but not Bash, so it could not run the gates. It did
+not report success anyway:
+
+> None of the 10 files has a gate receipt, so they are still unmeasured. I ran
+> the wrapper exactly as the hook asked (`gate.mjs verify_states.mjs` on
+> `dashboard-empty-light.html`), and it was refused: the command needs approval
+> this session can't grant.
+
+That is the first rule of the kit working on the install route nobody had
+checked, under conditions that invited a confident guess instead.
+
+### 13/14, and the failure was ours
+
+Scored with `evals/run.mjs`, the output failed one gate: `verify_reduced_motion`,
+check C, "content visible normally is INVISIBLE under reduce", on six of the ten
+files.
+
+The agent's code was correct. It wrote a reduced-motion policy, stopped the
+skeleton shimmer under it, and then did the thing that respecting the preference
+actually means:
+
+```js
+const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+window.setTimeout(reveal, reduced ? 0 : 700);
+```
+
+A reader who asks for less motion gets the content **sooner**, with no
+artificial wait. The gate sampled both branches on a flat 450ms timer, so it
+caught the skeleton still showing in one branch and already replaced in the
+other, and called the placeholder lost content.
+
+Every user who writes a skeleton that honours the preference would have hit
+this, and been sent to fix code that was already right.
+
+**The fix is in the gate, not the files.** It now waits for the page to stop
+declaring `aria-busy` and for the visible set to stop changing, then compares
+settled states. The first attempt at the fix was wrong in an instructive way:
+polling for stability alone settled at 250ms, because a skeleton held on a timer
+is perfectly stable while it is showing. Stability is not the same as being
+finished, and the page already says which it is.
+
+`tests/fixtures/good/skeleton-respects-reduce.html` is the pattern the gate used
+to reject, and `tests/fixtures/bad/motion-reveal.html` - content revealed only by
+an entrance animation, the failure check C exists for - still fails. Both are
+asserted in `tests/meta/browser-gates.test.mjs`.
+
+### 14/14, stated with what changed
+
+Re-scored against the corrected gate: **14/14, with the produced files never
+edited.** The honest form of that number is "the work passed every gate once the
+gate was measuring the right thing", and it is written that way here rather than
+as a clean sweep, because the difference is the whole finding.
+
+Requirements were not scored by hand on this run. The objective half is what the
+plugin route had never had.
+
+---
+
 ## 2026-08-25 — billing-settings
 
 **Provenance, stated plainly.** This output was written inside the session that
