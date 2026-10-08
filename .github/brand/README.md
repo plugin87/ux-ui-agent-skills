@@ -89,12 +89,23 @@ it is a metal ramp with a hard horizon, not a two-stop violet wash.
 
 | File | Size | Use |
 |---|---|---|
-| `xias-cover.png` (also `.github/images/hero.png`) | 1920x945 | README header |
+| `xias-cover-dark.png` | 1920x1000 | README header, dark theme |
+| `xias-cover-light.png` | 1920x1000 | README header, light theme |
 | `xias-social.png` | 1280x640 | GitHub social preview, exact size GitHub wants |
 | `wallpaper/xias-macbook-air-13.png` | 2560x1664 | desktop |
 | `wallpaper/xias-macbook-pro-14.png` | 3024x1964 | desktop |
 | `wallpaper/xias-macbook-pro-16.png` | 3456x2234 | desktop |
 | `wallpaper/xias-studio-display.png` | 5120x2880 | desktop |
+| `wallpaper/xias-dell-u3219q-4k.png` | 3840x2160 | desktop |
+
+`.github/images/hero.png` is a copy of the dark cover, and exists only as the
+`<img>` fallback for a reader whose client ignores `<picture>`.
+
+Every size in that table is checked against the file by
+`tests/meta/counts.test.mjs`, because a table of dimensions typed by hand goes
+stale the first time an image is re-rendered at another size - which is what
+happened to the row this one replaced: it still said 1920x945 for a cover that
+had been 1920x1000 for two commits, and named a file that no longer existed.
 
 The cover replaced a fake code window beside six identical feature cards. That
 is the 2021 dev-tool landing page, and it is also a composition this kit's own

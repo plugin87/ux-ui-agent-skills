@@ -122,3 +122,40 @@ test('the brand cards state the gate count the report actually has', () => {
     assert.deepEqual(wrong, [], `${f} says ${wrong.join(', ')} gates; the report has ${n}`);
   }
 });
+
+test('the brand README states the size every image actually is', () => {
+  /* The row this replaces said `xias-cover.png` | 1920x945, two commits after
+     that file stopped existing and the cover became 1920x1000. Nothing caught
+     it because a markdown table of pixel dimensions is prose to every gate in
+     this repo.
+
+     Read the dimensions out of the PNG itself. IHDR is fixed-position: an
+     8-byte signature, then a 4-byte length and the "IHDR" tag, then width and
+     height as big-endian uint32. No decoder, no dependency. */
+  const size = (file) => {
+    const b = readFileSync(file);
+    assert.equal(b.subarray(1, 4).toString('latin1'), 'PNG', `${file} is not a PNG`);
+    return `${b.readUInt32BE(16)}x${b.readUInt32BE(20)}`;
+  };
+
+  const brand = join(ROOT, '.github', 'brand');
+  const rows = [...readFileSync(join(brand, 'README.md'), 'utf8')
+    .matchAll(/^\| `([^`]+\.png)` \| (\d+x\d+) \|/gm)]
+    .map(m => ({ file: m[1], stated: m[2] }));
+  assert.ok(rows.length >= 7, `only ${rows.length} image rows parsed from the brand README`);
+
+  const wrong = rows
+    .map(r => ({ ...r, real: size(join(brand, r.file)) }))
+    .filter(r => r.real !== r.stated)
+    .map(r => `${r.file}: README says ${r.stated}, file is ${r.real}`);
+  assert.deepEqual(wrong, [], `brand README sizes are stale:\n  ${wrong.join('\n  ')}`);
+
+  // And nothing in the folder is left out of the table.
+  const listed = new Set(rows.map(r => r.file));
+  const onDisk = [
+    ...readdirSync(brand).filter(f => f.endsWith('.png')),
+    ...readdirSync(join(brand, 'wallpaper')).filter(f => f.endsWith('.png')).map(f => `wallpaper/${f}`),
+  ];
+  const missing = onDisk.filter(f => !listed.has(f) && !/^xias-(90s|y2k|mark)/.test(f));
+  assert.deepEqual(missing, [], `brand images not in the README table: ${missing.join(', ')}`);
+});

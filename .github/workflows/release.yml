@@ -164,11 +164,19 @@ jobs:
       # Tell the tap a release happened, so `brew install` is current within a
       # minute instead of within a day.
       #
-      # Optional on purpose: the tap also runs its own daily schedule, so a
-      # missing or expired token delays the formula, it does not break the
-      # release. The token is a fine-grained PAT with Contents: write on
-      # plugin87/homebrew-tap only, stored here as TAP_DISPATCH_TOKEN. Without
-      # it this step says so and succeeds.
+      # No token is set, and that is the decision rather than an omission. The
+      # tap already runs its own daily schedule and accepts workflow_dispatch,
+      # so the only thing a token buys is latency: the formula follows within a
+      # minute instead of by 05:20 UTC the next morning. Paying for that with a
+      # long-lived cross-repo PAT - a standing Contents: write credential on
+      # plugin87/homebrew-tap, sitting in a second repository's secrets, that
+      # nothing rotates - is the wrong trade for a one-day lag on a formula
+      # that pins whatever npm already calls latest.
+      #
+      # The step stays because the trade can be worth making for a release that
+      # has to land immediately. Set TAP_DISPATCH_TOKEN to a fine-grained PAT
+      # with Contents: write on plugin87/homebrew-tap only, give it a short
+      # expiry, and delete it afterwards. Unset, this step says so and succeeds.
       - name: Nudge the Homebrew tap
         if: steps.exists.outputs.skip != 'true'
         env:
