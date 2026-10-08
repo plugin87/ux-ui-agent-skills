@@ -10,7 +10,11 @@ A comprehensive kit of structured instructions, design tokens, runnable skills, 
 
 <br>
 
-<img src=".github/images/hero.png" alt="XIAS — design-system doctrine for coding agents, and the 52 objective gates that check their work. 52 gates, 138 design systems, 52 components, 25 skills. Claude Code, Codex, Cursor, Copilot, MCP." width="900">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/brand/xias-cover-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset=".github/brand/xias-cover-light.png">
+  <img src=".github/images/hero.png" alt="XIAS - design-system doctrine for coding agents. 52 objective gates, 34 of which open a real browser: WCAG contrast in every state, axe roles and landmarks, keyboard, target size, reduced motion, no horizontal overflow at 280, token by intent, screen economy. 138 design systems, 52 component specs, 25 runnable skills, 14 DTCG token files, 16 framework adapters. Claude Code, Codex, Cursor, Copilot, Aider, MCP." width="900">
+</picture>
 
 <br>
 <br>
