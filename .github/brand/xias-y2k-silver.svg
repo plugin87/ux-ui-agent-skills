@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 420" width="900" height="420" role="img" aria-label="XIAS">
+  <title>XIAS</title>
+  <defs>
+    <linearGradient id="chrome-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#15181c"/>
+      <stop offset="18%" stop-color="#6e7681"/>
+      <stop offset="40%" stop-color="#dfe3e8"/>
+      <stop offset="49%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#3a4149"/>
+      <stop offset="56%" stop-color="#5b646e"/>
+      <stop offset="74%" stop-color="#b4bcc5"/>
+      <stop offset="90%" stop-color="#f2f4f7"/>
+      <stop offset="100%" stop-color="#9aa3ad"/>
+    </linearGradient>
+    <linearGradient id="sheen-b" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="38%"  stop-color="#ffffff" stop-opacity=".85"/>
+      <stop offset="46%"  stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="floor-b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#b4bcc5" stop-opacity=".55"/>
+      <stop offset="100%" stop-color="#b4bcc5" stop-opacity="0"/>
+    </linearGradient>
+    <text id="wm-b" x="450" y="206" text-anchor="middle"
+          font-family="Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif"
+          font-size="152" letter-spacing="8">XIAS</text>
+  </defs>
+
+  <rect width="900" height="420" fill="#0c0e11"/>
+
+  <!-- The horizon grid, the other thing every logo of this period had.
+       Lines converge on one vanishing point at the horizon; the earlier version
+       fanned them from the wrong origin and read as a starburst. Rows tighten
+       toward the horizon rather than spacing evenly, which is what makes a
+       flat plane look like a receding one. -->
+  <g opacity=".45" stroke="#8b949e" stroke-width="1.5">
+    <line x1="450" y1="300" x2="-1050" y2="420"/>
+    <line x1="450" y1="300" x2="-883.3333333333333" y2="420"/>
+    <line x1="450" y1="300" x2="-716.6666666666667" y2="420"/>
+    <line x1="450" y1="300" x2="-550" y2="420"/>
+    <line x1="450" y1="300" x2="-383.33333333333337" y2="420"/>
+    <line x1="450" y1="300" x2="-216.66666666666663" y2="420"/>
+    <line x1="450" y1="300" x2="-50" y2="420"/>
+    <line x1="450" y1="300" x2="116.66666666666669" y2="420"/>
+    <line x1="450" y1="300" x2="283.33333333333337" y2="420"/>
+    <line x1="450" y1="300" x2="450" y2="420"/>
+    <line x1="450" y1="300" x2="616.6666666666666" y2="420"/>
+    <line x1="450" y1="300" x2="783.3333333333333" y2="420"/>
+    <line x1="450" y1="300" x2="950" y2="420"/>
+    <line x1="450" y1="300" x2="1116.6666666666665" y2="420"/>
+    <line x1="450" y1="300" x2="1283.3333333333335" y2="420"/>
+    <line x1="450" y1="300" x2="1450" y2="420"/>
+    <line x1="450" y1="300" x2="1616.6666666666667" y2="420"/>
+    <line x1="450" y1="300" x2="1783.3333333333333" y2="420"/>
+    <line x1="450" y1="300" x2="1950" y2="420"/>
+    <line x1="0" y1="301.5" x2="900" y2="301.5"/>
+    <line x1="0" y1="305.9" x2="900" y2="305.9"/>
+    <line x1="0" y1="313.3" x2="900" y2="313.3"/>
+    <line x1="0" y1="323.7" x2="900" y2="323.7"/>
+    <line x1="0" y1="337.0" x2="900" y2="337.0"/>
+    <line x1="0" y1="353.3" x2="900" y2="353.3"/>
+    <line x1="0" y1="372.6" x2="900" y2="372.6"/>
+    <line x1="0" y1="394.8" x2="900" y2="394.8"/>
+    <line x1="0" y1="420.0" x2="900" y2="420.0"/>
+  </g>
+  <rect y="300" width="900" height="120" fill="url(#floor-b)"/>
+
+    <use href="#wm-b" x="8.1" y="8.1" fill="#050a14"/>
+    <use href="#wm-b" x="7.2" y="7.2" fill="#050a14"/>
+    <use href="#wm-b" x="6.3" y="6.3" fill="#050a14"/>
+    <use href="#wm-b" x="5.4" y="5.4" fill="#050a14"/>
+    <use href="#wm-b" x="4.5" y="4.5" fill="#050a14"/>
+    <use href="#wm-b" x="3.6" y="3.6" fill="#050a14"/>
+    <use href="#wm-b" x="2.7" y="2.7" fill="#050a14"/>
+    <use href="#wm-b" x="1.8" y="1.8" fill="#050a14"/>
+    <use href="#wm-b" x="0.9" y="0.9" fill="#050a14"/>
+  <use href="#wm-b" fill="url(#chrome-b)" stroke="#040810" stroke-width="3" paint-order="stroke"/>
+  <use href="#wm-b" fill="url(#sheen-b)"/>
+
+  <!-- the four-point sparkle, placed on the brightest corner -->
+  <g transform="translate(702,96)" fill="#ffffff">
+    <path d="M0,-34 L7,-7 L34,0 L7,7 L0,34 L-7,7 L-34,0 L-7,-7 Z"/>
+    <path d="M0,-15 L3.5,-3.5 L15,0 L3.5,3.5 L0,15 L-3.5,3.5 L-15,0 L-3.5,-3.5 Z" opacity=".9" transform="translate(-54,42) scale(.7)"/>
+  </g>
+
+  <text x="450" y="262" text-anchor="middle"
+        font-family="ui-monospace, Menlo, monospace" font-size="17"
+        letter-spacing="8" fill="#b4bcc5">UX-UI-AGENT-SKILLS</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="XIAS">
+  <title>XIAS</title>
+  <defs>
+    <linearGradient id="c-sqb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0b1c33"/>
+      <stop offset="18%" stop-color="#4e7fb5"/>
+      <stop offset="40%" stop-color="#cfe4ff"/>
+      <stop offset="49%" stop-color="#ffffff"/>
+      <stop offset="50%" stop-color="#12386e"/>
+      <stop offset="56%" stop-color="#2b5f9e"/>
+      <stop offset="74%" stop-color="#7fb2e3"/>
+      <stop offset="90%" stop-color="#d7e9ff"/>
+      <stop offset="100%" stop-color="#8fb4d9"/>
+    </linearGradient>
+    <linearGradient id="f-sqb" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2563eb" stop-opacity=".5"/>
+      <stop offset="100%" stop-color="#2563eb" stop-opacity="0"/>
+    </linearGradient>
+    <text id="x-sqb" x="256" y="300" text-anchor="middle"
+          font-family="Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif"
+          font-size="340">X</text>
+  </defs>
+  <rect width="512" height="512" fill="#070d1a"/>
+  <g opacity=".4" stroke="#1d4ed8" stroke-width="1.5">
+    <line x1="256" y1="330" x2="-644" y2="512"/>
+    <line x1="256" y1="330" x2="-515.4285714285713" y2="512"/>
+    <line x1="256" y1="330" x2="-386.8571428571429" y2="512"/>
+    <line x1="256" y1="330" x2="-258.2857142857142" y2="512"/>
+    <line x1="256" y1="330" x2="-129.71428571428567" y2="512"/>
+    <line x1="256" y1="330" x2="-1.1428571428571104" y2="512"/>
+    <line x1="256" y1="330" x2="127.42857142857144" y2="512"/>
+    <line x1="256" y1="330" x2="256" y2="512"/>
+    <line x1="256" y1="330" x2="384.57142857142856" y2="512"/>
+    <line x1="256" y1="330" x2="513.1428571428571" y2="512"/>
+    <line x1="256" y1="330" x2="641.7142857142857" y2="512"/>
+    <line x1="256" y1="330" x2="770.2857142857142" y2="512"/>
+    <line x1="256" y1="330" x2="898.8571428571429" y2="512"/>
+    <line x1="256" y1="330" x2="1027.4285714285713" y2="512"/>
+    <line x1="256" y1="330" x2="1156" y2="512"/>
+    <line x1="0" y1="333.7" x2="512" y2="333.7"/>
+    <line x1="0" y1="344.9" x2="512" y2="344.9"/>
+    <line x1="0" y1="363.4" x2="512" y2="363.4"/>
+    <line x1="0" y1="389.4" x2="512" y2="389.4"/>
+    <line x1="0" y1="422.9" x2="512" y2="422.9"/>
+    <line x1="0" y1="463.7" x2="512" y2="463.7"/>
+    <line x1="0" y1="512.0" x2="512" y2="512.0"/>
+  </g>
+  <rect y="330" width="512" height="182" fill="url(#f-sqb)"/>
+  <use href="#x-sqb" x="8.8" y="8.8" fill="#050a14"/>
+  <use href="#x-sqb" x="7.700000000000001" y="7.700000000000001" fill="#050a14"/>
+  <use href="#x-sqb" x="6.6000000000000005" y="6.6000000000000005" fill="#050a14"/>
+  <use href="#x-sqb" x="5.5" y="5.5" fill="#050a14"/>
+  <use href="#x-sqb" x="4.4" y="4.4" fill="#050a14"/>
+  <use href="#x-sqb" x="3.3000000000000003" y="3.3000000000000003" fill="#050a14"/>
+  <use href="#x-sqb" x="2.2" y="2.2" fill="#050a14"/>
+  <use href="#x-sqb" x="1.1" y="1.1" fill="#050a14"/>
+  <use href="#x-sqb" fill="url(#c-sqb)" stroke="#040810" stroke-width="5" paint-order="stroke"/>
+  <g transform="translate(392,128)" fill="#ffffff">
+    <path d="M0,-30 L6,-6 L30,0 L6,6 L0,30 L-6,6 L-30,0 L-6,-6 Z"/>
+  </g>
+</svg>
