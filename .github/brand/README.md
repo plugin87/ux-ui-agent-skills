@@ -57,6 +57,22 @@ The isometric set uses **flat faces at three distinct values**, which is how
 isometric light actually works. The chrome set uses a gradient on purpose, and
 it is a metal ramp with a hard horizon, not a two-stop violet wash.
 
+## PNG beside every SVG, and why the README uses it
+
+The SVGs are the source. The README embeds the **PNG**, because two things in
+the SVG are not safe to rely on where it will be seen:
+
+- **`font-family: Impact`.** The wordmark is live `<text>`, so a machine without
+  Impact substitutes something else and the logo is a different logo. A mark has
+  to render the same everywhere or it is not a mark.
+- **`<use href>`.** GitHub sanitises SVG it serves in a README, and `<use>` is
+  the kind of element that gets stripped. The extrusion and the wordmark are
+  both built from it, so a strip leaves the background and nothing else.
+
+The PNGs are rendered from the SVGs at 2x on a machine that has the font, so the
+type is baked and nothing depends on the viewer. Use the SVG where you control
+the renderer, the PNG everywhere else.
+
 ## Regenerating
 
 Both sets come out of generator scripts rather than an editor, so the maths is
