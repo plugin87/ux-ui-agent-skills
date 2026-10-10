@@ -32,7 +32,7 @@ if (payload.stop_hook_active) process.exit(0);
 /* The same path the writer builds, imported rather than rebuilt: two copies of
    a path formula drift, and when they do this hook silently stops seeing any
    edits at all - which looks exactly like a clean session. */
-const ledger = ledgerFile();
+const ledger = ledgerFile(payload);
 if (!existsSync(ledger)) process.exit(0);
 
 const edited = [...new Set(

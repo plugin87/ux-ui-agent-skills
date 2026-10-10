@@ -239,6 +239,29 @@ test('the edit ledger is scoped to the project, not just the session', () => {
 });
 
 /**
+ * Two sessions in one project must not share a ledger either.
+ *
+ * CLAUDE_SESSION_ID does not reach hook processes; the session id arrives on
+ * stdin as `session_id`. Keyed on the environment alone, every session was
+ * 'local', and on 2026-10-10 a session was blocked over five files that other
+ * sessions, in other projects, had edited.
+ */
+test('the edit ledger is scoped to the session from the hook payload', () => {
+  const env = { CLAUDE_PLUGIN_DATA: scratch, CLAUDE_PROJECT_DIR: ROOT, CLAUDE_SESSION_ID: '' };
+  const target = join(ROOT, 'examples/sample-app/preview.html');
+  const edit = hook('posttooluse-fast-gates.mjs',
+    { session_id: 'sess-a', tool_name: 'Edit', tool_input: { file_path: target } }, env);
+  assert.equal(edit.status, 0, 'setup: the edit itself should be clean');
+
+  const other = hook('stop-require-measurement.mjs', { session_id: 'sess-b' }, env);
+  assert.equal(other.status, 0, `session B was blocked by session A's edit:\n${other.stderr}`);
+
+  const own = hook('stop-require-measurement.mjs', { session_id: 'sess-a' }, env);
+  assert.equal(own.status, 2, `session A should still be blocked, got ${own.status}`);
+  assert.match(own.stderr, /preview\.html/);
+});
+
+/**
  * The two hooks must agree on where the ledger is, and may not get there by
  * importing each other: posttooluse-fast-gates.mjs does its work at the top
  * level, so importing it to ask for a path would run a PostToolUse pass as a

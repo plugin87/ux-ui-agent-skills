@@ -10,6 +10,24 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.7`
+
+**The Stop hook no longer blocks you over files you did not edit.**
+
+The hooks keyed their edit ledger on `CLAUDE_SESSION_ID`, which never reaches a
+hook process. Every session fell back to `local`, so every session wrote to one
+ledger. In 2.9.5 that ledger was shared by every project on the machine too,
+and a session was blocked over five files edited in two other repositories.
+2.9.6 scoped the ledger per project; this release scopes it per session as
+well, using the `session_id` Claude Code passes to every hook on stdin.
+
+If you hit this on 2.9.5 or 2.9.6, the stale ledger can be removed:
+`~/.claude/plugins/data/ux-ui-agent-skills-*/receipts/edited-local.jsonl`.
+
+A new hook test runs two sessions in one project and fails against the old code.
+
+---
+
 ### `v2.9.6`
 
 **The kit is an MCP server now.** Any MCP client can run its gates, not just

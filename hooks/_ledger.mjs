@@ -23,9 +23,13 @@ export function ledgerDir() {
   return join(process.env.CLAUDE_PROJECT_DIR || process.cwd(), '.ds-receipts');
 }
 
-export function ledgerFile() {
+export function ledgerFile(payload = {}) {
   const project = resolve(process.env.CLAUDE_PROJECT_DIR || process.cwd());
   const tag = createHash('sha256').update(project).digest('hex').slice(0, 10);
-  const session = (process.env.CLAUDE_SESSION_ID || 'local').replace(/[^\w-]/g, '');
+  /* The hook's stdin carries session_id on every event; the environment
+     variable does not reach hook processes, so it was always 'local' and two
+     sessions in one project shared a ledger. */
+  const session = (payload.session_id || process.env.CLAUDE_SESSION_ID || 'local')
+    .replace(/[^\w-]/g, '');
   return join(ledgerDir(), `edited-${tag}-${session}.jsonl`);
 }
