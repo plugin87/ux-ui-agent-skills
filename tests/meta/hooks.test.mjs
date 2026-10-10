@@ -16,7 +16,7 @@
 import { test, beforeEach, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, rmSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readdirSync, rmSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { ROOT, F } from '../helpers/run.mjs';
@@ -39,7 +39,7 @@ beforeEach(() => {
 after(() => { if (scratch) rmSync(scratch, { recursive: true, force: true }); });
 
 /** An isolated receipts/ledger location, so tests never read the real session. */
-const isolated = () => ({ CLAUDE_PLUGIN_DATA: scratch, CLAUDE_SESSION_ID: 'test' });
+const isolated = () => ({ CLAUDE_PLUGIN_DATA: scratch, CLAUDE_SESSION_ID: 'test', CLAUDE_PROJECT_DIR: ROOT });
 
 // ---------------------------------------------------------------- SessionStart
 
@@ -209,33 +209,78 @@ test('both install routes declare all three hooks', () => {
  * /tmp/mcptest was told ten files under /tmp/blind-plugin were unmeasured.
  */
 test('the edit ledger is scoped to the project, not just the session', () => {
-  const shared = { CLAUDE_PLUGIN_DATA: scratch };   // no session id, as `claude -p` has none
-  const a = mkdtempSync(join(tmpdir(), 'ds-projA-'));
+  // Same session id in both, so only the project scoping can keep them apart.
+  const shared = { CLAUDE_PLUGIN_DATA: scratch, CLAUDE_SESSION_ID: '' };
   const b = mkdtempSync(join(tmpdir(), 'ds-projB-'));
   try {
     const target = join(ROOT, 'examples/sample-app/preview.html');
-    // Project A edits a UI file.
     const edit = hook('posttooluse-fast-gates.mjs',
-      { tool_name: 'Edit', tool_input: { file_path: target } },
-      { ...shared, CLAUDE_PROJECT_DIR: a });
+      { session_id: 'same', tool_name: 'Edit', tool_input: { file_path: target } },
+      { ...shared, CLAUDE_PROJECT_DIR: ROOT });
     assert.equal(edit.status, 0, 'setup: the edit itself should be clean');
 
-    // Project B, same machine, same plugin data, no session id: must see nothing.
-    const other = hook('stop-require-measurement.mjs', {},
+    const other = hook('stop-require-measurement.mjs', { session_id: 'same' },
       { ...shared, CLAUDE_PROJECT_DIR: b });
     assert.equal(other.status, 0,
       `project B was blocked by project A's edit:\n${other.stderr}`);
 
     // Project A itself must still be blocked - the scoping must not switch the hook off.
-    const own = hook('stop-require-measurement.mjs', {},
-      { ...shared, CLAUDE_PROJECT_DIR: a });
+    const own = hook('stop-require-measurement.mjs', { session_id: 'same' },
+      { ...shared, CLAUDE_PROJECT_DIR: ROOT });
     assert.equal(own.status, 2,
       `project A should still be blocked for its own unmeasured edit, got ${own.status}`);
     assert.match(own.stderr, /preview\.html/);
   } finally {
-    rmSync(a, { recursive: true, force: true });
     rmSync(b, { recursive: true, force: true });
   }
+});
+
+/**
+ * The guarantee that holds even if a ledger is wrong: the Stop hook names
+ * only files inside the current project. A ledger written by an older version,
+ * or by anything else, cannot make it block over another repository.
+ */
+test('Stop never names a file outside the current project', () => {
+  const env = { CLAUDE_PLUGIN_DATA: scratch, CLAUDE_SESSION_ID: '', CLAUDE_PROJECT_DIR: ROOT };
+  const outside = mkdtempSync(join(tmpdir(), 'ds-foreign-'));
+  try {
+    const foreign = join(outside, 'page.html');
+    writeFileSync(foreign, '<!doctype html><title>x</title>');
+    // Poison this session's own ledger with a foreign path, as a bug would.
+    const probe = hook('posttooluse-fast-gates.mjs',
+      { session_id: 'poisoned', tool_name: 'Edit', tool_input: { file_path: foreign } }, env);
+    assert.notEqual(probe.status, null, 'setup: the hook must run');
+
+    const r = hook('stop-require-measurement.mjs', { session_id: 'poisoned' }, env);
+    assert.equal(r.status, 0, `blocked over a file in another directory:\n${r.stderr}`);
+    assert.doesNotMatch(r.stderr, /page\.html/);
+  } finally {
+    rmSync(outside, { recursive: true, force: true });
+  }
+});
+
+test('with no session id nothing is recorded and nothing blocks', () => {
+  const env = { CLAUDE_PLUGIN_DATA: scratch, CLAUDE_SESSION_ID: '', CLAUDE_PROJECT_DIR: ROOT };
+  const target = join(ROOT, 'examples/sample-app/preview.html');
+  hook('posttooluse-fast-gates.mjs', { tool_name: 'Edit', tool_input: { file_path: target } }, env);
+  const receipts = join(scratch, 'receipts');
+  const ledgers = existsSync(receipts) ? readdirSync(receipts).filter(f => f.startsWith('edited-')) : [];
+  assert.deepEqual(ledgers, [], 'a ledger with no session id is a ledger every session shares');
+  const r = hook('stop-require-measurement.mjs', {}, env);
+  assert.equal(r.status, 0);
+});
+
+test('SessionStart removes the shared ledgers older versions left behind', () => {
+  const receipts = join(scratch, 'receipts');
+  mkdirSync(receipts, { recursive: true });
+  for (const f of ['edited-local.jsonl', 'edited-0123456789-local.jsonl', 'edited-0123456789-abc.jsonl', 'local.jsonl']) {
+    writeFileSync(join(receipts, f), '{}\n');
+  }
+  const r = hook('session-start-preflight.mjs', { hook_event_name: 'SessionStart' },
+    { CLAUDE_PLUGIN_DATA: scratch });
+  assert.equal(r.status, 0);
+  assert.deepEqual(readdirSync(receipts).sort(), ['edited-0123456789-abc.jsonl', 'local.jsonl'],
+    'only the shared legacy ledgers go; a real session ledger and the receipts stay');
 });
 
 /**

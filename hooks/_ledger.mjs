@@ -15,7 +15,8 @@
  * a repository you are not in, is the fastest way to get a hook switched off.
  */
 import { createHash } from 'node:crypto';
-import { join, resolve } from 'node:path';
+import { readdirSync, rmSync } from 'node:fs';
+import { join, resolve, relative, isAbsolute } from 'node:path';
 
 export function ledgerDir() {
   const data = process.env.CLAUDE_PLUGIN_DATA;
@@ -23,13 +24,45 @@ export function ledgerDir() {
   return join(process.env.CLAUDE_PROJECT_DIR || process.cwd(), '.ds-receipts');
 }
 
+export function projectDir() {
+  return resolve(process.env.CLAUDE_PROJECT_DIR || process.cwd());
+}
+
+/**
+ * The ledger for this project and this session, or null when the session is
+ * unknown. The hook's stdin carries session_id on every event; the environment
+ * variable does not reach hook processes. With neither there is no ledger at
+ * all: a shared fallback name is exactly how sessions came to block each other
+ * (2026-10-10, five files from two other repositories).
+ */
 export function ledgerFile(payload = {}) {
-  const project = resolve(process.env.CLAUDE_PROJECT_DIR || process.cwd());
-  const tag = createHash('sha256').update(project).digest('hex').slice(0, 10);
-  /* The hook's stdin carries session_id on every event; the environment
-     variable does not reach hook processes, so it was always 'local' and two
-     sessions in one project shared a ledger. */
-  const session = (payload.session_id || process.env.CLAUDE_SESSION_ID || 'local')
+  const session = String(payload.session_id || process.env.CLAUDE_SESSION_ID || '')
     .replace(/[^\w-]/g, '');
+  if (!session) return null;
+  const tag = createHash('sha256').update(projectDir()).digest('hex').slice(0, 10);
   return join(ledgerDir(), `edited-${tag}-${session}.jsonl`);
+}
+
+/** True when `p` lies inside the current project. The Stop hook never names anything else. */
+export function insideProject(p) {
+  const rel = relative(projectDir(), resolve(p));
+  return rel !== '' && !rel.startsWith('..') && !isAbsolute(rel);
+}
+
+/**
+ * Delete ledgers written by versions up to 2.9.6, whose names were shared
+ * across sessions (`edited-local.jsonl`, `edited-<tag>-local.jsonl`). Left in
+ * place they keep a stale list of edits that an older hook still reads.
+ */
+export function removeLegacyLedgers() {
+  let removed = 0;
+  try {
+    for (const f of readdirSync(ledgerDir())) {
+      if (/^edited-(?:[0-9a-f]{10}-)?local\.jsonl$/.test(f)) {
+        rmSync(join(ledgerDir(), f), { force: true });
+        removed++;
+      }
+    }
+  } catch { /* no ledger directory yet: nothing to clean */ }
+  return removed;
 }

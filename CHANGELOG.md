@@ -10,6 +10,23 @@ with auto-generated notes instead.
 
 ---
 
+### `v2.9.8`
+
+**The Stop hook can no longer block you over another project's files, even if
+its ledger is wrong.** 2.9.7 fixed how the ledger is named; this release makes
+the outcome independent of the ledger being right.
+
+- The Stop hook names only files inside the current project. A ledger holding
+  another repository's paths, for any reason, cannot block here.
+- With no session id the hooks record nothing and block nothing. The shared
+  `local` fallback name, the root of the cross-session leak, is gone.
+- SessionStart deletes the shared ledgers left by 2.9.6 and earlier
+  (`edited-local.jsonl`, `edited-<tag>-local.jsonl`), so no manual cleanup.
+
+Three new hook tests, one per guarantee, each failing against 2.9.7.
+
+---
+
 ### `v2.9.7`
 
 **The Stop hook no longer blocks you over files you did not edit.**

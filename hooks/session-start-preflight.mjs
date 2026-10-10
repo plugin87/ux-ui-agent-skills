@@ -13,6 +13,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { removeLegacyLedgers } from './_ledger.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -51,6 +52,9 @@ if (pw && br) {
 
 lines.push('  Browser-free gates always work: lint_hardcodes, check_no_emoji,');
 lines.push('  validate_theme_refs, validate_tokens, validate_contrast.');
+
+// Pre-2.9.7 ledgers were shared across sessions and projects; clear them.
+removeLegacyLedgers();
 
 console.log(lines.join('\n'));
 process.exit(0);

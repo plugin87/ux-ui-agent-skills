@@ -38,9 +38,10 @@ if (!file || !UI_EXT.has(extname(file)) || !existsSync(file)) process.exit(0);
 
 // Record the edit first. If a gate below crashes, the Stop hook must still know
 // this file was touched - a missing ledger entry would read as "nothing to check".
-try {
+const ledger = ledgerFile(payload);
+if (ledger) try {
   mkdirSync(ledgerDir(), { recursive: true });
-  appendFileSync(ledgerFile(payload), JSON.stringify({ at: new Date().toISOString(), path: resolve(file) }) + '\n');
+  appendFileSync(ledger, JSON.stringify({ at: new Date().toISOString(), path: resolve(file) }) + '\n');
 } catch { /* a ledger we cannot write is reported by the Stop hook, not here */ }
 
 const GATES = [

@@ -19,7 +19,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { join, dirname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { liveReceiptsFor, receiptsDir } from '../scripts/gate.mjs';
-import { ledgerFile } from './_ledger.mjs';
+import { ledgerFile, insideProject } from './_ledger.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -33,13 +33,15 @@ if (payload.stop_hook_active) process.exit(0);
    a path formula drift, and when they do this hook silently stops seeing any
    edits at all - which looks exactly like a clean session. */
 const ledger = ledgerFile(payload);
-if (!existsSync(ledger)) process.exit(0);
+if (!ledger || !existsSync(ledger)) process.exit(0);
 
 const edited = [...new Set(
   readFileSync(ledger, 'utf8').split('\n').filter(Boolean)
     .map(l => { try { return JSON.parse(l).path; } catch { return null; } })
     .filter(Boolean)
-    .filter(p => existsSync(p)))];
+    // Only this project's files. A ledger that somehow holds another
+    // repository's edits must never block you here.
+    .filter(p => insideProject(p) && existsSync(p)))];
 
 if (!edited.length) process.exit(0);
 
