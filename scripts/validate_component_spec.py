@@ -13,6 +13,9 @@ import re
 import sys
 from pathlib import Path
 
+# A cp949 or cp1252 console cannot encode the em dash these messages use.
+sys.stdout.reconfigure(encoding="utf-8")
+
 KIT = Path(__file__).resolve().parent.parent
 
 def _root():
@@ -54,7 +57,7 @@ def main():
     files = sorted(COMPONENTS.glob("*.md"))
     problems = []
     for f in files:
-        text = f.read_text().lower()
+        text = f.read_text(encoding="utf-8").lower()
         req = RELAXED_REQUIRED if f.name in RELAXED else REQUIRED
         missing = [name for name, pat in req.items() if not re.search(pat, text, re.I)]
         status = "OK  " if not missing else "MISS"

@@ -19,6 +19,9 @@ import re
 import sys
 from pathlib import Path
 
+# A cp949 or cp1252 console cannot encode the em dash these messages use.
+sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = Path(__file__).resolve().parent.parent
 TOKENS = ROOT / "tokens"
 ALIAS = re.compile(r"\{([^}]+)\}")
@@ -80,7 +83,7 @@ def main(argv=()):
     parsed = {}
     for f in files:
         try:
-            data = json.loads(f.read_text())
+            data = json.loads(f.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             errors.append(f"{f.name}: invalid JSON — {e}")
             continue

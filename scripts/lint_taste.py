@@ -21,6 +21,9 @@ import re
 import sys
 from pathlib import Path
 
+# A cp949 or cp1252 console cannot encode the em dash these messages use.
+sys.stdout.reconfigure(encoding="utf-8")
+
 CODE_EXT = {".html", ".tsx", ".jsx", ".vue", ".svelte", ".css", ".scss", ".js", ".ts"}
 PURE = re.compile(r"#(?:000(?:000)?|fff(?:fff)?)\b", re.I)
 HEX = re.compile(r"#[0-9a-fA-F]{6}\b")
@@ -43,7 +46,7 @@ def iter_files(paths):
 def lint(f):
     out = []
     try:
-        text = f.read_text()
+        text = f.read_text(encoding="utf-8")
     except (UnicodeDecodeError, OSError):
         return out
     for n, line in enumerate(text.splitlines(), 1):

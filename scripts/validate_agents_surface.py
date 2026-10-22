@@ -77,7 +77,7 @@ def main(argv):
     if not agents.exists():
         print(f"ERROR: {agents} not found.")
         return 1
-    text = agents.read_text()
+    text = agents.read_text(encoding="utf-8")
     lines = text.splitlines()
 
     for label, pattern in SHARED_RULES:
@@ -86,7 +86,7 @@ def main(argv):
 
     # Whatever CLAUDE.md promises, AGENTS.md has to promise too.
     if claude.exists():
-        ctext = claude.read_text()
+        ctext = claude.read_text(encoding="utf-8")
         for label, pattern in SHARED_RULES:
             in_claude = bool(re.search(pattern, ctext))
             in_agents = bool(re.search(pattern, text))

@@ -18,7 +18,7 @@ LIB = ROOT / "design-systems" / "library"
 def meta(p):
     """Return (category, description) from a DESIGN.md header."""
     cat, desc = "Uncategorized", ""
-    for line in p.read_text(errors="ignore").splitlines()[:12]:
+    for line in p.read_text(encoding="utf-8", errors="ignore").splitlines()[:12]:
         if line.startswith("> Category:"):
             cat = line.split(":", 1)[1].strip()
         elif line.startswith("> ") and "Category:" not in line and not desc:

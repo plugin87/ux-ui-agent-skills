@@ -14,6 +14,9 @@ import json
 import sys
 from pathlib import Path
 
+# A cp949 or cp1252 console cannot encode the em dash these messages use.
+sys.stdout.reconfigure(encoding="utf-8")
+
 ROOT = Path(__file__).resolve().parent.parent
 COLORS = ROOT / "tokens" / "colors.json"
 
@@ -136,7 +139,7 @@ def main(argv):
         print(f"ERROR: {source} not found")
         return 1
     print(f"Source: {source}")
-    data = json.loads(source.read_text())
+    data = json.loads(source.read_text(encoding="utf-8"))
     dark = data.get("dark") if isinstance(data.get("dark"), dict) else None
     fails = []
     fails += check(data, None, "LIGHT", PAIRS, aaa, True)

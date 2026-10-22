@@ -19,6 +19,9 @@ import re
 import sys
 from pathlib import Path
 
+# A cp949 or cp1252 console cannot encode the em dash these messages use.
+sys.stdout.reconfigure(encoding="utf-8")
+
 CODE_EXT = {".css", ".scss", ".tsx", ".jsx", ".ts", ".js", ".vue", ".svelte",
             ".swift", ".kt", ".dart", ".html"}
 
@@ -189,7 +192,7 @@ def main(argv):
     unreadable = []
     for f in files:
         try:
-            text = f.read_text()
+            text = f.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError) as err:
             # Swallowing this counted the file as scanned and let the run exit 0
             # having never opened it - the same shape as the missing-path guard

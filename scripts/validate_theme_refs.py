@@ -32,7 +32,7 @@ def collect_defs(theme_paths):
     for tp in theme_paths:
         p = Path(tp)
         if p.is_file():
-            for m in DEF.finditer(p.read_text()):
+            for m in DEF.finditer(p.read_text(encoding="utf-8")):
                 defined.add(m.group(1))
     return defined
 
@@ -85,7 +85,7 @@ def main(argv):
     missing, with_fallback, unreadable, scanned = [], 0, [], 0
     for f in files:
         try:
-            text = f.read_text()
+            text = f.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError) as err:
             unreadable.append((f, err)); continue
         scanned += 1

@@ -88,7 +88,7 @@ def main(argv):
     found, unreadable = [], []
     for f in files:
         try:
-            raw = f.read_text()
+            raw = f.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError) as err:
             unreadable.append((f, err))
             continue

@@ -71,7 +71,7 @@ def main(argv):
     if out:
         out = out if out.is_absolute() else ROOT / out
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(body)
+        out.write_text(body, encoding="utf-8")
         print(f"Wrote {out}")
     else:
         print(body)
