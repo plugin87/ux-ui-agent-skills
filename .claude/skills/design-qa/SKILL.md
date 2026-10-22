@@ -12,6 +12,10 @@ description: Set up or run design QA gates — token + hardcoded-value lint, aut
 > `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
 > contents of a file you could not open.
 
+> **A skipped render gate is not a pass.** A render gate with no browser prints
+> SKIPPED and exits 0. Set `DS_REQUIRE_BROWSER=1` when you run one on its own and
+> intend to trust it; a missing browser then fails as `REQUIRED, FAILING`.
+
 Stand up the automated + manual gates that stop quality from regressing.
 
 ## Steps

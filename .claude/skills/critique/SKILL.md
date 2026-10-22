@@ -40,6 +40,10 @@ On `KIT_MISSING` only the skill folders were installed, which is what `npx
 skills add` does. Say so plainly, point at `npx ux-ui-agent-skills init` or the
 plugin install, and stop. Do not guess the contents of a file you could not open.
 
+> **A skipped render gate is not a pass.** A render gate with no browser prints
+> SKIPPED and exits 0. Set `DS_REQUIRE_BROWSER=1` when you run one on its own and
+> intend to trust it; a missing browser then fails as `REQUIRED, FAILING`.
+
 **Step 1 — take the critic's instructions, in full.**
 
 ```bash

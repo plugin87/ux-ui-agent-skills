@@ -12,6 +12,10 @@ description: 'Build a dense, data-heavy screen - an analytics console or a tradi
 > `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
 > contents of a file you could not open.
 
+> **A skipped render gate is not a pass.** A render gate with no browser prints
+> SKIPPED and exits 0. Set `DS_REQUIRE_BROWSER=1` when you run one on its own and
+> intend to trust it; a missing browser then fails as `REQUIRED, FAILING`.
+
 A dashboard is the hardest screen to keep honest: it is dense, it is mostly
 non-text, and almost every default makes it worse. This is the recipe that
 produced `${CLAUDE_SKILL_DIR}/../../../examples/showcase/` and `${CLAUDE_SKILL_DIR}/../../../examples/terminal/`, both of which pass every

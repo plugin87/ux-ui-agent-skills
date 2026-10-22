@@ -16,6 +16,10 @@ disable-model-invocation: true
 > `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
 > contents of a file you could not open.
 
+> **A skipped render gate is not a pass.** A render gate with no browser prints
+> SKIPPED and exits 0. Set `DS_REQUIRE_BROWSER=1` when you run one on its own and
+> intend to trust it; a missing browser then fails as `REQUIRED, FAILING`.
+
 Reconstruct a design from a visual reference as a real design system, not a one-off copy. Match the *system* (color/type/spacing language), never lift copyrighted imagery or brand assets.
 
 ## Steps

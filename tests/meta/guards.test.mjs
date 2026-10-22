@@ -140,3 +140,15 @@ test('exit 1 for the wrong reason is not counted as a detection', async () => {
   const crash = { status: 1, out: 'Error: ENOENT: no such file or directory', signal: null };
   assert.throws(() => rejects(crash, /below WCAG AA/), /not for the expected reason/);
 });
+
+test('every skill that names a browser gate tells the agent a skip is not a pass', () => {
+  // On a plugin install the kit's CLAUDE.md is not in the user's context, so the
+  // skill is the only instruction the agent reads before it runs the gate.
+  const dir = join(ROOT, '.claude', 'skills');
+  const silent = readdirSync(dir).filter(s => {
+    let text;
+    try { text = readFileSync(join(dir, s, 'SKILL.md'), 'utf8'); } catch { return false; }
+    return BROWSER_GATES.some(g => text.includes(g)) && !text.includes('DS_REQUIRE_BROWSER');
+  });
+  assert.deepEqual(silent, [], `skills run a render gate without DS_REQUIRE_BROWSER: ${silent.join(', ')}`);
+});
