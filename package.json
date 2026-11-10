@@ -1,6 +1,6 @@
 {
   "name": "ux-ui-agent-skills",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Design-system kit for coding agents: DTCG design tokens, 52 components, WCAG 2.2 AA→AAA + i18n/RTL accessibility, enforced single-theme consistency (contrast, hardcode, Tailwind-palette, theme-ref + CI gates), any-framework code, 2,144 design systems, 52 objective gates. Claude Code reads CLAUDE.md and 26 runnable skills; Codex, Cursor, Copilot and Aider read AGENTS.md; Gemini CLI and Antigravity read GEMINI.md. Install as a plugin, with npx, or with brew.",
   "type": "commonjs",
   "bin": {

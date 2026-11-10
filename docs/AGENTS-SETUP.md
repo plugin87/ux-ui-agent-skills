@@ -5,7 +5,7 @@ read `AGENTS.md`, an open convention, not any one vendor's format. The kit ships
 one, carrying the same doctrine as `CLAUDE.md`.
 
 ```bash
-npx ux-ui-agent-skills@3.0.0 init --agent codex
+npx ux-ui-agent-skills@3.1.0 init --agent codex
 ```
 
 That installs `AGENTS.md`, the tokens, the component specs, the accessibility

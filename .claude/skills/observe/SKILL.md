@@ -7,7 +7,7 @@ disable-model-invocation: true
 ## Requirements
 
 This skill needs the full UX/UI Agent Skills kit: the gates, the references and
-the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+the design-system library. Install it with `npx ux-ui-agent-skills@3.1.0 init`
 or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
 nothing else, and this skill has no guidance-only mode: its whole job is to
 read what the kit's hooks recorded, so without the kit there is nothing for it to do.

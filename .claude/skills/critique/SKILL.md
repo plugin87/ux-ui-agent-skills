@@ -17,7 +17,7 @@ background: false
 # There is deliberately NO `agent:` field, and it is not an oversight.
 #
 # A plugin namespaces every component under the plugin name, so this repo's
-# critic is `design-critic` when installed with `npx ux-ui-agent-skills@3.0.0 init` (a
+# critic is `design-critic` when installed with `npx ux-ui-agent-skills@3.1.0 init` (a
 # project file in .claude/agents/) and `ux-ui-agent-skills:design-critic` when
 # installed as a plugin. One frontmatter value cannot be both, and a wrong one
 # is the `invocation:` failure again: a field that looks right, is silently
@@ -33,7 +33,7 @@ from elsewhere applies. Everything the review needs is below or on disk.
 ## Requirements
 
 This skill needs the full UX/UI Agent Skills kit: the gates, the references and
-the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+the design-system library. Install it with `npx ux-ui-agent-skills@3.1.0 init`
 or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
 nothing else, and this skill has no guidance-only mode: its whole job is to
 hand the work to the kit's design-critic agent, so without the kit there is nothing for it to do.

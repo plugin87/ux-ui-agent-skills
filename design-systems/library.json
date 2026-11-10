@@ -1,6 +1,6 @@
 {
   "repo": "plugin87/ux-ui-agent-skills",
-  "ref": "v3.0.0",
+  "ref": "v3.1.0",
   "systems": {
     "100-lost-species": {"name": "100 Lost Species", "category": "Culture & Events", "description": "Black memorial entry page for 100 Lost Species: Reckless Neue 72px weight 100 serif headline, Enduro 14px weight 300 body, white (#ffffff) Enter button on a #000000 canvas, 12px/24px/46px/60px spacing steps and a pill radius.", "sha256": "1176ae1f1e801585f8d31a7ed13baa8c92f6a9cface05b2d7cae6fa8a6cf92b8", "bytes": 9764},
     "12go": {"name": "12Go", "category": "Thai Brands", "description": "12Go (12go.asia) travel-booking site measured in system-ui sans: 24px/700 white hero line, 22px/700 section heads, 16px/400 body, a #4db84d green Find Tickets button with 4px radius and 52px height on a #f4f4f4 canvas with white cards.", "sha256": "f75f8659b501b174d5437f4d0b4bbab89fdd70601ea8d391e1a61f8b53ba7015", "bytes": 12487},

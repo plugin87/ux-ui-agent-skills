@@ -77,6 +77,11 @@ const RULES = [
     to: () => `--package=ux-ui-agent-skills@${KIT}`, ok: m => m.endsWith(`@${KIT}`) },
   { re: new RegExp(`\\bnpx(\\s+)(-y\\s+)?skills${VER}(\\s+)add\\b`, 'g'),
     to: (_, sp, y = '', sp2) => `npx${sp}${y}skills@${SKILLS_CLI}${sp2}add`, ok: m => new RegExp(`skills@${SKILLS_CLI.replace(/\\./g, '\\.')}\\s`).test(m) },
+  /* Any other exact mention, such as `npm pack ux-ui-agent-skills@3.0.0` or the
+     version quoted in prose. Missed by the npx rules in the 3.1.0 bump. The
+     lookbehinds leave the npx and --package forms to their own rules. */
+  { re: /(?<!\bnpx\s+(?:-y\s+)?)(?<![\w\/=-])ux-ui-agent-skills@\d+\.\d+\.\d+(?![\w.-])/g,
+    to: () => `ux-ui-agent-skills@${KIT}`, ok: m => m === `ux-ui-agent-skills@${KIT}` },
   { re: new RegExp(`\\bnpm i(?:nstall)? -D playwright${VER}(?![\\w@.-])`, 'g'),
     to: m => m.replace(/playwright(@\S*)?$/, `playwright@${PLAYWRIGHT}`), ok: m => m.endsWith(`playwright@${PLAYWRIGHT}`) },
 ];

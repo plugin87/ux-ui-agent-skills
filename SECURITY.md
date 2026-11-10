@@ -7,7 +7,7 @@ statement below names the file that makes it true.
 ## Supported versions
 
 Only the latest release gets security fixes. Every `npx` command in these docs
-names that release exactly (`ux-ui-agent-skills@3.0.0`), so you run the
+names that release exactly (`ux-ui-agent-skills@3.1.0`), so you run the
 tarball the docs describe and never whatever is newest on npm.
 `npm run pins:check` fails the build if a command is left unpinned.
 
@@ -41,7 +41,7 @@ unless you pass `--force`.
 **See the exact list before anything is written:**
 
 ```bash
-npx ux-ui-agent-skills@3.0.0 init --dry-run
+npx ux-ui-agent-skills@3.1.0 init --dry-run
 ```
 
 `--dry-run` prints every file the real run would write and changes nothing.
@@ -135,7 +135,7 @@ never runs a command the client writes.
 release before installing it:
 
 ```bash
-npm pack ux-ui-agent-skills@3.0.0 --dry-run
+npm pack ux-ui-agent-skills@3.1.0 --dry-run
 ```
 
 The package has no `dependencies` and no install scripts (`preinstall`,

@@ -13,7 +13,7 @@ ux-ui-skills init --agent both
 ```
 
 Homebrew is a convenience, not a different product. The formula installs the
-same npm package `npx ux-ui-agent-skills@3.0.0` runs, from the same tarball on the registry.
+same npm package `npx ux-ui-agent-skills@3.1.0` runs, from the same tarball on the registry.
 Use whichever you already have.
 
 ---

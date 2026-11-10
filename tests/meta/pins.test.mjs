@@ -25,6 +25,8 @@ test('unpinned, stale and squattable forms are all caught and rewritten', () => 
     ['"--package=ux-ui-agent-skills", "ux-ui-mcp"', `"--package=ux-ui-agent-skills@${KIT}", "ux-ui-mcp"`],
     ['npx skills add plugin87/ux-ui-agent-skills', `npx skills@${SKILLS_CLI} add plugin87/ux-ui-agent-skills`],
     ['npm i -D playwright', `npm i -D playwright@${PLAYWRIGHT}`],
+    ['npm pack ux-ui-agent-skills@1.2.3 --dry-run', `npm pack ux-ui-agent-skills@${KIT} --dry-run`],
+    ['names (`ux-ui-agent-skills@1.2.3`) exactly', `names (\`ux-ui-agent-skills@${KIT}\`) exactly`],
   ];
   for (const [input, want] of bad) {
     const r = audit(input);

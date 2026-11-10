@@ -256,7 +256,7 @@ frameworks/
 
 templates/product-design/ ← Starter layout for a NEW product repo (CLAUDE.md brief, .mcp.json,
                             .claude/{rules,skills,commands,settings.json}, design-tokens.json,
-                            src/components, public/images, reference) - `npx ux-ui-agent-skills@3.0.0 new <dir>`
+                            src/components, public/images, reference) - `npx ux-ui-agent-skills@3.1.0 new <dir>`
                             or /scaffold-project. Gated by scripts/validate_template.py.
 
 .claude/rules/            ← Depth split out of this file, loaded on demand: tokens-and-color ·

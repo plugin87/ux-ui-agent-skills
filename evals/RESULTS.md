@@ -19,7 +19,7 @@ built the output, and whether they could see the kit's internals while doing it.
 ## 2026-10-08: first-run-empty, through the plugin route
 
 **The route the README recommends first had never been tested blind.** Every
-previous blind run came from a project scaffolded with `npx ux-ui-agent-skills@3.0.0
+previous blind run came from a project scaffolded with `npx ux-ui-agent-skills@3.1.0
 new`. This one ran `claude -p` in `/tmp/blind-plugin`, a directory containing
 one file - the brief - with the kit reaching the agent only through the
 installed plugin.

@@ -11,7 +11,7 @@ disable-model-invocation: true
 ## Requirements
 
 This skill needs the full UX/UI Agent Skills kit: the gates, the references and
-the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+the design-system library. Install it with `npx ux-ui-agent-skills@3.1.0 init`
 or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
 nothing else, and this skill has no guidance-only mode: its whole job is to
 copy the kit's starter template, so without the kit there is nothing for it to do.
@@ -50,7 +50,7 @@ The layout to produce (exactly the reference structure):
 The fast path, when the kit is installed or reachable via npx:
 
 ```
-npx ux-ui-agent-skills@3.0.0 new <target>
+npx ux-ui-agent-skills@3.1.0 new <target>
 ```
 
 That does steps 2 and 3 below in one call (template copied, `CLAUDE.local.md`
@@ -73,7 +73,7 @@ Steps:
 3. Install the engine next to it so the gates the brief references actually run:
 
    ```
-   npx ux-ui-agent-skills@3.0.0 add tokens components taste accessibility \
+   npx ux-ui-agent-skills@3.1.0 add tokens components taste accessibility \
        workflows content frameworks design-systems scripts skills
    ```
 

@@ -9,7 +9,7 @@ layout (reference image) while folding in the efficiency disciplines from
 | Phase | State | Evidence |
 |---|---|---|
 | A1: add the missing pieces | done (v2.4.0) | `CONTEXT.md`, `/gate` `/ship` `/scaffold-project`, `.claude/settings.json`, `.mcp.json`, `CLAUDE.local.md`, `reference/` |
-| B: starter template | done | `templates/product-design/` + `npx ux-ui-agent-skills@3.0.0 new <dir>`, gated by `scripts/validate_template.py` |
+| B: starter template | done | `templates/product-design/` + `npx ux-ui-agent-skills@3.1.0 new <dir>`, gated by `scripts/validate_template.py` |
 | A3: user vs model invocation | done | `invocation:` in all 17 `SKILL.md`, grouped in README |
 | A2: slim `CLAUDE.md` | done | 576 -> 267 lines; depth in `.claude/rules/` (7 files), guarded by `scripts/validate_instruction_surface.py` |
 | A4: optional pointer rules | superseded by A2 | the rule files hold the real content, not pointers |

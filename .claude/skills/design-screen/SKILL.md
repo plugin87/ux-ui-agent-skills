@@ -38,7 +38,7 @@ Everything below is how to execute the decisions above.
 ## Requirements
 
 This skill needs the full UX/UI Agent Skills kit: the gates, the references and
-the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+the design-system library. Install it with `npx ux-ui-agent-skills@3.1.0 init`
 or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
 nothing else. Installed that way, this skill runs in **guidance-only mode**: no gate
 runs, so it gives no verdict.

@@ -5,13 +5,13 @@
  * Copies the design-system skill kit into a target project.
  * Zero dependencies: Node built-ins only.
  *
- *   npx ux-ui-agent-skills@3.0.0 init [dest]        Install the full kit (default dest: cwd)
- *   npx ux-ui-agent-skills@3.0.0 new [dest]         Scaffold a NEW product repo from the starter template
- *   npx ux-ui-agent-skills@3.0.0 add <area>...      Install specific areas
- *   npx ux-ui-agent-skills@3.0.0 list               List available areas
- *   npx ux-ui-agent-skills@3.0.0 library get <name> Fetch one design-system spec into this project
- *   npx ux-ui-agent-skills@3.0.0 version            Print the installed version
- *   npx ux-ui-agent-skills@3.0.0 help
+ *   npx ux-ui-agent-skills@3.1.0 init [dest]        Install the full kit (default dest: cwd)
+ *   npx ux-ui-agent-skills@3.1.0 new [dest]         Scaffold a NEW product repo from the starter template
+ *   npx ux-ui-agent-skills@3.1.0 add <area>...      Install specific areas
+ *   npx ux-ui-agent-skills@3.1.0 list               List available areas
+ *   npx ux-ui-agent-skills@3.1.0 library get <name> Fetch one design-system spec into this project
+ *   npx ux-ui-agent-skills@3.1.0 version            Print the installed version
+ *   npx ux-ui-agent-skills@3.1.0 help
  *
  * Flags: --force (overwrite existing files), --dry (print actions only)
  */

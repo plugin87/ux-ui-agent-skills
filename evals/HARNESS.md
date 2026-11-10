@@ -94,7 +94,7 @@ model to. That is the gap this indicator exists to close.
 ### H5: blind first-pass, per route, 0.333
 
 `evals/RESULTS.md` records four blind runs, all **14/14 on first submission**,
-and every one of them scaffolded with `npx ux-ui-agent-skills@3.0.0 new`. Zero blind
+and every one of them scaffolded with `npx ux-ui-agent-skills@3.1.0 new`. Zero blind
 runs have gone through the plugin route or the `npx skills@1.7.6 add` route.
 
 Scored as routes-with-a-passing-blind-run over routes: 1 of 3.
@@ -392,7 +392,7 @@ reasoning reviews the argument instead of the artifact, and it agrees.
 
 It deliberately carries **no `agent:` field**. A plugin namespaces every
 component under the plugin name, so this repo's critic is `design-critic` after
-`npx ux-ui-agent-skills@3.0.0 init` and `ux-ui-agent-skills:design-critic` under a plugin
+`npx ux-ui-agent-skills@3.1.0 init` and `ux-ui-agent-skills:design-critic` under a plugin
 install. No single frontmatter value is correct on both routes, and a wrong one
 is `invocation:` again - a field that looks right and silently does nothing. The
 fork loads its brief from a `${CLAUDE_SKILL_DIR}`-relative path instead, which

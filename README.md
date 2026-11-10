@@ -24,7 +24,7 @@ Instructions, design tokens, 26 runnable skills and 2,144 design systems (2,087 
 <br>
 <br>
 
-[![Version](https://img.shields.io/badge/version-3.0.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
+[![Version](https://img.shields.io/badge/version-3.1.0-6366f1?style=for-the-badge)](https://github.com/plugin87/ux-ui-agent-skills/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge)](#license)
 [![WCAG 2.2 AA→AAA](https://img.shields.io/badge/WCAG-2.2_AA→AAA-a855f7?style=for-the-badge)](#-accessibility-standards)
 
@@ -46,7 +46,7 @@ Instructions, design tokens, 26 runnable skills and 2,144 design systems (2,087 
 
 </div>
 
-**Current release [`v3.0.0`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime: a pure instruction and knowledge layer for AI agents.
+**Current release [`v3.1.0`](https://github.com/plugin87/ux-ui-agent-skills/releases)** · [Changelog](CHANGELOG.md) · No build tools, dependencies, or runtime: a pure instruction and knowledge layer for AI agents.
 
 ---
 
@@ -216,7 +216,7 @@ The whole log, including what is still unproven, is in
 > you give up by choosing it.
 >
 > Every `npx` command in these docs names an exact release
-> (`ux-ui-agent-skills@3.0.0`), so what runs on your machine is the tarball the
+> (`ux-ui-agent-skills@3.1.0`), so what runs on your machine is the tarball the
 > docs describe, never whatever is newest on npm. `npm version` rewrites every
 > pin in the release commit, and `npm run pins:check` fails if one is missed.
 
@@ -232,7 +232,7 @@ The whole log, including what is still unproven, is in
 
 Before installing anything, [SECURITY.md](SECURITY.md) lists every file `init`
 writes, what each hook does and when it fires, and the one network request the
-kit makes. `npx ux-ui-agent-skills@3.0.0 init --dry-run` prints the file list
+kit makes. `npx ux-ui-agent-skills@3.1.0 init --dry-run` prints the file list
 for your project and changes nothing.
 
 ### Option A: Install as a Claude Code plugin (recommended)
@@ -302,7 +302,7 @@ with `REQUIRED, FAILING` instead of passing on nothing.
 ### See it first, install nothing
 
 ```bash
-npx ux-ui-agent-skills@3.0.0 demo        # copies the rendered examples and opens them
+npx ux-ui-agent-skills@3.1.0 demo        # copies the rendered examples and opens them
 ```
 
 Every page it opens is a page the gates measure. Delete the folder afterwards;
@@ -312,7 +312,7 @@ nothing was installed. Or skip the copy entirely and use the
 ### Option B: Use it from any MCP client
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.1.0 ux-ui-mcp
 ```
 
 Six tools: `list_gates`, `run_gate`, `review_ui`, `get_doctrine`,
@@ -348,10 +348,10 @@ names, and that `--agent codex` writes `AGENTS.md` without `CLAUDE.md` or
 Drop the kit into any project, no clone needed:
 
 ```bash
-npx ux-ui-agent-skills@3.0.0 init          # full kit into the current folder
-npx ux-ui-agent-skills@3.0.0 add tokens taste design-systems   # just some areas
-npx ux-ui-agent-skills@3.0.0 list          # see all areas
-npx ux-ui-agent-skills@3.0.0 library get stripe   # fetch one design-system spec
+npx ux-ui-agent-skills@3.1.0 init          # full kit into the current folder
+npx ux-ui-agent-skills@3.1.0 add tokens taste design-systems   # just some areas
+npx ux-ui-agent-skills@3.1.0 list          # see all areas
+npx ux-ui-agent-skills@3.1.0 library get stripe   # fetch one design-system spec
 ```
 
 Flags: `--force` (overwrite existing files) · `--dry-run` (print every file it
@@ -419,7 +419,7 @@ node scripts/accuracy_report.mjs     # 52/52 or it fails, no partial credit
 ```
 
 **34 of them open a real browser, so they need one installed.** `npx
-ux-ui-agent-skills@3.0.0 init` does not install Playwright. Whether `/plugin install`
+ux-ui-agent-skills@3.1.0 init` does not install Playwright. Whether `/plugin install`
 does depends on the Claude Code version: 2.1.301 installed the kit's npm
 dependencies, Playwright included, into the plugin folder. Neither installs the
 browser itself. In a clone, run this once before expecting a full score:
@@ -475,7 +475,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique`: an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-agent-skills@3.0.0 observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
+| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-agent-skills@3.1.0 observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
 | Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/`: cold-start briefs, then `node evals/run.mjs <brief-id>` points 15 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
@@ -542,10 +542,10 @@ twenty more**, through the open `AGENTS.md` convention, and with **Gemini CLI
 and Antigravity**, which read `GEMINI.md` and `.agents/skills/`.
 
 ```bash
-npx ux-ui-agent-skills@3.0.0 init --agent codex    # AGENTS.md + the whole kit
-npx ux-ui-agent-skills@3.0.0 init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
-npx ux-ui-agent-skills@3.0.0 init --agent both     # CLAUDE.md and AGENTS.md
-npx ux-ui-agent-skills@3.0.0 init                  # Claude Code (default)
+npx ux-ui-agent-skills@3.1.0 init --agent codex    # AGENTS.md + the whole kit
+npx ux-ui-agent-skills@3.1.0 init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
+npx ux-ui-agent-skills@3.1.0 init --agent both     # CLAUDE.md and AGENTS.md
+npx ux-ui-agent-skills@3.1.0 init                  # Claude Code (default)
 gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # Gemini CLI, every project
 ```
 

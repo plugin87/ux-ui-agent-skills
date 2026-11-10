@@ -10,9 +10,7 @@ with auto-generated notes instead.
 
 ---
 
-### Unreleased
-
-On the live demo now, in the next npm release.
+### `v3.1.0`
 
 **Five websites, not only dashboards.** `examples/sites/` holds a product launch,
 a two-page shop, a long read in Thai, a neighbourhood restaurant and a Thai public
