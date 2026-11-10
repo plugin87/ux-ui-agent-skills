@@ -399,7 +399,7 @@ function main() {
     const destRoot = path.resolve(rest[0] || process.cwd());
     console.log(`\n${C.bold}Installing full kit${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
     // --agent decides which instruction surface lands. Everything else - tokens,
-    // components, taste, and the 50 gates - is the same either way, because none
+    // components, taste, and every gate - is the same either way, because none
     // of it depends on which agent is reading.
     const surfaces = { claude: ['claude'], codex: ['agentsmd'], both: ['claude', 'agentsmd'], gemini: [] };
     const keep = surfaces[flags.agent];
