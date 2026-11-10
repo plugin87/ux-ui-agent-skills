@@ -9,9 +9,9 @@ kit was installed, and until this script existed nobody had counted:
               plugin directory. The user's cwd is their own project. A
               repo-root-relative name like `scripts/measure_render.mjs` resolves
               against the cwd, where the kit does not exist.
-  init        `npx ux-ui-agent-skills init` copies the kit INTO the project, so
+  init        `npx ux-ui-agent-skills@3.0.0 init` copies the kit INTO the project, so
               repo-root-relative names resolve.
-  skills-add  `npx skills add` copies the skill folders ONLY. accessibility/,
+  skills-add  `npx skills@1.7.6 add` copies the skill folders ONLY. accessibility/,
               taste/, scripts/, components/ and the rest never arrive.
 
 Usage:
@@ -54,7 +54,7 @@ SURFACE = [
     ROOT / ".claude" / "agents",
 ]
 
-# What `npx skills add` brings: the skill folder and nothing else.
+# What `npx skills@1.7.6 add` brings: the skill folder and nothing else.
 SKILLS_ADD_KEEPS = {".claude"}
 
 # A reference to a kit file. Three shapes appear in the surface today:

@@ -29,6 +29,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -135,7 +136,7 @@ const AUDIT = (MIN) => {
   return { total: measured.length, bad };
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_target_size', { fallback: false });
 const fails = [];
 let totalTargets = 0;
 

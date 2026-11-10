@@ -24,7 +24,7 @@ ships JS/CSS to the browser   ships KNOWLEDGE to the model
 
 ```
 ┌─ Install once ─────────────────────────────────────────┐
-│  npx ux-ui-agent-skills init                            │
+│  npx ux-ui-agent-skills@3.0.0 init                            │
 │  → copies the knowledge files + .claude/skills/ in      │
 └────────────────────────────────────────────────────────┘
                           │
@@ -104,7 +104,7 @@ The ten runnable skills: `design-tokens`, `design-component`, `design-code`, `de
 | Perspective | Difficulty | Why |
 |-------------|------------|-----|
 | **Consumer (designer/dev)** | (on) Very easy | Just talk in plain language or type `/skill`. No config, no build, no API to memorize. The complexity is hidden inside the knowledge files. |
-| **Install** | (on) One command | `npx ux-ui-agent-skills init` and you're done. |
+| **Install** | (on) One command | `npx ux-ui-agent-skills@3.0.0 init` and you're done. |
 | **Maintainer (releasing)** | (on) Easy now | A release is two commands (see §5). |
 | **Contributor (adding a component/adapter)** | (partial) Moderate | Must follow the house style and wire the file into `CLAUDE.md`. `workflows/governance.md` is the guide. |
 

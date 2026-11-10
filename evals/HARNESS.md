@@ -58,7 +58,7 @@ Plugin surface: 25 file(s), 156 kit-file reference(s), 0 already variable-guarde
 The 19 skills, 5 commands and 1 agent name 156 kit files between them. Not one
 reference carries a path variable, so on the plugin route (the one the README
 recommends first) every single one resolves against the user's own project,
-where the kit is not. `npx skills add` copies the skill folders alone, so the
+where the kit is not. `npx skills@1.7.6 add` copies the skill folders alone, so the
 same references are missing there too.
 
 `init` is the only route that mostly works, and 32 references still fail on it,
@@ -94,8 +94,8 @@ model to. That is the gap this indicator exists to close.
 ### H5: blind first-pass, per route, 0.333
 
 `evals/RESULTS.md` records four blind runs, all **14/14 on first submission**,
-and every one of them scaffolded with `npx ux-ui-agent-skills new`. Zero blind
-runs have gone through the plugin route or the `npx skills add` route.
+and every one of them scaffolded with `npx ux-ui-agent-skills@3.0.0 new`. Zero blind
+runs have gone through the plugin route or the `npx skills@1.7.6 add` route.
 
 Scored as routes-with-a-passing-blind-run over routes: 1 of 3.
 
@@ -175,7 +175,7 @@ got back.
 >
 > 1. A guarded reference was treated as resolving on **every** route. A variable
 >    fixes *where* the kit root is; it cannot conjure a kit that was never
->    copied. `npx skills add` installs the skill folder alone, so
+>    copied. `npx skills@1.7.6 add` installs the skill folder alone, so
 >    `../../../scripts` points at nothing there no matter how it is spelled.
 >    That alone had the whole exercise reading 1.0.
 > 2. `$KIT` was not in the pattern, so the four agent references disappeared from
@@ -189,7 +189,7 @@ got back.
 
 ## After 1.2 and 1.3: the kit notices when it is missing, and user-only is real
 
-**1.2.** `npx skills add` copies the skill folders alone: no `scripts/`, no
+**1.2.** `npx skills@1.7.6 add` copies the skill folders alone: no `scripts/`, no
 `tokens/`, no `taste/`. Every skill that reads a kit file now opens with a check:
 
 ```
@@ -392,7 +392,7 @@ reasoning reviews the argument instead of the artifact, and it agrees.
 
 It deliberately carries **no `agent:` field**. A plugin namespaces every
 component under the plugin name, so this repo's critic is `design-critic` after
-`npx ux-ui-skills init` and `ux-ui-agent-skills:design-critic` under a plugin
+`npx ux-ui-agent-skills@3.0.0 init` and `ux-ui-agent-skills:design-critic` under a plugin
 install. No single frontmatter value is correct on both routes, and a wrong one
 is `invocation:` again - a field that looks right and silently does nothing. The
 fork loads its brief from a `${CLAUDE_SKILL_DIR}`-relative path instead, which

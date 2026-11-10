@@ -52,7 +52,7 @@ In Claude Code, from a clone of this repo:
 ```
 
 It copies the template, installs the engine areas next to it
-(`npx ux-ui-agent-skills add tokens components taste accessibility workflows content
+(`npx ux-ui-agent-skills@3.0.0 add tokens components taste accessibility workflows content
 frameworks design-systems scripts skills`), and walks the placeholders with you.
 The project brief stays short on purpose: it loads on every turn, so everything
 that is not needed every turn lives in `.claude/rules/` or a skill.
@@ -180,7 +180,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`): token validity, *
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
 ├── .claude/agents/            # design-critic: the adversarial reviewer behind /critique
 │
-├── evals/                     # Cold-start briefs + run.mjs: 14 objective gates on produced work
+├── evals/                     # Cold-start briefs + run.mjs: 15 objective gates on produced work
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
 │
@@ -392,7 +392,7 @@ fires. Budget the always-on number, not the sum.
 ## Look before installing
 
 ```bash
-npx ux-ui-agent-skills demo [dest]     # default: ./ux-ui-demo
+npx ux-ui-agent-skills@3.0.0 demo [dest]     # default: ./ux-ui-demo
 ```
 
 Copies the bundled `examples/` - the reference app, 23 component harnesses, two

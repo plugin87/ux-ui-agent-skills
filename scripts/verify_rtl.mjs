@@ -10,6 +10,7 @@
  */
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -24,7 +25,7 @@ catch {
 const [file] = requireTargets(process.argv.slice(2).filter(a => !a.startsWith('--')), { allowDirs: false });
 if (!file) { console.log('usage: node scripts/verify_rtl.mjs <file.html>'); process.exit(0); }
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'verify_rtl');
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await page.goto('file://' + resolve(file), { waitUntil: 'networkidle' }).catch(() => {});
 await page.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });

@@ -3,7 +3,7 @@
  * PostToolUse on Write and Edit: run the browser-free gates on the file that
  * just changed, and remember that it changed.
  *
- * These four are cheap enough to run on every edit and catch the drift that is
+ * These three are cheap enough to run on every edit and catch the drift that is
  * hardest to see later: a raw hex that bypassed the theme, an emoji used as an
  * icon, a var() that resolves to nothing. A finding exits 2, which is how a
  * PostToolUse hook gets its stderr in front of Claude after the write.

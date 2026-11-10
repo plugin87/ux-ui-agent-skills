@@ -1,0 +1,21 @@
+{
+  "skills": 26,
+  "gates": {
+    "total": 52,
+    "browser": 34,
+    "files": 18
+  },
+  "evals": {
+    "gates": 15,
+    "briefs": 4,
+    "files": 33
+  },
+  "designSystems": {
+    "indexed": 2144,
+    "measured": 2087
+  },
+  "skillMd": {
+    "count": 26,
+    "avgKB": 4.5
+  }
+}

@@ -214,6 +214,26 @@ The whole log, including what is still unproven, is in
 > walks through the Claude Code plugin, the `AGENTS.md` surface for Codex and
 > Cursor, the MCP server, Homebrew and `npx`: what each one installs, and what
 > you give up by choosing it.
+>
+> Every `npx` command in these docs names an exact release
+> (`ux-ui-agent-skills@3.0.0`), so what runs on your machine is the tarball the
+> docs describe, never whatever is newest on npm. `npm version` rewrites every
+> pin in the release commit, and `npm run pins:check` fails if one is missed.
+
+### Prerequisites
+
+- **Node.js 20 or newer**, and **Python 3** for the gates that read files.
+- **Chrome, for 34 of the 52 gates.** Those open your page in a real browser.
+  If Chrome is installed, nothing more is needed. If not, inside a project with
+  the kit: `npm install && npx playwright install chrome`, which uses the
+  Playwright version the kit pins (1.63.0). Without a browser those gates
+  cannot measure, and they never report a pass: run one on its own and it
+  prints `SKIPPED`, run the full report and they count as failing.
+
+Before installing anything, [SECURITY.md](SECURITY.md) lists every file `init`
+writes, what each hook does and when it fires, and the one network request the
+kit makes. `npx ux-ui-agent-skills@3.0.0 init --dry-run` prints the file list
+for your project and changes nothing.
 
 ### Option A: Install as a Claude Code plugin (recommended)
 
@@ -282,7 +302,7 @@ with `REQUIRED, FAILING` instead of passing on nothing.
 ### See it first, install nothing
 
 ```bash
-npx ux-ui-agent-skills demo        # copies the rendered examples and opens them
+npx ux-ui-agent-skills@3.0.0 demo        # copies the rendered examples and opens them
 ```
 
 Every page it opens is a page the gates measure. Delete the folder afterwards;
@@ -292,7 +312,7 @@ nothing was installed. Or skip the copy entirely and use the
 ### Option B: Use it from any MCP client
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp
 ```
 
 Six tools: `list_gates`, `run_gate`, `review_ui`, `get_doctrine`,
@@ -313,7 +333,7 @@ true. Details in [docs/MCP.md](docs/MCP.md).
 
 ```bash
 brew install plugin87/tap/ux-ui-agent-skills
-ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, hooks
+ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, critic
 ux-ui-skills init --agent codex     # AGENTS.md, for Codex, Cursor, Copilot, Aider
 ```
 
@@ -328,13 +348,14 @@ names, and that `--agent codex` writes `AGENTS.md` without `CLAUDE.md` or
 Drop the kit into any project, no clone needed:
 
 ```bash
-npx ux-ui-agent-skills init          # full kit into the current folder
-npx ux-ui-agent-skills add tokens taste design-systems   # just some areas
-npx ux-ui-agent-skills list          # see all areas
-npx ux-ui-agent-skills library get stripe   # fetch one design-system spec
+npx ux-ui-agent-skills@3.0.0 init          # full kit into the current folder
+npx ux-ui-agent-skills@3.0.0 add tokens taste design-systems   # just some areas
+npx ux-ui-agent-skills@3.0.0 list          # see all areas
+npx ux-ui-agent-skills@3.0.0 library get stripe   # fetch one design-system spec
 ```
 
-Flags: `--force` (overwrite existing files) · `--dry` (preview, change nothing).
+Flags: `--force` (overwrite existing files) · `--dry-run` (print every file it
+would write, change nothing).
 
 The 2,144 design-system specs are 27.6MB, and a project uses one or two, so
 `init` does not copy them. It installs an index of every spec with its sha256,
@@ -346,6 +367,26 @@ plugin (Option A) and a clone carry every spec already. To browse all 2,144, ope
 only the first 1,000.
 
 Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#install-from-a-clone) instead.
+
+### Advanced: partial install (skill folders only)
+
+```bash
+npx skills@1.7.6 add plugin87/ux-ui-agent-skills
+```
+
+This copies the 26 skill folders and nothing else: no gates, no tokens, no
+references, no design-system library. It is useful for reading the skills, not
+for building with them. Each skill checks for the kit before it does anything,
+and without it:
+
+- **Most skills run in guidance-only mode.** The reply opens with "Guidance-only
+  mode: the UX/UI Agent Skills kit is not installed here, so no gate ran", states
+  no measured number (no contrast ratio, no N/N, no "passes WCAG"), and ends by
+  naming the gates it skipped and the install command.
+- **Five skills stop instead**, because running the kit is their whole job:
+  `gate`, `ship`, `observe`, `scaffold-project` and `critique`.
+
+To get the verdicts, install the full kit with Option A or Option D.
 
 **Then start using:** open the project in **Claude Code** or any Claude-powered IDE. `CLAUDE.md` loads automatically, activating the agent persona with full access to every tokens / components / taste / design-system file and the runnable `/skills`.
 
@@ -378,7 +419,7 @@ node scripts/accuracy_report.mjs     # 52/52 or it fails, no partial credit
 ```
 
 **34 of them open a real browser, so they need one installed.** `npx
-ux-ui-agent-skills init` does not install Playwright. Whether `/plugin install`
+ux-ui-agent-skills@3.0.0 init` does not install Playwright. Whether `/plugin install`
 does depends on the Claude Code version: 2.1.301 installed the kit's npm
 dependencies, Playwright included, into the plugin folder. Neither installs the
 browser itself. In a clone, run this once before expecting a full score:
@@ -434,7 +475,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique`: an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-skills observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
+| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-agent-skills@3.0.0 observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
 | Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/`: cold-start briefs, then `node evals/run.mjs <brief-id>` points 15 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
@@ -485,6 +526,9 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
 | [docs/BRANCHING.md](docs/BRANCHING.md) | One concern per branch, one commit per merge, and the settings that enforce it |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Why PRs are not merged, what to report instead, and how a gate that can still say no is built |
+| [SECURITY.md](SECURITY.md) | What `init` writes, what each hook does and when, the one network request, no telemetry, and how to report a vulnerability |
+| [scripts/](scripts/) | Every gate, as plain Node and Python you can read. [hooks/](hooks/) holds the three plugin hooks, [mcp/](mcp/) the MCP server, [bin/cli.js](bin/cli.js) the installer |
+| [stats.json](stats.json) | Every count this README states, computed from the files by `scripts/stats.mjs`. `npm test` fails if the prose and the files disagree |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |
 | [.claude/rules/](.claude/rules/) | The depth behind it: tokens and colour, type and spacing, components, accessibility, frameworks, review, brand and operations |
 | [taste/](taste/) | The anti-slop doctrine and motion choreography. The 2,144 design systems live in [design-systems/](design-systems/) |
@@ -498,10 +542,10 @@ twenty more**, through the open `AGENTS.md` convention, and with **Gemini CLI
 and Antigravity**, which read `GEMINI.md` and `.agents/skills/`.
 
 ```bash
-npx ux-ui-agent-skills init --agent codex    # AGENTS.md + the whole kit
-npx ux-ui-agent-skills init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
-npx ux-ui-agent-skills init --agent both     # CLAUDE.md and AGENTS.md
-npx ux-ui-agent-skills init                  # Claude Code (default)
+npx ux-ui-agent-skills@3.0.0 init --agent codex    # AGENTS.md + the whole kit
+npx ux-ui-agent-skills@3.0.0 init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
+npx ux-ui-agent-skills@3.0.0 init --agent both     # CLAUDE.md and AGENTS.md
+npx ux-ui-agent-skills@3.0.0 init                  # Claude Code (default)
 gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # Gemini CLI, every project
 ```
 

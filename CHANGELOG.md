@@ -75,6 +75,58 @@ Thai on it:
 It runs inside the same overflow and spacing check, so the report still has 52
 checks.
 
+**Security and docs: pinned npx versions, SECURITY.md, init --dry-run, graceful
+partial-install fallback, consistent stats.** An outside review (SkillCritic,
+2026-10-29) passed the kit with caveats. Each caveat is answered here, and
+checking the claims before writing them turned up more than the review did.
+
+- **Every `npx` command names an exact release.** The README, docs, skills,
+  rules, MCP configs and the CLI's own help all say
+  `npx ux-ui-agent-skills@<version>`, and `npm version` rewrites every pin in the
+  bump commit. Some docs said `npx ux-ui-skills`. That is a bin inside this
+  package, not a package on npm, so outside a project with the kit installed npx
+  would have looked the name up on the registry, where anyone could register it.
+  `npm run pins:check` fails on any unpinned or stale command, including one
+  that prose wraps onto the next line.
+- **SECURITY.md**, file by file: what `init` writes, what each of the three
+  plugin hooks does and when it fires, the one network request (design-system
+  specs from GitHub, or jsDelivr if that fails, at the indexed tag,
+  sha256-checked), where the MCP server caches, that there is no telemetry, and
+  how to report a vulnerability. Writing it found three claims that were false:
+  `init --help` said it installs hooks (only the plugin does), the fast-gate hook
+  said it ran four checks (three), and a clone's `init` copied
+  `scripts/__pycache__` into the user's project.
+- **`init --dry-run` is exactly true.** It ended with "N copied" while copying
+  nothing; it now says how many files would be written and that nothing changed.
+  A test runs every install command both ways and fails if the lists differ or
+  the dry run creates anything. Another fails if the tarball ships a file git
+  does not track, or gains an install-time script.
+- **A skill installed alone degrades instead of stopping.** `npx skills add`
+  copies the skill folders and nothing else. Each skill now opens with a
+  Requirements section, and without the kit 21 of them run in guidance-only
+  mode: the reply says so in its first line, states no measured number, and ends
+  by naming the gates it skipped. Tried in a real session on a project holding
+  only `a11y-audit`: the reply opened with the guidance-only line, wrote "not
+  verified" where a ratio would go, and listed the three gates it skipped. The
+  five skills whose job is running the kit stop and name the install command.
+- **No browser reads as no browser.** With Playwright installed and no browser
+  that launches, 16 render gates died on a stack trace. All 18 now print
+  `SKIPPED (no browser)` and say nothing was measured, or `REQUIRED, FAILING`
+  under the release bar, as `measure_render` already did.
+- **Every count is derived.** `scripts/stats.mjs` counts skills, gates and how
+  many need a browser, eval gates and briefs, indexed and measured design
+  systems, and the mean SKILL.md size into `stats.json`, and `npm test` fails if
+  any README, doc, manifest or skill states a different number. The review saw
+  50 and 52 gates, 138 and 2,144 systems, and 27 skills. The kit has 52, 2,144
+  and 26: 138 was the library before 3.0, and the 27th SKILL.md is a broken test
+  fixture. The check found three stale figures of its own: 35 of 51 gates in
+  CONTRIBUTING.md, 14 eval gates in the guide, and 50 gates in a CLI comment.
+- **Prerequisites up front** in the README (Node 20, Python 3, Chrome for 34 of
+  the 52 gates), and Playwright pinned to an exact version in devDependencies.
+- **Neutral wording** in two places a scanner read as prompt injection: the
+  critique skill's "You are now running in a forked context", and the critic's
+  claim of fifteen years of experience.
+
 ---
 
 ### `v3.0.0`

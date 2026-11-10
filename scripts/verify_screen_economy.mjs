@@ -37,6 +37,7 @@ import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { join, dirname, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const argv = process.argv.slice(2);
@@ -252,7 +253,7 @@ const MEASURE = ({ T }) => {
 
 const problems = [];
 const warnings = [];
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_screen_economy', { fallback: false });
 
 for (const f of files) {
   const abs = resolve(f);

@@ -36,6 +36,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -60,7 +61,7 @@ const files = statSync(abs).isDirectory()
   ? readdirSync(abs).filter(f => f.endsWith('.html')).map(f => join(abs, f)).sort()
   : [abs];
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_responsive', { fallback: false });
 const fails = [];
 for (const w of widths) {
   const page = await browser.newPage({ viewport: { width: w, height: 800 } });

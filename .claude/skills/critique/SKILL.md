@@ -17,7 +17,7 @@ background: false
 # There is deliberately NO `agent:` field, and it is not an oversight.
 #
 # A plugin namespaces every component under the plugin name, so this repo's
-# critic is `design-critic` when installed with `npx ux-ui-skills init` (a
+# critic is `design-critic` when installed with `npx ux-ui-agent-skills@3.0.0 init` (a
 # project file in .claude/agents/) and `ux-ui-agent-skills:design-critic` when
 # installed as a plugin. One frontmatter value cannot be both, and a wrong one
 # is the `invocation:` failure again: a field that looks right, is silently
@@ -26,19 +26,23 @@ background: false
 # So the fork is generic and the body below loads the critic's instructions from
 # a ${CLAUDE_SKILL_DIR}-relative path, which does resolve on both routes.
 ---
-You are now running in a forked context. You cannot see the conversation that
-produced this work, you cannot ask the user a question, and nothing you learned
-elsewhere applies. Everything you need is below or on disk.
+This skill runs in a forked context. The conversation that produced the work
+is not visible here, there is no way to ask the user a question, and nothing
+from elsewhere applies. Everything the review needs is below or on disk.
 
-**Step 0: is the kit here?**
+## Requirements
 
-```bash
-ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING
-```
+This skill needs the full UX/UI Agent Skills kit: the gates, the references and
+the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
+nothing else, and this skill has no guidance-only mode: its whole job is to
+hand the work to the kit's design-critic agent, so without the kit there is nothing for it to do.
 
-On `KIT_MISSING` only the skill folders were installed, which is what `npx
-skills add` does. Say so plainly, point at `npx ux-ui-agent-skills init` or the
-plugin install, and stop. Do not guess the contents of a file you could not open.
+> **Step 0: is the kit here?** Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING`, say plainly that only the skill folder was installed, name
+> the install command above, and stop. Do not guess the contents of a file you
+> could not open, and do not report a result you did not produce.
 
 **Step 1: take the critic's instructions, in full.**
 

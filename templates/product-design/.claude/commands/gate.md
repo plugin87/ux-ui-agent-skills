@@ -10,7 +10,7 @@ it and re-run rather than reporting a partial pass.
 `src/components/` to sweep all of them.
 
 One-time setup: the render gates drive headless Chrome, so a fresh project needs
-`npm i -D playwright` once. Without it those scripts print `SKIPPED` and exit 0,
+`npm i -D playwright@1.63.0` once. Without it those scripts print `SKIPPED` and exit 0,
 which looks like a pass and is not one.
 
 ## Theme (the source of truth)

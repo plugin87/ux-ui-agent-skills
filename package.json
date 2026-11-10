@@ -9,9 +9,14 @@
     "ux-ui-mcp": "mcp/server.mjs"
   },
   "scripts": {
-    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py && python3 scripts/check_links.py",
+    "test": "node bin/cli.js list >/dev/null && python3 scripts/validate_tokens.py && python3 scripts/validate_contrast.py && python3 scripts/validate_component_spec.py && python3 scripts/lint_hardcodes.py examples/golden && python3 scripts/validate_theme_refs.py && python3 scripts/check_no_emoji.py && python3 scripts/check_links.py && node scripts/stats.mjs --check",
     "test:unit": "node --test tests/unit/*.test.mjs tests/cli/*.test.mjs tests/meta/registry.test.mjs",
     "test:gates": "node --test tests/meta/*.test.mjs tests/unit/*.test.mjs tests/cli/*.test.mjs",
+    "stats": "node scripts/stats.mjs --write",
+    "stats:check": "node scripts/stats.mjs --check",
+    "pins": "node scripts/pin_version.mjs",
+    "pins:check": "node scripts/pin_version.mjs --check",
+    "version": "node scripts/pin_version.mjs && node scripts/stats.mjs --write && git add -u",
     "test:render": "node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html && node scripts/measure_render.mjs --dark examples/sample-app/preview.html",
     "verify": "node scripts/accuracy_report.mjs",
     "taste": "node scripts/taste_audit.mjs",
@@ -40,7 +45,7 @@
   "devDependencies": {
     "axe-core": "4.10.2",
     "esbuild": "^0.28.2",
-    "playwright": "^1.40.0",
+    "playwright": "1.63.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
@@ -51,6 +56,7 @@
     "README.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
+    "SECURITY.md",
     "docs/",
     "examples/",
     "tokens/",

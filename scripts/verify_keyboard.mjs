@@ -40,6 +40,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -180,7 +181,7 @@ const MARK = () => {
   return { controls, composites, orphans, scoped: !!openDialog };
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_keyboard', { fallback: false });
 const problems = [];
 let totalControls = 0, totalComposites = 0;
 

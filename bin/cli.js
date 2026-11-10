@@ -5,13 +5,13 @@
  * Copies the design-system skill kit into a target project.
  * Zero dependencies: Node built-ins only.
  *
- *   npx ux-ui-skills init [dest]        Install the full kit (default dest: cwd)
- *   npx ux-ui-skills new [dest]         Scaffold a NEW product repo from the starter template
- *   npx ux-ui-skills add <area>...      Install specific areas
- *   npx ux-ui-skills list               List available areas
- *   npx ux-ui-skills library get <name> Fetch one design-system spec into this project
- *   npx ux-ui-skills version            Print the installed version
- *   npx ux-ui-skills help
+ *   npx ux-ui-agent-skills@3.0.0 init [dest]        Install the full kit (default dest: cwd)
+ *   npx ux-ui-agent-skills@3.0.0 new [dest]         Scaffold a NEW product repo from the starter template
+ *   npx ux-ui-agent-skills@3.0.0 add <area>...      Install specific areas
+ *   npx ux-ui-agent-skills@3.0.0 list               List available areas
+ *   npx ux-ui-agent-skills@3.0.0 library get <name> Fetch one design-system spec into this project
+ *   npx ux-ui-agent-skills@3.0.0 version            Print the installed version
+ *   npx ux-ui-agent-skills@3.0.0 help
  *
  * Flags: --force (overwrite existing files), --dry (print actions only)
  */
@@ -21,6 +21,9 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
+/* Commands the CLI prints are pinned to the version that is running, so a
+   reader who copies one gets this release, never whatever is newest on npm. */
+const RUN = `npx ux-ui-agent-skills@${require(path.join(ROOT, 'package.json')).version}`;
 
 // area -> source path (relative to package root)
 const AREAS = {
@@ -124,7 +127,8 @@ const C = {
 
 function parseFlags(argv) {
   // agent: which instruction surface to install.
-  //   claude -> CLAUDE.md + .claude/ (skills, hooks: enforced, not requested)
+  //   claude -> CLAUDE.md + .claude/ (skills, rules, the critic agent). Hooks come
+  //             only with the plugin install; init writes no hooks and no settings.
   //   codex  -> AGENTS.md, read by Codex, Cursor, Copilot, Jules, Aider and more
   //   both   -> both files; they are held in step by validate_agents_surface.py
   //   gemini -> GEMINI.md + .agents/skills/, read by Gemini CLI and Antigravity
@@ -191,8 +195,15 @@ function installGemini(destRoot, flags) {
   }
 }
 
+/* Build litter a clone accumulates and the npm tarball already excludes (the
+   same negations as `files` in package.json). Run from a clone, init copied
+   twelve scripts/__pycache__ files into the user's project. */
+const LITTER = new Set(['__pycache__', '.DS_Store']);
+
 function copyRecursive(src, dest, flags) {
   if (NEVER_COPIED.includes(src)) return;
+  const base = path.basename(src);
+  if (LITTER.has(base) || base.endsWith('.pyc')) return;
   const stat = fs.statSync(src);
   if (stat.isDirectory()) {
     if (!flags.dry) fs.mkdirSync(dest, { recursive: true });
@@ -236,6 +247,17 @@ function installAreas(areaKeys, destRoot, flags) {
 // cannot swallow it; the suffix is dropped on the way out.
 const TEMPLATE = path.join('templates', 'product-design');
 
+/* The closing line. A dry run copies nothing, so it must not say "copied". */
+function tally(flags, where = '') {
+  const to = where ? ` → ${where}` : '';
+  if (flags.dry) {
+    const into = where ? ` into ${where}` : '';
+    console.log(`\n${C.bold}Dry run:${C.reset} ${C.green}${copied} file(s) would be written${C.reset}${into}, ${C.yellow}${skipped} skipped${C.reset}. Nothing was changed.`);
+  } else {
+    console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset}${to}`);
+  }
+}
+
 function cmdNew(destRoot, flags) {
   const src = path.join(ROOT, TEMPLATE);
   if (!fs.existsSync(src)) {
@@ -274,7 +296,7 @@ function cmdDemo(destRoot, flags) {
   copyRecursive(src, destRoot, flags);
 
   const index = path.join(destRoot, 'index.html');
-  console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset}`);
+  tally(flags);
   console.log(`\n${C.bold}Start here${C.reset}`);
   console.log(`  ${C.cyan}${index}${C.reset}`);
   console.log(`  ${C.dim}the reference app, 23 component harnesses, light and dark, every page gate-verified${C.reset}`);
@@ -299,8 +321,8 @@ function cmdList() {
   for (const key of Object.keys(AREAS)) {
     console.log(`  ${C.cyan}${key.padEnd(15)}${C.reset} ${DESC[key]}`);
   }
-  console.log(`\n${C.dim}Install all:${C.reset} npx ux-ui-skills init`);
-  console.log(`${C.dim}Install some:${C.reset} npx ux-ui-skills add tokens components taste\n`);
+  console.log(`\n${C.dim}Install all:${C.reset} ${RUN} init`);
+  console.log(`${C.dim}Install some:${C.reset} ${RUN} add tokens components taste\n`);
 }
 
 function help() {
@@ -308,20 +330,20 @@ function help() {
 ${C.bold}ux-ui-agent-skills${C.reset}: install the design-system skill kit
 
 ${C.bold}Usage${C.reset}
-  npx ux-ui-skills ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
-  npx ux-ui-skills ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
-  npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
-  npx ux-ui-skills ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
-  npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
-  npx ux-ui-skills ${C.cyan}library get${C.reset} <name> Fetch a design-system spec into this project (sha256-checked)
-  npx ux-ui-skills ${C.cyan}library pull${C.reset}       Fetch every spec, for offline use
-  npx ux-ui-skills ${C.cyan}observe${C.reset}            Did the agent follow the rules? (--last, --html, --help)
-  npx ux-ui-skills ${C.cyan}version${C.reset}            Print the installed version
-  npx ux-ui-skills ${C.cyan}help${C.reset}
+  ${RUN} ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
+  ${RUN} ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
+  ${RUN} ${C.cyan}add${C.reset} <area>...      Install specific areas
+  ${RUN} ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
+  ${RUN} ${C.cyan}list${C.reset}               List available areas
+  ${RUN} ${C.cyan}library get${C.reset} <name> Fetch a design-system spec into this project (sha256-checked)
+  ${RUN} ${C.cyan}library pull${C.reset}       Fetch every spec, for offline use
+  ${RUN} ${C.cyan}observe${C.reset}            Did the agent follow the rules? (--last, --html, --help)
+  ${RUN} ${C.cyan}version${C.reset}            Print the installed version
+  ${RUN} ${C.cyan}help${C.reset}
 
 ${C.bold}Flags${C.reset}
   --agent <which> init only: which instruction surface to install
-                  ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, hooks
+                  ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, critic
                   ${C.cyan}codex${C.reset}             AGENTS.md (Codex, Cursor, Copilot, Aider, +more)
                   ${C.cyan}both${C.reset}              both files, held in step by a gate
                   ${C.cyan}gemini${C.reset}            GEMINI.md + .agents/skills/ (Gemini CLI, Antigravity)
@@ -330,24 +352,24 @@ ${C.bold}Flags${C.reset}
   --no-open       demo only: copy the examples but do not launch a browser
 
 ${C.bold}Examples${C.reset}
-  npx ux-ui-skills demo
-  npx ux-ui-skills init
-  npx ux-ui-skills init ./my-app
-  npx ux-ui-skills init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
-  npx ux-ui-skills init --agent gemini       ${C.dim}# for Gemini CLI / Antigravity${C.reset}
-  npx ux-ui-skills new ./my-product
-  npx ux-ui-skills add tokens taste design-systems
-  npx ux-ui-skills library get stripe linear-app
-  npx ux-ui-skills add skills --force
+  ${RUN} demo
+  ${RUN} init
+  ${RUN} init ./my-app
+  ${RUN} init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
+  ${RUN} init --agent gemini       ${C.dim}# for Gemini CLI / Antigravity${C.reset}
+  ${RUN} new ./my-product
+  ${RUN} add tokens taste design-systems
+  ${RUN} library get stripe linear-app
+  ${RUN} add skills --force
 `);
 }
 
 /* The next step depends on which surface was installed. Telling a Codex user to
    open Claude Code and run /design-tokens names a file they do not have and a
    mechanism their agent does not implement. */
-function summary(destRoot, agent) {
-  console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset} → ${path.relative(process.cwd(), destRoot) || '.'}`);
-  console.log(`${C.dim}Design systems arrive when used: npx ux-ui-agent-skills library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
+function summary(destRoot, agent, flags) {
+  tally(flags, path.relative(process.cwd(), destRoot) || '.');
+  console.log(`${C.dim}Design systems arrive when used: ${RUN} library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
   if (agent === 'gemini') {
     console.log(`${C.dim}Open the folder in Gemini CLI or Antigravity: GEMINI.md loads automatically. Gemini CLI reads .agents/skills/ only in a trusted folder: trust it when asked, then \`gemini skills list\` shows them.${C.reset}\n`);
   } else if (agent === 'codex') {
@@ -399,7 +421,7 @@ function main() {
     const destRoot = path.resolve(rest[0] || process.cwd());
     console.log(`\n${C.bold}Installing full kit${C.reset} → ${destRoot}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
     // --agent decides which instruction surface lands. Everything else - tokens,
-    // components, taste, and the 50 gates - is the same either way, because none
+    // components, taste, and every gate - is the same either way, because none
     // of it depends on which agent is reading.
     const surfaces = { claude: ['claude'], codex: ['agentsmd'], both: ['claude', 'agentsmd'], gemini: [] };
     const keep = surfaces[flags.agent];
@@ -419,16 +441,16 @@ function main() {
     if (flags.agent === 'gemini') installGemini(destRoot, flags);
     if (flags.agent === 'codex') {
       console.log(`\n  ${C.dim}AGENTS.md installed. Codex, Cursor, Copilot, Jules and ~25 more read it.${C.reset}`);
-      console.log(`  ${C.dim}The .claude/ skills and hooks were not installed - they are Claude Code only.${C.reset}`);
+      console.log(`  ${C.dim}The .claude/ skills were not installed: they are Claude Code only.${C.reset}`);
     }
-    return summary(destRoot, flags.agent);
+    return summary(destRoot, flags.agent, flags);
   }
 
   if (cmd === 'new') {
     const destRoot = path.resolve(rest[0] || process.cwd());
     if (!flags.dry) fs.mkdirSync(destRoot, { recursive: true });
     cmdNew(destRoot, flags);
-    return summary(destRoot);
+    return summary(destRoot, undefined, flags);
   }
 
   if (cmd === 'demo') {
@@ -439,13 +461,13 @@ function main() {
 
   if (cmd === 'add') {
     if (!rest.length) {
-      console.error(`${C.red}error:${C.reset} specify at least one area. See: npx ux-ui-skills list`);
+      console.error(`${C.red}error:${C.reset} specify at least one area. See: ${RUN} list`);
       process.exit(1);
     }
     const destRoot = process.cwd();
     console.log(`\n${C.bold}Installing:${C.reset} ${rest.join(', ')}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
     installAreas(rest, destRoot, flags);
-    return summary(destRoot);
+    return summary(destRoot, undefined, flags);
   }
 
   console.error(`${C.red}unknown command:${C.reset} ${cmd}\n`);

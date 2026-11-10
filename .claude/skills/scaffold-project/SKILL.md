@@ -8,12 +8,19 @@ description: Scaffold a new design-product project that matches the recommended 
 # listing budget the model's skill choice is drawn from.
 disable-model-invocation: true
 ---
-> **Step 0: is the kit here?** This skill reads files from the kit. Check once:
+## Requirements
+
+This skill needs the full UX/UI Agent Skills kit: the gates, the references and
+the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
+nothing else, and this skill has no guidance-only mode: its whole job is to
+copy the kit's starter template, so without the kit there is nothing for it to do.
+
+> **Step 0: is the kit here?** Check once:
 > `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
-> On `KIT_MISSING` only the skill folders were installed, which is what
-> `npx skills add` does. Say so plainly, point the user at
-> `npx ux-ui-agent-skills init` or the plugin install, and stop. Do not guess the
-> contents of a file you could not open.
+> On `KIT_MISSING`, say plainly that only the skill folder was installed, name
+> the install command above, and stop. Do not guess the contents of a file you
+> could not open, and do not report a result you did not produce.
 
 Generate a new design-project skeleton from `${CLAUDE_SKILL_DIR}/../../../templates/product-design/` into a target directory the user names.
 
@@ -43,7 +50,7 @@ The layout to produce (exactly the reference structure):
 The fast path, when the kit is installed or reachable via npx:
 
 ```
-npx ux-ui-agent-skills new <target>
+npx ux-ui-agent-skills@3.0.0 new <target>
 ```
 
 That does steps 2 and 3 below in one call (template copied, `CLAUDE.local.md`
@@ -66,14 +73,14 @@ Steps:
 3. Install the engine next to it so the gates the brief references actually run:
 
    ```
-   npx ux-ui-agent-skills add tokens components taste accessibility \
+   npx ux-ui-agent-skills@3.0.0 add tokens components taste accessibility \
        workflows content frameworks design-systems scripts skills
    ```
 
    Use `add`, not `init`: `init` also writes the full engine `CLAUDE.md` over the
    lean project brief. The project brief stays short by design, and the engine
    knowledge loads from the copied folders when a task needs it.
-4. Install the render gates' one dependency in the target: `npm i -D playwright`.
+4. Install the render gates' one dependency in the target: `npm i -D playwright@1.63.0`.
    Skipping this is silent: every render gate prints `SKIPPED` and exits 0.
 5. Fill in the placeholders in `CLAUDE.md` with the user: product, primary user,
    stack, icon set, vocabulary. Leave nothing in angle brackets behind.

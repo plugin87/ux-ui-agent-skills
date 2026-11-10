@@ -22,12 +22,12 @@
 | คุณใช้อะไร | พิมพ์อันนี้ | ได้อะไร |
 |---|---|---|
 | **Claude Code** | `/plugin marketplace add plugin87/ux-ui-agent-skills` | ครบที่สุด มีตัวบังคับอัตโนมัติ |
-| **Codex, Cursor, Copilot** | `npx ux-ui-agent-skills init --agent codex` | ได้ความรู้กับเครื่องมือตรวจครบ |
+| **Codex, Cursor, Copilot** | `npx ux-ui-agent-skills@3.0.0 init --agent codex` | ได้ความรู้กับเครื่องมือตรวจครบ |
 | **Gemini CLI** | `gemini extensions install https://github.com/plugin87/ux-ui-agent-skills` | `GEMINI.md`, skill ที่แปลงแล้ว 23 ตัว, MCP server |
-| **Antigravity** (หรือ Gemini CLI รายโปรเจกต์) | `npx ux-ui-agent-skills init --agent gemini` | `GEMINI.md` + `.agents/skills/` + เครื่องมือตรวจครบ |
-| **MCP client อื่นๆ** | `claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp` | เรียกเครื่องมือตรวจเป็น tool ได้ |
+| **Antigravity** (หรือ Gemini CLI รายโปรเจกต์) | `npx ux-ui-agent-skills@3.0.0 init --agent gemini` | `GEMINI.md` + `.agents/skills/` + เครื่องมือตรวจครบ |
+| **MCP client อื่นๆ** | `claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp` | เรียกเครื่องมือตรวจเป็น tool ได้ |
 | **อยากได้คำสั่งในเครื่อง** | `brew install plugin87/tap/ux-ui-agent-skills` | ใช้ได้ทุกโปรเจกต์ |
-| **แค่อยากลองดู** | `npx ux-ui-agent-skills demo` | เปิดตัวอย่างดู ไม่ติดตั้งอะไร |
+| **แค่อยากลองดู** | `npx ux-ui-agent-skills@3.0.0 demo` | เปิดตัวอย่างดู ไม่ติดตั้งอะไร |
 
 ---
 
@@ -53,7 +53,7 @@
 
 ```bash
 cd โปรเจกต์ของคุณ
-npx ux-ui-agent-skills init --agent codex
+npx ux-ui-agent-skills@3.0.0 init --agent codex
 ```
 
 สร้างไฟล์ `AGENTS.md` ไว้ที่รากโปรเจกต์ ซึ่งเป็นมาตรฐานเปิดที่เครื่องมือราว 25 ตัว
@@ -62,7 +62,7 @@ npx ux-ui-agent-skills init --agent codex
 
 ตัวสเปกไม่ได้ copy มาทั้งหมด จะดึงมาเฉพาะชุดที่ใช้: `node scripts/library.mjs get <ชื่อ>`
 จะเขียนไฟล์ไว้ที่ `design-systems/library/<ชื่อ>/DESIGN.md` และจะไม่ยอมเขียนถ้า sha256
-ไม่ตรงกับสารบัญ ถ้าต้องทำงานแบบไม่มีเน็ต สั่ง `npx ux-ui-agent-skills library pull`
+ไม่ตรงกับสารบัญ ถ้าต้องทำงานแบบไม่มีเน็ต สั่ง `npx ux-ui-agent-skills@3.0.0 library pull`
 เพื่อดึงมาครบทุกชุด
 
 มันจงใจ**ไม่**สร้างโฟลเดอร์ `.claude/` เพราะ skills กับ hooks เป็นกลไกของ Claude Code
@@ -77,7 +77,7 @@ npx ux-ui-agent-skills init --agent codex
 อยากได้ทั้งสองแบบ:
 
 ```bash
-npx ux-ui-agent-skills init --agent both
+npx ux-ui-agent-skills@3.0.0 init --agent both
 ```
 
 ---
@@ -88,7 +88,7 @@ npx ux-ui-agent-skills init --agent both
 
 ```bash
 gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # ใช้ได้ทุกโปรเจกต์
-npx ux-ui-agent-skills init --agent gemini                                  # เฉพาะโปรเจกต์นี้
+npx ux-ui-agent-skills@3.0.0 init --agent gemini                                  # เฉพาะโปรเจกต์นี้
 ```
 
 **แบบ extension** คือไฟล์ที่แนบไว้กับทุก release ซึ่ง `gemini extensions install`
@@ -114,11 +114,11 @@ Antigravity เอง แต่ยังไม่ได้ลองใช้ง�
 ## 3. MCP: ให้ client ไหนก็รันเครื่องมือตรวจได้
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp
 ```
 
 > **`--package=` ห้ามลืม** ชื่อ package บังเอิญตรงกับชื่อคำสั่งตัวหนึ่ง
-> ถ้าพิมพ์ `npx -y ux-ui-agent-skills ux-ui-mcp` มันจะไปรันตัวติดตั้งแทน
+> ถ้าพิมพ์ `npx -y ux-ui-agent-skills@3.0.0 ux-ui-mcp` มันจะไปรันตัวติดตั้งแทน
 > แล้วพ่นหน้าช่วยเหลือออกมา ทำให้ client เชื่อมต่อไม่ติด
 
 ได้ 6 เครื่องมือ
@@ -166,10 +166,10 @@ brew upgrade ux-ui-agent-skills
 ## 5. npx: ไม่ติดตั้งอะไรเลย
 
 ```bash
-npx ux-ui-agent-skills demo        # เปิดตัวอย่างดู
-npx ux-ui-agent-skills init        # ลงทั้งชุดในโฟลเดอร์ปัจจุบัน
-npx ux-ui-agent-skills new ./app   # สร้างโปรเจกต์ใหม่จากโครงตั้งต้น
-npx ux-ui-agent-skills list        # ดูว่ามีอะไรให้บ้าง
+npx ux-ui-agent-skills@3.0.0 demo        # เปิดตัวอย่างดู
+npx ux-ui-agent-skills@3.0.0 init        # ลงทั้งชุดในโฟลเดอร์ปัจจุบัน
+npx ux-ui-agent-skills@3.0.0 new ./app   # สร้างโปรเจกต์ใหม่จากโครงตั้งต้น
+npx ux-ui-agent-skills@3.0.0 list        # ดูว่ามีอะไรให้บ้าง
 ```
 
 `demo` เปิดหน้าที่ผ่านเครื่องมือตรวจมาแล้ว ดูเสร็จลบโฟลเดอร์ทิ้งได้ ไม่มีอะไรค้างในเครื่อง

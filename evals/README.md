@@ -16,7 +16,7 @@ actually uses, because it can be run on demand.
 **A. A fresh human session.** Open a new session in a directory with the kit
 installed and paste the brief. No prior conversation, no hints.
 
-**B. A blind subagent.** Scaffold a clean project (`npx ux-ui-agent-skills new
+**B. A blind subagent.** Scaffold a clean project (`npx ux-ui-agent-skills@3.0.0 new
 <dir>`, which installs the kit but ships no example screens), then hand a subagent
 the brief and the project path and nothing else. The subagent does not see the
 conversation that built the kit, so it meets `CLAUDE.md` and the rules the way a
@@ -27,8 +27,8 @@ and it counts as a result rather than as cheating.
 
 
 1. **Cold start.** Open a fresh session in a directory that has the kit installed
-   (`npx ux-ui-agent-skills init`, or a repo scaffolded with
-   `npx ux-ui-agent-skills new`). No prior conversation, no hints, no follow-up
+   (`npx ux-ui-agent-skills@3.0.0 init`, or a repo scaffolded with
+   `npx ux-ui-agent-skills@3.0.0 new`). No prior conversation, no hints, no follow-up
    coaching. Coaching the agent through the brief invalidates the run.
 2. **Give it the brief, verbatim.** Paste the body of `briefs/<id>.md`. Nothing
    else. If you find yourself explaining what you meant, the brief needs editing
