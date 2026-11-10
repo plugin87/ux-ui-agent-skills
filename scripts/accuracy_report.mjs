@@ -8,11 +8,21 @@
  * or brand fidelity (no tool can); it claims token-consistency, theme-resolution,
  * WCAG contrast (real headless-Chrome render, light + dark), and no-emoji.
  *
- * Usage: node scripts/accuracy_report.mjs
+ * Usage: node scripts/accuracy_report.mjs [--jobs N]
  * Exit 0 only if 100% of checks pass.
+ *
+ * --jobs N (or ACCURACY_JOBS=N) runs N checks at once. The default is 4, or 1
+ * on a machine with fewer than 8 cores. Every check is independent: none reads
+ * a file another one writes (the one that renders framework source into dist/
+ * also measures it, inside the same command). Results print in the order the
+ * checks are listed, whatever order they finish in, so two runs read the same.
+ * More jobs means more Chrome instances at once; if a run reports a
+ * TimeoutError, that is load, not a finding: rerun with --jobs 1 before
+ * reading anything into it.
  */
-import { execSync } from 'node:child_process';
+import { exec } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { cpus } from 'node:os';
 import { writeReceipt } from './gate.mjs';
 
 const checks = [
@@ -132,26 +142,62 @@ const filesIn = (cmd) => [...new Set(
 
 let recorded = 0, unrecorded = 0;
 
-for (const [label, cmd] of checks) {
-  let ok = true, out = '';
-  const at = new Date().toISOString();
-  try { out = execSync(cmd, { stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, DS_REQUIRE_BROWSER: '1' } }).toString(); }
-  catch (e) { ok = false; out = (e.stdout || '').toString() + (e.stderr || '').toString(); }
-  console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${label}`);
-  if (ok) pass++; else fails.push([label, out.trim().split('\n').slice(-6).join('\n')]);
+function jobs() {
+  const i = process.argv.indexOf('--jobs');
+  const raw = i > -1 ? process.argv[i + 1] : process.env.ACCURACY_JOBS;
+  if (raw !== undefined) {
+    const n = Number(raw);
+    if (!Number.isInteger(n) || n < 1) { console.error(`--jobs must be a whole number of 1 or more, got "${raw}"`); process.exit(2); }
+    return n;
+  }
+  return cpus().length >= 8 ? 4 : 1;
+}
 
-  /* Record what this check measured, so the result can be traced to the bytes
-     it was measured against rather than to this scrollback. A check that names
-     no file - the ones that scan a whole tree by default - leaves no receipt,
-     and the count below says so instead of pretending otherwise. */
-  const files = filesIn(cmd);
-  if (files.length) {
-    writeReceipt({ gate: 'accuracy_report', args: [label], exit: ok ? 0 : 1, files, at });
-    recorded++;
-  } else {
-    unrecorded++;
+function runCheck(cmd) {
+  const at = new Date().toISOString();
+  return new Promise(done => exec(cmd,
+    { env: { ...process.env, DS_REQUIRE_BROWSER: '1' }, maxBuffer: 1 << 26 },
+    (err, stdout, stderr) => done({ ok: !err, out: `${stdout || ''}${stderr || ''}`, at })));
+}
+
+const JOBS = Math.min(jobs(), checks.length);
+console.log(` ${checks.length} checks, ${JOBS} at a time\n`);
+const results = new Array(checks.length);
+let next = 0, printed = 0;
+
+/* Print each result as soon as every check before it has finished, so the
+   output is in list order and still streams. */
+function flush() {
+  while (printed < checks.length && results[printed]) {
+    const [label, cmd] = checks[printed];
+    const { ok, out, at } = results[printed];
+    console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${label}`);
+    if (ok) pass++; else fails.push([label, out.trim().split('\n').slice(-6).join('\n')]);
+
+    /* Record what this check measured, so the result can be traced to the bytes
+       it was measured against rather than to this scrollback. A check that names
+       no file - the ones that scan a whole tree by default - leaves no receipt,
+       and the count below says so instead of pretending otherwise. */
+    const files = filesIn(cmd);
+    if (files.length) {
+      writeReceipt({ gate: 'accuracy_report', args: [label], exit: ok ? 0 : 1, files, at });
+      recorded++;
+    } else {
+      unrecorded++;
+    }
+    printed++;
   }
 }
+
+async function worker() {
+  while (next < checks.length) {
+    const i = next++;
+    results[i] = await runCheck(checks[i][1]);
+    flush();
+  }
+}
+await Promise.all(Array.from({ length: JOBS }, worker));
+if (printed !== checks.length) { console.error(`accuracy_report: ${checks.length - printed} check(s) produced no result`); process.exit(2); }
 
 const pct = Math.round((pass / checks.length) * 100);
 console.log('-'.repeat(64));

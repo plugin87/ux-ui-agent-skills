@@ -10,6 +10,17 @@ with auto-generated notes instead.
 
 ---
 
+### Unreleased
+
+**The accuracy report runs four checks at a time.** `node
+scripts/accuracy_report.mjs` took 23 minutes 31 seconds one check after another
+on the maintainer's 18-core Mac, and 7 minutes 31 seconds with four at once:
+52/52 both ways, measured the same day on the same commit. Results still print
+in list order, so two runs read the same. The default is 4 on a machine with 8
+or more cores and 1 below that, and `--jobs N` or `ACCURACY_JOBS` sets it. More
+jobs means more Chrome at once, so a TimeoutError under load is load, not a
+finding: rerun with `--jobs 1` before reading anything into it.
+
 ### `v3.1.0`
 
 **Five websites, not only dashboards.** `examples/sites/` holds a product launch,
