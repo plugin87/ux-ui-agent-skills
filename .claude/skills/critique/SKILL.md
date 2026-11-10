@@ -26,9 +26,9 @@ background: false
 # So the fork is generic and the body below loads the critic's instructions from
 # a ${CLAUDE_SKILL_DIR}-relative path, which does resolve on both routes.
 ---
-You are now running in a forked context. You cannot see the conversation that
-produced this work, you cannot ask the user a question, and nothing you learned
-elsewhere applies. Everything you need is below or on disk.
+This skill runs in a forked context. The conversation that produced the work
+is not visible here, there is no way to ask the user a question, and nothing
+from elsewhere applies. Everything the review needs is below or on disk.
 
 ## Requirements
 
