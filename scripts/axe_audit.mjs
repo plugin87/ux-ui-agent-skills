@@ -15,6 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -31,7 +32,7 @@ const dark = argv.includes('--dark');
 const [file] = requireTargets(argv.filter(a => !a.startsWith('--')), { allowDirs: false });
 if (!file) { console.log('usage: node scripts/axe_audit.mjs <file.html> [--dark]'); process.exit(0); }
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'axe_audit');
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await page.goto('file://' + resolve(file), { waitUntil: 'networkidle' }).catch(() => {});
 /* Kill transitions BEFORE flipping the theme. Without this, axe samples colours

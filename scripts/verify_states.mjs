@@ -11,6 +11,7 @@
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
 import { COLOR_INIT } from './_color.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -32,7 +33,7 @@ function L([r, g, b]) { return .2126 * lin(r) + .7152 * lin(g) + .0722 * lin(b);
 function ratio(a, b) { const l1 = L(a), l2 = L(b), hi = Math.max(l1, l2), lo = Math.min(l1, l2); return (hi + .05) / (lo + .05); }
 const parse = c => (c ? c.slice(0, 3) : null);
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'verify_states');
 const page = await browser.newPage({ viewport: { width: 1000, height: 800 } });
 await page.addInitScript(COLOR_INIT);
 await page.goto('file://' + resolve(file), { waitUntil: 'networkidle' }).catch(() => {});

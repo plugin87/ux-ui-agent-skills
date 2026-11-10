@@ -38,6 +38,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -139,7 +140,7 @@ const FINGERPRINT = (sel) => {
   return parts.join('~');
 };
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'verify_interactive');
 const dead = [], inert = [], invisible = [];
 let checked = 0;
 

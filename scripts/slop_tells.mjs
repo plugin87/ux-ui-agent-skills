@@ -27,6 +27,7 @@
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
 import { COLOR_INIT } from './_color.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -44,7 +45,7 @@ const dark = argv.includes('--dark');
 const files = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!files.length) { console.log('usage: node scripts/slop_tells.mjs <file.html...> [--dark] [--strict]'); process.exit(0); }
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'slop_tells');
 let high = 0;
 
 for (const f of files) {

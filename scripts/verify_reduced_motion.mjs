@@ -26,6 +26,7 @@
 import { readdirSync, statSync, readFileSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -116,7 +117,7 @@ const SNAPSHOT = ({ THRESHOLD, linkedCss }) => {
   return { hasPolicy, declaresMotion, visible, moving, busy };
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_reduced_motion', { fallback: false });
 const problems = [];
 
 for (const f of files) {

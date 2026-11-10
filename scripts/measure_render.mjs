@@ -58,7 +58,7 @@ catch {
       console.log('Fix: npm install && npx playwright install chrome');
       process.exit(1);
     }
-    console.log('measure_render: no browser available: SKIPPED');
+    console.log('measure_render: SKIPPED (no browser). Nothing was measured, so this is not a pass.');
     process.exit(0);
   }
 }

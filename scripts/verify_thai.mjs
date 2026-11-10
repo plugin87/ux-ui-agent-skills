@@ -43,6 +43,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -273,7 +274,7 @@ const AUDIT = ({ COMPOUNDS, BOUND, CLASSIFIERS, NUMBER_WORDS, PREFIXES }) => {
   return { splits: [...new Set(splits)], numbers: [...new Set(numbers)], collisions };
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'verify_thai', { fallback: false });
 const fails = [];
 for (const f of files) {
   for (const w of widths) {

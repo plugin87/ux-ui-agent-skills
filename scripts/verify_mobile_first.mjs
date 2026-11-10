@@ -103,7 +103,7 @@ try {
     console.log('Fix: npm install && npx playwright install chrome');
     process.exit(1);
   }
-  console.log('SKIPPED: no browser available. This measured NOTHING - not a pass.');
+  console.log('verify_mobile_first: SKIPPED (no browser). Nothing was measured, so this is not a pass.');
   process.exit(0);
 }
 

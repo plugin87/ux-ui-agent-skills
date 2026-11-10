@@ -36,3 +36,25 @@ for (const gate of gates) {
     assert.notEqual(r.status, 0, `${gate} exited 0 with no browser:\n${out}`);
   });
 }
+
+/* screenshot_docs.mjs writes the README images; it is a docs tool, not a gate,
+   and has nothing to skip to. counts.test.mjs exempts it the same way. */
+for (const gate of gates.filter(g => g !== 'screenshot_docs.mjs')) {
+  test(`${gate} says SKIPPED (no browser), not a stack trace, when it is not required`, () => {
+    /* Run on its own, a gate on a machine without a browser is allowed to
+       skip, as the README states. It must say which: the browser, in those
+       words, and that nothing was measured. Sixteen gates used to die on a
+       Playwright stack trace here instead. */
+    const args = gate === 'verify_focustrap.mjs' ? [page, '--open=button'] : [page];
+    const env = { ...process.env };
+    delete env.DS_REQUIRE_BROWSER;
+    const r = spawnSync('node', ['--import', register, join(ROOT, 'scripts', gate), ...args], {
+      cwd: ROOT, encoding: 'utf8', timeout: 60000, env,
+    });
+    const out = (r.stdout || '') + (r.stderr || '');
+    assert.equal(r.status, 0, `${gate} exited ${r.status}:\n${out}`);
+    assert.match(out, /SKIPPED \(no browser\)/, `${gate} did not name the missing browser:\n${out}`);
+    assert.match(out, /not a pass/, `${gate} did not say nothing was measured`);
+    assert.doesNotMatch(out, /\n\s+at /, `${gate} printed a stack trace`);
+  });
+}

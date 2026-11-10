@@ -32,6 +32,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
 import { COLOR_INIT } from './_color.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -147,7 +148,7 @@ const dist = (a, b) => {
   return Math.hypot(x - p, y - q, z - r);
 };
 
-const browser = await chromium.launch({ channel: 'chrome' });
+const browser = await launchOrSkip(chromium, 'lint_intent', { fallback: false });
 const problems = [];
 const byLabel = new Map();
 let checked = 0;

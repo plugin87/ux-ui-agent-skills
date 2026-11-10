@@ -11,6 +11,7 @@
  */
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { launchOrSkip } from './_browser.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -41,7 +42,7 @@ if (!file || !open) {
   process.exit(2);
 }
 
-const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
+const browser = await launchOrSkip(chromium, 'verify_focustrap');
 const page = await browser.newPage({ viewport: { width: 1100, height: 800 } });
 await page.goto('file://' + resolve(file), { waitUntil: 'networkidle' }).catch(() => {});
 if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
