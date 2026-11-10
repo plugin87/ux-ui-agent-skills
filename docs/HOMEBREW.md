@@ -7,7 +7,7 @@ brew install plugin87/tap/ux-ui-agent-skills
 Then, in any project:
 
 ```bash
-ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, hooks
+ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, critic
 ux-ui-skills init --agent codex     # AGENTS.md, for Codex, Cursor, Copilot, Aider
 ux-ui-skills init --agent both
 ```

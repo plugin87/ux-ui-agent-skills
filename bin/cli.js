@@ -127,7 +127,8 @@ const C = {
 
 function parseFlags(argv) {
   // agent: which instruction surface to install.
-  //   claude -> CLAUDE.md + .claude/ (skills, hooks: enforced, not requested)
+  //   claude -> CLAUDE.md + .claude/ (skills, rules, the critic agent). Hooks come
+  //             only with the plugin install; init writes no hooks and no settings.
   //   codex  -> AGENTS.md, read by Codex, Cursor, Copilot, Jules, Aider and more
   //   both   -> both files; they are held in step by validate_agents_surface.py
   //   gemini -> GEMINI.md + .agents/skills/, read by Gemini CLI and Antigravity
@@ -194,8 +195,15 @@ function installGemini(destRoot, flags) {
   }
 }
 
+/* Build litter a clone accumulates and the npm tarball already excludes (the
+   same negations as `files` in package.json). Run from a clone, init copied
+   twelve scripts/__pycache__ files into the user's project. */
+const LITTER = new Set(['__pycache__', '.DS_Store']);
+
 function copyRecursive(src, dest, flags) {
   if (NEVER_COPIED.includes(src)) return;
+  const base = path.basename(src);
+  if (LITTER.has(base) || base.endsWith('.pyc')) return;
   const stat = fs.statSync(src);
   if (stat.isDirectory()) {
     if (!flags.dry) fs.mkdirSync(dest, { recursive: true });
@@ -239,6 +247,17 @@ function installAreas(areaKeys, destRoot, flags) {
 // cannot swallow it; the suffix is dropped on the way out.
 const TEMPLATE = path.join('templates', 'product-design');
 
+/* The closing line. A dry run copies nothing, so it must not say "copied". */
+function tally(flags, where = '') {
+  const to = where ? ` → ${where}` : '';
+  if (flags.dry) {
+    const into = where ? ` into ${where}` : '';
+    console.log(`\n${C.bold}Dry run:${C.reset} ${C.green}${copied} file(s) would be written${C.reset}${into}, ${C.yellow}${skipped} skipped${C.reset}. Nothing was changed.`);
+  } else {
+    console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset}${to}`);
+  }
+}
+
 function cmdNew(destRoot, flags) {
   const src = path.join(ROOT, TEMPLATE);
   if (!fs.existsSync(src)) {
@@ -277,7 +296,7 @@ function cmdDemo(destRoot, flags) {
   copyRecursive(src, destRoot, flags);
 
   const index = path.join(destRoot, 'index.html');
-  console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset}`);
+  tally(flags);
   console.log(`\n${C.bold}Start here${C.reset}`);
   console.log(`  ${C.cyan}${index}${C.reset}`);
   console.log(`  ${C.dim}the reference app, 23 component harnesses, light and dark, every page gate-verified${C.reset}`);
@@ -324,7 +343,7 @@ ${C.bold}Usage${C.reset}
 
 ${C.bold}Flags${C.reset}
   --agent <which> init only: which instruction surface to install
-                  ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, hooks
+                  ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, critic
                   ${C.cyan}codex${C.reset}             AGENTS.md (Codex, Cursor, Copilot, Aider, +more)
                   ${C.cyan}both${C.reset}              both files, held in step by a gate
                   ${C.cyan}gemini${C.reset}            GEMINI.md + .agents/skills/ (Gemini CLI, Antigravity)
@@ -348,8 +367,8 @@ ${C.bold}Examples${C.reset}
 /* The next step depends on which surface was installed. Telling a Codex user to
    open Claude Code and run /design-tokens names a file they do not have and a
    mechanism their agent does not implement. */
-function summary(destRoot, agent) {
-  console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset} → ${path.relative(process.cwd(), destRoot) || '.'}`);
+function summary(destRoot, agent, flags) {
+  tally(flags, path.relative(process.cwd(), destRoot) || '.');
   console.log(`${C.dim}Design systems arrive when used: ${RUN} library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
   if (agent === 'gemini') {
     console.log(`${C.dim}Open the folder in Gemini CLI or Antigravity: GEMINI.md loads automatically. Gemini CLI reads .agents/skills/ only in a trusted folder: trust it when asked, then \`gemini skills list\` shows them.${C.reset}\n`);
@@ -422,16 +441,16 @@ function main() {
     if (flags.agent === 'gemini') installGemini(destRoot, flags);
     if (flags.agent === 'codex') {
       console.log(`\n  ${C.dim}AGENTS.md installed. Codex, Cursor, Copilot, Jules and ~25 more read it.${C.reset}`);
-      console.log(`  ${C.dim}The .claude/ skills and hooks were not installed - they are Claude Code only.${C.reset}`);
+      console.log(`  ${C.dim}The .claude/ skills were not installed: they are Claude Code only.${C.reset}`);
     }
-    return summary(destRoot, flags.agent);
+    return summary(destRoot, flags.agent, flags);
   }
 
   if (cmd === 'new') {
     const destRoot = path.resolve(rest[0] || process.cwd());
     if (!flags.dry) fs.mkdirSync(destRoot, { recursive: true });
     cmdNew(destRoot, flags);
-    return summary(destRoot);
+    return summary(destRoot, undefined, flags);
   }
 
   if (cmd === 'demo') {
@@ -448,7 +467,7 @@ function main() {
     const destRoot = process.cwd();
     console.log(`\n${C.bold}Installing:${C.reset} ${rest.join(', ')}${flags.dry ? C.dim + ' (dry run)' + C.reset : ''}\n`);
     installAreas(rest, destRoot, flags);
-    return summary(destRoot);
+    return summary(destRoot, undefined, flags);
   }
 
   console.error(`${C.red}unknown command:${C.reset} ${cmd}\n`);
