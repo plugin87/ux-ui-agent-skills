@@ -145,7 +145,8 @@ function rules(s) {
     { what: 'gates (accuracy report)', want: s.gates.total, re: /of the (\d+) (?:gates|checks)\b/g, evals: false },
     { what: 'gates (evals/run.mjs)', want: s.evals.gates, re: new RegExp(`${N} (?:objective )?gates\\b`, 'g'), evals: true },
     { what: 'browser gates', want: s.gates.browser, re: new RegExp(`${N} (?:of them |of the \\d+ (?:gates|checks) )?open a real`, 'g') },
-    { what: 'browser gates', want: s.gates.browser, re: /needed by (\d+) of the/g },
+    /* "34 of the 52 gates" only ever names the browser subset in these docs. */
+    { what: 'browser gates', want: s.gates.browser, re: /(?<![\w.,])(\d+) of the \d+ (?:gates|checks)\b/g },
     { what: 'browser gates', want: s.gates.browser, re: /those (\d+) report/g },
     { what: 'file-reading gates', want: s.gates.files, re: new RegExp(`${N} read\\s+files`, 'g') },
     { what: 'skills', want: s.skills, re: new RegExp(`${N} (?:runnable )?skills\\b`, 'g') },

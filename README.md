@@ -220,6 +220,21 @@ The whole log, including what is still unproven, is in
 > docs describe, never whatever is newest on npm. `npm version` rewrites every
 > pin in the release commit, and `npm run pins:check` fails if one is missed.
 
+### Prerequisites
+
+- **Node.js 20 or newer**, and **Python 3** for the gates that read files.
+- **Chrome, for 34 of the 52 gates.** Those open your page in a real browser.
+  If Chrome is installed, nothing more is needed. If not, inside a project with
+  the kit: `npm install && npx playwright install chrome`, which uses the
+  Playwright version the kit pins (1.63.0). Without a browser those gates
+  cannot measure, and they never report a pass: run one on its own and it
+  prints `SKIPPED`, run the full report and they count as failing.
+
+Before installing anything, [SECURITY.md](SECURITY.md) lists every file `init`
+writes, what each hook does and when it fires, and the one network request the
+kit makes. `npx ux-ui-agent-skills@3.0.0 init --dry-run` prints the file list
+for your project and changes nothing.
+
 ### Option A: Install as a Claude Code plugin (recommended)
 
 Two lines in Claude Code, and every skill, command, and agent is available in any
@@ -318,7 +333,7 @@ true. Details in [docs/MCP.md](docs/MCP.md).
 
 ```bash
 brew install plugin87/tap/ux-ui-agent-skills
-ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, hooks
+ux-ui-skills init                   # CLAUDE.md + .claude/ skills, rules, critic
 ux-ui-skills init --agent codex     # AGENTS.md, for Codex, Cursor, Copilot, Aider
 ```
 
@@ -339,7 +354,8 @@ npx ux-ui-agent-skills@3.0.0 list          # see all areas
 npx ux-ui-agent-skills@3.0.0 library get stripe   # fetch one design-system spec
 ```
 
-Flags: `--force` (overwrite existing files) · `--dry` (preview, change nothing).
+Flags: `--force` (overwrite existing files) · `--dry-run` (print every file it
+would write, change nothing).
 
 The 2,144 design-system specs are 27.6MB, and a project uses one or two, so
 `init` does not copy them. It installs an index of every spec with its sha256,
@@ -351,6 +367,26 @@ plugin (Option A) and a clone carry every spec already. To browse all 2,144, ope
 only the first 1,000.
 
 Working on the kit itself, or want it vendored? [Clone and copy](docs/GUIDE.md#install-from-a-clone) instead.
+
+### Advanced: partial install (skill folders only)
+
+```bash
+npx skills@1.7.6 add plugin87/ux-ui-agent-skills
+```
+
+This copies the 26 skill folders and nothing else: no gates, no tokens, no
+references, no design-system library. It is useful for reading the skills, not
+for building with them. Each skill checks for the kit before it does anything,
+and without it:
+
+- **Most skills run in guidance-only mode.** The reply opens with "Guidance-only
+  mode: the UX/UI Agent Skills kit is not installed here, so no gate ran", states
+  no measured number (no contrast ratio, no N/N, no "passes WCAG"), and ends by
+  naming the gates it skipped and the install command.
+- **Five skills stop instead**, because running the kit is their whole job:
+  `gate`, `ship`, `observe`, `scaffold-project` and `critique`.
+
+To get the verdicts, install the full kit with Option A or Option D.
 
 **Then start using:** open the project in **Claude Code** or any Claude-powered IDE. `CLAUDE.md` loads automatically, activating the agent persona with full access to every tokens / components / taste / design-system file and the runnable `/skills`.
 
@@ -383,7 +419,7 @@ node scripts/accuracy_report.mjs     # 52/52 or it fails, no partial credit
 ```
 
 **34 of them open a real browser, so they need one installed.** `npx
-ux-ui-agent-skills init` does not install Playwright. Whether `/plugin install`
+ux-ui-agent-skills@3.0.0 init` does not install Playwright. Whether `/plugin install`
 does depends on the Claude Code version: 2.1.301 installed the kit's npm
 dependencies, Playwright included, into the plugin folder. Neither installs the
 browser itself. In a clone, run this once before expecting a full score:
@@ -490,6 +526,9 @@ caught two real defects the 34-check gate had missed. See `evals/README.md`.
 | [CHANGELOG.md](CHANGELOG.md) | Every release, newest first |
 | [docs/BRANCHING.md](docs/BRANCHING.md) | One concern per branch, one commit per merge, and the settings that enforce it |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Why PRs are not merged, what to report instead, and how a gate that can still say no is built |
+| [SECURITY.md](SECURITY.md) | What `init` writes, what each hook does and when, the one network request, no telemetry, and how to report a vulnerability |
+| [scripts/](scripts/) | Every gate, as plain Node and Python you can read. [hooks/](hooks/) holds the three plugin hooks, [mcp/](mcp/) the MCP server, [bin/cli.js](bin/cli.js) the installer |
+| [stats.json](stats.json) | Every count this README states, computed from the files by `scripts/stats.mjs`. `npm test` fails if the prose and the files disagree |
 | [CLAUDE.md](CLAUDE.md) | The always-on brief the agent actually reads |
 | [.claude/rules/](.claude/rules/) | The depth behind it: tokens and colour, type and spacing, components, accessibility, frameworks, review, brand and operations |
 | [taste/](taste/) | The anti-slop doctrine and motion choreography. The 2,144 design systems live in [design-systems/](design-systems/) |
