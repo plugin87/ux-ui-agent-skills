@@ -133,13 +133,39 @@ test('every skill that reads kit files checks the kit is there first', () => {
     `these read a kit file before checking the kit is there: ${outOfOrder.join(', ')}`);
 });
 
-test('the kit check names the install that fixes it, not just the failure', () => {
-  const text = readFileSync(join(SKILLS, 'design-code/SKILL.md'), 'utf8');
-  assert.match(text, /KIT_MISSING/);
-  assert.match(text, /npx ux-ui-agent-skills@\d+\.\d+\.\d+ init/,
-    'a failure the user cannot act on is only half a message');
-  assert.match(text, /Do not guess the\n> contents of a file you could not open/,
-    'the skill must be told to stop, not to improvise');
+test('the kit check names the install that fixes it, and says what happens without it', () => {
+  /* Installed alone (`npx skills add` copies the folder and nothing else), a
+     skill used to say so and stop. A review read that as the kit breaking
+     silently. Now each one states its requirement up front, and either runs in
+     guidance-only mode or, when its whole job is to run the kit, stops.
+
+     Guidance-only is safe only under its rules: it must announce itself, never
+     state a measured number, and name the gates it skipped. Those are checked
+     here on every skill, with blockquote markers and line breaks folded away so
+     rewrapping a paragraph cannot fail the test or hide a deleted rule. */
+  const STOPS = new Set(['gate', 'ship', 'observe', 'scaffold-project', 'critique']);
+  const flat = t => t.replace(/\n> ?/g, ' ').replace(/\s+/g, ' ');
+  const bad = [];
+  for (const name of skills()) {
+    const raw = readFileSync(join(SKILLS, name, 'SKILL.md'), 'utf8');
+    if (!raw.includes('KIT_MISSING')) continue;
+    const text = flat(raw);
+    const req = raw.indexOf('## Requirements');
+    if (req === -1 || req > raw.indexOf('KIT_MISSING')) bad.push(`${name}: no Requirements section ahead of the kit check`);
+    if (!/npx ux-ui-agent-skills@\d+\.\d+\.\d+ init/.test(text)) bad.push(`${name}: does not name the pinned install`);
+    if (STOPS.has(name)) {
+      if (!/no guidance-only mode/.test(text)) bad.push(`${name}: does not say it has no fallback`);
+      if (!/and stop\. Do not guess the contents of a file you could not open/.test(text)) bad.push(`${name}: not told to stop`);
+    } else {
+      for (const rule of [
+        /open your reply with: "Guidance-only mode: /,
+        /Do not guess or cite the contents of a kit file you could not open/,
+        /State no measured number/,
+        /`Skipped \(kit not installed\):`/,
+      ]) if (!rule.test(text)) bad.push(`${name}: guidance-only mode is missing ${rule}`);
+    }
+  }
+  assert.deepEqual(bad, [], bad.join('\n'));
 });
 
 

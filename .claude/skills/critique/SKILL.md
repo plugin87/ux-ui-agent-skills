@@ -30,15 +30,19 @@ You are now running in a forked context. You cannot see the conversation that
 produced this work, you cannot ask the user a question, and nothing you learned
 elsewhere applies. Everything you need is below or on disk.
 
-**Step 0: is the kit here?**
+## Requirements
 
-```bash
-ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING
-```
+This skill needs the full UX/UI Agent Skills kit: the gates, the references and
+the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
+nothing else, and this skill has no guidance-only mode: its whole job is to
+hand the work to the kit's design-critic agent, so without the kit there is nothing for it to do.
 
-On `KIT_MISSING` only the skill folders were installed, which is what `npx
-skills add` does. Say so plainly, point at `npx ux-ui-agent-skills@3.0.0 init` or the
-plugin install, and stop. Do not guess the contents of a file you could not open.
+> **Step 0: is the kit here?** Check once:
+> `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
+> On `KIT_MISSING`, say plainly that only the skill folder was installed, name
+> the install command above, and stop. Do not guess the contents of a file you
+> could not open, and do not report a result you did not produce.
 
 **Step 1: take the critic's instructions, in full.**
 

@@ -35,12 +35,24 @@ Everything below is how to execute the decisions above.
 
 ---
 
-> **Is the kit here?** This skill reads files from the kit. Check once:
+## Requirements
+
+This skill needs the full UX/UI Agent Skills kit: the gates, the references and
+the design-system library. Install it with `npx ux-ui-agent-skills@3.0.0 init`
+or as the Claude Code plugin. `npx skills@1.7.6 add` copies the skill folder and
+nothing else. Installed that way, this skill runs in **guidance-only mode**: no gate
+runs, so it gives no verdict.
+
+> **Step 0: is the kit here?** Check once:
 > `ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
-> On `KIT_MISSING` only the skill folders were installed, which is what
-> `npx skills@1.7.6 add` does. Say so plainly, point the user at
-> `npx ux-ui-agent-skills@3.0.0 init` or the plugin install, and stop. Do not guess the
-> contents of a file you could not open.
+> On `KIT_MISSING`, open your reply with: "Guidance-only mode: the UX/UI Agent
+> Skills kit is not installed here, so no gate ran and nothing below is
+> measured." Then work from this file and general practice, under three rules.
+> Do not guess or cite the contents of a kit file you could not open. State no
+> measured number (no contrast ratio, no N/N, no "passes WCAG"): write "not
+> verified" where one would go. End with a line `Skipped (kit not installed):`
+> that names every gate script this file tells you to run, then the install
+> command above.
 
 ## Hand off instead, when the work is actually
 
