@@ -7,7 +7,7 @@ disable-model-invocation: true
 > **Step 0 - is the kit here?** Check once:
 > `ls ${CLAUDE_SKILL_DIR}/../../../scripts/observe.mjs >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING`
 > On `KIT_MISSING` only the skill folders were installed. Say so, point the user
-> at the plugin install or `npx ux-ui-agent-skills init`, and stop.
+> at the plugin install or `npx ux-ui-agent-skills@3.0.0 init`, and stop.
 
 Report what the hooks recorded - never a reconstruction from memory.
 

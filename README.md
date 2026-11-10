@@ -214,6 +214,11 @@ The whole log, including what is still unproven, is in
 > walks through the Claude Code plugin, the `AGENTS.md` surface for Codex and
 > Cursor, the MCP server, Homebrew and `npx`: what each one installs, and what
 > you give up by choosing it.
+>
+> Every `npx` command in these docs names an exact release
+> (`ux-ui-agent-skills@3.0.0`), so what runs on your machine is the tarball the
+> docs describe, never whatever is newest on npm. `npm version` rewrites every
+> pin in the release commit, and `npm run pins:check` fails if one is missed.
 
 ### Option A: Install as a Claude Code plugin (recommended)
 
@@ -282,7 +287,7 @@ with `REQUIRED, FAILING` instead of passing on nothing.
 ### See it first, install nothing
 
 ```bash
-npx ux-ui-agent-skills demo        # copies the rendered examples and opens them
+npx ux-ui-agent-skills@3.0.0 demo        # copies the rendered examples and opens them
 ```
 
 Every page it opens is a page the gates measure. Delete the folder afterwards;
@@ -292,7 +297,7 @@ nothing was installed. Or skip the copy entirely and use the
 ### Option B: Use it from any MCP client
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp
 ```
 
 Six tools: `list_gates`, `run_gate`, `review_ui`, `get_doctrine`,
@@ -328,10 +333,10 @@ names, and that `--agent codex` writes `AGENTS.md` without `CLAUDE.md` or
 Drop the kit into any project, no clone needed:
 
 ```bash
-npx ux-ui-agent-skills init          # full kit into the current folder
-npx ux-ui-agent-skills add tokens taste design-systems   # just some areas
-npx ux-ui-agent-skills list          # see all areas
-npx ux-ui-agent-skills library get stripe   # fetch one design-system spec
+npx ux-ui-agent-skills@3.0.0 init          # full kit into the current folder
+npx ux-ui-agent-skills@3.0.0 add tokens taste design-systems   # just some areas
+npx ux-ui-agent-skills@3.0.0 list          # see all areas
+npx ux-ui-agent-skills@3.0.0 library get stripe   # fetch one design-system spec
 ```
 
 Flags: `--force` (overwrite existing files) · `--dry` (preview, change nothing).
@@ -434,7 +439,7 @@ That is correctness. It is not quality, and the kit says so out loud:
 |---|---|---|
 | Is it correct? | Measured, all or nothing | `node scripts/accuracy_report.mjs` -> a real `N/N` |
 | Is it any good? | Judged, never scored | `/critique`: an adversarial `design-critic` that renders the work, argues for rejection, and cites evidence per finding |
-| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-skills observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
+| Did the agent follow the rules? | Counted per session, from the hooks | `/observe` or `npx ux-ui-agent-skills@3.0.0 observe` -> pages edited and measured, Stop hook blocks, findings left open, sessions that quit while blocked |
 | Does the kit transfer to a cold start? | Measured, one brief at a time | `evals/`: cold-start briefs, then `node evals/run.mjs <brief-id>` points 15 objective gates at what the agent produced |
 
 `/critique` exists because a passing gate is never evidence of taste. It refuses to
@@ -498,10 +503,10 @@ twenty more**, through the open `AGENTS.md` convention, and with **Gemini CLI
 and Antigravity**, which read `GEMINI.md` and `.agents/skills/`.
 
 ```bash
-npx ux-ui-agent-skills init --agent codex    # AGENTS.md + the whole kit
-npx ux-ui-agent-skills init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
-npx ux-ui-agent-skills init --agent both     # CLAUDE.md and AGENTS.md
-npx ux-ui-agent-skills init                  # Claude Code (default)
+npx ux-ui-agent-skills@3.0.0 init --agent codex    # AGENTS.md + the whole kit
+npx ux-ui-agent-skills@3.0.0 init --agent gemini   # GEMINI.md + 23 ported skills: Gemini CLI, Antigravity
+npx ux-ui-agent-skills@3.0.0 init --agent both     # CLAUDE.md and AGENTS.md
+npx ux-ui-agent-skills@3.0.0 init                  # Claude Code (default)
 gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # Gemini CLI, every project
 ```
 

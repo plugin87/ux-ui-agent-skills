@@ -94,7 +94,7 @@ jobs:
         with:
           node-version: 20
       - name: Install dev dependencies + Chromium
-        # `npm install`, not `npm i -D playwright`: the framework-render gate needs
+        # `npm install`, not `npm i -D playwright@1.63.0`: the framework-render gate needs
         # esbuild and react-dom too, and installing only playwright would make its
         # meta tests SKIP here while passing locally - a green CI measuring less
         # than the local run.

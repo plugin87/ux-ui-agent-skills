@@ -14,12 +14,12 @@ forward. Re-run the commands and you should get the same ones.
 | You use | Install with | You get |
 |---|---|---|
 | **Claude Code** | `/plugin marketplace add plugin87/ux-ui-agent-skills` | 26 skills, hooks, the critic |
-| **Codex, Cursor, Copilot, Aider** | `npx ux-ui-agent-skills init --agent codex` | `AGENTS.md` + every gate |
+| **Codex, Cursor, Copilot, Aider** | `npx ux-ui-agent-skills@3.0.0 init --agent codex` | `AGENTS.md` + every gate |
 | **Gemini CLI** | `gemini extensions install https://github.com/plugin87/ux-ui-agent-skills` | `GEMINI.md`, 23 ported skills, the MCP server |
-| **Antigravity** (or Gemini CLI, per project) | `npx ux-ui-agent-skills init --agent gemini` | `GEMINI.md` + `.agents/skills/` + every gate |
-| **Any MCP client** | `claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp` | 6 tools that run the gates |
+| **Antigravity** (or Gemini CLI, per project) | `npx ux-ui-agent-skills@3.0.0 init --agent gemini` | `GEMINI.md` + `.agents/skills/` + every gate |
+| **Any MCP client** | `claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp` | 6 tools that run the gates |
 | **A terminal, any project** | `brew install plugin87/tap/ux-ui-agent-skills` | the CLI and the MCP binary |
-| **Just looking** | `npx ux-ui-agent-skills demo` | the rendered examples, nothing installed |
+| **Just looking** | `npx ux-ui-agent-skills@3.0.0 demo` | the rendered examples, nothing installed |
 
 ---
 
@@ -53,7 +53,7 @@ a new session.
 
 ```bash
 cd your-project
-npx ux-ui-agent-skills init --agent codex
+npx ux-ui-agent-skills@3.0.0 init --agent codex
 ```
 
 Writes `AGENTS.md` at the repository root (an open convention roughly 25 tools
@@ -62,7 +62,7 @@ index of the 2,144 design systems and **all 52 gates**.
 
 The specs themselves are fetched when used, not copied: `node scripts/library.mjs
 get <name>` writes one to `design-systems/library/<name>/DESIGN.md` and refuses
-it unless its sha256 matches the index. `npx ux-ui-agent-skills library pull`
+it unless its sha256 matches the index. `npx ux-ui-agent-skills@3.0.0 library pull`
 fetches every spec, for a machine that will work offline.
 
 It deliberately does **not** write `.claude/`. Skills, rules and the critic are
@@ -74,7 +74,7 @@ gates run when you run them. That makes running them the whole difference
 between this kit working and not working.
 
 ```bash
-npx ux-ui-agent-skills init --agent both   # both surfaces, held in step by a gate
+npx ux-ui-agent-skills@3.0.0 init --agent both   # both surfaces, held in step by a gate
 ```
 
 ---
@@ -85,7 +85,7 @@ Two routes. Both were run against Gemini CLI 0.65.0.
 
 ```bash
 gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # every project
-npx ux-ui-agent-skills init --agent gemini                                  # this project
+npx ux-ui-agent-skills@3.0.0 init --agent gemini                                  # this project
 ```
 
 **The extension** is an archive attached to each release, which is what
@@ -113,7 +113,7 @@ the gates run when you run them.
 ## 3. MCP: any client can run the gates
 
 ```bash
-claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
+claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills@3.0.0 ux-ui-mcp
 ```
 
 Or in any MCP client's config:
@@ -123,14 +123,14 @@ Or in any MCP client's config:
   "mcpServers": {
     "ux-ui-gates": {
       "command": "npx",
-      "args": ["-y", "--package=ux-ui-agent-skills", "ux-ui-mcp"]
+      "args": ["-y", "--package=ux-ui-agent-skills@3.0.0", "ux-ui-mcp"]
     }
   }
 }
 ```
 
 > `--package=` is load-bearing. This package's name is also one of its bin
-> names, so `npx -y ux-ui-agent-skills ux-ui-mcp` runs the installer CLI and
+> names, so `npx -y ux-ui-agent-skills@3.0.0 ux-ui-mcp` runs the installer CLI and
 > hands it `ux-ui-mcp` as an argument: you get a help screen and a client that
 > never completes a handshake.
 
@@ -185,10 +185,10 @@ updates itself within a minute of a release.
 ## 5. npx: nothing installed
 
 ```bash
-npx ux-ui-agent-skills demo        # copy the rendered examples and open them
-npx ux-ui-agent-skills init        # the full kit into the current folder
-npx ux-ui-agent-skills new ./app   # scaffold a new product repo
-npx ux-ui-agent-skills list        # what each area contains
+npx ux-ui-agent-skills@3.0.0 demo        # copy the rendered examples and open them
+npx ux-ui-agent-skills@3.0.0 init        # the full kit into the current folder
+npx ux-ui-agent-skills@3.0.0 new ./app   # scaffold a new product repo
+npx ux-ui-agent-skills@3.0.0 list        # what each area contains
 ```
 
 `demo` opens pages the gates measure. Delete the folder afterwards; nothing was

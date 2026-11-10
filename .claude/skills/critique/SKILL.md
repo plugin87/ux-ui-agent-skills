@@ -17,7 +17,7 @@ background: false
 # There is deliberately NO `agent:` field, and it is not an oversight.
 #
 # A plugin namespaces every component under the plugin name, so this repo's
-# critic is `design-critic` when installed with `npx ux-ui-skills init` (a
+# critic is `design-critic` when installed with `npx ux-ui-agent-skills@3.0.0 init` (a
 # project file in .claude/agents/) and `ux-ui-agent-skills:design-critic` when
 # installed as a plugin. One frontmatter value cannot be both, and a wrong one
 # is the `invocation:` failure again: a field that looks right, is silently
@@ -37,7 +37,7 @@ ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KI
 ```
 
 On `KIT_MISSING` only the skill folders were installed, which is what `npx
-skills add` does. Say so plainly, point at `npx ux-ui-agent-skills init` or the
+skills add` does. Say so plainly, point at `npx ux-ui-agent-skills@3.0.0 init` or the
 plugin install, and stop. Do not guess the contents of a file you could not open.
 
 **Step 1: take the critic's instructions, in full.**

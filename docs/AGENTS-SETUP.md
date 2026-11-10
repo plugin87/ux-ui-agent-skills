@@ -5,7 +5,7 @@ read `AGENTS.md`, an open convention, not any one vendor's format. The kit ships
 one, carrying the same doctrine as `CLAUDE.md`.
 
 ```bash
-npx ux-ui-agent-skills init --agent codex
+npx ux-ui-agent-skills@3.0.0 init --agent codex
 ```
 
 That installs `AGENTS.md`, the tokens, the component specs, the accessibility
@@ -73,7 +73,7 @@ node scripts/slop_tells.mjs --strict  src/pages/index.html
 The render gates drive real Chrome:
 
 ```bash
-npm i -D playwright && npx playwright install chrome
+npm i -D playwright@1.63.0 && npx playwright install chrome
 ```
 
 Without it they print `SKIPPED` and exit 0, which reads like a pass and is not

@@ -136,7 +136,7 @@ test('every skill that reads kit files checks the kit is there first', () => {
 test('the kit check names the install that fixes it, not just the failure', () => {
   const text = readFileSync(join(SKILLS, 'design-code/SKILL.md'), 'utf8');
   assert.match(text, /KIT_MISSING/);
-  assert.match(text, /npx ux-ui-agent-skills init/,
+  assert.match(text, /npx ux-ui-agent-skills@\d+\.\d+\.\d+ init/,
     'a failure the user cannot act on is only half a message');
   assert.match(text, /Do not guess the\n> contents of a file you could not open/,
     'the skill must be told to stop, not to improvise');

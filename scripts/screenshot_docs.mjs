@@ -154,7 +154,7 @@ async function shoot() {
   let chromium;
   try { ({ chromium } = await import('playwright')); }
   catch {
-    console.error('playwright is not installed. npm i -D playwright && npx playwright install chrome');
+    console.error('playwright is not installed. npm i -D playwright@1.63.0 && npx playwright install chrome');
     process.exit(1);
   }
   mkdirSync(OUT, { recursive: true });

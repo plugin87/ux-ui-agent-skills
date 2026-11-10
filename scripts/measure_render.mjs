@@ -9,7 +9,7 @@
  *   node scripts/measure_render.mjs --dark examples/sample-app/preview.html
  *   node scripts/measure_render.mjs            # defaults to examples/ *.html
  *
- * Requires Playwright (`npm i -D playwright` + a Chrome/Chromium). If it isn't
+ * Requires Playwright (`npm i -D playwright@1.63.0` + a Chrome/Chromium). If it isn't
  * installed the script SKIPS (exit 0) so it never blocks users who don't have it.
  * Exit 1 only when a real rendered text pair is below WCAG 2.2 AA.
  */

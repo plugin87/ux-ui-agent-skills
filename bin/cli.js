@@ -5,13 +5,13 @@
  * Copies the design-system skill kit into a target project.
  * Zero dependencies: Node built-ins only.
  *
- *   npx ux-ui-skills init [dest]        Install the full kit (default dest: cwd)
- *   npx ux-ui-skills new [dest]         Scaffold a NEW product repo from the starter template
- *   npx ux-ui-skills add <area>...      Install specific areas
- *   npx ux-ui-skills list               List available areas
- *   npx ux-ui-skills library get <name> Fetch one design-system spec into this project
- *   npx ux-ui-skills version            Print the installed version
- *   npx ux-ui-skills help
+ *   npx ux-ui-agent-skills@3.0.0 init [dest]        Install the full kit (default dest: cwd)
+ *   npx ux-ui-agent-skills@3.0.0 new [dest]         Scaffold a NEW product repo from the starter template
+ *   npx ux-ui-agent-skills@3.0.0 add <area>...      Install specific areas
+ *   npx ux-ui-agent-skills@3.0.0 list               List available areas
+ *   npx ux-ui-agent-skills@3.0.0 library get <name> Fetch one design-system spec into this project
+ *   npx ux-ui-agent-skills@3.0.0 version            Print the installed version
+ *   npx ux-ui-agent-skills@3.0.0 help
  *
  * Flags: --force (overwrite existing files), --dry (print actions only)
  */
@@ -21,6 +21,9 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
+/* Commands the CLI prints are pinned to the version that is running, so a
+   reader who copies one gets this release, never whatever is newest on npm. */
+const RUN = `npx ux-ui-agent-skills@${require(path.join(ROOT, 'package.json')).version}`;
 
 // area -> source path (relative to package root)
 const AREAS = {
@@ -299,8 +302,8 @@ function cmdList() {
   for (const key of Object.keys(AREAS)) {
     console.log(`  ${C.cyan}${key.padEnd(15)}${C.reset} ${DESC[key]}`);
   }
-  console.log(`\n${C.dim}Install all:${C.reset} npx ux-ui-skills init`);
-  console.log(`${C.dim}Install some:${C.reset} npx ux-ui-skills add tokens components taste\n`);
+  console.log(`\n${C.dim}Install all:${C.reset} ${RUN} init`);
+  console.log(`${C.dim}Install some:${C.reset} ${RUN} add tokens components taste\n`);
 }
 
 function help() {
@@ -308,16 +311,16 @@ function help() {
 ${C.bold}ux-ui-agent-skills${C.reset}: install the design-system skill kit
 
 ${C.bold}Usage${C.reset}
-  npx ux-ui-skills ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
-  npx ux-ui-skills ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
-  npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
-  npx ux-ui-skills ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
-  npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
-  npx ux-ui-skills ${C.cyan}library get${C.reset} <name> Fetch a design-system spec into this project (sha256-checked)
-  npx ux-ui-skills ${C.cyan}library pull${C.reset}       Fetch every spec, for offline use
-  npx ux-ui-skills ${C.cyan}observe${C.reset}            Did the agent follow the rules? (--last, --html, --help)
-  npx ux-ui-skills ${C.cyan}version${C.reset}            Print the installed version
-  npx ux-ui-skills ${C.cyan}help${C.reset}
+  ${RUN} ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
+  ${RUN} ${C.cyan}new${C.reset} [dest]         Scaffold a NEW product repo (starter layout + engine)
+  ${RUN} ${C.cyan}add${C.reset} <area>...      Install specific areas
+  ${RUN} ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
+  ${RUN} ${C.cyan}list${C.reset}               List available areas
+  ${RUN} ${C.cyan}library get${C.reset} <name> Fetch a design-system spec into this project (sha256-checked)
+  ${RUN} ${C.cyan}library pull${C.reset}       Fetch every spec, for offline use
+  ${RUN} ${C.cyan}observe${C.reset}            Did the agent follow the rules? (--last, --html, --help)
+  ${RUN} ${C.cyan}version${C.reset}            Print the installed version
+  ${RUN} ${C.cyan}help${C.reset}
 
 ${C.bold}Flags${C.reset}
   --agent <which> init only: which instruction surface to install
@@ -330,15 +333,15 @@ ${C.bold}Flags${C.reset}
   --no-open       demo only: copy the examples but do not launch a browser
 
 ${C.bold}Examples${C.reset}
-  npx ux-ui-skills demo
-  npx ux-ui-skills init
-  npx ux-ui-skills init ./my-app
-  npx ux-ui-skills init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
-  npx ux-ui-skills init --agent gemini       ${C.dim}# for Gemini CLI / Antigravity${C.reset}
-  npx ux-ui-skills new ./my-product
-  npx ux-ui-skills add tokens taste design-systems
-  npx ux-ui-skills library get stripe linear-app
-  npx ux-ui-skills add skills --force
+  ${RUN} demo
+  ${RUN} init
+  ${RUN} init ./my-app
+  ${RUN} init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
+  ${RUN} init --agent gemini       ${C.dim}# for Gemini CLI / Antigravity${C.reset}
+  ${RUN} new ./my-product
+  ${RUN} add tokens taste design-systems
+  ${RUN} library get stripe linear-app
+  ${RUN} add skills --force
 `);
 }
 
@@ -347,7 +350,7 @@ ${C.bold}Examples${C.reset}
    mechanism their agent does not implement. */
 function summary(destRoot, agent) {
   console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset} → ${path.relative(process.cwd(), destRoot) || '.'}`);
-  console.log(`${C.dim}Design systems arrive when used: npx ux-ui-agent-skills library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
+  console.log(`${C.dim}Design systems arrive when used: ${RUN} library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
   if (agent === 'gemini') {
     console.log(`${C.dim}Open the folder in Gemini CLI or Antigravity: GEMINI.md loads automatically. Gemini CLI reads .agents/skills/ only in a trusted folder: trust it when asked, then \`gemini skills list\` shows them.${C.reset}\n`);
   } else if (agent === 'codex') {
@@ -439,7 +442,7 @@ function main() {
 
   if (cmd === 'add') {
     if (!rest.length) {
-      console.error(`${C.red}error:${C.reset} specify at least one area. See: npx ux-ui-skills list`);
+      console.error(`${C.red}error:${C.reset} specify at least one area. See: ${RUN} list`);
       process.exit(1);
     }
     const destRoot = process.cwd();

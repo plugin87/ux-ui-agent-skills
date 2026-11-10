@@ -19,7 +19,7 @@ built the output, and whether they could see the kit's internals while doing it.
 ## 2026-10-08: first-run-empty, through the plugin route
 
 **The route the README recommends first had never been tested blind.** Every
-previous blind run came from a project scaffolded with `npx ux-ui-agent-skills
+previous blind run came from a project scaffolded with `npx ux-ui-agent-skills@3.0.0
 new`. This one ran `claude -p` in `/tmp/blind-plugin`, a directory containing
 one file - the brief - with the kit reaching the agent only through the
 installed plugin.
@@ -233,7 +233,7 @@ linking a finished demo theme instead of starting from the template.
 | 4 | A modal backdrop had no token to use | `templates/product-design/design-tokens.json` had no `semantic.surface.scrim` | Added, light and dark |
 | 5 | `var(--space-4)`, `var(--text-sm)` and friends were undefined on the first screen | `build_tokens.mjs` emitted **colours only**. A project scaffolded from the template got a theme with no type, space, radius, shadow, motion or size | The build now emits the whole system under the names the kit's own components use |
 | 6 | A Cancel-subscription flow scored as "0 intent-bearing controls" | `lint_intent.mjs` did not know `cancel subscription`, `close account`, `unsubscribe` are destructive | Vocabulary widened. Bare `cancel` stays out: it is the dismiss button on every dialog in the world |
-| 7 | Both agents lost time to Playwright not resolving in a fresh project | The template shipped gates that need `npm i -D playwright`, and never said so. Worse, the render gates print `SKIPPED` and **exit 0** without it, which reads like a pass | Documented in the template's `CLAUDE.md`, its `/gate` command, and `/scaffold-project` |
+| 7 | Both agents lost time to Playwright not resolving in a fresh project | The template shipped gates that need `npm i -D playwright@1.63.0`, and never said so. Worse, the render gates print `SKIPPED` and **exit 0** without it, which reads like a pass | Documented in the template's `CLAUDE.md`, its `/gate` command, and `/scaffold-project` |
 
 ### The honest reading
 
