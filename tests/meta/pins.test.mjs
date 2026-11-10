@@ -20,6 +20,8 @@ test('unpinned, stale and squattable forms are all caught and rewritten', () => 
     ['npx -y ux-ui-agent-skills@1.0.0 init', `npx -y ux-ui-agent-skills@${KIT} init`],
     ['npx ux-ui-agent-skills@latest init', `npx ux-ui-agent-skills@${KIT} init`],
     ['npx ux-ui-skills observe', `npx ux-ui-agent-skills@${KIT} observe`],
+    ['`npx\nux-ui-agent-skills init` wrapped in prose', `\`npx\nux-ui-agent-skills@${KIT} init\` wrapped in prose`],
+    ['npx\nskills add x', `npx\nskills@${SKILLS_CLI} add x`],
     ['"--package=ux-ui-agent-skills", "ux-ui-mcp"', `"--package=ux-ui-agent-skills@${KIT}", "ux-ui-mcp"`],
     ['npx skills add plugin87/ux-ui-agent-skills', `npx skills@${SKILLS_CLI} add plugin87/ux-ui-agent-skills`],
     ['npm i -D playwright', `npm i -D playwright@${PLAYWRIGHT}`],

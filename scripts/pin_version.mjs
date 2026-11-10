@@ -69,12 +69,14 @@ function files(dir = ROOT) {
    keeps `ux-ui-agent-skills-foo` and `ux-ui-skills.md` from matching. */
 const VER = '(?:@[\\w.^~*-]+)?';
 const RULES = [
-  { re: new RegExp(`\\bnpx (-y )?(?:ux-ui-agent-skills|ux-ui-skills)${VER}(?![\\w@.-])`, 'g'),
-    to: (_, y = '') => `npx ${y}ux-ui-agent-skills@${KIT}`, ok: m => m.endsWith(`ux-ui-agent-skills@${KIT}`) },
+  /* `\s+`, not a space: prose wraps, and `npx\nux-ui-agent-skills init` in a
+     paragraph is still a command a reader copies. The whitespace is kept. */
+  { re: new RegExp(`\\bnpx(\\s+)(-y\\s+)?(?:ux-ui-agent-skills|ux-ui-skills)${VER}(?![\\w@.-])`, 'g'),
+    to: (_, sp, y = '') => `npx${sp}${y}ux-ui-agent-skills@${KIT}`, ok: m => m.endsWith(`ux-ui-agent-skills@${KIT}`) },
   { re: new RegExp(`--package=ux-ui-agent-skills${VER}(?![\\w@.-])`, 'g'),
     to: () => `--package=ux-ui-agent-skills@${KIT}`, ok: m => m.endsWith(`@${KIT}`) },
-  { re: new RegExp(`\\bnpx (-y )?skills${VER} add\\b`, 'g'),
-    to: (_, y = '') => `npx ${y}skills@${SKILLS_CLI} add`, ok: m => m.includes(`skills@${SKILLS_CLI} `) },
+  { re: new RegExp(`\\bnpx(\\s+)(-y\\s+)?skills${VER}(\\s+)add\\b`, 'g'),
+    to: (_, sp, y = '', sp2) => `npx${sp}${y}skills@${SKILLS_CLI}${sp2}add`, ok: m => new RegExp(`skills@${SKILLS_CLI.replace(/\\./g, '\\.')}\\s`).test(m) },
   { re: new RegExp(`\\bnpm i(?:nstall)? -D playwright${VER}(?![\\w@.-])`, 'g'),
     to: m => m.replace(/playwright(@\S*)?$/, `playwright@${PLAYWRIGHT}`), ok: m => m.endsWith(`playwright@${PLAYWRIGHT}`) },
 ];
