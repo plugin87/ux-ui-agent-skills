@@ -6,7 +6,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { collect, check } from '../../scripts/stats.mjs';
+import { collect, check, description } from '../../scripts/stats.mjs';
 import { node } from '../helpers/run.mjs';
 
 test('stats.json and every stated count agree with the filesystem', () => {
@@ -28,4 +28,16 @@ test('a count that drifts is caught, per kind of count', () => {
     const { found } = check(bump(path));
     assert.ok(found.length > 0, `stats --check read no stated count of ${path}, so it could never catch it drifting`);
   }
+});
+
+test('the GitHub description is built from the counts and fits GitHub', () => {
+  const s = collect();
+  const d = description(s);
+  assert.ok(d.includes(s.designSystems.indexed.toLocaleString('en-US')), d);
+  assert.ok(d.includes(`${s.gates.total} gates`), d);
+  assert.ok(d.length <= 350, `GitHub caps the description at 350 characters, this is ${d.length}`);
+  assert.doesNotMatch(d, /[\u2013\u2014]/, 'no em or en dash');
+  const r = node('stats.mjs', ['--description']);
+  assert.equal(r.status, 0, r.out);
+  assert.equal(r.stdout.trim(), d);
 });

@@ -5,6 +5,8 @@
  *
  *   node scripts/stats.mjs            print the counts
  *   node scripts/stats.mjs --write    write them to stats.json
+ *   node scripts/stats.mjs --description  the GitHub repo description, from
+ *                                     these counts (gh repo edit --description)
  *   node scripts/stats.mjs --check    exit 1 if stats.json is stale, or if any
  *                                     README, doc, manifest or skill states a
  *                                     count the filesystem does not have
@@ -181,6 +183,19 @@ export function check(s) {
 
 /* ----------------------------------------------------------------- the CLI */
 
+// The GitHub "About" line is the one surface no file in the repo holds, so it
+// drifted to "138 design systems / 50 objective gates" while every doc said
+// 2,144 and 52. Print it from the counts and paste it, instead of retyping it.
+// It names the other agents first because readers asked whether the kit works
+// outside Claude Code. It does: AGENTS.md and the Gemini port (README).
+export function description(s) {
+  const n = (x) => x.toLocaleString('en-US');
+  return `Design-system skills for Claude Code, Codex, Cursor, Copilot and Gemini CLI: ` +
+    `DTCG tokens, WCAG 2.2 AA to AAA, ${n(s.designSystems.indexed)} design systems, ` +
+    `${n(s.skills)} skills, any-framework code, and ${n(s.gates.total)} gates that fail ` +
+    `the build instead of taking the agent's word for it.`;
+}
+
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
   let s;
@@ -205,8 +220,10 @@ if (isMain) {
       process.exit(1);
     }
     console.log(`stats: ${seen} stated counts read across the docs, all match`);
+  } else if (mode === '--description') {
+    console.log(description(s));
   } else if (mode && mode !== '--json') {
-    console.error(`stats: unknown option ${mode} (use --write or --check)`); process.exit(2);
+    console.error(`stats: unknown option ${mode} (use --write, --check or --description)`); process.exit(2);
   } else {
     process.stdout.write(json);
   }
