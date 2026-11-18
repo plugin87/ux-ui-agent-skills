@@ -104,10 +104,24 @@ Prioritize every finding by severity:
 
 | # | Severity | Category | Location | Finding | Recommendation | Heuristic |
 |---|----------|----------|----------|---------|---------------|-----------|
-| 1 | Critical | A11y | Login form | Error messages only use red color | Add error icon + text description | - |
+| 1 | Critical | A11y | Login form | Error messages only use red color | Add error icon + text description | WCAG 1.4.1 |
 | 2 | Major | Usability | Dashboard | No empty state for new users | Add onboarding empty state with CTA | H6 |
 | 3 | Minor | Consistency | Settings | Save button alignment differs from other forms | Right-align to match pattern | H4 |
 | 4 | Enhancement | Efficiency | Data table | No keyboard shortcuts for bulk actions | Add Shift+Click for range select | H7 |
+
+**Decision note: keep the source with the finding.** A finding that cites a
+standard carries the criterion, the primary source, the reason and how it was
+checked, so whoever picks it up at handoff does not have to find them again.
+Finding 1, written that way:
+
+| Field | Finding 1 |
+|-------|-----------|
+| Criterion | WCAG 2.2 SC 1.4.1 Use of Color (Level A) |
+| Source | [W3C, Understanding SC 1.4.1: Use of Color](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) |
+| Rationale | Red is the only thing that marks the field as wrong. A reader who cannot tell red from the field's normal border (colour blindness, a monochrome display, glare) sees no error at all. An icon and a line of text that says what is wrong and how to fix it carry the same message without colour. |
+| Verified | By hand: a greyscale screenshot of the failed submit, where the error must still be identifiable from the icon and text alone. No gate in this kit measures 1.4.1 on an error state. `axe_audit.mjs` checks 1.4.1 only for a link set apart from its paragraph by colour (axe's `link-in-text-block` rule). |
+
+Write "not verified yet" in the last row until the check has been run.
 
 ---
 
