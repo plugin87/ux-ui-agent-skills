@@ -270,6 +270,14 @@ their own and their paths resolve under a plugin install.
 because a plugin root `CLAUDE.md` is not loaded as project context, as Claude
 Code's own `plugin validate` says so.
 
+**Where a skill finds the kit's files.** A plugin is unpacked outside your
+project, so a skill never names a kit file from the repo root. Every script, doc
+and token it opens is written as `${CLAUDE_SKILL_DIR}/../../../<path>`, which is
+the plugin root under `/plugin install` and your project root after `init`, the
+two places the kit actually is. `python3 scripts/validate_instruction_surface.py`
+and `python3 scripts/measure_install_paths.py --gate` fail the build if a bare
+`scripts/...` or `accessibility/...` path comes back (issue #9).
+
 **Then just work.** Ask for the thing you want and the right skill loads itself:
 
 ```text
