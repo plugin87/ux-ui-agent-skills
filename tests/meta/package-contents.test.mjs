@@ -30,3 +30,12 @@ test('installing the package runs no code', () => {
   assert.deepEqual(hooks, [], `install-time scripts: ${hooks.join(', ')}`);
   assert.deepEqual(Object.keys(pkg.dependencies || {}), [], 'the package claims no runtime dependencies');
 });
+
+test('every devDependency is pinned to an exact version', () => {
+  /* A caret range lets the next install pull a release nobody here has run.
+     The render gates execute these packages, so they are pinned like the npx
+     commands are. Bump them on purpose, with the gates run on the new version. */
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+  const loose = Object.entries(pkg.devDependencies || {}).filter(([, v]) => !/^\d+\.\d+\.\d+$/.test(v));
+  assert.deepEqual(loose, [], `ranges, not versions: ${loose.map(([k, v]) => `${k}@${v}`).join(', ')}`);
+});

@@ -465,17 +465,21 @@ nobody had measured, in the section about not stating numbers you did not
 measure.
 
 Framework source (`.tsx`, `.vue`, `.swift`) gets the file-reading checks: no
-emoji, no hardcoded values, every `var(--…)` resolving to the theme, and, since a
-blue Delete shipped in this repo's own `Settings.tsx` while the HTML twin of that
-screen was correct, every destructive control declaring its intent
-(`lint_intent_source.mjs`). That last one proves a **declaration**, never a
-colour: `variant="destructive"` wired to a blue token passes it.
+emoji, no hardcoded values, every `var(--…)` resolving to the theme. A blue
+Delete shipped in this repo's own `Settings.tsx` while the HTML twin of that
+screen was correct (#11), so `lint_intent.mjs`, pointed at a folder, also reads
+its `.tsx`, `.jsx`, `.vue` and stylesheets: a destructive control that asks for
+the primary variant or sets none on a primary-default component fails, and so
+does a `destructive` variant wired to a primary or blue class or token in a
+variant map or a CSS rule. That proves what the source **says**, never the
+colour: a danger token that the theme itself resolves to blue still passes it.
 
-Only a render catches that, so the React components are now compiled with esbuild,
+Only a render catches that, so the React components are compiled with esbuild,
 server-rendered, and put through the same browser gates as the HTML
 (`render_framework_source.mjs`, which also fails if any class the components emit
-resolves in no linked stylesheet). `.vue` and `.swift` are still file-checks only,
-and are not proven by this number until they are rendered and measured.
+resolves in no linked stylesheet). **Vue and Swift get file-level checks only.**
+Nothing renders them, so no contrast, state, axe, target-size or responsive gate
+has measured a `.vue` or `.swift` file, and the 52/52 says nothing about them.
 
 That is correctness. It is not quality, and the kit says so out loud:
 

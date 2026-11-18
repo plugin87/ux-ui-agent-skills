@@ -45,10 +45,10 @@
   },
   "devDependencies": {
     "axe-core": "4.10.2",
-    "esbuild": "^0.28.2",
+    "esbuild": "0.28.2",
     "playwright": "1.63.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0"
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "files": [
     "bin/",

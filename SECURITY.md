@@ -31,6 +31,32 @@ You can check this yourself: the only `fetch(` in the shipped code is in
 from the npm registry, but it is a maintainer release script that the CLI,
 hooks, skills and MCP server never call.)
 
+## Privacy and sensitive data
+
+**What the kit reads.** The files you point a gate at, the kit's own files, and,
+under the plugin, the one file each `Write` or `Edit` just touched (see the hooks
+table below). It does not scan your project on its own, read your environment
+for credentials, or read files outside the paths it is given.
+
+**What leaves your machine.** Only a spec request: `library get <name>` and
+`library pull` send an HTTP GET for `design-systems/library/<name>/DESIGN.md` at
+the indexed tag, to GitHub and, if that fails, to jsDelivr, with Node's default
+headers. The spec name is in the URL, and those hosts see your IP address and
+log the request under their own policies. Set `UX_UI_LIBRARY_BASE` to a mirror
+you run if that matters.
+
+**What never leaves it.** Your files, their paths and contents, gate results,
+receipts, the event log, environment variables and tokens. No gate, hook, skill
+or MCP tool uploads anything.
+
+**What stays on disk, and can quote your code.** Receipts and the event log
+keep file paths and up to six finding lines per gate, and a finding line can
+quote the value it flagged. Without `$CLAUDE_PLUGIN_DATA` they go to
+`.ds-receipts/` in your project, so add that folder to `.gitignore` before you
+commit. A render gate opens your page in a local browser, which fetches whatever
+remote fonts, images or scripts the page itself names, so keep live keys out of
+the pages you gate.
+
 ## What `init` writes
 
 `init` copies files into the folder you run it in and does nothing else. It
