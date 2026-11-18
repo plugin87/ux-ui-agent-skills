@@ -23,6 +23,7 @@
  *   --package=ux-ui-agent-skills (MCP configs)    -> --package=ux-ui-agent-skills@<package.json version>
  *   npx [-y] skills add                          -> npx [-y] skills@<SKILLS_CLI> add
  *   npm i -D playwright                          -> npm i -D playwright@<devDependencies.playwright>
+ *   "Measured against vX.Y.Z" / "วัดจาก vX.Y.Z"   -> the package.json version (the docs/INSTALL footers)
  *
  * `npx playwright install chrome` is left alone on purpose: every place the
  * docs use it follows an `npm install`, so it resolves the Playwright the kit
@@ -84,6 +85,11 @@ const RULES = [
     to: () => `ux-ui-agent-skills@${KIT}`, ok: m => m === `ux-ui-agent-skills@${KIT}` },
   { re: new RegExp(`\\bnpm i(?:nstall)? -D playwright${VER}(?![\\w@.-])`, 'g'),
     to: m => m.replace(/playwright(@\S*)?$/, `playwright@${PLAYWRIGHT}`), ok: m => m.endsWith(`playwright@${PLAYWRIGHT}`) },
+  /* The install guides end on the release they describe. Typed by hand, the
+     footer said v2.9.6 through all of 3.0 and 3.1. stats.mjs --check holds the
+     counts in those docs to the files, so the footer can name the version. */
+  { re: /(Measured against|วัดจาก) v\d+\.\d+\.\d+(?![\w-]|\.\d)/g,
+    to: (_, lead) => `${lead} v${KIT}`, ok: m => m.endsWith(` v${KIT}`) },
 ];
 
 /** Stale or unpinned commands in one text, and the text with them pinned. */

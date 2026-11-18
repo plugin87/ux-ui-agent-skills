@@ -258,5 +258,5 @@ No number in this project covers taste, and every gate that prints one says so.
 
 ---
 
-*Measured against v2.9.6. `npm` · `brew install plugin87/tap/ux-ui-agent-skills` ·
+*Measured against v3.1.0. `npm` · `brew install plugin87/tap/ux-ui-agent-skills` ·
 [github.com/plugin87/ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills)*

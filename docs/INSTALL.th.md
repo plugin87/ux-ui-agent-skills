@@ -225,5 +225,5 @@ npm install && npx playwright install chrome
 
 ---
 
-*วัดจาก v2.9.6 ·
+*วัดจาก v3.1.0 ·
 [github.com/plugin87/ux-ui-agent-skills](https://github.com/plugin87/ux-ui-agent-skills)*

@@ -41,3 +41,16 @@ test('names that only start like the package are left alone', () => {
     assert.equal(audit(ok).stale.length, 0, `flagged by mistake: ${ok}`);
   }
 });
+
+test('the install guide footers name the current release (they said v2.9.6 through 3.1)', () => {
+  const cases = [
+    ['*Measured against v2.9.6. `npm`', `*Measured against v${KIT}. \`npm\``],
+    ['*วัดจาก v2.9.6 ·', `*วัดจาก v${KIT} ·`],
+  ];
+  for (const [input, want] of cases) {
+    const r = audit(input);
+    assert.equal(r.stale.length, 1, `not flagged: ${input}`);
+    assert.equal(r.out, want);
+  }
+  assert.equal(audit(`Measured against v${KIT}.`).stale.length, 0);
+});
