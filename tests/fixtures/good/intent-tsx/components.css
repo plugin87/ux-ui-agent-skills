@@ -1,0 +1,3 @@
+.ds-btn--primary { background: var(--color-action-primary); }
+.ds-btn--danger { background: var(--color-action-destructive); }
+.ds-btn--danger:hover { background: var(--color-action-destructive-hover); }

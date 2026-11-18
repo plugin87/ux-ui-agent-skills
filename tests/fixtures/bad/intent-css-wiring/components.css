@@ -1,0 +1,3 @@
+.ds-btn { background: var(--color-action-primary); color: var(--color-text-on-action); }
+/* The destructive variant points at the primary token. */
+.ds-btn[data-variant="destructive"] { background: var(--color-action-primary); }

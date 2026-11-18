@@ -25,7 +25,14 @@
  * A neutral/ghost destructive control is NOT flagged: the bug is wearing the
  * primary accent, not declining to be red.
  *
- * Usage: node scripts/lint_intent.mjs <file.html | dir> [--dark] [--tolerance=40]
+ * Framework source. A folder's .tsx/.jsx/.vue files and stylesheets are also
+ * read as source by _intent_source.mjs, no browser needed: a destructive control
+ * that asks for variant="primary" (or sets no variant on a primary-default
+ * component), and a destructive/danger variant wired to a primary or blue token.
+ * Reading cannot see a computed colour, so for the repo's own TSX the render
+ * route still runs too (render_framework_source.mjs, then this gate on the output).
+ *
+ * Usage: node scripts/lint_intent.mjs <file.html | file.tsx | dir> [--dark] [--tolerance=40]
  * Exit 1 on any signal.
  */
 import { readdirSync, statSync } from 'node:fs';
@@ -33,32 +40,50 @@ import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
 import { COLOR_INIT } from './_color.mjs';
 import { launchOrSkip } from './_browser.mjs';
-let chromium;
-try { ({ chromium } = await import('playwright')); }
-catch {
-  // A missing browser must not read as a pass. Without DS_REQUIRE_BROWSER the gate
-  // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
-  // machine that cannot render fails loudly instead of reporting green on nothing.
-  const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`lint_intent: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
-  process.exit(required ? 1 : 0);
-}
+import { auditSource, SOURCE_EXT, STYLE_EXT } from './_intent_source.mjs';
+import { extname } from 'node:path';
 
 const argv = process.argv.slice(2);
 const targets = requireTargets(argv.filter(a => !a.startsWith('--')));
 if (!targets.length) {
-  console.log('usage: node scripts/lint_intent.mjs <file.html | dir> [--dark] [--tolerance=40]');
+  console.log('usage: node scripts/lint_intent.mjs <file.html | file.tsx | dir> [--dark] [--tolerance=40]');
   process.exit(0);
 }
 const dark = argv.includes('--dark');
 const TOL = Number((argv.find(a => a.startsWith('--tolerance=')) || '--tolerance=40').split('=')[1]);
 
-const files = targets.flatMap(t => {
+/* A folder is read for everything that can carry an intent: .html is rendered
+   and measured, .tsx/.jsx/.vue and the stylesheets beside them are read as source
+   (_intent_source.mjs). Before 2026-11-18 a folder meant its .html only, so a
+   folder of React components passed with nothing looked at (#11). */
+const SOURCE = (f) => SOURCE_EXT.has(extname(f)) || STYLE_EXT.has(extname(f));
+const all = targets.flatMap(t => {
   const abs = resolve(t);
   return statSync(abs).isDirectory()
-    ? readdirSync(abs).filter(f => f.endsWith('.html')).map(f => join(abs, f))
+    ? readdirSync(abs).filter(f => f.endsWith('.html') || SOURCE(f)).map(f => join(abs, f))
     : [abs];
 }).sort();
+const files = all.filter(f => !SOURCE(f));
+const sourceFiles = all.filter(SOURCE);
+const sourcePass = auditSource(sourceFiles);
+
+let chromium;
+if (files.length) {
+  try { ({ chromium } = await import('playwright')); }
+  catch {
+    // A missing browser must not read as a pass. Without DS_REQUIRE_BROWSER the gate
+    // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
+    // machine that cannot render fails loudly instead of reporting green on nothing.
+    const required = process.env.DS_REQUIRE_BROWSER === "1";
+    console.log(`lint_intent: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+    if (sourcePass.problems.length) {
+      console.log(`lint_intent: FAIL: token chosen by convenience, not by intent (source only)`);
+      for (const p of sourcePass.problems) console.log('  x ' + p);
+      process.exit(1);
+    }
+    process.exit(required ? 1 : 0);
+  }
+}
 
 const COLLECT = () => {
   /* `cancel subscription`, `close account`, `unsubscribe` are destructive in every
@@ -148,8 +173,8 @@ const dist = (a, b) => {
   return Math.hypot(x - p, y - q, z - r);
 };
 
-const browser = await launchOrSkip(chromium, 'lint_intent', { fallback: false });
-const problems = [];
+const browser = files.length ? await launchOrSkip(chromium, 'lint_intent', { fallback: false }) : null;
+const problems = [...sourcePass.problems];
 const byLabel = new Map();
 let checked = 0;
 
@@ -193,7 +218,7 @@ for (const f of files) {
     }
   }
 }
-await browser.close();
+if (browser) await browser.close();
 
 // 3. Same destructive action, different accent in different places.
 for (const [label, uses] of byLabel) {
@@ -213,4 +238,5 @@ if (problems.length) {
   console.log('  Fix: destructive -> component.button.destructive-* / action.danger, everywhere it appears.');
   process.exit(1);
 }
-console.log(`lint_intent: OK: ${files.length} file(s), ${checked} intent-bearing control(s): destructive never wears primary, affirmative never wears danger${dark ? ' [dark]' : ''}`);
+const read = sourceFiles.length ? `, ${sourceFiles.length} source file(s) read (${sourcePass.destructive} destructive control(s) in them)` : '';
+console.log(`lint_intent: OK: ${files.length} file(s) rendered${read}, ${checked} intent-bearing control(s) measured: destructive never wears primary, affirmative never wears danger${dark ? ' [dark]' : ''}`);
