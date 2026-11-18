@@ -10,7 +10,55 @@ with auto-generated notes instead.
 
 ---
 
-### Unreleased
+### `v3.1.1`
+
+**Windows clones are no longer empty (#31).** `design-systems/library/com7/` is
+now `comseven/`. COM7 is a reserved device name on Windows, and Git for
+Windows refuses it, so `git clone` and `/plugin marketplace add` stopped with
+an empty tree. `scripts/check_filenames.mjs` runs in `npm test` and in CI, and
+fails on any path Windows cannot check out: a device name (CON, PRN, AUX, NUL,
+COM0-9, LPT0-9, with or without an extension), a character Windows forbids, or
+a trailing space or dot. If you fetch the Comseven spec by name, the name is
+now `comseven`.
+
+**`lint_intent` reads framework source in a folder (#11 follow-up).** Pointed at
+a folder, it used to render the `.html` and skip everything else, so a folder of
+React components passed with nothing looked at. It now also reads `.tsx`, `.jsx`,
+`.vue` and stylesheets, with no browser. A destructive control fails if it asks
+for the primary variant, or sets no variant on a component whose default is
+primary. A `destructive` variant also fails if it is wired to a primary or blue
+class or token. The source pass sees what the code says, not the colour it
+resolves to, so the repo's React source is still rendered and measured as well.
+
+**A clip on the page root no longer hides overflow (#14).**
+`verify_responsive.mjs` lifts `overflow-x:hidden` on `html` and `body` before it
+measures. With both clipped, the document reported no overflow while content
+was cut off past the screen edge. The demo front door no longer needs its own
+clip either. Measured without it, the page fits at 280px at 1x and at 1.25x.
+
+**CI requires a browser for the render job (#10).** The render job ran its
+gates without `DS_REQUIRE_BROWSER=1`. If Chromium had failed to install, every
+step would have printed SKIPPED and the job would have gone green. A test now
+fails if that setting goes missing.
+
+**Smaller fixes**
+
+- Skill paths under a plugin install were fixed before this release (#9). The
+  README now says where a skill finds the kit's files on each install route.
+- The install guide footers said "Measured against v2.9.6". They now give the
+  current release, and `npm run pins:check` keeps it current.
+- `node scripts/stats.mjs --description` prints the GitHub repo description
+  from the measured counts. The one on GitHub still said 138 design systems
+  and 50 gates.
+- The design-review login-form finding now gives WCAG 1.4.1, the W3C source,
+  the reason and how it was checked (#33).
+- esbuild, react and react-dom are pinned to exact versions, as playwright and
+  axe-core already were.
+- SECURITY.md gains a privacy section: what the kit reads, the one request that
+  leaves your machine, and why `.ds-receipts/` belongs in `.gitignore`.
+- The README said Vue and Swift were checked by `lint_intent_source.mjs`, a
+  script that never existed on main. It now says they get file-level checks
+  only and are not rendered.
 
 **The accuracy report runs four checks at a time.** `node
 scripts/accuracy_report.mjs` took 23 minutes 31 seconds one check after another
