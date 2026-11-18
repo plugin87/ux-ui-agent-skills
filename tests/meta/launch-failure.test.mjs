@@ -58,3 +58,15 @@ for (const gate of gates.filter(g => g !== 'screenshot_docs.mjs')) {
     assert.doesNotMatch(out, /\n\s+at /, `${gate} printed a stack trace`);
   });
 }
+
+test('CI and the accuracy report run the render gates with DS_REQUIRE_BROWSER=1 (#10)', () => {
+  /* The render job called measure_render, verify_states and the rest directly.
+     Without the flag, a Chromium that failed to install would have printed
+     SKIPPED in every step and turned the job green. */
+  const ci = readFileSync(join(ROOT, '.github/workflows/ci.yml'), 'utf8');
+  const job = ci.split(/\n(?=  [a-z][\w-]*:\n)/).find(b => b.startsWith('  render:'));
+  assert.ok(job, 'ci.yml has no render job');
+  assert.match(job, /\n    env:\n(?:      .*\n)*?      DS_REQUIRE_BROWSER: '1'/, 'the render job does not set DS_REQUIRE_BROWSER at job level');
+  const report = readFileSync(join(ROOT, 'scripts/accuracy_report.mjs'), 'utf8');
+  assert.match(report, /DS_REQUIRE_BROWSER: '1'/);
+});
