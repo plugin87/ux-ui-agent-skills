@@ -64,6 +64,10 @@ test('verify_responsive rejects horizontal overflow at 280px', () => {
   rejects(gate('verify_responsive.mjs', [F('bad/overflow-280.html')]), /@280px overflow/);
 });
 
+test('verify_responsive rejects overflow hidden behind overflow-x:hidden on the body (#14)', () => {
+  rejects(gate('verify_responsive.mjs', [F('bad/overflow-clipped.html')]), /@280px overflow/);
+});
+
 test('verify_responsive rejects a fold-aware page that puts text and a control on the hinge', () => {
   // iPhone Duo half closed: the page splits into three columns when it sees two
   // viewport segments, and the middle one lands on the 455-495px hinge.

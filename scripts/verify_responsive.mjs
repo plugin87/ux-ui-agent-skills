@@ -28,6 +28,14 @@
  * fold-aware, and then nothing readable or tappable may sit on the hinge, and the
  * page may not overflow either. --no-fold skips this pass.
  *
+ * A CLIP DOES NOT COUNT AS A FIT. With `overflow-x:hidden` (or clip) on both
+ * html and body, body becomes the scroller and the document reports no
+ * overflow at all, while the content is still wider than the screen and cut
+ * off where the reader cannot scroll to it. The gate lifts that clip on the
+ * root and body before measuring (#14: the demo front door carried a body
+ * clip). A clip on an inner box (a carousel, a hero's decoration) is left
+ * alone, because that one is a design choice.
+ *
  * Usage: node scripts/verify_responsive.mjs <file.html | dir>
  *          [--widths=280,320,382,385,414,594,669,951] [--scale=1.25] [--no-fold] [--advisory]
  * Exit 1 if any file overflows at any tested width, or a fold-aware page puts text
@@ -61,6 +69,8 @@ const files = statSync(abs).isDirectory()
   ? readdirSync(abs).filter(f => f.endsWith('.html')).map(f => join(abs, f)).sort()
   : [abs];
 
+const UNCLIP = 'html,body{overflow-x:visible!important}';
+
 const browser = await launchOrSkip(chromium, 'verify_responsive', { fallback: false });
 const fails = [];
 for (const w of widths) {
@@ -68,6 +78,7 @@ for (const w of widths) {
   for (const f of files) {
     await page.goto('file://' + f);
     if (scale !== 1) await page.addStyleTag({ content: `html{font-size:${16 * scale}px}` });
+    await page.addStyleTag({ content: UNCLIP });
     const over = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (over > 1) {
       const culprit = await page.evaluate(() => {
@@ -95,6 +106,7 @@ if (fold) {
   const load = async (f) => {
     await page.goto('file://' + f);
     if (scale !== 1) await page.addStyleTag({ content: `html{font-size:${16 * scale}px}` });
+    await page.addStyleTag({ content: UNCLIP });
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))));
     await page.waitForTimeout(150);
