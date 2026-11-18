@@ -163,4 +163,4 @@ Declared in the page's inline CSS: `@media (min-width:782px)` (6 rules), `@media
 3. Build the action button as `#44c767` with a white label, 2px radius, 5px 21px padding.
 4. Build the business grid as 3 by 2 photographs with a dark lower gradient and bold white titles.
 5. Put one green (`#3fb02c`) investor panel between the grid and the sustainability section.
-6. Verify with `node web/scripts/verify-designs.mjs --slug=com7`.
+6. Verify with `node web/scripts/verify-designs.mjs --slug=comseven`.

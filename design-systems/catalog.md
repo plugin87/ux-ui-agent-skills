@@ -1858,7 +1858,7 @@ than reading: `python3 scripts/design_systems.py search <term>`, or the
 - [`clover-power`](library/clover-power/DESIGN.md) Clover Power
 - [`coffee-world`](library/coffee-world/DESIGN.md) Coffee World
 - [`colodee-digital-network`](library/colodee-digital-network/DESIGN.md) COLODEE DIGITAL NETWORK
-- [`com7`](library/com7/DESIGN.md) Comseven
+- [`comseven`](library/comseven/DESIGN.md) Comseven
 - [`conicle`](library/conicle/DESIGN.md) Conicle
 - [`cooperative-promotion-department`](library/cooperative-promotion-department/DESIGN.md) Cooperative Promotion Department (CPD)
 - [`cp-all`](library/cp-all/DESIGN.md) CP ALL

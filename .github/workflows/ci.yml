@@ -51,6 +51,9 @@ jobs:
       - name: No emoji in UI output or taste files
         run: python3 scripts/check_no_emoji.py
 
+      - name: 'Every path checks out on Windows (no reserved names, issue #31)'
+        run: node scripts/check_filenames.mjs
+
       - name: Eval harness self-test (the cold-start scorer still works)
         run: node evals/run.mjs --list
 
